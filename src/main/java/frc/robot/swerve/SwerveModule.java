@@ -68,9 +68,9 @@ public class SwerveModule implements Device {
       m_name = name;
   
       m_driveMotor = CougarSparkMax.makeBrushless("DriveMotor", driveMotorPort,
-          SparkMaxRelativeEncoder.Type.kHallSensor);
+          SparkRelativeEncoder.Type.kHallSensor);
       m_steerMotor = CougarSparkMax.makeBrushless("SteerMotor", steerMotorPort, 
-          SparkMaxRelativeEncoder.Type.kHallSensor);
+          SparkRelativeEncoder.Type.kHallSensor);
       m_absoluteEncoder = new CANCoder(canCoderPort);
       m_driveRelativeEncoder = m_driveMotor.getEmbeddedEncoder();
       m_absoluteEncoderOffset = offset;

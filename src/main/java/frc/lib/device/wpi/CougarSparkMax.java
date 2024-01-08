@@ -22,7 +22,7 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
    * @return Brushless CANSparkMax
    */
   public static CougarSparkMax makeBrushless(String name, int channel,
-      SparkMaxRelativeEncoder.Type encoderType) {
+      SparkRelativeEncoder.Type encoderType) {
     return new CougarSparkMax(name, channel, MotorType.kBrushless, encoderType);
   }
 

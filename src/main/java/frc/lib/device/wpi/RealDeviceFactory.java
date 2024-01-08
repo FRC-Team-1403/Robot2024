@@ -4,8 +4,10 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.wpilibj.AnalogAccelerometer;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import frc.lib.device.AdvancedMotorController;
 import frc.lib.device.AnalogDevice;
+import frc.lib.device.CougarAccelerometer;
 import frc.lib.device.CougarDoubleSolenoid;
 import frc.lib.device.DeviceFactory;
 import frc.lib.device.LimitSwitch;
@@ -122,5 +124,11 @@ public class RealDeviceFactory implements DeviceFactory {
       SparkMaxRelativeEncoder.Type encoderType) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'makeBrushlessCanSparkMax'");
+  }
+
+  @Override
+  public CougarAccelerometer makeBuiltinAccelerometer(String name, Range range) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'makeBuiltinAccelerometer'");
   }
 }
