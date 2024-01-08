@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.core.CougarLibInjectedParameters;
 import frc.lib.core.CougarSubsystem;
 import frc.lib.device.wpi.NavxAhrs;
-import frc.lib.util.CougarLogger;
 import frc.lib.util.SwerveDriveOdometry;
 import frc.lib.util.SwerveDrivePoseEstimator;
 import frc.robot.Constants;
