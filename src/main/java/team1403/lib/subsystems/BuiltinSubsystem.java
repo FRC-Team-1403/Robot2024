@@ -1,10 +1,11 @@
 package team1403.lib.subsystems;
 
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer.Range;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.core.CougarSubsystem;
-import team1403.lib.device.CougarAccelerometer;
 import team1403.lib.device.PowerDistributor;
 
 /**
@@ -24,12 +25,11 @@ public class BuiltinSubsystem extends CougarSubsystem {
     super("BuiltinDevices", injectedParameters);
 
     var factory = injectedParameters.getDeviceFactory();
+    //fixme: update to pdh
     m_pdp = factory.makePowerDistributor("BuiltinDevices.Pdp");
-    m_accelerometer = factory.makeBuiltinAccelerometer("BuiltinDevices.Accelerometer",
-                                                       CougarAccelerometer.Range.k4G);
+    m_accelerometer = new BuiltInAccelerometer(Range.k4G);
 
     addDevice("PDP", m_pdp);
-    addDevice("Accelerometer", m_accelerometer);
   }
 
   @Override
@@ -51,7 +51,7 @@ public class BuiltinSubsystem extends CougarSubsystem {
    *
    * @return builtin Accelerometer.
    */
-  public CougarAccelerometer getAccelerometer() {
+  public BuiltInAccelerometer getAccelerometer() {
     return m_accelerometer;
   }
 
@@ -65,5 +65,5 @@ public class BuiltinSubsystem extends CougarSubsystem {
   }
 
   private final PowerDistributor m_pdp;
-  private final CougarAccelerometer m_accelerometer;
+  private final BuiltInAccelerometer m_accelerometer;
 }

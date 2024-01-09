@@ -1,12 +1,8 @@
 package team1403.lib.device.wpi;
 
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.revrobotics.SparkRelativeEncoder;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
-
 import team1403.lib.device.AdvancedMotorController;
 import team1403.lib.device.AnalogDevice;
-import team1403.lib.device.CougarAccelerometer;
 import team1403.lib.device.CougarDoubleSolenoid;
 import team1403.lib.device.DeviceFactory;
 import team1403.lib.device.LimitSwitch;
@@ -21,14 +17,6 @@ import team1403.lib.device.PowerDistributor;
  */
 @SuppressWarnings({"PMD.TooManyMethods"})
 public class RealDeviceFactory implements DeviceFactory {
-  /**
-   * Returns a WpiBuiltinAccelerometer.
-   */
-  @Override
-  public CougarAccelerometer makeBuiltinAccelerometer(
-      String name, CougarAccelerometer.Range range) {
-    return new WpiBuiltinAccelerometer(name, range);
-  }
 
   /**
    * Returns a WpiPowerDistribution instance.

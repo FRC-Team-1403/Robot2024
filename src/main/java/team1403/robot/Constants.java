@@ -176,7 +176,6 @@ public class Constants {
     public static final int backRightEncoderId = 1;
     public static final int hangerMotor = 0;
     public static final int intakeMotor = 0;
-    public static final int hangerMotor = 0;
     
   }
 

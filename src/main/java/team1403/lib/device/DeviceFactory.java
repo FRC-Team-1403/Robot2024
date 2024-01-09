@@ -21,17 +21,6 @@ public interface DeviceFactory {
   public PowerDistributor makePowerDistributor(String name);
 
   /**
-   * Create an accelerometer from the RoboRIO.
-   *
-   * @param name  The name for the accelerometer.
-   * @param range The max sensitivity.
-   *
-   * @return accelerometer for the RoboRIO.
-   */
-  public CougarAccelerometer makeBuiltinAccelerometer(
-          String name, CougarAccelerometer.Range range);
-
-  /**
    * Creates a Brushed CANSparkMax MotorController.
    *
    * @param name        The name of the new device instance.

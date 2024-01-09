@@ -17,7 +17,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * A command that uses two PID controllers ({@link PIDController}) and a ProfiledPIDController
@@ -32,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  *
  * <p>This class is provided by the NewCommands VendorDep
  */
-public class SwerveControllerCommand extends CommandBase {
+public class SwerveControllerCommand extends Command {
   private final Timer m_timer = new Timer();
   private Trajectory m_trajectory;
   private final Supplier<Pose2d> m_pose;

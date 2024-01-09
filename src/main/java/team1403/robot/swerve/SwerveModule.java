@@ -1,12 +1,7 @@
 package team1403.robot.swerve;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import com.ctre.phoenix.sensors.MagnetFieldStrength;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -16,9 +11,6 @@ import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.*;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -99,7 +91,7 @@ public class SwerveModule implements Device {
         System.err.println("CANCoder magnetic field strength is unacceptable.");
       }
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
-      //in units of rotations, oh shit we have to do a lot of rewriting
+      //in units of rotations, oh shit we have to do a lot testing
       magnetSensor.MagnetOffset = (m_absoluteEncoderOffset%(2*Math.PI))/(2*Math.PI);
       magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -108,8 +100,8 @@ public class SwerveModule implements Device {
       
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
       
-      m_absoluteEncoder.setPositionToAbsolute();
-      m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
+      //m_absoluteEncoder.setPositionToAbsolute();
+      //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
   
       // Config drive relative encoder
       double drivePositionConversionFactor = Math.PI * Swerve.kWheelDiameterMeters 
@@ -322,7 +314,7 @@ public class SwerveModule implements Device {
      * @return The current angle in radians. Range: [0, 2pi)
      */
     public double getAbsoluteAngle() {
-      double angle = Math.toRadians(m_absoluteEncoder.getAbsolutePosition().getValueAsDouble());
+      double angle = m_absoluteEncoder.getPositionValue();
       angle %= 2.0 * Math.PI;
       if (angle < 0.0) {
         angle += 2.0 * Math.PI;

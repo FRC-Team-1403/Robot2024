@@ -10,14 +10,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import team1403.robot.Constants;
+import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants.Swerve;
 
 /**
  * Autonomous command to be used with the CSE.
  */
-public class SwerveDrivePath extends CommandBase {
+public class SwerveDrivePath extends Command {
 
   private SwerveSubsystem m_drivetrain;
 
@@ -81,7 +80,7 @@ public class SwerveDrivePath extends CommandBase {
   public void initialize() {
     m_drivetrain.zeroGyroscope();
 
-    m_drivetrain.increaseSpeed(1);
+    m_drivetrain.setSpeedLimiter(1);
 
     m_trajectory = TrajectoryGenerator.generateTrajectory(
         m_startPose,

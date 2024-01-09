@@ -7,14 +7,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import team1403.robot.Constants;
+import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants.Swerve;
 
 /**
  * The default command for the swerve drivetrain subsystem.
  */
-public class SwerveCommand extends CommandBase {
+public class SwerveCommand extends Command {
   private final SwerveSubsystem m_drivetrainSubsystem;
 
   private final DoubleSupplier m_verticalTranslationSupplier;

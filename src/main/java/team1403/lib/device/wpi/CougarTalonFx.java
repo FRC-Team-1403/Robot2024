@@ -46,12 +46,14 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void follow(AdvancedMotorController source) {
-    m_motor.follow((IMotorController)source);
+    //m_motor.follow((IMotorController)source);
+    System.err.println("following not yet supported on TalonFx!");
   }
 
   @Override
   public final void setVoltageCompensation(double voltage) {
     //fixme
+    System.err.println("voltage compensation not yet supported on TalonFx");
   }
 
   @Override
@@ -74,9 +76,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override 
   public void setPidGains(double p, double i, double d) {
-    m_motor.config_kP(0, p);
-    m_motor.config_kD(0, d);
-    m_motor.config_kI(0, i);
+    System.err.println("setPidGains not yet supported on TalonFx!");
   }
 
   @Override
@@ -90,7 +90,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setRampRate(double rate) {
-    m_motor.configClosedloopRamp(rate);
+    System.err.println("setRampRate not yet supported on TalonFx!");
   }
 
   @Override
@@ -100,7 +100,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setAmpLimit(double amps) {
-    m_motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, amps, 0, 0));
+    System.err.println("setAmpLimit not yet supported on TalonFx!");
   }
 
   @Override
@@ -114,6 +114,11 @@ public class CougarTalonFx implements AdvancedMotorController {
       return m_encoder;
     }
     throw new NoSuchDeviceError("No Encoder with " + m_name);
+  }
+
+  @Override 
+  public boolean getInverted() {
+    return m_motor.getInverted(); 
   }
 
   @Override
