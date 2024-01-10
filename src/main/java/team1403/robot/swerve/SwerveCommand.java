@@ -23,11 +23,6 @@ public class SwerveCommand extends Command {
   private final DoubleSupplier m_speedSupplier;
   private boolean m_isFieldRelative;
 
-  private Translation2d frontRight;
-  private Translation2d frontLeft;
-  private Translation2d backRight;
-  private Translation2d backLeft;
-
   private SlewRateLimiter m_verticalTranslationLimiter;
   private SlewRateLimiter m_horizontalTranslationLimiter;
 
@@ -62,22 +57,6 @@ public class SwerveCommand extends Command {
     this.m_fieldRelativeSupplier = fieldRelativeSupplier;
     this.m_speedSupplier = speedSupplier;
     m_isFieldRelative = true;
-
-    frontRight = new Translation2d(
-        Swerve.kTrackWidth / 2.0,
-        -Swerve.kWheelBase / 2.0);
-
-    frontLeft = new Translation2d(
-        Swerve.kTrackWidth / 2.0,
-        Swerve.kWheelBase / 2.0);
-
-    backRight = new Translation2d(
-        -Swerve.kTrackWidth / 2.0,
-        -Swerve.kWheelBase / 2.0);
-
-    backLeft = new Translation2d(
-        -Swerve.kTrackWidth / 2.0,
-         Swerve.kWheelBase / 2.0);
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);

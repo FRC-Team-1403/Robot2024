@@ -44,13 +44,13 @@ public class CougarTalonFx implements AdvancedMotorController {
   @Override
   public void follow(AdvancedMotorController source) {
     //m_motor.follow((IMotorController)source);
-    System.err.println("following not yet supported on TalonFx!");
+    System.err.println("[follow] not yet supported on TalonFx!");
   }
 
   @Override
   public final void setVoltageCompensation(double voltage) {
     //fixme
-    System.err.println("voltage compensation not yet supported on TalonFx");
+    System.err.println("[setVoltageCompensation] not yet supported on TalonFx");
   }
 
   @Override
@@ -73,7 +73,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override 
   public void setPidGains(double p, double i, double d) {
-    System.err.println("setPidGains not yet supported on TalonFx!");
+    System.err.println("[setPidGains] not yet supported on TalonFx!");
   }
 
   @Override
@@ -87,7 +87,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setRampRate(double rate) {
-    System.err.println("setRampRate not yet supported on TalonFx!");
+    System.err.println("[setRampRate] not yet supported on TalonFx!");
   }
 
   @Override
@@ -97,7 +97,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setAmpLimit(double amps) {
-    System.err.println("setAmpLimit not yet supported on TalonFx!");
+    System.err.println("[setAmpLimit] not yet supported on TalonFx!");
   }
 
   @Override
