@@ -8,7 +8,7 @@ import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
-public class Shooter extends SubsystemBase{
+public class Shooter extends SubsystemBase {
 
   private CougarSparkMax m_shooterMotor;
   private WpiLimitSwitch m_shooterLimitSwitch;
@@ -22,8 +22,7 @@ public class Shooter extends SubsystemBase{
       "Shooter Limit Switch", Constants.RioPorts.shooterLimitSwitchPort);
   }
 
-  public void setShooterSpeed(double speed)
-  {
+  public void setShooterSpeed(double speed) {
     m_shooterMotor.set(speed);
   }
 }

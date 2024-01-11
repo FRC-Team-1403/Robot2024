@@ -8,7 +8,7 @@ import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
-public class Intake extends SubsystemBase{
+public class Intake extends SubsystemBase {
 
   private CougarSparkMax m_intakeMotor;
   private WpiLimitSwitch m_intakeLimitSwitch;
