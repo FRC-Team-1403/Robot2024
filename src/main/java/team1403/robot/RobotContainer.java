@@ -7,6 +7,9 @@ package team1403.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.Constants.Swerve;
+import team1403.robot.swerve.Limelight;
+import team1403.robot.swerve.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -15,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private SwerveSubsystem m_swerve;
+  private Limelight m_limelight = new Limelight();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(Constants.Driver.pilotPort);
@@ -46,5 +52,13 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
+  }
+
+  public Limelight getLimelight(){
+    return m_limelight;
+  }
+
+  public SwerveSubsystem getSwerveSubsystem() {
+    return m_swerve;
   }
 }
