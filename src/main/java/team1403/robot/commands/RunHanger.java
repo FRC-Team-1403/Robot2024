@@ -1,8 +1,8 @@
-package frc.robot.commands;
+package team1403.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hanger;
+import team1403.robot.subsystems.Hanger;
 
 public class RunHanger extends Command {
     private Hanger m_hanger;
