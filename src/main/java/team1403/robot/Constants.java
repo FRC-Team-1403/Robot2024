@@ -195,7 +195,7 @@ public class Constants {
 
     public static final int shooterLimitSwitchPort = 0;
     public static final int intakeLimitSwitchPort = 0;
-  
+    public static final int LEDPort = 0;
   }
 
   /**
