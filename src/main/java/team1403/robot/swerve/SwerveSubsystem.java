@@ -506,9 +506,9 @@ public class SwerveSubsystem extends SubsystemBase  {
     * Keeps track of back left absolute encoder
     * Keeps track of back right absolute encoder
     */
-   Logger.recordOutput("Front Left Absolute Encoder", m_modules[0].getAbsoluteEncoder());
-   Logger.recordOutput("Front Right Absolute Encoder", m_modules[1].getAbsoluteEncoder());
-   Logger.recordOutput("Back Left Absolute Encoder", m_modules[2].getAbsoluteEncoder());
-   Logger.recordOutput("Back Right Absolute Encoder", m_modules[3].getAbsoluteEncoder());
+   Logger.recordOutput("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
+   Logger.recordOutput("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
+   Logger.recordOutput("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
+   Logger.recordOutput("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
  }
 }
