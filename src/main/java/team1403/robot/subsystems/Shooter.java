@@ -1,5 +1,7 @@
 package team1403.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,5 +26,8 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterSpeed(double speed) {
     m_shooterMotor.set(speed);
+  }
+  public void periodic() {
+    Logger.recordOutput("Shooter Temp", m_shooterMotor.getMotorTemperature());
   }
 }
