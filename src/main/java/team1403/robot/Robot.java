@@ -7,6 +7,8 @@ package team1403.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import team1403.robot.swerve.Limelight;
+import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
 
   /**
@@ -28,6 +30,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight());
   }
 
   /**
@@ -77,11 +80,14 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_VisionCommand.execute();
+  }
 
   @Override
   public void testInit() {
@@ -91,7 +97,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
