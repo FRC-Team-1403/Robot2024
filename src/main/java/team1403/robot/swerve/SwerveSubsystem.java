@@ -1,5 +1,7 @@
 package team1403.robot.swerve;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -465,12 +467,23 @@ public class SwerveSubsystem extends SubsystemBase  {
  @Override
  public void periodic() {
    SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
+   Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees()); // Keeps track of drivetrain rotation in degrees
 
    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
+
+   /**
+    * Keeps track of drivetrain position
+    * Keeps track of drivetrain speed
+    * Keeps track of drivetrain gyro roll
+    */
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    SmartDashboard.putNumber("Speed", m_speedLimiter);
    SmartDashboard.putNumber("Roll Value", getGyroRoll());
+
+   Logger.recordOutput("Odometry", m_odometer.getEstimatedPosition().toString());
+   Logger.recordOutput("Speed", m_speedLimiter);
+   Logger.recordOutput("Roll Value", getGyroRoll());
 
    if (this.m_isXModeEnabled) {
      xMode();
@@ -486,5 +499,16 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
+
+   /**
+    * Keeps track of front left absolute encoder
+    * Keeps track of front right absolute encoder
+    * Keeps track of back left absolute encoder
+    * Keeps track of back right absolute encoder
+    */
+   Logger.recordOutput("Front Left Absolute Encoder", m_modules[0].getAbsoluteEncoder());
+   Logger.recordOutput("Front Right Absolute Encoder", m_modules[1].getAbsoluteEncoder());
+   Logger.recordOutput("Back Left Absolute Encoder", m_modules[2].getAbsoluteEncoder());
+   Logger.recordOutput("Back Right Absolute Encoder", m_modules[3].getAbsoluteEncoder());
  }
 }

@@ -1,5 +1,7 @@
 package team1403.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,5 +25,7 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeSpeed(double speed) {
     m_intakeMotor.set(speed);
+    Logger.recordOutput("Intake Temp", m_intakeMotor.getMotorTemperature());
+    Logger.recordOutput("Intake RPM", m_intakeMotor.getVoltageCompensationNominalVoltage());
   }
 }
