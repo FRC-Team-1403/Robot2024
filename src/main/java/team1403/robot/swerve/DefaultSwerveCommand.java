@@ -13,7 +13,7 @@ import team1403.robot.Constants.Swerve;
 /**
  * The default command for the swerve drivetrain subsystem.
  */
-public class SwerveCommand extends Command {
+public class DefaultSwerveCommand extends Command {
   private final SwerveSubsystem m_drivetrainSubsystem;
 
   private final DoubleSupplier m_verticalTranslationSupplier;
@@ -44,7 +44,7 @@ public class SwerveCommand extends Command {
    *                                      boolean value to enable field relative
    *                                      mode
    */
-  public SwerveCommand(SwerveSubsystem drivetrain,
+  public DefaultSwerveCommand(SwerveSubsystem drivetrain,
       DoubleSupplier horizontalTranslationSupplier,
       DoubleSupplier verticalTranslationSupplier,
       DoubleSupplier rotationSupplier,
