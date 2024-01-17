@@ -32,7 +32,7 @@ public class PhotonVisionCommand extends Command {
         SmartDashboard.putNumber("DirectDistance", m_Limelight.getDistanceFromTarget());
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
         
-        turnRobotToTag();
+        //turnRobotToTag();
     }
 
     @Override

@@ -7,6 +7,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +19,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -65,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  private double m_rollOffset;
 
  private boolean m_isXModeEnabled = false;
+ private Limelight m_Limelight;
 
  /**
   * Creates a new {@link SwerveSubsystem}.
@@ -76,9 +82,10 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param parameters the {@link CougarLibInjectedParameters}
   *                   used to construct this subsystem
   */
- public SwerveSubsystem() {
+ public SwerveSubsystem(Limelight limelight) {
   //  super("Swerve Subsystem", parameters);
    m_navx2 = new NavxAhrs("Gyroscope");
+   m_Limelight = limelight;
    m_modules = new SwerveModule[] {
        new SwerveModule("Front Left Module",
            CanBus.frontLeftDriveId, CanBus.frontLeftSteerId,
@@ -120,6 +127,7 @@ public class SwerveSubsystem extends SubsystemBase  {
       );
    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+
 
   //  addDevice(m_navx2.getName(), m_navx2);
    if(m_navx2.isConnected())
@@ -496,9 +504,13 @@ public class SwerveSubsystem extends SubsystemBase  {
 
  @Override
  public void periodic() {
-   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
+  SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-   m_odometer.update(getGyroscopeRotation(), getModulePositions());
+  if(m_Limelight.hasTarget()){
+    m_odometer.addVisionMeasurement(m_Limelight.getDistance2D(),Timer.getFPGATimestamp(),m_Limelight.getPosStdv());
+  } else {
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+  }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    SmartDashboard.putNumber("Speed", m_speedLimiter);
