@@ -1,5 +1,7 @@
 package team1403.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -51,5 +53,6 @@ public class LED extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putString("LED Color", gamePieceState.toString());
+    Logger.recordOutput("LED State", getGameState());
   }
 }

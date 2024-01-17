@@ -1,5 +1,7 @@
 package team1403.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -17,5 +19,7 @@ public class Hanger extends SubsystemBase{
 
   public void setHangerSpeed(double speed) {
     m_hangerMotor.set(speed);
+    Logger.recordOutput("Hanger Temp", m_hangerMotor.getMotorTemperature());
+    Logger.recordOutput("Hanger RPM", m_hangerMotor.getVoltageCompensationNominalVoltage());
   }
 }
