@@ -27,7 +27,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean intakeReady() {
-    if (lastSpeed == m_motorTop.getEncoder().getVelocity() && lastSpeed == m_motorBottom.getEncoder().getVelocity()) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -36,7 +36,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean shooterReady() {
-    if (lastSpeed == m_motorTop.getEncoder().getVelocity() && lastSpeed == m_motorBottom.getEncoder().getVelocity()) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -45,7 +45,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean speedIsEqual() {
-    if (m_motorTop.getEncoder().getVelocity() == m_motorBottom.getEncoder().getVelocity()) {
+    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
         return true;
     } else {
         return false;
@@ -62,14 +62,14 @@ public class IntakeAndShooter extends SubsystemBase {
       stop();
       return;
     }
-    lastSpeed = -(speed);
-    m_motorTop.set(-(speed));
+    lastSpeed = speed;
+    m_motorTop.set(speed);
     m_motorBottom.set(-(speed));
   }
 
   public void setShooterSpeed(double speed) {
     lastSpeed = speed;
-    m_motorTop.set(speed);
+    m_motorTop.set(-(speed));
     m_motorBottom.set(speed);
   }
 
