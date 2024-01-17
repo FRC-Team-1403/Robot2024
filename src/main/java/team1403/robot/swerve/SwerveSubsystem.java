@@ -1,5 +1,9 @@
 package team1403.robot.swerve;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -14,6 +18,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
@@ -95,7 +100,31 @@ public class SwerveSubsystem extends SubsystemBase  {
            CanBus.backRightDriveId, CanBus.backRightSteerId,
            CanBus.backRightEncoderId, Swerve.backRightEncoderOffset, false),
    };
+  AutoBuilder.configureHolonomic(
+              this::getPose, // Robot pose supplier
+              this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+              this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+              this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+              new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                      new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                      new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                      15, // Max module speed, in m/s
+                      0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                      new ReplanningConfig() // Default path replanning config. See the API for the options here
+              ),
+              () -> {
+                  // Boolean supplier that controls when the path will be mirrored for the red alliance
+                  // This will flip the path being followed to the red side of the field.
+                  // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
+                  var alliance = DriverStation.getAlliance();
+                  if (alliance.isPresent()) {
+                      return alliance.get() == DriverStation.Alliance.Red;
+                  }
+                  return false;
+              },
+              this // Reference to this subsystem to set requirements
+      );
    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
 
@@ -267,7 +296,10 @@ public class SwerveSubsystem extends SubsystemBase  {
    m_offset = offset;
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
-
+ public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
+   m_chassisSpeeds = chassisSpeeds;
+   SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
+ }
  /**
   * Stops the drivetrain.
   */

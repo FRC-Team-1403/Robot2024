@@ -1,36 +1,29 @@
 package team1403.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import team1403.robot.subsystems.Intake;
+import team1403.robot.subsystems.IntakeAndShooter;
 
 public class RunIntake extends Command {
-    private Intake m_intake;
-    private double m_intakeSpeed;
-    private double m_time;
-    private double m_startTime;
+    private IntakeAndShooter m_intakeAndShooter;
+    private double m_intakeAndShooterSpeed;
 
-    public RunIntake(Intake intake, double intakeSpeed, double time) {
-        m_intake = intake;
-        m_intakeSpeed = intakeSpeed;
-        m_time = time;
+    public RunIntake(IntakeAndShooter intakeAndShooter, double intakeSpeed) {
+        m_intakeAndShooter = intakeAndShooter;
+        m_intakeAndShooterSpeed = intakeSpeed;
     }
 
     @Override
-    public void initialize()
-    {
-        m_startTime = Timer.getFPGATimestamp();
+    public void initialize() {
+        m_intakeAndShooter.setShooterSpeed(m_intakeAndShooterSpeed);
     }
 
     @Override
-    public void execute()
-    {
-        m_intake.setIntakeSpeed(m_intakeSpeed);
+    public void execute() {
+        //intake note
     }
 
     @Override
-    public boolean isFinished()
-    {
-        return Timer.getFPGATimestamp() - m_startTime >= m_time;
+    public boolean isFinished() {
+        return m_intakeAndShooter.intakeReady();
     }
 }
