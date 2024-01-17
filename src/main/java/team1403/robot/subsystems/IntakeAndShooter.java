@@ -7,14 +7,14 @@ import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
-//import team1403.lib.device.wpi.WpiLimitSwitch;
+import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
 public class IntakeAndShooter extends SubsystemBase {
 
   private CougarSparkMax m_motorTop;
   private CougarSparkMax m_motorBottom;
-  //private WpiLimitSwitch m_intakeLimitSwitch;
+  private WpiLimitSwitch m_intakeLimitSwitch;
   private double lastSpeed = 0;
 
   public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
@@ -22,12 +22,12 @@ public class IntakeAndShooter extends SubsystemBase {
       "Top Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorTop, SparkRelativeEncoder.Type.kHallSensor);
     m_motorBottom = CougarSparkMax.makeBrushless(
       "Bottom Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-    //m_intakeLimitSwitch = new WpiLimitSwitch(
-      //"Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+    m_intakeLimitSwitch = new WpiLimitSwitch(
+      "Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
   }
 
   public boolean intakeReady() {
-    if (lastSpeed == m_motorTop.getEncoder().getVelocity() && lastSpeed == m_motorBottom.getEncoder().getVelocity()) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -36,7 +36,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean shooterReady() {
-    if (lastSpeed == m_motorTop.getEncoder().getVelocity() && lastSpeed == m_motorBottom.getEncoder().getVelocity()) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -45,7 +45,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean speedIsEqual() {
-    if (m_motorTop.getEncoder().getVelocity() == m_motorBottom.getEncoder().getVelocity()) {
+    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
         return true;
     } else {
         return false;
@@ -58,20 +58,23 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    lastSpeed = -(speed);
-    m_motorTop.set(-(speed));
+     if (m_intakeLimitSwitch.get()) {
+      stop();
+      return;
+    }
+    lastSpeed = speed;
+    m_motorTop.set(speed);
     m_motorBottom.set(-(speed));
   }
 
   public void setShooterSpeed(double speed) {
     lastSpeed = speed;
-    m_motorTop.set(speed);
+    m_motorTop.set(-(speed));
     m_motorBottom.set(speed);
   }
 
   public void periodic() {
     Logger.recordOutput("Intake/Shooter Temp", m_motorTop.getMotorTemperature());
     Logger.recordOutput("Intake/Shooter Temp", m_motorBottom.getMotorTemperature());
-
   }
 }
