@@ -1,0 +1,294 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.1852004303152672,
+        "y": 1.159372818032369
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.8292964403332503,
+        "y": 1.0656861256661172
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.12972650196672,
+        "y": 0.7143610292977873
+      },
+      "prevControl": {
+        "x": 8.148609658500401,
+        "y": 0.657711559689448
+      },
+      "nextControl": {
+        "x": 8.106304828878175,
+        "y": 0.7846260485724774
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8695350486308895,
+        "y": 1.335035366224207
+      },
+      "prevControl": {
+        "x": 5.892956721722451,
+        "y": 1.1945053276748279
+      },
+      "nextControl": {
+        "x": 5.837666496067084,
+        "y": 1.526246681607053
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.8486664248649465,
+        "y": 2.588094876622829
+      },
+      "prevControl": {
+        "x": 7.661293040135461,
+        "y": 2.470986511165013
+      },
+      "nextControl": {
+        "x": 7.893078176337562,
+        "y": 2.6158522212936615
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8695350486308895,
+        "y": 1.335035366224207
+      },
+      "prevControl": {
+        "x": 5.833506058015724,
+        "y": 1.3130176497374757
+      },
+      "nextControl": {
+        "x": 6.080330106457974,
+        "y": 1.4638545682278032
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.8486664248649465,
+        "y": 4.133925300665989
+      },
+      "prevControl": {
+        "x": 7.813533915230621,
+        "y": 4.0168169352081735
+      },
+      "nextControl": {
+        "x": 7.936223301210192,
+        "y": 4.425781555175217
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8695350486308895,
+        "y": 6.745441850375265
+      },
+      "prevControl": {
+        "x": 5.8695350486308895,
+        "y": 6.452436813611629
+      },
+      "nextControl": {
+        "x": 5.8695350486308895,
+        "y": 6.897682725470425
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.12972650196672,
+        "y": 5.808574926712744
+      },
+      "prevControl": {
+        "x": 7.754979732501712,
+        "y": 5.937394128716341
+      },
+      "nextControl": {
+        "x": 8.209587884842446,
+        "y": 5.781122576349214
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8695350486308895,
+        "y": 6.745441850375265
+      },
+      "prevControl": {
+        "x": 5.826272963149307,
+        "y": 6.550762465708147
+      },
+      "nextControl": {
+        "x": 5.916378394814016,
+        "y": 6.956236908199331
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.12972650196672,
+        "y": 7.530067898942626
+      },
+      "prevControl": {
+        "x": 8.141437338512501,
+        "y": 7.412959533484811
+      },
+      "nextControl": {
+        "x": 8.113371133016708,
+        "y": 7.693621588442758
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.8695350486308895,
+        "y": 7.682308774037785
+      },
+      "prevControl": {
+        "x": 6.9184151590060825,
+        "y": 7.564835209497395
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Note 1",
+      "waypointRelativePos": 1.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 1",
+      "waypointRelativePos": 2.1,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake Note 2",
+      "waypointRelativePos": 3.15,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 2",
+      "waypointRelativePos": 4.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake Note 3",
+      "waypointRelativePos": 5.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 3",
+      "waypointRelativePos": 5.8999999999999995,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake Note 4",
+      "waypointRelativePos": 6.949999999999999,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 4",
+      "waypointRelativePos": 7.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Intake Note 5",
+      "waypointRelativePos": 8.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "Shoot Note 5",
+      "waypointRelativePos": 10.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
