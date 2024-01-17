@@ -174,9 +174,9 @@ public class Constants {
     public static final int backRightDriveId = 14;
     public static final int backRightSteerId = 6;
     public static final int backRightEncoderId = 1;
-    public static final int hangerMotor = 0;
-    public static final int intakeMotor = 0;
-    
+    public static final int intakeAndShooterMotorTop = 0;
+    public static final int intakeAndShooterMotorBottom = 0;
+    public static final int hangerMotor = 0;    
   }
 
   public static class Turret {
@@ -193,7 +193,6 @@ public class Constants {
    */
   public static class RioPorts {
 
-    public static final int shooterLimitSwitchPort = 0;
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
   }
