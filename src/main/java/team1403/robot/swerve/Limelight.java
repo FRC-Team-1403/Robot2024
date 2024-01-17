@@ -5,6 +5,13 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,7 +20,6 @@ public class Limelight extends SubsystemBase {
   private PhotonCamera limeLight;
   private PhotonPipelineResult result;
 
-  private int pipelineIndex;
 
   private double cameraHeightMeters = 0.559;
   private double targetHeightMeters = 1.3208;
@@ -39,7 +45,7 @@ public class Limelight extends SubsystemBase {
 
   public double getXDistance() {
     result = limeLight.getLatestResult();
-    return result.hasTargets() ? result.getBestTarget().getYaw() : 0;
+    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getX() : 0;
   }
 
   public double getDistanceFromTarget() {
@@ -49,14 +55,44 @@ public class Limelight extends SubsystemBase {
         cameraHeightMeters,
         targetHeightMeters,
         Units.degreesToRadians(cameraPitchDegrees),
-        Units.degreesToRadians(result.getBestTarget().getPitch()));
+        result.getBestTarget().getBestCameraToTarget().getRotation().getAngle());
       return distanceToTarget;
     }
     return 0;
   }
 
+  public double getYDistance() {
+    result = limeLight.getLatestResult();
+    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getY() : 0;
+  }
+
   public double getZAngle() {
     return Math.acos(getZDistance() / getDistanceFromTarget());
+  }
+  
+  public double getXAngle(){
+    return result.getBestTarget().getSkew();
+  }
+
+  public double getYAngle(){
+    return result.getBestTarget().getYaw();
+  }
+
+  public double getAmbiguity(){
+    return result.getBestTarget().getPoseAmbiguity();
+  }
+
+  public boolean hasTarget(){
+    return result.hasTargets();
+  }
+
+  public Pose2d getDistance(){
+    return new Pose2d(new Translation2d(getXDistance(),getYDistance()), new Rotation2d(getXAngle(),getYAngle()));
+  }
+
+  public Matrix<N3,N1> getPosStdv(){
+    return new Matrix<N3,N1>(VecBuilder.fill(getXDistance()*getAmbiguity(),getYDistance()*getAmbiguity(),result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()*getAmbiguity()));
+    
   }
 
   @Override
