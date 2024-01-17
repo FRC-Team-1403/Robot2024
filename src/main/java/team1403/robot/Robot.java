@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.swerve.Limelight;
 import team1403.robot.swerve.PhotonVisionCommand;
+import team1403.robot.subsystems.LED;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +22,8 @@ public class Robot extends TimedRobot {
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
 
+  private LED m_led;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -31,6 +34,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(), m_robotContainer.getSwerveSubsystem());
+    m_led = new LED();
   }
 
   /**
@@ -86,7 +90,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_VisionCommand.execute();
+    m_led.periodic();
   }
 
   @Override

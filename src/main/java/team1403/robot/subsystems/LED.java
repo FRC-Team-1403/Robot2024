@@ -50,6 +50,7 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
+    setLedMode(LEDState.YELLOW);
     SmartDashboard.putString("LED Color", gamePieceState.toString());
   }
 }
