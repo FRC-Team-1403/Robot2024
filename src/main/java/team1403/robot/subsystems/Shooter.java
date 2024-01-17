@@ -27,6 +27,7 @@ public class Shooter extends SubsystemBase {
   public void setShooterSpeed(double speed) {
     m_shooterMotor.set(speed);
   }
+
   public void periodic() {
     Logger.recordOutput("Shooter Temp", m_shooterMotor.getMotorTemperature());
     Logger.recordOutput("Shooter RPM", m_shooterMotor.getVoltageCompensationNominalVoltage());
