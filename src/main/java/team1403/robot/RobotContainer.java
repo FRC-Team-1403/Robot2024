@@ -30,14 +30,13 @@ public class RobotContainer {
   private final CommandXboxController m_driverController =
       new CommandXboxController(Constants.Driver.pilotPort);
   private final CommandXboxController m_operatorController =  new CommandXboxController(Constants.Operator.pilotPort);
-  private final SendableChooser<Command> autoChooser;
+      private final SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoChooser = AutoSelector.getAutonomousCommandChooser();
   }
 
   /**
@@ -84,7 +83,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new AutoSelector().getAutonomousCommand() ;
+    return autoChooser.getSelected();
   }
 
   public Limelight getLimelight(){
