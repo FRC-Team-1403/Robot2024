@@ -65,12 +65,16 @@ public class IntakeAndShooter extends SubsystemBase {
     lastSpeed = speed;
     m_motorTop.set(speed);
     m_motorBottom.set(-(speed));
+    //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
+  
   }
 
   public void setShooterSpeed(double speed) {
     lastSpeed = speed;
     m_motorTop.set(-(speed));
     m_motorBottom.set(speed);
+    //if there is an error when testing (note doesn't get shot out) try changing the direction of the motor
+  
   }
 
   public void periodic() {
