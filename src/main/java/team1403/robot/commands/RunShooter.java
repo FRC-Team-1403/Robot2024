@@ -7,9 +7,9 @@ public class RunShooter extends Command {
     private IntakeAndShooter m_intakeAndShooter;
     private double m_intakeAndShooterSpeed;
 
-    public RunShooter(IntakeAndShooter intakeAndShooter, double intakeAndShooterSpeed) {
+    public RunShooter(IntakeAndShooter intakeAndShooter, double shooterSpeed) {
         m_intakeAndShooter = intakeAndShooter;
-        m_intakeAndShooterSpeed = intakeAndShooterSpeed;
+        m_intakeAndShooterSpeed = shooterSpeed;
     }
 
     @Override
@@ -19,7 +19,7 @@ public class RunShooter extends Command {
 
     @Override
     public void execute() {
-        //intake note
+        //shoot note
     }
 
     @Override

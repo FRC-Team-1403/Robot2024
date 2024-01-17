@@ -3,13 +3,13 @@ package team1403.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.subsystems.IntakeAndShooter;
 
-public class RunInput extends Command {
+public class RunIntake extends Command {
     private IntakeAndShooter m_intakeAndShooter;
     private double m_intakeAndShooterSpeed;
 
-    public RunInput(IntakeAndShooter intakeAndShooter, double intakeAndShooterSpeed) {
+    public RunIntake(IntakeAndShooter intakeAndShooter, double intakeSpeed) {
         m_intakeAndShooter = intakeAndShooter;
-        m_intakeAndShooterSpeed = intakeAndShooterSpeed;
+        m_intakeAndShooterSpeed = intakeSpeed;
     }
 
     @Override
@@ -19,11 +19,11 @@ public class RunInput extends Command {
 
     @Override
     public void execute() {
-        //shoot note
+        //intake note
     }
 
     @Override
     public boolean isFinished() {
-        return m_intakeAndShooter.shooterReady();
+        return m_intakeAndShooter.intakeReady();
     }
 }
