@@ -1,7 +1,9 @@
 package team1403.robot.swerve;
 
-import org.littletonrobotics.junction.Logger;
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -90,7 +93,31 @@ public class SwerveSubsystem extends SubsystemBase  {
            CanBus.backRightDriveId, CanBus.backRightSteerId,
            CanBus.backRightEncoderId, Swerve.backRightEncoderOffset, false),
    };
+  AutoBuilder.configureHolonomic(
+              this::getPose, // Robot pose supplier
+              this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+              this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+              this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+              new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                      new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                      new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                      15, // Max module speed, in m/s
+                      0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                      new ReplanningConfig() // Default path replanning config. See the API for the options here
+              ),
+              () -> {
+                  // Boolean supplier that controls when the path will be mirrored for the red alliance
+                  // This will flip the path being followed to the red side of the field.
+                  // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
+                  var alliance = DriverStation.getAlliance();
+                  if (alliance.isPresent()) {
+                      return alliance.get() == DriverStation.Alliance.Red;
+                  }
+                  return false;
+              },
+              this // Reference to this subsystem to set requirements
+      );
    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
 
@@ -261,7 +288,10 @@ public class SwerveSubsystem extends SubsystemBase  {
    m_offset = offset;
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
-
+ public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
+   m_chassisSpeeds = chassisSpeeds;
+   SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
+ }
  /**
   * Stops the drivetrain.
   */
@@ -467,23 +497,12 @@ public class SwerveSubsystem extends SubsystemBase  {
  @Override
  public void periodic() {
    SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
-   Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees()); // Keeps track of drivetrain rotation in degrees
 
    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
-
-   /**
-    * Keeps track of drivetrain position
-    * Keeps track of drivetrain speed
-    * Keeps track of drivetrain gyro roll
-    */
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    SmartDashboard.putNumber("Speed", m_speedLimiter);
    SmartDashboard.putNumber("Roll Value", getGyroRoll());
-
-   Logger.recordOutput("Odometry", m_odometer.getEstimatedPosition().toString());
-   Logger.recordOutput("Speed", m_speedLimiter);
-   Logger.recordOutput("Roll Value", getGyroRoll());
 
    if (this.m_isXModeEnabled) {
      xMode();
@@ -499,16 +518,5 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
-
-   /**
-    * Keeps track of front left absolute encoder
-    * Keeps track of front right absolute encoder
-    * Keeps track of back left absolute encoder
-    * Keeps track of back right absolute encoder
-    */
-   Logger.recordOutput("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
-   Logger.recordOutput("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
-   Logger.recordOutput("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
-   Logger.recordOutput("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
  }
 }
