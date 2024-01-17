@@ -475,7 +475,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
   if(m_Limelight.hasTarget()){
-    m_odometer.addVisionMeasurement(m_Limelight.getDistance(),Timer.getFPGATimestamp(),m_Limelight.getPosStdv());
+    m_odometer.addVisionMeasurement(m_Limelight.getDistance2D(),Timer.getFPGATimestamp(),m_Limelight.getPosStdv());
   } else {
     m_odometer.update(getGyroscopeRotation(), getModulePositions());
   }
