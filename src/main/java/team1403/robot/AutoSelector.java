@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoSelector {
+    //Todo update and fix this
     public static SendableChooser<Command> getAutonomousCommandChooser()  {
         SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.setDefaultOption("Auto", new PathPlannerAuto("Auto"));
