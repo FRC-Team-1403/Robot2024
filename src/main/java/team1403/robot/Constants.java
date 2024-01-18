@@ -176,7 +176,8 @@ public class Constants {
    //other
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
-    public static final int hangerMotor = 0;    
+    public static final int hangerMotor = 0;
+    public static final int m_pivotMotor = 0;
   }
 
   public static class Turret {
@@ -204,6 +205,8 @@ public class Constants {
     //actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
+    public static final int kArmLimitSwitch = 0;
+    public static final int kArmAbsoluteEncoder = 0;
   }
 
   /**
@@ -247,6 +250,12 @@ public class Constants {
 
 public static int channel;
 
+  }
+
+  public static class Arm {
+    public static final double kPArmPivot = 0;
+    public static final double KIArmPivot = 0;
+    public static final double KDArmPivot = 0;
   }
 
 }

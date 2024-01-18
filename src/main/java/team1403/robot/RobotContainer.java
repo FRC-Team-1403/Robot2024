@@ -34,6 +34,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     m_limelight = new Limelight();
     m_swerve = new SwerveSubsystem(m_limelight);
+    m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
 
@@ -63,7 +64,7 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.getRightTriggerAxis()));
-
+    
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
 
     m_operatorController.a().onTrue(m_aimbot);
