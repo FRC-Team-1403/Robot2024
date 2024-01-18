@@ -13,28 +13,21 @@ public class RunHanger extends Command {
     }
 
     @Override
-    public void initialize()
-    {
+    public void initialize() {
         m_hanger.setHangerSpeed(m_hangerSpeed);
     }
 
     @Override
-    public void execute()
-    {
+    public void execute() {
         //hangs robot
     }
 
     @Override
-    public boolean isFinished()
-    {
-        
+    public boolean isFinished() { 
         if (m_hanger.isAtTop()) {
-
             m_hanger.setHangerSpeed(0);
             return true;
-
         }
         return false;
-
     }
 }
