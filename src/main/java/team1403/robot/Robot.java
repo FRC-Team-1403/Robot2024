@@ -43,6 +43,7 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
 
+    //is this needed?
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
       Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
