@@ -8,9 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import team1403.robot.subsystems.ArmSubsystem;
+import team1403.robot.commands.AimbotCommand;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
+import team1403.robot.swerve.PhotonVisionCommand;
 import team1403.robot.swerve.SwerveSubsystem;
 
 /**
@@ -23,7 +24,7 @@ public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
   private Limelight m_limelight;
-  private ArmSubsystem m_arm;
+  private AimbotCommand m_aimbot;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
@@ -63,10 +64,10 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.getRightTriggerAxis()));
+    
+    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
 
-    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
-
-    m_operatorController.a().onTrue(new InstantCommand(() -> m_arm.moveArm(0.0), m_arm));
+    m_operatorController.a().onTrue(m_aimbot);
   }
 
   private double deadband(double value, double deadband) {
