@@ -37,7 +37,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     autoChooser = AutoSelector.getAutonomousCommandChooser();
-    //m_swerve = new SwerveSubsystem(m_limelight);
+    m_swerve = new SwerveSubsystem(m_limelight);
   }
 
   /**
