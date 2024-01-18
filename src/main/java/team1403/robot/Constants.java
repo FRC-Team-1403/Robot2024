@@ -196,10 +196,6 @@ public class Constants {
     //remove
     public static final int kWristAbsoluteEncoder = 1; //DIO
 
-    public static final int kArmAbsoluteEncoder = 3; ///Analog
-
-    public static final int kArmLimitSwitch = 0; //DIO
-
     public static final int kExtensionMinMagneticSwitch = 2; //DIO
     public static final int kExtensionMaxMagneticSwitch = 3; //DIO
     //actual
