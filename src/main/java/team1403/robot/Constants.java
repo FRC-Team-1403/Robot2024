@@ -47,7 +47,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.3;
+    public static final double kPTurning = 1.125;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -59,8 +59,8 @@ public class Constants {
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.5;
 
-    public static final double kTrackWidth = Units.inchesToMeters(25.6);
-    public static final double kWheelBase = Units.inchesToMeters(26.75);
+    public static final double kTrackWidth = Units.inchesToMeters(17.5);
+    public static final double kWheelBase = Units.inchesToMeters(17.5);
 
     public static final SwerveDriveKinematics kDriveKinematics = 
         new SwerveDriveKinematics(
@@ -74,10 +74,10 @@ public class Constants {
             // Back right
             new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI);
-    public static final double frontRightEncoderOffset = -(4.936350175415994 - Math.PI);
-    public static final double backLeftEncoderOffset = -(4.743068596142402 - Math.PI); //4.743068596142402
-    public static final double backRightEncoderOffset = -(0.593650564911743 + Math.PI);//
+    public static final double frontLeftEncoderOffset = -(4.669437518323892 - Math.PI);
+    public static final double frontRightEncoderOffset = -(0.009203884727314 + Math.PI);
+    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI);
+    public static final double backRightEncoderOffset = -(5.776971647177325 - Math.PI);
 
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -89,7 +89,6 @@ public class Constants {
         * Swerve.kSteerReduction / 60.0;
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-
     public static final double kMaxSpeed = 14.5;
 
     public static final double kMaxAngularSpeed = 50;
@@ -158,22 +157,23 @@ public class Constants {
    */
   public static class CanBus {
 
-    // Swerve CanBus ids
-    public static final int frontLeftDriveId = 16;
-    public static final int frontLeftSteerId = 5;
-    public static final int frontLeftEncoderId = 3;
+   // Swerve CanBus ids
+   public static final int frontLeftDriveId = 6;
+   public static final int frontLeftSteerId = 7;
+   public static final int frontLeftEncoderId = 3;
 
-    public static final int frontRightDriveId = 9;
-    public static final int frontRightSteerId = 12;
-    public static final int frontRightEncoderId = 4;
+   public static final int frontRightDriveId = 8;
+   public static final int frontRightSteerId = 9;
+   public static final int frontRightEncoderId = 1;
 
-    public static final int backLeftDriveId = 8;
-    public static final int backLeftSteerId = 7;
-    public static final int backLeftEncoderId = 2;
+   public static final int backLeftDriveId = 10;
+   public static final int backLeftSteerId = 11;
+   public static final int backLeftEncoderId = 2;
 
-    public static final int backRightDriveId = 14;
-    public static final int backRightSteerId = 6;
-    public static final int backRightEncoderId = 1;
+   public static final int backRightDriveId = 12;
+   public static final int backRightSteerId = 13;
+   public static final int backRightEncoderId = 4;
+   //other
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
     public static final int hangerMotor = 0;    
@@ -192,7 +192,16 @@ public class Constants {
    * Ports on the RoboRIO.
    */
   public static class RioPorts {
+    //remove
+    public static final int kWristAbsoluteEncoder = 1; //DIO
 
+    public static final int kArmAbsoluteEncoder = 3; ///Analog
+
+    public static final int kArmLimitSwitch = 0; //DIO
+
+    public static final int kExtensionMinMagneticSwitch = 2; //DIO
+    public static final int kExtensionMaxMagneticSwitch = 3; //DIO
+    //actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
   }
