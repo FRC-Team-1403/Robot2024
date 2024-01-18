@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoSelector {
-    public static SendableChooser<Command>  getAutonomousCommandChooser()  {
-        SendableChooser<Command>  autoChooser =  AutoBuilder.buildAutoChooser();
+    public static SendableChooser<Command> getAutonomousCommandChooser()  {
+        SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
         autoChooser.setDefaultOption("Auto", new PathPlannerAuto("Auto"));
         autoChooser.addOption("cool", new PathPlannerAuto("kjsdk"));
         return autoChooser;

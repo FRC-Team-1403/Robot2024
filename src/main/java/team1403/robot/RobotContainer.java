@@ -4,10 +4,6 @@
 
 package team1403.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,18 +21,18 @@ import team1403.robot.swerve.SwerveSubsystem;
 public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
-  private Limelight m_limelight = new Limelight();
+  private Limelight m_limelight;
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(Constants.Driver.pilotPort);
-  private final CommandXboxController m_operatorController =  new CommandXboxController(Constants.Operator.pilotPort);
-      private final SendableChooser<Command> autoChooser;
+  private final CommandXboxController m_driverController;
+  private final CommandXboxController m_operatorController;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    autoChooser = AutoSelector.getAutonomousCommandChooser();
+    m_limelight = new Limelight();
     m_swerve = new SwerveSubsystem(m_limelight);
+    m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
+    m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
 
     configureBindings();
   }
@@ -51,22 +47,23 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    //     // The controls are for field-oriented driving:
-        // Left stick Y axis -> forward and backwards movement
-        // Left stick X axis -> left and right movement
-        // Right stick X axis -> rotation
-        // Setting default command of swerve subsystem
-        m_swerve.setDefaultCommand(new DefaultSwerveCommand(
-            m_swerve,
-            () -> -deadband(m_driverController.getLeftX(), 0),
-            () -> -deadband(m_driverController.getLeftY(), 0),
-            () -> deadband(m_driverController.getRightX(), 0),
-            () -> m_driverController.y().getAsBoolean(),
-            () -> m_driverController.getRightTriggerAxis()));
+    // The controls are for field-oriented driving:
+    // Left stick Y axis -> forward and backwards movement
+    // Left stick X axis -> left and right movement
+    // Right stick X axis -> rotation
+    // Setting default command of swerve subsystem
+    m_swerve.setDefaultCommand(new DefaultSwerveCommand(
+        m_swerve,
+        () -> -deadband(m_driverController.getLeftX(), 0),
+        () -> -deadband(m_driverController.getLeftY(), 0),
+        () -> deadband(m_driverController.getRightX(), 0),
+        () -> m_driverController.y().getAsBoolean(),
+        () -> m_driverController.getRightTriggerAxis()));
 
-            m_driverController.x().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(),m_swerve )); 
-            m_driverController.x().whileTrue(new InstantCommand(() -> m_swerve.setXModeEnabled(true), m_swerve));
+        m_driverController.x().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(),m_swerve )); 
+        m_driverController.x().whileTrue(new InstantCommand(() -> m_swerve.setXModeEnabled(true), m_swerve));
   }
+
   private double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {
@@ -85,7 +82,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    return AutoSelector.getAutonomousCommandChooser().getSelected();
   }
 
   public Limelight getLimelight(){
