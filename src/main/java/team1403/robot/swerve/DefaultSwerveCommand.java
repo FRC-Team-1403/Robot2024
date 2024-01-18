@@ -20,6 +20,7 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_horizontalTranslationSupplier;
   private final DoubleSupplier m_rotationSupplier;
   private final BooleanSupplier m_fieldRelativeSupplier;
+  private final BooleanSupplier m_xModeSupplier;
   private final DoubleSupplier m_speedSupplier;
   private boolean m_isFieldRelative;
 
@@ -49,6 +50,7 @@ public class DefaultSwerveCommand extends Command {
       DoubleSupplier verticalTranslationSupplier,
       DoubleSupplier rotationSupplier,
       BooleanSupplier fieldRelativeSupplier,
+      BooleanSupplier xModeSupplier,
       DoubleSupplier speedSupplier) {
     this.m_drivetrainSubsystem = drivetrain;
     this.m_verticalTranslationSupplier = verticalTranslationSupplier;
@@ -56,6 +58,7 @@ public class DefaultSwerveCommand extends Command {
     this.m_rotationSupplier = rotationSupplier;
     this.m_fieldRelativeSupplier = fieldRelativeSupplier;
     this.m_speedSupplier = speedSupplier;
+    this.m_xModeSupplier = xModeSupplier;
     m_isFieldRelative = true;
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
@@ -67,9 +70,20 @@ public class DefaultSwerveCommand extends Command {
   @Override
   public void execute() {
     m_drivetrainSubsystem.setSpeedLimiter(0.2 + (m_speedSupplier.getAsDouble() * 0.8));
+
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
     }
+
+    SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
+
+    {
+      boolean x_mode = m_xModeSupplier.getAsBoolean();
+      m_drivetrainSubsystem.setXModeEnabled(x_mode);
+      if(x_mode)
+        return;
+    }
+
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     double vertical = m_verticalTranslationLimiter.calculate(m_verticalTranslationSupplier.getAsDouble())
         * Swerve.kMaxSpeed;
@@ -87,7 +101,6 @@ public class DefaultSwerveCommand extends Command {
     }
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
-    SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
   }
 
   private double squareNum(double num) {

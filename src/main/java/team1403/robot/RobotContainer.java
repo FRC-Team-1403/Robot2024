@@ -58,10 +58,10 @@ public class RobotContainer {
         () -> -deadband(m_driverController.getLeftY(), 0),
         () -> deadband(m_driverController.getRightX(), 0),
         () -> m_driverController.y().getAsBoolean(),
+        () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.getRightTriggerAxis()));
 
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-    m_driverController.x().whileTrue(new InstantCommand(() -> m_swerve.setXModeEnabled(true), m_swerve));
   }
 
   private double deadband(double value, double deadband) {
