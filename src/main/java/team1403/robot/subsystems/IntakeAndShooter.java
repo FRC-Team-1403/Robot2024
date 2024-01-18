@@ -7,14 +7,14 @@ import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
-import team1403.lib.device.wpi.WpiLimitSwitch;
+//import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
 public class IntakeAndShooter extends SubsystemBase {
 
   private CougarSparkMax m_motorTop;
   private CougarSparkMax m_motorBottom;
-  private WpiLimitSwitch m_intakeLimitSwitch;
+  //private WpiLimitSwitch m_intakeLimitSwitch;
   private double lastSpeed = 0;
 
   public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
@@ -22,8 +22,8 @@ public class IntakeAndShooter extends SubsystemBase {
       "Top Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorTop, SparkRelativeEncoder.Type.kHallSensor);
     m_motorBottom = CougarSparkMax.makeBrushless(
       "Bottom Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-    m_intakeLimitSwitch = new WpiLimitSwitch(
-      "Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+    //m_intakeLimitSwitch = new WpiLimitSwitch(
+      //"Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
   }
 
   public boolean intakeReady() {
@@ -58,10 +58,10 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-     if (m_intakeLimitSwitch.get()) {
-      stop();
-      return;
-    }
+     //if (m_intakeLimitSwitch.get()) {
+      //stop();
+      //return;
+    //}
     lastSpeed = speed;
     m_motorTop.set(speed);
     m_motorBottom.set(-(speed));
