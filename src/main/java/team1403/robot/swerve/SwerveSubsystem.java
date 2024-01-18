@@ -1,5 +1,7 @@
 package team1403.robot.swerve;
 
+import java.util.Optional;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -108,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase  {
               new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                       new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
                       new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-                      15, // Max module speed, in m/s
+                      Constants.Swerve.kMaxSpeed, // Max module speed, in m/s
                       0.4, // Drive base radius in meters. Distance from robot center to furthest module.
                       new ReplanningConfig() // Default path replanning config. See the API for the options here
               ),
@@ -117,9 +120,9 @@ public class SwerveSubsystem extends SubsystemBase  {
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  var alliance = DriverStation.getAlliance();
+                  Optional<Alliance> alliance = DriverStation.getAlliance();
                   if (alliance.isPresent()) {
-                      return alliance.get() == DriverStation.Alliance.Red;
+                    return alliance.get() == DriverStation.Alliance.Red;
                   }
                   return false;
               },
@@ -150,7 +153,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param amt the amount to increase the speed by
   */
  public void increaseSpeed(double amt) {
-   m_speedLimiter = Math.min(1, m_speedLimiter + amt);
+    setSpeedLimiter(m_speedLimiter + amt);
  }
 
  /**
@@ -159,7 +162,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param amt the amount to decrease the speed by
   */
  public void decreaseSpeed(double amt) {
-   m_speedLimiter = Math.max(0, m_speedLimiter - amt);
+    setSpeedLimiter(m_speedLimiter - amt);
  }
 
  public void setSpeedLimiter(double amt) {
@@ -248,7 +251,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   * Reset the position of the drivetrain odometry.
   */
  public void resetOdometry() {
-   m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), getPose());
+   resetOdometry(getPose());
  }
 
  /**
