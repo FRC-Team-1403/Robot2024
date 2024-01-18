@@ -114,7 +114,7 @@ public class Limelight extends SubsystemBase {
   public Pose2d getDistance2D() {
     Pose3d pose = getDistance();
     Rotation3d rot = pose.getRotation();
-    return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getX(), rot.getY()));
+    return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getZ()));
   }
 
   public Matrix<N3,N1> getPosStdv(){
