@@ -78,7 +78,9 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public void periodic() {
-    Logger.recordOutput("Intake/Shooter Temp", m_motorTop.getMotorTemperature());
-    Logger.recordOutput("Intake/Shooter Temp", m_motorBottom.getMotorTemperature());
+    Logger.recordOutput("Intake/Shooter Top Motor Temp", m_motorTop.getMotorTemperature());
+    Logger.recordOutput("Intake/Shooter Bottom Motor Temp", m_motorBottom.getMotorTemperature());
+    Logger.recordOutput("Intake/Shooter Top Motor RPM", m_motorTop.getVoltageCompensationNominalVoltage());
+    Logger.recordOutput("Intake/Shooter Bottom Motor RPM", m_motorBottom.getVoltageCompensationNominalVoltage());
   }
 }

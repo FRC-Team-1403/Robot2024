@@ -1,5 +1,7 @@
 package team1403.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -48,5 +50,9 @@ public void ifLimitHit() {
     return m_hangerLimitSwitchBottom.get();
     }
 
+    public void periodic() {
+      Logger.recordOutput("Hanger Temp", m_hangerMotor.getMotorTemperature());
+      Logger.recordOutput("Hanger RPM", m_hangerMotor.getVoltageCompensationNominalVoltage());
+    }
 }
 //top limit switch: go up until hits the top; bottom limit switch: down until hits the bottom (at - speed)
