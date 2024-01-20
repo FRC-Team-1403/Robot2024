@@ -52,7 +52,6 @@ public void ifLimitHit() {
 
     public void periodic() {
       Logger.recordOutput("Hanger Temp", m_hangerMotor.getMotorTemperature());
-      Logger.recordOutput("Hanger RPM", m_hangerMotor.getVoltageCompensationNominalVoltage());
     }
 }
 //top limit switch: go up until hits the top; bottom limit switch: down until hits the bottom (at - speed)

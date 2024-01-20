@@ -36,6 +36,5 @@ public Wrist() {
 
 public void periodic() {
     Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
-    Logger.recordOutput("Wrist RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
   }
 }
