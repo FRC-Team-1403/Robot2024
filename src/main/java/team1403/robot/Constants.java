@@ -234,4 +234,10 @@ public class Constants {
     public static final double seekCenterTolerance = 10.0;
   }
 
+  public static class Hanger {
+
+public static int channel;
+
+  }
+
 }
