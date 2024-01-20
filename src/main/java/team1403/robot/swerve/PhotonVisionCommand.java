@@ -48,17 +48,25 @@ public class PhotonVisionCommand extends Command {
     }
     
     public void turnRobotToTag() {
+ 
+        double rotationalSpeed = getRotationSpeedOfSwerve();
+        m_swerve.drive(
+          new ChassisSpeeds(0, 0, rotationalSpeed), 
+          new Translation2d());
+    }
+
+    public double getRotationSpeedOfSwerve() {
+
         double rotationOfSwerve = m_swerve.getGyroscopeRotation().getDegrees();
         
         // If rotation is within acceptable bounds
         if (Math.abs(rotationOfSwerve - 180) <= 0.2) {
           isRotated = true;
-          return;
+          return 0.0;
         } 
     
-        double rotationalSpeed = m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
-        m_swerve.drive(
-          new ChassisSpeeds(0, 0, rotationalSpeed), 
-          new Translation2d());
+        return m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
+
     }
+
 }
