@@ -112,7 +112,6 @@ public class Constants {
    * and understand overall wiring.
    */
   public static class CanBus {
-
    // Swerve CanBus ids
    public static final int frontLeftDriveId = 6;
    public static final int frontLeftSteerId = 7;
@@ -144,7 +143,6 @@ public class Constants {
     public static final int hallEffectPort = 1;
     // checked with phoenix
     public static final int turretMotor = 19;
-  
   }
 
   /**
@@ -159,6 +157,8 @@ public class Constants {
     //actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
+    public static final int intakePhotogate = 0;
+    public static final int shooterPhotogate = 0;
     public static final int kArmLimitSwitch = 0;
     public static final int kArmAbsoluteEncoder = 0;
   }
