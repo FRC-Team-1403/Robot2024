@@ -9,14 +9,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
 //import team1403.lib.device.wpi.WpiLimitSwitch;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
 
 public class Intake extends SubsystemBase {
   private CougarSparkMax m_intakeMotorTop;
   private CougarSparkMax m_intakeMotorBottom;
   //private WpiLimitSwitch m_intakeLimitSwitch;
-  private double lastSpeed = 0;
   private DigitalInput m_intakePhotogate;
 
   public Intake(CougarLibInjectedParameters injectedParameters) {
@@ -79,17 +77,5 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake Bottom Motor Temp", m_intakeMotorBottom.getMotorTemperature());
     Logger.recordOutput("Intake Top Motor RPM", m_intakeMotorTop.getVoltageCompensationNominalVoltage());
     Logger.recordOutput("Intake Bottom Motor RPM", m_intakeMotorBottom.getVoltageCompensationNominalVoltage());
-  }
-
-  public void setIntakeSpeed(double speed) {
-    lastSpeed = speed;
-    m_motorTop.set(speed);
-    m_motorBottom.set(-(speed));
-    //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
-  }
-
-  public void periodic() {
-    Logger.recordOutput("Intake Top Motor Temp", m_motorTop.getMotorTemperature());
-    Logger.recordOutput("Intake Bottom Motor Temp", m_motorBottom.getMotorTemperature());
   }
 }

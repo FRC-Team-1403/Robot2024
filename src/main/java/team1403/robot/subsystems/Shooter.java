@@ -29,7 +29,7 @@ public class Shooter extends SubsystemBase {
     return m_shooterPhotogate.get();
   }
   public boolean shooterReady() {
-    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
+    if (lastSpeed == Math.abs(m_shooterMotorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_shooterMotorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean speedIsEqual() {
-    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
+    if (Math.abs(m_shooterMotorTop.getEncoder().getVelocity()) == Math.abs(m_shooterMotorBottom.getEncoder().getVelocity())) {
         return true;
     } else {
         return false;
@@ -46,8 +46,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stop() {
-    m_motorTop.setSpeed(0);
-    m_motorBottom.setSpeed(0);
+    m_shooterMotorTop.setSpeed(0);
+    m_shooterMotorBottom.setSpeed(0);
   }
 
   public void setShooterSpeed(double speed) {
