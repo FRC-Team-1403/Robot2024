@@ -162,6 +162,9 @@ public class Constants {
     public static final int LEDPort = 0;
     public static final int kArmLimitSwitch = 0;
     public static final int kArmAbsoluteEncoder = 0;
+    //photogates
+    public static final int shooterPhotogate = 0;
+    public static final int intakePhotogate = 0;
   }
 
   /**

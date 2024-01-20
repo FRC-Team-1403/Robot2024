@@ -6,7 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
@@ -17,6 +17,7 @@ public class Intake extends SubsystemBase {
 
  private CougarSparkMax m_motorTop;
  private CougarSparkMax m_motorBottom;
+ private DigitalInput m_photogate;
  private double lastSpeed = 0;
 
 
@@ -25,8 +26,12 @@ public class Intake extends SubsystemBase {
      "Top Intake Motor", Constants.CanBus.intakeMotorTop, SparkRelativeEncoder.Type.kHallSensor);
    m_motorBottom = CougarSparkMax.makeBrushless(
      "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
+   m_photogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
  }
 
+ public boolean intakePhotogate() {
+  return m_photogate.get();
+}
 
  public boolean intakeReady() {
    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
