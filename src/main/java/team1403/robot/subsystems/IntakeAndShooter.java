@@ -21,12 +21,11 @@ public class IntakeAndShooter extends SubsystemBase {
   private DigitalInput m_shooterPhotogate;
 
   public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
-    m_motorTop = CougarSparkMax.makeBrushless(
-      "Top Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorTop, SparkRelativeEncoder.Type.kHallSensor);
-    m_motorBottom = CougarSparkMax.makeBrushless(
-      "Bottom Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-    //m_intakeLimitSwitch = new WpiLimitSwitch(
-      //"Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+    m_motorTop = CougarSparkMax.makeBrushless("Top Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorTop, SparkRelativeEncoder.Type.kHallSensor);
+    m_motorBottom = CougarSparkMax.makeBrushless("Bottom Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
+    //m_intakeLimitSwitch = new WpiLimitSwitch("Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+    m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
+    m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
   }
 
   public boolean intakePhotogate() {

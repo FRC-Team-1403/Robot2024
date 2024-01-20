@@ -195,6 +195,8 @@ public class Constants {
 
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
+    public static final int intakePhotogate = 0;
+    public static final int shooterPhotogate = 0;
   }
 
   /**
