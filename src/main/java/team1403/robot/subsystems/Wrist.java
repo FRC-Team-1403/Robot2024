@@ -2,18 +2,20 @@ package team1403.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import team1403.lib.core.CougarLibInjectedParameters;
+import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
 
 public class Wrist extends SubsystemBase {
-    private CANSparkMax m_wristMotor;
+    private CougarSparkMax m_wristMotor;
     private double lastSpeed = 0;
 
-public Wrist() {
-    m_wristMotor = new CANSparkMax(Constants.CanBus.wristMotor, MotorType.kBrushless);
+public Wrist(CougarLibInjectedParameters injectedParameters) {
+    m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
   }
 
   public boolean wristReady() {
@@ -26,7 +28,7 @@ public Wrist() {
   }
 
   public void stop() {
-    m_wristMotor.set(0);
+    m_wristMotor.setSpeed(0);
   }
 
   public void setWristSpeed(double speed) {
