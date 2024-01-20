@@ -130,8 +130,10 @@ public class Constants {
    public static final int backRightSteerId = 13;
    public static final int backRightEncoderId = 4;
    //other
-    public static final int intakeAndShooterMotorTop = 0;
-    public static final int intakeAndShooterMotorBottom = 0;
+    public static final int shooterMotorTop = 0;
+    public static final int shooterMotorBottom = 0;
+    public static final int intakeMotorTop = 0;
+    public static final int intakeMotorBottom = 0;
     public static final int hangerMotor = 0;
     public static final int m_pivotMotor = 0;
   }
