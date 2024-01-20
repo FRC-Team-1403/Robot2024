@@ -19,7 +19,7 @@ public class RunIntake extends Command {
 
     @Override
     public void execute() {
-        //intakes note
+        //takes in note
     }
 
     @Override

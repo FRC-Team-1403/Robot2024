@@ -32,7 +32,7 @@ public class PhotonVisionCommand extends Command {
         SmartDashboard.putNumber("DirectDistance", m_Limelight.getDistanceFromTarget());
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
         
-        //turnRobotToTag();
+        // turnRobotToTag();
     }
 
     @Override
@@ -48,19 +48,25 @@ public class PhotonVisionCommand extends Command {
     }
     
     public void turnRobotToTag() {
-        double rotationOfSwerve = m_swerve.getGyroscopeRotation().getDegrees();
-
-        // If rotation is within acceptable bounds
-        if (Math.abs(rotationOfSwerve - 180) <= 0.2) {
-          isRotated = true;
-          return;
-        } 
-    
-        double rotationalSpeed = m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
+ 
+        double rotationalSpeed = getRotationSpeedOfSwerve();
         m_swerve.drive(
           new ChassisSpeeds(0, 0, rotationalSpeed), 
           new Translation2d());
+    }
+
+    public double getRotationSpeedOfSwerve() {
+
+        double rotationOfSwerve = m_swerve.getGyroscopeRotation().getDegrees();
         
+        // If rotation is within acceptable bounds
+        if (Math.abs(rotationOfSwerve - 180) <= 0.2) {
+          isRotated = true;
+          return 0.0;
+        } 
+    
+        return m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
 
     }
+
 }

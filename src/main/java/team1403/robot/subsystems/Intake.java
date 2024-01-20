@@ -9,10 +9,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
 //import team1403.lib.device.wpi.WpiLimitSwitch;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
 
 public class Intake extends SubsystemBase {
-
   private CougarSparkMax m_intakeMotorTop;
   private CougarSparkMax m_intakeMotorBottom;
   //private WpiLimitSwitch m_intakeLimitSwitch;
@@ -29,9 +29,19 @@ public class Intake extends SubsystemBase {
   public boolean intakePhotogate() {
     return m_intakePhotogate.get();
   }
+  private CougarSparkMax m_motorTop;
+  private CougarSparkMax m_motorBottom;
+  private double lastSpeed = 0;
+
+  public Intake() {
+    m_motorTop = CougarSparkMax.makeBrushless(
+      "Top Intake Motor", Constants.CanBus.intakeMotorTop, SparkRelativeEncoder.Type.kHallSensor);
+    m_motorBottom = CougarSparkMax.makeBrushless(
+      "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
+  }
 
   public boolean intakeReady() {
-    if (lastSpeed == Math.abs(m_intakeMotorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_intakeMotorBottom.getEncoder().getVelocity())) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
@@ -40,7 +50,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean speedIsEqual() {
-    if (Math.abs(m_intakeMotorTop.getEncoder().getVelocity()) == Math.abs(m_intakeMotorBottom.getEncoder().getVelocity())) {
+    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
         return true;
     } else {
         return false;
@@ -69,5 +79,17 @@ public class Intake extends SubsystemBase {
     Logger.recordOutput("Intake Bottom Motor Temp", m_intakeMotorBottom.getMotorTemperature());
     Logger.recordOutput("Intake Top Motor RPM", m_intakeMotorTop.getVoltageCompensationNominalVoltage());
     Logger.recordOutput("Intake Bottom Motor RPM", m_intakeMotorBottom.getVoltageCompensationNominalVoltage());
+  }
+
+  public void setIntakeSpeed(double speed) {
+    lastSpeed = speed;
+    m_motorTop.set(speed);
+    m_motorBottom.set(-(speed));
+    //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
+  }
+
+  public void periodic() {
+    Logger.recordOutput("Intake Top Motor Temp", m_motorTop.getMotorTemperature());
+    Logger.recordOutput("Intake Bottom Motor Temp", m_motorBottom.getMotorTemperature());
   }
 }

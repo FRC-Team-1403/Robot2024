@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
-//import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -29,18 +28,17 @@ public class Shooter extends SubsystemBase {
   public boolean shooterPhotogate() {
     return m_shooterPhotogate.get();
   }
-
   public boolean shooterReady() {
-    if (lastSpeed == Math.abs(m_shooterMotorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_shooterMotorBottom.getEncoder().getVelocity())) {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
       return true;
     }
     else {
       return false;
-    }
+    }  
   }
 
   public boolean speedIsEqual() {
-    if (Math.abs(m_shooterMotorTop.getEncoder().getVelocity()) == Math.abs(m_shooterMotorBottom.getEncoder().getVelocity())) {
+    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
         return true;
     } else {
         return false;
@@ -48,8 +46,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stop() {
-    m_shooterMotorTop.setSpeed(0);
-    m_shooterMotorBottom.setSpeed(0);
+    m_motorTop.setSpeed(0);
+    m_motorBottom.setSpeed(0);
   }
 
   public void setShooterSpeed(double speed) {
