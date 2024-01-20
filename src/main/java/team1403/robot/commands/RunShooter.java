@@ -1,13 +1,13 @@
 package team1403.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import team1403.robot.subsystems.IntakeAndShooter;
+import team1403.robot.subsystems.Intake;
 
 public class RunShooter extends Command {
-    private IntakeAndShooter m_shooter;
+    private Intake m_shooter;
     private double m_shooterSpeed;
 
-    public RunShooter(IntakeAndShooter shooter, double shooterSpeed) {
+    public RunShooter(Intake shooter, double shooterSpeed) {
         m_shooter = shooter;
         m_shooterSpeed = shooterSpeed;
     }
