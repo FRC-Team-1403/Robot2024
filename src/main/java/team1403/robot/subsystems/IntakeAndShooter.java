@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -16,6 +17,8 @@ public class IntakeAndShooter extends SubsystemBase {
   private CougarSparkMax m_motorBottom;
   private WpiLimitSwitch m_intakeLimitSwitch;
   private double lastSpeed = 0;
+  private DigitalInput m_intakePhotogate;
+  private DigitalInput m_shooterPhotogate;
 
   public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
     m_motorTop = CougarSparkMax.makeBrushless(
@@ -24,6 +27,14 @@ public class IntakeAndShooter extends SubsystemBase {
       "Bottom Intake/Shooter Motor", Constants.CanBus.intakeAndShooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
     m_intakeLimitSwitch = new WpiLimitSwitch(
       "Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+  }
+
+  public boolean intakePhotogate() {
+    return m_intakePhotogate.get();
+  }
+
+  public boolean shooterPhotogate() {
+    return m_shooterPhotogate.get();
   }
 
   public boolean intakeReady() {
