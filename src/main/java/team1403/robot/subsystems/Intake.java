@@ -17,7 +17,7 @@ public class Intake extends SubsystemBase {
 
  private CougarSparkMax m_motorTop;
  private CougarSparkMax m_motorBottom;
- private DigitalInput m_photogate;
+ private DigitalInput m_intakePhotogate;
  private double lastSpeed = 0;
 
 
@@ -26,11 +26,11 @@ public class Intake extends SubsystemBase {
      "Top Intake Motor", Constants.CanBus.intakeMotorTop, SparkRelativeEncoder.Type.kHallSensor);
    m_motorBottom = CougarSparkMax.makeBrushless(
      "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-   m_photogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
+   m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
  }
 
  public boolean intakePhotogate() {
-  return m_photogate.get();
+  return m_intakePhotogate.get();
 }
 
  public boolean intakeReady() {
