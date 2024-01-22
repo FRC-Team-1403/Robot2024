@@ -24,6 +24,7 @@ public class RunWrist extends Command {
 
     @Override
     public boolean isFinished() {
-        return m_wrist.wristReady();
+        return true; //leave as "true" so there's no error
+        //intake or shoot
     }
 }
