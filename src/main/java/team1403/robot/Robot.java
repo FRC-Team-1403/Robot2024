@@ -59,7 +59,7 @@ public class Robot extends LoggedRobot {
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
                     // be added.
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(), m_robotContainer.getSwerveSubsystem());
+    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(), m_robotContainer.getSwerveSubsystem(),Constants.Vision.rotationCutoff);
   }
 
   /**

@@ -9,18 +9,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class PhotonVisionCommand extends Command {
     private Limelight m_Limelight;
 
-    private final SwerveSubsystem m_swerve;
-
-    private final PIDController m_yawController;
+    private final SwerveSubsystem m_swerve;     
     private final PIDController m_distanceController;
     private final PIDController m_thetaController;
     private boolean isRotated = false;
+    private final double m_rotationCutoff;
 
-    public PhotonVisionCommand(Limelight limelight, SwerveSubsystem swerve) {
+    public PhotonVisionCommand(Limelight limelight, SwerveSubsystem swerve, double rotationCutoff) {
         m_Limelight = limelight;
         m_swerve = swerve;
-
-        m_yawController = new PIDController(12, 0, 0.5);
+        m_rotationCutoff = rotationCutoff;
         m_distanceController = new PIDController(12, 0, 0.5);
         m_thetaController = new PIDController(4, 0, 0);
     }
@@ -32,7 +30,6 @@ public class PhotonVisionCommand extends Command {
         SmartDashboard.putNumber("DirectDistance", m_Limelight.getDistanceFromTarget());
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
         
-        //turnRobotToTag();
     }
 
     @Override
@@ -51,7 +48,7 @@ public class PhotonVisionCommand extends Command {
         double rotationOfSwerve = m_swerve.getGyroscopeRotation().getDegrees();
 
         // If rotation is within acceptable bounds
-        if (Math.abs(rotationOfSwerve - 180) <= 0.2) {
+        if (Math.abs(rotationOfSwerve - 180) <= m_rotationCutoff) {
           isRotated = true;
           return;
         } 

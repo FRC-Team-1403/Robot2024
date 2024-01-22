@@ -144,6 +144,10 @@ public class Constants {
   
   }
 
+  public static class Vision {
+    public static final double rotationCutoff = 0.2;
+  }
+
   /**
    * Ports on the RoboRIO.
    */
