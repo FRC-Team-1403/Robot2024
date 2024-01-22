@@ -27,10 +27,6 @@ public Wrist() {
    m_wristMotor.set(speed); 
  }
 
- public double getWristAngle() {
-   return m_wristAbsoluteEncoder.getAbsolutePosition();
- }
-
 public void periodic() {
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
