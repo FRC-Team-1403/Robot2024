@@ -20,7 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
   // Arm
   private final CANSparkMax m_pivotMotor;
   private final DutyCycleEncoder m_armAbsoluteEncoder;
-  private final DutyCycleEncoder m_armAbsoluteEncoderTwo;
+//  private final DutyCycleEncoder m_armAbsoluteEncoderTwo;
   private final PIDController m_pivotPid;
   private double m_pivotAngleSetpoint;
 
@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
     m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
-    m_armAbsoluteEncoderTwo = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
+//    m_armAbsoluteEncoderTwo = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
     new WpiLimitSwitch("maxArmLimitSwitch",
         Constants.RioPorts.kArmLimitSwitch);
