@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
@@ -11,9 +12,11 @@ import team1403.robot.Constants;
 
 public class Wrist extends SubsystemBase {
    private CougarSparkMax m_wristMotor;
+   private final DutyCycleEncoder m_wristAbsoluteEncoder;
 
 public Wrist() {
    m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
+   m_wristAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
  }
 
  public void stop() {
@@ -22,6 +25,10 @@ public Wrist() {
 
  public void setWristSpeed(double speed) {
    m_wristMotor.set(speed); 
+ }
+
+ public double getWristAngle() {
+   return m_wristAbsoluteEncoder.getAbsolutePosition();
  }
 
 public void periodic() {

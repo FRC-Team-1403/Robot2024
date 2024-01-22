@@ -18,7 +18,7 @@ public class Shooter extends SubsystemBase {
 
  private CougarSparkMax m_motorTop;
  private CougarSparkMax m_motorBottom;
- private DigitalInput m_photogate;
+ private DigitalInput m_shooterPhotogate;
  private double lastSpeed = 0;
 
 
@@ -27,11 +27,11 @@ public class Shooter extends SubsystemBase {
      "Top Shooter Motor", Constants.CanBus.shooterMotorTop, SparkRelativeEncoder.Type.kHallSensor);
    m_motorBottom = CougarSparkMax.makeBrushless(
      "Bottom Shooter Motor", Constants.CanBus.shooterMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-   m_photogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
+   m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
  }
 
 public boolean shooterPhotogate() {
-  return m_photogate.get();
+  return m_shooterPhotogate.get();
 }
 
  public boolean shooterReady() {

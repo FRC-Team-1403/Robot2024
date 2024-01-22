@@ -6,10 +6,12 @@ import team1403.robot.subsystems.Wrist;
 public class RunWrist extends Command {
     private Wrist m_wrist;
     private double m_wristSpeed;
+    private double m_wristAngle;
 
-    public RunWrist(Wrist wrist, double wristSpeed) {
+    public RunWrist(Wrist wrist, double wristSpeed, double wristAngle) {
         m_wrist = wrist;
         m_wristSpeed = wristSpeed;
+        m_wristAngle = wristAngle;
     }
 
     @Override
@@ -24,7 +26,7 @@ public class RunWrist extends Command {
 
     @Override
     public boolean isFinished() {
-        return true; //leave as "true" so there's no error
-        //intake or shoot
+        if (Math.abs(m_wristAngle) >= 90);
+            return true;
     }
 }
