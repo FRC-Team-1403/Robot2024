@@ -104,7 +104,7 @@ public class SwerveModule implements Device {
       //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
   
       // Config drive relative encoder
-      double drivePositionConversionFactor = Math.PI * Swerve.kWheelDiameterMeters 
+      double drivePositionConversionFactor = 2 * Math.PI * Swerve.kWheelDiameterMeters 
             * Swerve.kDriveReduction;
       m_driveRelativeEncoder.setPositionConversionFactor(drivePositionConversionFactor);
       // Set velocity in terms of seconds
