@@ -27,13 +27,13 @@ public class Hanger extends SubsystemBase{
 
 public void ifLimitHit() {
   
-  if (isAtTop() == true && isAtBottom() == true) {
+  if (isAtTop() == true || isAtBottom() == true) {
 
-    m_hangerMotor.set(3);
+    m_hangerMotor.set(0);
 
   } else {
 
-    m_hangerMotor.set(0);
+    m_hangerMotor.set(3);
 
   }
 
