@@ -32,11 +32,10 @@ public class RunShooter extends Command {
 
     @Override
     public boolean isFinished() {
-        if (m_shooterPhotogate.get() == true) {
+        if (m_shooterPhotogate.get()) {
             m_intake.stop();
             m_shooter.stop();
-            return true;
         }
-        return false;
+        return m_shooterPhotogate.get();
     }
 }
