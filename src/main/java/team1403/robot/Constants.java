@@ -74,10 +74,10 @@ public class Constants {
             // Back right
             new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = 0.171875; //1.70498046875
-    public static final double frontRightEncoderOffset = 0.00708007812; //2.70498046875
-    public static final double backLeftEncoderOffset = 0.19018554687; //1.70498046875
-    public static final double backRightEncoderOffset = 0.79711914062;//2.70498046875
+    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI); //1.70498046875
+    public static final double frontRightEncoderOffset = -(0.009203884727314 - Math.PI); //2.70498046875
+    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); //1.70498046875
+    public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);//2.70498046875
 
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -146,7 +146,7 @@ public class Constants {
   }
 
   public static class Vision {
-    public static final double rotationCutoff = 0.2;
+    public static final double rotationCutoff = 5;
   }
 
   /**

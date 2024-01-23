@@ -95,13 +95,13 @@ public class SwerveSubsystem extends SubsystemBase  {
            CanBus.frontLeftEncoderId, Swerve.frontLeftEncoderOffset),
        new SwerveModule("Front Right Module",
            CanBus.frontRightDriveId, CanBus.frontRightSteerId,
-           CanBus.frontRightEncoderId, Swerve.frontRightEncoderOffset, false),
+           CanBus.frontRightEncoderId, Swerve.frontRightEncoderOffset),
        new SwerveModule("Back Left Module",
            CanBus.backLeftDriveId, CanBus.backLeftSteerId,
            CanBus.backLeftEncoderId, Swerve.backLeftEncoderOffset),
        new SwerveModule("Back Right Module",
            CanBus.backRightDriveId, CanBus.backRightSteerId,
-           CanBus.backRightEncoderId, Swerve.backRightEncoderOffset, false),
+           CanBus.backRightEncoderId, Swerve.backRightEncoderOffset),
    };
   AutoBuilder.configureHolonomic(
               this::getPose, // Robot pose supplier
@@ -128,8 +128,9 @@ public class SwerveSubsystem extends SubsystemBase  {
               },
               this // Reference to this subsystem to set requirements
       );
-   m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
+  m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+  m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
 
   //  addDevice(m_navx2.getName(), m_navx2);
@@ -509,8 +510,10 @@ public class SwerveSubsystem extends SubsystemBase  {
  public void periodic() {
   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-  if(m_Limelight.hasTarget()){
-    m_odometer.addVisionMeasurement(m_Limelight.getDistance2D(),Timer.getFPGATimestamp(),m_Limelight.getPosStdv());
+  if (m_Limelight.hasTarget()) {
+    Pose2d pose = m_Limelight.getDistance2D();
+    var x = m_Limelight.getPosStdv();
+    if(pose != null) m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
   } else {
     m_odometer.update(getGyroscopeRotation(), getModulePositions());
   }
@@ -522,7 +525,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    if (this.m_isXModeEnabled) {
      xMode();
    } else {
-     m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
+    // m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
      //m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);

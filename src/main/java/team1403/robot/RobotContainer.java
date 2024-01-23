@@ -57,18 +57,18 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    // Setting default command of swerve subsystem
+    // Setting default command of swerve subPsystem
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
         () -> -deadband(m_driverController.getLeftX(), 0),
         () -> -deadband(m_driverController.getLeftY(), 0),
-        () -> deadband(m_driverController.getRightX(), 0),
+        () -> -deadband(m_driverController.getRightX(), 0),
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.getRightTriggerAxis()));
 
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_aimbot.execute()));
+    m_driverController.a().onTrue(new AimbotCommand(m_PhotonVisionCommand));
   }
 
   private double deadband(double value, double deadband) {
