@@ -133,8 +133,10 @@ public class Constants {
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;
     public static final int intakeMotorBottom = 0;
-    public static final int hangerMotor = 0;
+    public static final int definiteHangerMotor = 0;
+    public static final int possibleHangerMotor = 0;
     public static final int m_pivotMotor = 0;
+    public static final int wristMotor = 0;
   }
 
   public static class Turret {
