@@ -3,6 +3,10 @@ package team1403.robot.commands;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team1403.robot.subsystems.Intake;
 
 
@@ -26,8 +30,8 @@ public class RunIntake extends Command {
    }
 
    @Override
-   public void execute() {
-       //show signal
+   public void execute() {  
+        m_intake.setIntakeSpeed(m_intakeSpeed);
    }
 
    @Override
@@ -36,5 +40,7 @@ public class RunIntake extends Command {
          m_intake.stop();
        }
        return m_intakePhotogate.get();
-   }
+    }
+
+
 }
