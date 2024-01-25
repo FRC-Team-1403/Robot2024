@@ -3,11 +3,14 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -21,11 +24,16 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_rotationSupplier;
   private final BooleanSupplier m_fieldRelativeSupplier;
   private final BooleanSupplier m_xModeSupplier;
+  private final BooleanSupplier m_aimbotSupplier;
   private final DoubleSupplier m_speedSupplier;
+  private final DoubleSupplier m_xsupplier;
+  private final DoubleSupplier m_ysupplier;
   private boolean m_isFieldRelative;
 
   private SlewRateLimiter m_verticalTranslationLimiter;
   private SlewRateLimiter m_horizontalTranslationLimiter;
+
+  private PIDController m_controller;
 
   /**
    * Creates the swerve command.
@@ -51,6 +59,9 @@ public class DefaultSwerveCommand extends Command {
       DoubleSupplier rotationSupplier,
       BooleanSupplier fieldRelativeSupplier,
       BooleanSupplier xModeSupplier,
+      BooleanSupplier aimbotSupplier,
+      DoubleSupplier xtarget,
+      DoubleSupplier ytarget,
       DoubleSupplier speedSupplier) {
     this.m_drivetrainSubsystem = drivetrain;
     this.m_verticalTranslationSupplier = verticalTranslationSupplier;
@@ -59,10 +70,14 @@ public class DefaultSwerveCommand extends Command {
     this.m_fieldRelativeSupplier = fieldRelativeSupplier;
     this.m_speedSupplier = speedSupplier;
     this.m_xModeSupplier = xModeSupplier;
+    this.m_aimbotSupplier = aimbotSupplier;
+    this.m_xsupplier = xtarget;
+    this.m_ysupplier = ytarget;
     m_isFieldRelative = true;
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
+    m_controller = new PIDController(1.3, 0, 0.3);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -92,6 +107,14 @@ public class DefaultSwerveCommand extends Command {
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
     //double robotAngleinDegrees = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
+
+    double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()) + Math.PI);
+
+    if(m_aimbotSupplier.getAsBoolean())
+      angular = m_controller.calculate(
+      m_drivetrainSubsystem.getPose().getRotation().
+      getDegrees() + 180, 
+      target_angle);
 
     if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,

@@ -84,9 +84,12 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getZAngle() {
-    return result.hasTargets() ? fieldLayout.getTagPose((result.getBestTarget().getFiducialId())).get().getRotation().getZ() : 0;
+    //  return Units.degreesToRadians(result.hasTargets() ? fieldLayout.getTagPose((result.getBestTarget().getFiducialId())).get().getRotation().getZ()  : 0);
+    double angle = result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() : 0;
+    return result.hasTargets() ? Units.radiansToDegrees(angle) : 0;
+   
   }
-  
+
   public double getXAngle(){
     return result.getBestTarget().getSkew();
   }
