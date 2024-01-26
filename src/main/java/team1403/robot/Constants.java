@@ -47,7 +47,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 1.125;
+    public static final double kPTurning = 0.4;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 

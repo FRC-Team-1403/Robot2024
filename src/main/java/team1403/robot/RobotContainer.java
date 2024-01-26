@@ -27,15 +27,15 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
-  private final PhotonVisionCommand m_PhotonVisionCommand;
+  private final PhotonVisionCommand m_PhotonVisionCommand; 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     m_limelight = new Limelight();
-    m_swerve = new SwerveSubsystem(m_limelight);
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
+    m_swerve = new SwerveSubsystem(m_limelight);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight);
 
     configureBindings();
@@ -56,6 +56,7 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
     // Setting default command of swerve subPsystem
+
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
         () -> -deadband(m_driverController.getLeftX(), 0),
@@ -64,8 +65,8 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 14.58,
-        () -> 7,
+        () -> 10.37,
+        () -> 4.07,
         () -> m_driverController.getRightTriggerAxis()));
     
 

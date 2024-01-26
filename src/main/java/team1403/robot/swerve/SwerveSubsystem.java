@@ -74,6 +74,7 @@ public class SwerveSubsystem extends SubsystemBase  {
 
  private boolean m_isXModeEnabled = false;
  private Limelight m_Limelight;
+ private boolean m_disableVision = false;
 
  /**
   * Creates a new {@link SwerveSubsystem}.
@@ -146,6 +147,11 @@ public class SwerveSubsystem extends SubsystemBase  {
    m_rollOffset = -m_navx2.getRoll();
    m_yawOffset = 0;
    setSpeedLimiter(0.5);
+ }
+
+ public void setDisableVision(boolean disable)
+ {
+  m_disableVision = disable;
  }
 
  /**
@@ -513,7 +519,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   if (m_Limelight.hasTarget()) {
     Pose2d pose = m_Limelight.getDistance2D();
     var x = m_Limelight.getPosStdv();
-    if(pose != null) m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
+    if(pose != null && m_disableVision) m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
   } else {
     m_odometer.update(getGyroscopeRotation(), getModulePositions());
   }

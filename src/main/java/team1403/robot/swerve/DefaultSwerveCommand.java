@@ -110,6 +110,8 @@ public class DefaultSwerveCommand extends Command {
 
     double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()) + Math.PI);
 
+    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
+
     if(m_aimbotSupplier.getAsBoolean())
       angular = m_controller.calculate(
       m_drivetrainSubsystem.getPose().getRotation().
@@ -122,6 +124,8 @@ public class DefaultSwerveCommand extends Command {
     } else {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
+
+    SmartDashboard.putString("pose2d", m_drivetrainSubsystem.getPose().toString());
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }
