@@ -63,9 +63,6 @@ public class ArmSubsystem extends SubsystemBase {
                  1));
   }
 
-  
-  
-
   /**
    * Returns the object for the pivot motor.
    * 
