@@ -25,9 +25,6 @@ public class ArmCommand extends Command {
         m_tolerance = tolerance;
    }
 
-
-   
-
    @Override
    public void execute() {  
         m_arm.periodic(m_pivotAngle);
