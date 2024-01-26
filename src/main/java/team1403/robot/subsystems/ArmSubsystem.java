@@ -23,6 +23,8 @@ public class ArmSubsystem extends SubsystemBase {
   private final PIDController m_pivotPid;
   private double m_pivotAngleSetpoint;
 
+  private double m_tolerance;
+
   /**
    * Initializing the arn subsystem.
    *
@@ -60,6 +62,9 @@ public class ArmSubsystem extends SubsystemBase {
                 -1,
                  1));
   }
+
+  
+  
 
   /**
    * Returns the object for the pivot motor.

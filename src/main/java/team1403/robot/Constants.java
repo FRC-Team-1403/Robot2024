@@ -214,6 +214,20 @@ public static int channel;
     public static final double kPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
+
+    public void periodic(double pivotAngle){
+
+    }
+
+    public void stop() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'stop'");
+    }
+
+    public boolean setTolerance() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setTolerance'");
+    }
   }
 
 }
