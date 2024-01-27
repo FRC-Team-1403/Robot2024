@@ -42,6 +42,7 @@ import team1403.robot.Constants.Swerve;
 public class SwerveSubsystem extends SubsystemBase  {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
+  private int tagCount = 0;
 
  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
  private SwerveModuleState[] m_states = new SwerveModuleState[4];
@@ -519,10 +520,15 @@ public class SwerveSubsystem extends SubsystemBase  {
   if (m_Limelight.hasTarget()) {
     Pose2d pose = m_Limelight.getDistance2D();
     var x = m_Limelight.getPosStdv();
-    if(pose != null && m_disableVision) m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
+    if(pose != null && !m_disableVision && tagCount > 0){
+      m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
+    }else if(pose != null && !m_disableVision && tagCount == 0){
+      m_odometer.setPose(pose);
+      tagCount++;
+    }
   } else {
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
-  }
+      m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    SmartDashboard.putNumber("Speed", m_speedLimiter);

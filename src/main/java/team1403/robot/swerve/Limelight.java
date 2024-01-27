@@ -36,6 +36,7 @@ public class Limelight extends SubsystemBase {
   private double cameraHeightMeters = 0.559;
   private double targetHeightMeters = 1.3208;
   private double cameraPitchDegrees = -35;
+  private int targetCount = 0;
 
   public Limelight() {
     // Photonvision
@@ -43,6 +44,8 @@ public class Limelight extends SubsystemBase {
     limeLight = new PhotonCamera("1403Camera");
 
     // 0: April Tags
+
+
     // 1: Reflective Tape
     limeLight.setPipelineIndex(0);
     
@@ -60,9 +63,10 @@ public class Limelight extends SubsystemBase {
     //Cone detection
   }
 
-  public double getTagXPos(){
-    return Constants.Vision.fieldLayout.g;
-  }
+  // public double getTagXPos(){
+  //   return Constants.Vision.fieldLayout.;
+  // }
+
 
   public double getZDistance() {
     return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getZ() : 0;  
@@ -146,6 +150,7 @@ public class Limelight extends SubsystemBase {
     if(hasTarget())
     {
       SmartDashboard.putString("pos", getDistance().toString());
+
     }
   }
 }

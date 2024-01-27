@@ -77,7 +77,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(1.3, 0, 0.3);
+    m_controller = new PIDController(0.7, 0, 0);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -106,17 +106,28 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-    //double robotAngleinDegrees = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
+    double robotAngleinDegrees = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
 
-    double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()) + Math.PI);
+    double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
+
+    // double sub = 0;
+
+    // if(target_angle > 0 && robotAngleinDegrees < 0) target_angle = 360 - (Math.abs(robotAngleinDegrees) + Math.abs(target_angle));
+    // else if(target_angle < 0 && robotAngleinDegrees > 0) target_angle = (Math.abs(robotAngleinDegrees) + Math.abs(target_angle)) - 360;
+
+    // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
+    //   sub = 180;
+
+    //double sub2 = target_angle - robotAngleinDegrees;
+
 
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
 
     if(m_aimbotSupplier.getAsBoolean())
-      angular = m_controller.calculate(
-      m_drivetrainSubsystem.getPose().getRotation().
-      getDegrees() + 180, 
-      target_angle);
+      // angular = m_controller.calculate(target_angle,
+      // 0);
+      angular = m_controller.calculate(robotAngleinDegrees, target_angle);
+      //angular = m_controller.calculate(sub2,0);
 
     if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,
