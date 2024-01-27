@@ -30,6 +30,7 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
+  //postpones out of memory error on roborio 1.0
   private final boolean enableadvantagekit = false;
 
   /**
