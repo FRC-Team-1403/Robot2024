@@ -25,6 +25,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1403.robot.Constants;
 
 public class Limelight extends SubsystemBase {
   private PhotonCamera limeLight;
@@ -59,12 +60,16 @@ public class Limelight extends SubsystemBase {
     //Cone detection
   }
 
+  public double getTagXPos(){
+    return Constants.Vision.fieldLayout.g;
+  }
+
   public double getZDistance() {
-    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getZ() : 0;  
+    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getZ() : 0;  
   }
 
   public double getXDistance() {
-    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getX() : 0;
+    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getX() : 0;  
   }
 
   public double getDistanceFromTarget() {
@@ -97,6 +102,7 @@ public class Limelight extends SubsystemBase {
   public double getYAngle(){
     return result.getBestTarget().getYaw();
   }
+
 
   public double getAmbiguity(){
     return result.getBestTarget().getPoseAmbiguity();

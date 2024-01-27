@@ -19,7 +19,7 @@ public class PhotonVisionCommand extends Command {
     public void execute() {
         SmartDashboard.putNumber("ZDistance", m_Limelight.getZDistance());
         SmartDashboard.putNumber("XDistance", m_Limelight.getXDistance());
-        SmartDashboard.putNumber("DirectDistance", m_Limelight.getDistanceFromTarget());
+        SmartDashboard.putNumber("DirectDistance", m_Limelight.getYDistance());
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
         
     }

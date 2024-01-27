@@ -65,8 +65,8 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 10.37,
-        () -> 4.07,
+        () -> 10,
+        () -> 4,
         () -> m_driverController.getRightTriggerAxis()));
     
 
