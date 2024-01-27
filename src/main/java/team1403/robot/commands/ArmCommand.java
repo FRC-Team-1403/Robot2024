@@ -8,18 +8,14 @@ import team1403.robot.subsystems.ArmSubsystem;
 
 public class ArmCommand extends Command {
    private ArmSubsystem m_arm;
-   private final PIDController m_pivotPid;
    private final DutyCycleEncoder m_armAbsoluteEncoder;
-   private double m_armSpeed;
    private double m_pivotAngle;
    private double m_tolerance;
 
 
-   public ArmCommand(ArmSubsystem arm, PIDController pivotPid, DutyCycleEncoder armAbsoluteEncoder, double armSpeed, double pivotAngle,double tolerance ) {
+   public ArmCommand(ArmSubsystem arm, DutyCycleEncoder armAbsoluteEncoder, double pivotAngle,double tolerance ) {
        m_arm = arm;
-       m_armSpeed = armSpeed;
        m_pivotAngle = pivotAngle;
-       m_pivotPid = pivotPid;
        m_armAbsoluteEncoder = armAbsoluteEncoder;
        m_tolerance = tolerance;
    }
