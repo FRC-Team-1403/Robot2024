@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
@@ -70,7 +71,6 @@ public class SwerveSubsystem extends SubsystemBase  {
 
  private Translation2d m_offset;
 
- private double m_yawOffset;
  private double m_rollOffset;
 
  private boolean m_isXModeEnabled = false;
@@ -89,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   */
  public SwerveSubsystem(Limelight limelight) {
   //  super("Swerve Subsystem", parameters);
-   m_navx2 = new NavxAhrs("Gyroscope");
+   m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
    m_Limelight = limelight;
    m_modules = new SwerveModule[] {
        new SwerveModule("Front Left Module",
@@ -111,10 +111,10 @@ public class SwerveSubsystem extends SubsystemBase  {
               this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
               this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
               new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                      new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                      new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                      new PIDConstants(Swerve.kPTranslation, Swerve.kITranslation, Swerve.kDTranslation), // Translation PID constants
+                      new PIDConstants(Swerve.kPAutoTurning, Swerve.kIAutoTurning, Swerve.kDAutoTurning), // Rotation PID constants
                       Constants.Swerve.kMaxSpeed, // Max module speed, in m/s
-                      0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                      Math.hypot(Swerve.kTrackWidth/2.0, Swerve.kWheelBase/2.0), // Drive base radius in meters. Distance from robot center to furthest module.
                       new ReplanningConfig() // Default path replanning config. See the API for the options here
               ),
               () -> {
@@ -146,7 +146,6 @@ public class SwerveSubsystem extends SubsystemBase  {
 
    m_offset = new Translation2d();
    m_rollOffset = -m_navx2.getRoll();
-   m_yawOffset = 0;
    setSpeedLimiter(0.5);
  }
 
@@ -225,15 +224,6 @@ public class SwerveSubsystem extends SubsystemBase  {
  }
 
  /**
-  * Set the offset of the gyroscope.
-  *
-  * @param offset offset to set on the gyroscope
-  */
- public void setYawGyroscopeOffset(double offset) {
-   m_yawOffset = offset;
- }
-
- /**
   * Return the position of the drivetrain.
   *
   * @return the position of the drivetrain in Pose2d
@@ -275,7 +265,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @return a Rotation2d object that contains the gyroscope's heading
   */
  public Rotation2d getGyroscopeRotation() {
-   return m_navx2.getRotation2d().plus(Rotation2d.fromDegrees(m_yawOffset));
+   return m_navx2.getRotation2d();
  }
 
  /**
@@ -469,7 +459,8 @@ public class SwerveSubsystem extends SubsystemBase  {
  private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     if(!m_navx2.isConnected())
       return chassisSpeeds;
-   double translationalVelocity = Math.abs(m_modules[0].getDriveVelocity());
+   double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+   SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    if (Math.abs(m_navx2.getAngularVelocity()) > 0.1) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 1) {
@@ -493,6 +484,11 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param chassisSpeeds the given chassisspeeds
   * @return the corrected chassisspeeds
   */
+
+ public NavxAhrs getNavxAhrs(){
+  return m_navx2;
+ }
+
  private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
    // Assuming the control loop runs in 20ms
    final double deltaTime = 0.02;
@@ -520,10 +516,17 @@ public class SwerveSubsystem extends SubsystemBase  {
   if (m_Limelight.hasTarget()) {
     Pose2d pose = m_Limelight.getDistance2D();
     var x = m_Limelight.getPosStdv();
-    if(pose != null && !m_disableVision && tagCount > 0){
+    if(pose != null && !m_disableVision && tagCount > 0)
+    {
+      // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
+      // m_desiredHeading = pose.getRotation().getDegrees();
       m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
-    }else if(pose != null && !m_disableVision && tagCount == 0){
+    }
+    else if(pose != null && !m_disableVision && tagCount == 0)
+    {
       m_odometer.setPose(pose);
+      // // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
+      // m_desiredHeading = pose.getRotation().getDegrees();
       tagCount++;
     }
   } else {
@@ -532,12 +535,12 @@ public class SwerveSubsystem extends SubsystemBase  {
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    SmartDashboard.putNumber("Speed", m_speedLimiter);
-   SmartDashboard.putNumber("Roll Value", getGyroRoll());
+   SmartDashboard.putNumber("Roll Degrees", getGyroscopeRotation().getDegrees());
 
    if (this.m_isXModeEnabled) {
      xMode();
    } else {
-    // m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
      //m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);

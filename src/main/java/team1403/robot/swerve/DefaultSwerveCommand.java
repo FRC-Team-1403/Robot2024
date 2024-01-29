@@ -11,7 +11,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
+import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
+import team1403.robot.Constants.Vision;
 
 /**
  * The default command for the swerve drivetrain subsystem.
@@ -77,7 +79,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(0.7, 0, 0);
+    m_controller = new PIDController(1, 0, 0);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -106,14 +108,12 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-    double robotAngleinDegrees = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
+    double robotAngleinDegrees = m_drivetrainSubsystem.getPose().getRotation().getDegrees();
 
     double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 
     // double sub = 0;
 
-    // if(target_angle > 0 && robotAngleinDegrees < 0) target_angle = 360 - (Math.abs(robotAngleinDegrees) + Math.abs(target_angle));
-    // else if(target_angle < 0 && robotAngleinDegrees > 0) target_angle = (Math.abs(robotAngleinDegrees) + Math.abs(target_angle)) - 360;
 
     // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
     //   sub = 180;
@@ -122,11 +122,11 @@ public class DefaultSwerveCommand extends Command {
 
 
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
+    SmartDashboard.putNumber("Target Angle", target_angle);
 
-    if(m_aimbotSupplier.getAsBoolean())
-      // angular = m_controller.calculate(target_angle,
-      // 0);
-      angular = m_controller.calculate(robotAngleinDegrees, target_angle);
+    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
+      angular = m_controller.calculate(0,target_angle);
+      // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
       //angular = m_controller.calculate(sub2,0);
 
     if (m_isFieldRelative) {
