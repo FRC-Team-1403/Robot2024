@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -18,6 +19,7 @@ public class Intake extends SubsystemBase {
  private CougarSparkMax m_intakeMotor;
  //private CougarSparkMax m_motorBottom;
  private DigitalInput m_intakePhotogate;
+ private PIDController m_pidController;
  private double lastSpeed = 0;
 
 
@@ -27,6 +29,8 @@ public class Intake extends SubsystemBase {
   //  m_motorBottom = CougarSparkMax.makeBrushless(
   //    "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
    m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
+
+   m_pidController = new PIDController(0.002, 0, 0);
  }
 
  public boolean intakePhotogate() {
@@ -65,11 +69,17 @@ public class Intake extends SubsystemBase {
    //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
  }
 
+ public void setIntakeRPM(double rpm)
+ {
+    double speed = m_pidController.calculate(m_intakeMotor.getEncoder().getVelocity(), rpm);
+    setIntakeSpeed(lastSpeed + speed);
+ }
+
 
  public void periodic() {
    Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
    //Logger.recordOutput("Intake Bottom Motor Temp", m_motorBottom.getMotorTemperature());
-   Logger.recordOutput("Intake Motor RPM", m_intakeMotor.getVoltageCompensationNominalVoltage());
+   Logger.recordOutput("Intake Motor RPM", m_intakeMotor.getEncoder().getVelocity());
    //Logger.recordOutput("Intake Bottom Motor RPM", m_motorBottom.getVoltageCompensationNominalVoltage());
  }
 }
