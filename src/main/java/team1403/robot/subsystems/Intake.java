@@ -67,9 +67,9 @@ public class Intake extends SubsystemBase {
 
 
  public void periodic() {
-   Logger.recordOutput("Intake Top Motor Temp", m_intakeMotor.getMotorTemperature());
+   Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
    //Logger.recordOutput("Intake Bottom Motor Temp", m_motorBottom.getMotorTemperature());
-   Logger.recordOutput("Intake Top Motor RPM", m_intakeMotor.getVoltageCompensationNominalVoltage());
+   Logger.recordOutput("Intake Motor RPM", m_intakeMotor.getVoltageCompensationNominalVoltage());
    //Logger.recordOutput("Intake Bottom Motor RPM", m_motorBottom.getVoltageCompensationNominalVoltage());
  }
 }

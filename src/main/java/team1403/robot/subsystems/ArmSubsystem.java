@@ -1,10 +1,14 @@
 package team1403.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.WpiLimitSwitch;
@@ -19,8 +23,9 @@ import team1403.robot.Constants;
 public class ArmSubsystem extends SubsystemBase {
   // Arm
   private final CANSparkMax m_pivotMotor;
-  private final DutyCycleEncoder m_armAbsoluteEncoder;
+  private final DutyCycleEncoder m_armBoreEncoder;
   private final PIDController m_pivotPid;
+  private final DigitalInput m_ArmLimitSwitch;
   private double m_pivotAngleSetpoint;
 
   private double m_tolerance;
@@ -33,11 +38,8 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
 
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
-    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmBoreEncoder);
-
-    new WpiLimitSwitch("maxArmLimitSwitch",
-        Constants.RioPorts.kArmLimitSwitch);
-
+    m_armBoreEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmBoreEncoder);
+    m_ArmLimitSwitch = new WpiLimitSwitch("maxArmLimitSwitch", Constants.RioPorts.kArmLimitSwitch);
     m_pivotPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot);
     
   }
@@ -49,22 +51,34 @@ public class ArmSubsystem extends SubsystemBase {
    *
    * @param pivotAngle      the pivot angle.
    */
-  public void moveArm(double pivotAngle) {
-    this.m_pivotAngleSetpoint = pivotAngle;
+  
+  public void setArmSetpoint(double pivotAngle) {
+    m_pivotAngleSetpoint = pivotAngle;
+    if (m_ArmLimitSwitch.get()) {
+      stop();
+    }
   }
 
+  public boolean getArmLimitSwitch() {
+    if (m_ArmLimitSwitch.get()) {
+      stop();
+    }
+    return m_ArmLimitSwitch.get();
+  }
+
+  public double getPivotMotorSpeed() {
+    return m_pivotMotor.get();
+  }
+
+  public void stop() {
+    m_pivotMotor.set(0);
+  }
 
   @Override
   public void periodic() {
-    m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate( m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), -1, 1));
-  }
-
-  /**
-   * Returns the object for the pivot motor.
-   * 
-   * @return the pivot motor.
-   */
-  public CANSparkMax getPivotMotor() {
-    return m_pivotMotor;
+    m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armBoreEncoder.get(), m_pivotAngleSetpoint), -1, 1));
+    Logger.recordOutput("Arm Angle Setpoint", m_pivotAngleSetpoint);
+    Logger.recordOutput("Pivot Motor RPM", getPivotMotorSpeed());
+    Logger.recordOutput("Arm Limitswitch", getArmLimitSwitch());
   }
 }

@@ -4,6 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.subsystems.Shooter;
 import team1403.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class RunShooter extends Command {
     private Shooter m_shooter;
@@ -33,8 +36,10 @@ public class RunShooter extends Command {
     @Override
     public boolean isFinished() {
         if (m_shooterPhotogate.get()) {
-            m_intake.stop();
-            m_shooter.stop();
+            new SequentialCommandGroup(
+                new WaitCommand(3),
+                new InstantCommand(() -> m_intake.stop(), m_intake),
+                new InstantCommand(() -> m_shooter.stop(), m_shooter));
         }
         return m_shooterPhotogate.get();
     }

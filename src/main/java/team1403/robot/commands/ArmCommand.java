@@ -21,9 +21,8 @@ public class ArmCommand extends Command {
    }
 
    @Override
-   public void initialize()
-   {
-        m_arm.moveArm(m_pivotAngle);
+   public void initialize() {
+        m_arm.setArmSetpoint(m_pivotAngle);
    }
 
    @Override
