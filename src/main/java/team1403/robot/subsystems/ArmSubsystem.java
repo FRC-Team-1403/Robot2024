@@ -26,7 +26,7 @@ public class ArmSubsystem extends SubsystemBase {
   private double m_tolerance;
 
   /**
-   * Initializing the arn subsystem.
+   * Initializing the arm subsystem.
    *
    * @param injectedParameters Cougar injected parameters.
    */
@@ -53,14 +53,10 @@ public class ArmSubsystem extends SubsystemBase {
     this.m_pivotAngleSetpoint = pivotAngle;
   }
 
+
   @Override
   public void periodic() {
-    m_pivotMotor.set(
-        MathUtil.clamp(
-            m_pivotPid.calculate(
-                m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), 
-                -1,
-                 1));
+    m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate( m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), -1, 1));
   }
 
   /**
