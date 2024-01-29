@@ -12,11 +12,11 @@ import team1403.robot.Constants;
 
 public class Wrist extends SubsystemBase {
    private CougarSparkMax m_wristMotor;
-   private final DutyCycleEncoder m_wristBoreEncoder;
+   private final DutyCycleEncoder m_wristAbsoluteEncoder;
 
 public Wrist() {
    m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
-   m_wristBoreEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmBoreEncoder);
+   m_wristAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
  }
 
  public void stop() {
@@ -24,7 +24,7 @@ public Wrist() {
  }
 
  public void setWristSpeed(double speed) {
-  if (getWristAngle() > 90.0 || getWristAngle() < 0) {     //update limit if needed
+  if (getWristAngle() > 90.0 || getWristAngle() < 0) {     //TODO update limit if needed
     stop();
     return;
   }  
@@ -32,7 +32,7 @@ public Wrist() {
  }
 
  public double getWristAngle() {
-  return m_wristBoreEncoder.get();
+  return m_wristAbsoluteEncoder.get();
  }
 
 public void periodic() {
