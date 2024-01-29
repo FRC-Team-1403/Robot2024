@@ -7,27 +7,29 @@ import team1403.robot.subsystems.Wrist;
 public class RunWrist extends Command {
     private Wrist m_wrist;
     private double m_wristSpeed;
-    private DutyCycleEncoder m_wristAbsoluteEncoder;
+    private double m_wristAngle;
+    private DutyCycleEncoder m_wristBoreEncoder;
 
     public RunWrist(Wrist wrist, double wristSpeed, double wristAngle) {
         m_wrist = wrist;
         m_wristSpeed = wristSpeed;
+        m_wristAngle = wristAngle;
     }
 
     @Override
     public void initialize() {
         m_wrist.setWristSpeed(m_wristSpeed);
-        m_wristAbsoluteEncoder.reset();
+        m_wristBoreEncoder.reset();
     }
 
     @Override
     public void execute() {
-        //moves wrist
+        m_wrist.setWristSpeed(m_wristSpeed);       //update wrist speed later
     }
 
     @Override
     public boolean isFinished() {
-        if (Math.abs(m_wristAbsoluteEncoder.getAbsolutePosition()) >= 90);
+        if (m_wristBoreEncoder.get() > 90 || m_wristBoreEncoder.get() < 0);
             return true;
     }
 }

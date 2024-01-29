@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
 
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
-    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
+    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmBoreEncoder);
 
     new WpiLimitSwitch("maxArmLimitSwitch",
         Constants.RioPorts.kArmLimitSwitch);

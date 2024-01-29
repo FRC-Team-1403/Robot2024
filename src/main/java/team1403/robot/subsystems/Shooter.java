@@ -3,8 +3,6 @@ package team1403.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.revrobotics.SparkRelativeEncoder;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.DigitalInput;
 import team1403.robot.Constants;
@@ -12,7 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 public class Shooter extends SubsystemBase {
- private DigitalInput m_shooterPhotogate;
+ private DigitalInput m_shooterPhotoswitch;
  private double lastSpeed = 0;
  private TalonFX m_falconTop;
  private TalonFX m_falconBottom;
@@ -20,11 +18,11 @@ public class Shooter extends SubsystemBase {
  public Shooter() {
   m_falconTop = new TalonFX(Constants.CanBus.shooterMotorTop);
   m_falconBottom = new TalonFX(Constants.CanBus.shooterMotorBottom);
-  m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
+  m_shooterPhotoswitch = new DigitalInput(Constants.RioPorts.shooterPhotoswitch);
  }
 
-public boolean shooterPhotogate() {
-  return m_shooterPhotogate.get();
+public boolean shooterPhotoswitch() {
+  return m_shooterPhotoswitch.get();
 }
 
  public boolean shooterReady() {
