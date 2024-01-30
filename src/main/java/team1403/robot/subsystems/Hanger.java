@@ -12,28 +12,35 @@ import team1403.robot.Constants;
 public class Hanger extends SubsystemBase{
   private WpiLimitSwitch m_hangerLimitSwitchTop;
     private WpiLimitSwitch m_hangerLimitSwitchBottom;
-  private CougarSparkMax m_hangerMotor;
+  private CougarSparkMax m_definiteHangerMotor;
+  private CougarSparkMax m_possibleHangerMotor;
+
 
   public Hanger(CougarLibInjectedParameters injectedParameters) {
-    m_hangerMotor = CougarSparkMax.makeBrushless(
-      "Hanger Motor", Constants.CanBus.hangerMotor, SparkRelativeEncoder.Type.kHallSensor);
+    m_definiteHangerMotor = CougarSparkMax.makeBrushless("Definite Hanger Motor", Constants.CanBus.definiteHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
+    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Possible Hanger Motor", Constants.CanBus.possibleHangerMotor, null);
+
+
   m_hangerLimitSwitchTop = new WpiLimitSwitch("limit switch Top", Constants.Hanger.channel);
   m_hangerLimitSwitchBottom = new WpiLimitSwitch("limit switch Bottom", Constants.Hanger.channel);
   }
 
   public void setHangerSpeed(double speed) {
-    m_hangerMotor.set(speed);
+    m_definiteHangerMotor.set(speed);
+    m_possibleHangerMotor.set(speed);
   }
 
 public void ifLimitHit() {
   
   if (isAtTop() == true || isAtBottom() == true) {
 
-    m_hangerMotor.set(0);
+    m_definiteHangerMotor.set(0);
+    m_possibleHangerMotor.set(0);
 
   } else {
 
-    m_hangerMotor.set(3);
+    m_definiteHangerMotor.set(3);
+    m_possibleHangerMotor.set(3);
 
   }
 
@@ -51,8 +58,11 @@ public void ifLimitHit() {
     }
 
     public void periodic() {
-      Logger.recordOutput("Hanger Temp", m_hangerMotor.getMotorTemperature());
-      Logger.recordOutput("Hanger RPM", m_hangerMotor.getVoltageCompensationNominalVoltage());
+      Logger.recordOutput("Hanger Temp", m_definiteHangerMotor.getMotorTemperature());
+      Logger.recordOutput("Hanger RPM", m_definiteHangerMotor.getVoltageCompensationNominalVoltage());
+      Logger.recordOutput("Hanger Temp", m_possibleHangerMotor.getMotorTemperature());
+      Logger.recordOutput("Hanger RPM", m_possibleHangerMotor.getVoltageCompensationNominalVoltage());
+      
     }
 }
 //top limit switch: go up until hits the top; bottom limit switch: down until hits the bottom (at - speed)
