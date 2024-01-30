@@ -161,12 +161,13 @@ public class Constants {
     //actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
-    public static final int intakePhotogate = 0;
+    public static final int intakePhotogate1 = 0;
     public static final int shooterPhotogate = 0;
     public static final int kArmLimitSwitch = 0;
     public static final int kArmAbsoluteEncoder = 0;
     //photogates
     public static final int shooterPhotoswitch = 0;
+    public static final int kIntakePhotogae2 = 0;
   }
 
   /**
@@ -216,6 +217,8 @@ public static int channel;
     public static final double kPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
+
+    public static final double kDecreaseIntakeSpeed = 2; //test value 
   }
 
 }
