@@ -23,6 +23,4 @@ public class PhotonVisionCommand extends Command {
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
         
     }
-
-    
 }
