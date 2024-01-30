@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
@@ -11,7 +12,6 @@ import team1403.robot.Constants;
 public class Hanger extends SubsystemBase{
   private WpiLimitSwitch m_hangerLimitSwitchTop;
   private WpiLimitSwitch m_hangerLimitSwitchBottom;
-    private WpiLimitSwitch m_hangerLimitSwitchBottom;
   private CougarSparkMax m_definiteHangerMotor;
   private CougarSparkMax m_possibleHangerMotor;
 

@@ -36,7 +36,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private WpiLimitSwitch m_limitSwitch;
   public ArmSubsystem() {
-
+    m_ArmLimitSwitch = new DigitalInput(Constants.RioPorts.shooterPhotogate);
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
     m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
@@ -62,12 +62,14 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public boolean getArmLimitSwitch() {
-    if (m_ArmLimitSwitch.get()) {
-      stop();
-    }
     return m_ArmLimitSwitch.get();
+  }
   @Override
   public void periodic() {
+      m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armAbsoluteEncoder.get(), m_pivotAngleSetpoint), -1, 1));
+    Logger.recordOutput("Arm Angle Setpoint", m_pivotAngleSetpoint);
+    Logger.recordOutput("Pivot Motor RPM", getPivotMotorSpeed());
+    Logger.recordOutput("Arm Limitswitch", getArmLimitSwitch());
     // run the arm if limit switch not pressed 
       if (!m_limitSwitch.get()) 
       m_pivotMotor.set(
@@ -84,13 +86,5 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void stop() {
     m_pivotMotor.set(0);
-  }
-
-  @Override
-  public void periodic() {
-    m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armAbsoluteEncoder.get(), m_pivotAngleSetpoint), -1, 1));
-    Logger.recordOutput("Arm Angle Setpoint", m_pivotAngleSetpoint);
-    Logger.recordOutput("Pivot Motor RPM", getPivotMotorSpeed());
-    Logger.recordOutput("Arm Limitswitch", getArmLimitSwitch());
   }
 }
