@@ -199,6 +199,7 @@ public static int channel;
 
   public static class Vision {    
     public static final double rotationCutoff = 5;
+    public static boolean isRotated = false;
     public static AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout(Arrays.asList(
       new AprilTag(1,   (new Pose3d(
         Units.inchesToMeters(610.77),
