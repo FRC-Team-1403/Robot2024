@@ -4,13 +4,13 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
 public class Hanger extends SubsystemBase{
   private WpiLimitSwitch m_hangerLimitSwitchTop;
+  private WpiLimitSwitch m_hangerLimitSwitchBottom;
     private WpiLimitSwitch m_hangerLimitSwitchBottom;
   private CougarSparkMax m_definiteHangerMotor;
   private CougarSparkMax m_possibleHangerMotor;
@@ -62,7 +62,6 @@ public void ifLimitHit() {
       Logger.recordOutput("Hanger RPM", m_definiteHangerMotor.getVoltageCompensationNominalVoltage());
       Logger.recordOutput("Hanger Temp", m_possibleHangerMotor.getMotorTemperature());
       Logger.recordOutput("Hanger RPM", m_possibleHangerMotor.getVoltageCompensationNominalVoltage());
-      
     }
 }
 //top limit switch: go up until hits the top; bottom limit switch: down until hits the bottom (at - speed)

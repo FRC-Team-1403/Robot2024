@@ -129,6 +129,11 @@ public class Constants {
    public static final int backRightSteerId = 13;
    public static final int backRightEncoderId = 4;
    //other
+   public static final int intakeMotor = 0;
+   public static final int shooterMotorTop = 0;
+   public static final int shooterMotorBottom = 0;
+   public static final int hangerMotor = 0;
+   public static final int wristMotor = 0; 
     public static final int shooterMotorTop = 0;
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;
@@ -163,6 +168,9 @@ public class Constants {
     public static final int shooterPhotogate = 0;
     public static final int kArmLimitSwitch = 0;
     public static final int kArmAbsoluteEncoder = 0;
+    //photogates
+    public static final int shooterPhotoswitch = 0;
+    public static final int intakePhotogate = 0;
   }
 
   /**

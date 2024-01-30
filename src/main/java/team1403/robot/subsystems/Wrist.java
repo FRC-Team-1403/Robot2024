@@ -4,9 +4,11 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
+
 
 public class Wrist extends SubsystemBase {
     private CougarSparkMax m_wristMotor;
@@ -35,6 +37,7 @@ public Wrist() {
   }
 
 public void periodic() {
-    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
-  }
+   Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
+   Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
+   Logger.recordOutput("Wrist Angle", getWristAngle());  }
 }
