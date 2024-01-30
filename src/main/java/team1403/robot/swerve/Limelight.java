@@ -3,6 +3,7 @@ package team1403.robot.swerve;
 
 import javax.swing.tree.ExpandVetoException;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -125,9 +126,18 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     result = limeLight.getLatestResult();
+    
+    Logger.recordOutput("Target Visible?", hasTarget());
+    
     if(hasTarget())
     {
       SmartDashboard.putString("pos", getDistance().toString());
+
+      Logger.recordOutput("Position", getDistance().toString());
+      Logger.recordOutput("X Distance", getXDistance());
+      Logger.recordOutput("Y Distance", getYDistance());
+      Logger.recordOutput("Z Distance", getZDistance());
+
     }
   }
 }
