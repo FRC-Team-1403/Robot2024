@@ -27,7 +27,6 @@ public class ArmSubsystem extends SubsystemBase {
   private final PIDController m_pivotPid;
   private final DigitalInput m_ArmLimitSwitch;
   private double m_pivotAngleSetpoint;
-
   private double m_tolerance;
 
   /**
@@ -35,11 +34,14 @@ public class ArmSubsystem extends SubsystemBase {
    *
    * @param injectedParameters Cougar injected parameters.
    */
+  private WpiLimitSwitch m_limitSwitch;
   public ArmSubsystem() {
 
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
     m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
-    m_ArmLimitSwitch = new WpiLimitSwitch("maxArmLimitSwitch", Constants.RioPorts.kArmLimitSwitch);
+
+    m_limitSwitch = new WpiLimitSwitch("maxArmLimitSwitch",
+        Constants.RioPorts.kArmLimitSwitch);
     m_pivotPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot);
     
   }
@@ -64,6 +66,16 @@ public class ArmSubsystem extends SubsystemBase {
       stop();
     }
     return m_ArmLimitSwitch.get();
+  @Override
+  public void periodic() {
+    // run the arm if limit switch not pressed 
+      if (!m_limitSwitch.get()) 
+      m_pivotMotor.set(
+        MathUtil.clamp(
+            m_pivotPid.calculate(
+                m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), 
+                -1,
+                 1));
   }
 
   public double getPivotMotorSpeed() {

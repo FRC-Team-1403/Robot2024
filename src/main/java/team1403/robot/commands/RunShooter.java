@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 public class RunShooter extends Command {
     private Shooter m_shooter;
     private Intake m_intake;
+
+public class RunShooter extends Command {
+    private Shooter m_shooter;
     private double m_shooterSpeed;
     private double m_intakeSpeed;
     private DigitalInput m_shooterPhotogate;

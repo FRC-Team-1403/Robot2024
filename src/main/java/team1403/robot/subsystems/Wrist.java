@@ -11,33 +11,33 @@ import team1403.robot.Constants;
 
 
 public class Wrist extends SubsystemBase {
-   private CougarSparkMax m_wristMotor;
-   private final DutyCycleEncoder m_wristAbsoluteEncoder;
+    private CougarSparkMax m_wristMotor;
+    private double lastSpeed = 0;
 
 public Wrist() {
-   m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
-   m_wristAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
- }
+    m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
+  }
 
- public void stop() {
-   m_wristMotor.setSpeed(0);
- }
+  public boolean wristReady() {
+    if (lastSpeed == Math.abs(m_wristMotor.getEncoder().getVelocity())) {
+      return true;
+    }
+    else {
+      return false;
+    }  
+  }
 
- public void setWristSpeed(double speed) {
-  if (getWristAngle() > 90.0 || getWristAngle() < 0) {     //TODO update limit if needed
-    stop();
-    return;
-  }  
-  m_wristMotor.set(speed); 
- }
+  public void stop() {
+    m_wristMotor.setSpeed(0);
+  }
 
- public double getWristAngle() {
-  return m_wristAbsoluteEncoder.get();
- }
+  public void setWristSpeed(double speed) {
+    lastSpeed = speed;
+    m_wristMotor.set(speed);  
+  }
 
 public void periodic() {
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
-   Logger.recordOutput("Wrist Angle", getWristAngle());
- }
+   Logger.recordOutput("Wrist Angle", getWristAngle());  }
 }

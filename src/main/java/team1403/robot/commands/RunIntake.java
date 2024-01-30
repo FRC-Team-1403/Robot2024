@@ -22,11 +22,11 @@ public class RunIntake extends Command {
        m_intake.setIntakeSpeed(m_intakeSpeed);
    }
 
+
    @Override
    public void execute() {  
         m_intake.setIntakeSpeed(m_intakeSpeed);
    }
-
    @Override
    public boolean isFinished() {
        if (m_intakePhotogate.get()) {
@@ -34,6 +34,5 @@ public class RunIntake extends Command {
        }
        return m_intakePhotogate.get();
     }
-
 
 }

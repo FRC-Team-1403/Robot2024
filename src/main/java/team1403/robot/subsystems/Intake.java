@@ -3,83 +3,80 @@ package team1403.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-
 import com.revrobotics.SparkRelativeEncoder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.CougarSparkMax;
+//import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
-
 public class Intake extends SubsystemBase {
+  private CougarSparkMax m_intakeMotorTop;
+  private CougarSparkMax m_intakeMotorBottom;
+  //private WpiLimitSwitch m_intakeLimitSwitch;
+  private DigitalInput m_intakePhotogate;
 
+  public Intake(CougarLibInjectedParameters injectedParameters) {
+    m_intakeMotorTop = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorTop, SparkRelativeEncoder.Type.kHallSensor);
+    m_intakeMotorBottom = CougarSparkMax.makeBrushless("Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
+    //m_intakeLimitSwitch = new WpiLimitSwitch("Intake Limit Switch", Constants.RioPorts.intakeLimitSwitchPort);
+    m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
+  }
 
- private CougarSparkMax m_intakeMotor;
- //private CougarSparkMax m_motorBottom;
- private DigitalInput m_intakePhotogate;
- private PIDController m_pidController;
- private double lastSpeed = 0;
+  public boolean intakePhotogate() {
+    return m_intakePhotogate.get();
+  }
+  private CougarSparkMax m_motorTop;
+  private CougarSparkMax m_motorBottom;
+  private double lastSpeed = 0;
 
+  public Intake() {
+    m_motorTop = CougarSparkMax.makeBrushless(
+      "Top Intake Motor", Constants.CanBus.intakeMotorTop, SparkRelativeEncoder.Type.kHallSensor);
+    m_motorBottom = CougarSparkMax.makeBrushless(
+      "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
+  }
 
- public Intake() {
-   m_intakeMotor = CougarSparkMax.makeBrushless(
-     "Top Intake Motor", Constants.CanBus.intakeMotor, SparkRelativeEncoder.Type.kHallSensor);
-  //  m_motorBottom = CougarSparkMax.makeBrushless(
-  //    "Bottom Intake Motor", Constants.CanBus.intakeMotorBottom, SparkRelativeEncoder.Type.kHallSensor);
-   m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate);
+  public boolean intakeReady() {
+    if (lastSpeed == Math.abs(m_motorTop.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
+      return true;
+    }
+    else {
+      return false;
+    }  
+  }
 
-   m_pidController = new PIDController(0.002, 0, 0);
- }
+  public boolean speedIsEqual() {
+    if (Math.abs(m_motorTop.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
+        return true;
+    } else {
+        return false;
+    }
+  }
 
- public boolean intakePhotogate() {
-  return m_intakePhotogate.get();
-}
+  public void stop() {
+    m_intakeMotorTop.setSpeed(0);
+    m_intakeMotorBottom.setSpeed(0);
+  }
 
- public boolean intakeReady() {
-   //if (lastSpeed == Math.abs(m_intakeMotor.getEncoder().getVelocity()) && lastSpeed == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
-   if (lastSpeed == Math.abs(m_intakeMotor.getEncoder().getVelocity())) { 
-    return true;
-   }
-   else {
-     return false;
-   } 
- }
+  public void setIntakeSpeed(double speed) {
+     //if (m_intakeLimitSwitch.get()) {
+      //stop();
+      //return;
+    //}
+    lastSpeed = speed;
+    m_intakeMotorTop.set(speed);
+    m_intakeMotorBottom.set(-(speed));
+    //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
+  
+  }
 
-
-//  public boolean speedIsEqual() {
-//    if (Math.abs(m_intakeMotor.getEncoder().getVelocity()) == Math.abs(m_motorBottom.getEncoder().getVelocity())) {
-//        return true;
-//    } else {
-//        return false;
-//    }
-//  }
-
-
- public void stop() {
-   m_intakeMotor.set(0);
-   //m_motorBottom.setSpeed(0);
- }
-
-
- public void setIntakeSpeed(double speed) {
-   lastSpeed = speed;
-   m_intakeMotor.set(speed);
-   //if there is an error when testing (note doesn't get taken in) try changing the direction of the motor
- }
-
- public void setIntakeRPM(double rpm)
- {
-    double speed = m_pidController.calculate(m_intakeMotor.getEncoder().getVelocity(), rpm);
-    setIntakeSpeed(lastSpeed + speed);
- }
-
-
- public void periodic() {
-   Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
-   //Logger.recordOutput("Intake Bottom Motor Temp", m_motorBottom.getMotorTemperature());
-   Logger.recordOutput("Intake Motor RPM", m_intakeMotor.getEncoder().getVelocity());
-   //Logger.recordOutput("Intake Bottom Motor RPM", m_motorBottom.getVoltageCompensationNominalVoltage());
- }
+  public void periodic() {
+    Logger.recordOutput("Intake Top Motor Temp", m_intakeMotorTop.getMotorTemperature());
+    Logger.recordOutput("Intake Bottom Motor Temp", m_intakeMotorBottom.getMotorTemperature());
+    Logger.recordOutput("Intake Top Motor RPM", m_intakeMotorTop.getVoltageCompensationNominalVoltage());
+    Logger.recordOutput("Intake Bottom Motor RPM", m_intakeMotorBottom.getVoltageCompensationNominalVoltage());
+  }
 }
