@@ -114,7 +114,6 @@ public class DefaultSwerveCommand extends Command {
 
     double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 
-    target_angle += robotAngleinDegrees;
     //target_angle = robotAngleinDegrees + to_deg(atan2(y2 - y1, x2 - x1));
 
     // double sub = 0;
@@ -122,6 +121,8 @@ public class DefaultSwerveCommand extends Command {
     if(360 - Math.abs(constrainedAngle - target_angle) < 180)
       target_angle -= 360;
 
+
+    target_angle += robotAngleinDegrees;
     // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
     //   sub = 180;
 
