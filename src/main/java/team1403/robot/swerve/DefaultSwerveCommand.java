@@ -121,7 +121,7 @@ public class DefaultSwerveCommand extends Command {
     if(360 - Math.abs(constrainedAngle - target_angle) < 180)
       target_angle -= 360;
 
-
+    //this code is flawed
     target_angle += robotAngleinDegrees;
     // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
     //   sub = 180;
