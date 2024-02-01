@@ -135,7 +135,6 @@ public class Constants {
     public static final int intakeAndShooterMotorBottom = 0;
    //other
    public static final int intakeMotor = 0;
-   public static final int hangerMotor = 0;
     public static final int shooterMotorTop = 0;
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;
