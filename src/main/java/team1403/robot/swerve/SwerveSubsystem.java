@@ -532,7 +532,7 @@ public class SwerveSubsystem extends SubsystemBase  {
       tagCount++;
     }
   } else {
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    m_odometer.update(getGyroscopeRotation(),getModulePositions());
   }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());

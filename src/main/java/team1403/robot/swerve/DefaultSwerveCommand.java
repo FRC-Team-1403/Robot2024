@@ -79,7 +79,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(1, 0, 0);
+    m_controller = new PIDController(0.1, 0, 0);
 
     addRequirements(m_drivetrainSubsystem);
   }
