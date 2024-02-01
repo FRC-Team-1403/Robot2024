@@ -2,6 +2,8 @@ package team1403.robot.swerve;
 
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -551,5 +553,22 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
+
+   // Logging Output
+
+   Logger.recordOutput("Odometer", m_odometer.getEstimatedPosition().toString());
+   Logger.recordOutput("Speed", m_speedLimiter);
+   Logger.recordOutput("Amount of Roll", getGyroRoll());
+
+   Logger.recordOutput("Chassis Speeds", m_chassisSpeeds.toString());
+   Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
+   Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
+   Logger.recordOutput("Back Left Absolute Encoder Angle", m_modules[2].getAbsoluteAngle());
+   Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
+
+
+   Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
+
+
  }
 }
