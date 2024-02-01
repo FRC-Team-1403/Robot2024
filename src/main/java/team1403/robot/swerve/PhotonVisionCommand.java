@@ -24,37 +24,4 @@ public class PhotonVisionCommand extends Command {
         // turnRobotToTag();
     }
 
-    @Override
-    public boolean isFinished() {
-        // If robot is within acceptable bounds for position & has been sucessfully
-        // rotated
-        return isRotated;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        m_swerve.drive(new ChassisSpeeds(), new Translation2d());
-    }
-    
-    public void turnRobotToTag() {
- 
-        double rotationalSpeed = getRotationSpeedOfSwerve();
-        m_swerve.drive(
-          new ChassisSpeeds(0, 0, rotationalSpeed), 
-          new Translation2d());
-    }
-
-    public double getRotationSpeedOfSwerve() {
-
-        double rotationOfSwerve = m_swerve.getGyroscopeRotation().getDegrees();
-        
-        // If rotation is within acceptable bounds
-        if (Math.abs(rotationOfSwerve - 180) <= 0.2) {
-          isRotated = true;
-          return 0.0;
-        } 
-    
-        return m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
-    }
-
 }
