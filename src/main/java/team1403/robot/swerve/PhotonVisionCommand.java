@@ -7,11 +7,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PhotonVisionCommand extends Command {
+    private boolean isRotated = false;
     private Limelight m_Limelight;
+    private SwerveSubsystem m_swerve;
+    private PIDController m_thetaController;
 
 
-    public PhotonVisionCommand(Limelight limelight) {
+    public PhotonVisionCommand(Limelight limelight, SwerveSubsystem swerve) {
         m_Limelight = limelight;
+        m_swerve = swerve;
+        
     }
 
 
