@@ -48,7 +48,7 @@ public class RobotContainer {
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_swerve = new SwerveSubsystem(m_limelight);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight);
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight, m_swerve);
 
     configureBindings();
   }
