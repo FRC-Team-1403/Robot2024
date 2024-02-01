@@ -10,7 +10,14 @@
   "command": {
     "type": "sequential",
     "data": {
-      "commands": []
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "threePiece"
+          }
+        }
+      ]
     }
   },
   "folder": null,
