@@ -108,9 +108,7 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-
-    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().getRotation2d().getDegrees();
-    double constrainedAngle = m_drivetrainSubsystem.getNavxAhrs().get180to180Rotation2d().getDegrees();
+    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
 
     double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 
@@ -118,11 +116,17 @@ public class DefaultSwerveCommand extends Command {
 
     // double sub = 0;
 
-    if(360 - Math.abs(constrainedAngle - target_angle) < 180)
-      target_angle -= 360;
 
-    //this code is flawed
-    target_angle += robotAngleinDegrees;
+    if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees > 180) target_angle = - ((360 - target_angle) + robotAngleinDegrees);
+    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle > 180) target_angle = (360 - robotAngleinDegrees) + target_angle;
+    else if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees < 180) target_angle = target_angle - robotAngleinDegrees;
+    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle < 180) target_angle = -(robotAngleinDegrees - target_angle);
+    else if(target_angle == robotAngleinDegrees) target_angle = 0;
+    else if(target_angle - robotAngleinDegrees == 180 || robotAngleinDegrees - target_angle == 180) target_angle = 180;
+    else if(target_angle - robotAngleinDegrees == 0 || robotAngleinDegrees - target_angle == 0) target_angle = 0;
+
+
+
     // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
     //   sub = 180;
 
@@ -133,7 +137,8 @@ public class DefaultSwerveCommand extends Command {
     SmartDashboard.putNumber("Target Angle", target_angle);
 
     if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
-      angular = m_controller.calculate(robotAngleinDegrees, target_angle);
+
+      angular = m_controller.calculate(target_angle,0);
       // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
       //angular = m_controller.calculate(sub2,0);
 
