@@ -42,11 +42,11 @@ public class RobotContainer {
     // Configure the trigger bindings
     m_limelight = new Limelight();
     m_swerve = new SwerveSubsystem(m_limelight);
-    m_arm = new ArmSubsystem();
+    // m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    m_swerve = new SwerveSubsystem(m_limelight);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight);
+    
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
 
     configureBindings();
   }

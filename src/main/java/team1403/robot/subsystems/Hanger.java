@@ -18,7 +18,7 @@ public class Hanger extends SubsystemBase{
 
   public Hanger(CougarLibInjectedParameters injectedParameters) {
     m_definiteHangerMotor = CougarSparkMax.makeBrushless("Definite Hanger Motor", Constants.CanBus.definiteHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
-    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Possible Hanger Motor", Constants.CanBus.possibleHangerMotor, null);
+    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Possible Hanger Motor", Constants.CanBus.possibleHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
 
 
   m_hangerLimitSwitchTop = new WpiLimitSwitch("limit switch Top", Constants.Hanger.channel);
@@ -32,7 +32,7 @@ public class Hanger extends SubsystemBase{
 
 public void ifLimitHit() {
   
-  if (isAtTop() == true || isAtBottom() == true) {
+  if (isAtTop() || isAtBottom()) {
 
     m_definiteHangerMotor.set(0);
     m_possibleHangerMotor.set(0);

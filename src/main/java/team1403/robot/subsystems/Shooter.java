@@ -53,8 +53,8 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterSpeed(double speed) {
     lastSpeed = speed;
-    m_shooterMotorTop.set(-(speed));
-    m_shooterMotorBottom.set(speed);
+    m_shooterMotorTop.set(-speed);
+    m_shooterMotorBottom.set(-speed);
     //if there is an error when testing (note doesn't get shot out) try changing the direction of the motor
   
   }

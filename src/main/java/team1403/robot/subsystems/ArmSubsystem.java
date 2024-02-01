@@ -73,7 +73,7 @@ public class ArmSubsystem extends SubsystemBase {
     // run the arm if limit switch not pressed 
       if (!m_limitSwitch.get()) 
       m_pivotMotor.set(
-        MathUtil.clamp(
+        m_pivotMotor.get() + MathUtil.clamp(
             m_pivotPid.calculate(
                 m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), 
                 -1,
