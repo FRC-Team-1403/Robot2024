@@ -3,12 +3,17 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PIDCommand;
+import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
+import team1403.robot.Constants.Vision;
 
 /**
  * The default command for the swerve drivetrain subsystem.
@@ -21,11 +26,16 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_rotationSupplier;
   private final BooleanSupplier m_fieldRelativeSupplier;
   private final BooleanSupplier m_xModeSupplier;
+  private final BooleanSupplier m_aimbotSupplier;
   private final DoubleSupplier m_speedSupplier;
+  private final DoubleSupplier m_xsupplier;
+  private final DoubleSupplier m_ysupplier;
   private boolean m_isFieldRelative;
 
   private SlewRateLimiter m_verticalTranslationLimiter;
   private SlewRateLimiter m_horizontalTranslationLimiter;
+
+  private PIDController m_controller;
 
   /**
    * Creates the swerve command.
@@ -51,6 +61,9 @@ public class DefaultSwerveCommand extends Command {
       DoubleSupplier rotationSupplier,
       BooleanSupplier fieldRelativeSupplier,
       BooleanSupplier xModeSupplier,
+      BooleanSupplier aimbotSupplier,
+      DoubleSupplier xtarget,
+      DoubleSupplier ytarget,
       DoubleSupplier speedSupplier) {
     this.m_drivetrainSubsystem = drivetrain;
     this.m_verticalTranslationSupplier = verticalTranslationSupplier;
@@ -59,10 +72,14 @@ public class DefaultSwerveCommand extends Command {
     this.m_fieldRelativeSupplier = fieldRelativeSupplier;
     this.m_speedSupplier = speedSupplier;
     this.m_xModeSupplier = xModeSupplier;
+    this.m_aimbotSupplier = aimbotSupplier;
+    this.m_xsupplier = xtarget;
+    this.m_ysupplier = ytarget;
     m_isFieldRelative = true;
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
+    m_controller = new PIDController(1, 0, 0);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -91,7 +108,38 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-    //double robotAngleinDegrees = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
+    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
+
+    double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
+
+    // double sub = 0;
+
+    if((Math.abs(target_angle) + Math.abs(robotAngleinDegrees)) < 180) target_angle = target_angle - robotAngleinDegrees;
+    else target_angle = target_angle + robotAngleinDegrees;
+
+    if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees > 180) target_angle = - ((360 - target_angle) + robotAngleinDegrees);
+    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle > 180) target_angle = (360 - robotAngleinDegrees) + target_angle;
+    else if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees < 180) target_angle = target_angle - robotAngleinDegrees;
+    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle < 180) target_angle = -(robotAngleinDegrees - target_angle);
+    else if(target_angle == robotAngleinDegrees) target_angle = 0;
+    else if(target_angle - robotAngleinDegrees == 180 || robotAngleinDegrees - target_angle == 180) target_angle = 180;
+    else if(target_angle - robotAngleinDegrees == 0 || robotAngleinDegrees - target_angle == 0) target_angle = 0;
+
+
+
+    // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
+    //   sub = 180;
+
+    //double sub2 = target_angle - robotAngleinDegrees;
+
+
+    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
+    SmartDashboard.putNumber("Target Angle", target_angle);
+
+    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
+      angular = m_controller.calculate(target_angle,0);
+      // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
+      //angular = m_controller.calculate(sub2,0);
 
     if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,
@@ -99,6 +147,8 @@ public class DefaultSwerveCommand extends Command {
     } else {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
+
+    SmartDashboard.putString("pose2d", m_drivetrainSubsystem.getPose().toString());
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }

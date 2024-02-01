@@ -4,6 +4,7 @@
 
 package team1403.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +32,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
+  private final PhotonVisionCommand m_PhotonVisionCommand; 
 
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
@@ -45,6 +47,8 @@ public class RobotContainer {
     m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
+    m_swerve = new SwerveSubsystem(m_limelight);
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight);
 
     configureBindings();
   }
@@ -63,14 +67,18 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    // Setting default command of swerve subsystem
+    // Setting default command of swerve subPsystem
+
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
         () -> -deadband(m_driverController.getLeftX(), 0),
         () -> -deadband(m_driverController.getLeftY(), 0),
-        () -> deadband(m_driverController.getRightX(), 0),
+        () -> -deadband(m_driverController.getRightX(), 0),
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
+        () -> m_driverController.a().getAsBoolean(),
+        () -> 1.9,
+        () -> 0.8,
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 

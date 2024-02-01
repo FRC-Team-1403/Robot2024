@@ -6,6 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -47,7 +48,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 1.125;
+    public static final double kPTurning = 0.4;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -74,10 +75,11 @@ public class Constants {
             // Back right
             new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -(4.669437518323892 - Math.PI);
-    public static final double frontRightEncoderOffset = -(0.009203884727314 + Math.PI);
-    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI);
-    public static final double backRightEncoderOffset = -(5.776971647177325 - Math.PI);
+    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI); //1.70498046875
+    public static final double frontRightEncoderOffset = -(0.009203884727314 - Math.PI); //2.70498046875
+    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); //1.70498046875
+    public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);//2.70498046875
+
 
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -112,22 +114,26 @@ public class Constants {
    * and understand overall wiring.
    */
   public static class CanBus {
-   // Swerve CanBus ids
-   public static final int frontLeftDriveId = 6;
-   public static final int frontLeftSteerId = 7;
-   public static final int frontLeftEncoderId = 3;
+    // Swerve CanBus ids
+    public static final int frontLeftDriveId = 6;
+    public static final int frontLeftSteerId = 7;
+    public static final int frontLeftEncoderId = 3;
 
-   public static final int frontRightDriveId = 8;
-   public static final int frontRightSteerId = 9;
-   public static final int frontRightEncoderId = 1;
+    public static final int frontRightDriveId = 8;
+    public static final int frontRightSteerId = 9;
+    public static final int frontRightEncoderId = 1;
 
-   public static final int backLeftDriveId = 10;
-   public static final int backLeftSteerId = 11;
-   public static final int backLeftEncoderId = 2;
+    public static final int backLeftDriveId = 10;
+    public static final int backLeftSteerId = 11;
+    public static final int backLeftEncoderId = 2;
 
-   public static final int backRightDriveId = 12;
-   public static final int backRightSteerId = 13;
-   public static final int backRightEncoderId = 4;
+    public static final int backRightDriveId = 12;
+    public static final int backRightSteerId = 13;
+    public static final int backRightEncoderId = 4;
+
+    public static final int intakeAndShooterMotorTop = 0;
+    public static final int intakeAndShooterMotorBottom = 0;
+    public static final int hangerMotor = 0;    
    //other
    public static final int intakeMotor = 0;
    public static final int hangerMotor = 0;
@@ -148,7 +154,6 @@ public class Constants {
     // checked with phoenix
     public static final int turretMotor = 19;
   }
-
   /**
    * Ports on the RoboRIO.
    */
@@ -213,6 +218,51 @@ public static int channel;
 
   }
 
+  public static class Vision {    
+    public static final double rotationCutoff = 5;
+    public static boolean isRotated = false;
+    public static AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout(Arrays.asList(
+      new AprilTag(1,   (new Pose3d(
+        Units.inchesToMeters(610.77),
+        Units.inchesToMeters(42.19),
+        Units.inchesToMeters(18.22),
+        new Rotation3d(0.0, 0.0, Math.PI)))),
+      new AprilTag(2, new Pose3d(
+        Units.inchesToMeters(610.77),
+        Units.inchesToMeters(108.19),
+        Units.inchesToMeters(18.22),
+        new Rotation3d(0.0, 0.0, Math.PI))),
+      new AprilTag(3,new Pose3d(
+        Units.inchesToMeters(610.77),
+        Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+        Units.inchesToMeters(18.22),
+        new Rotation3d(0.0, 0.0, Math.PI))),
+      new AprilTag(4, new Pose3d(
+        Units.inchesToMeters(636.96),
+        Units.inchesToMeters(265.74),
+        Units.inchesToMeters(27.38),
+        new Rotation3d(0.0, 0.0, Math.PI))), 
+      new AprilTag(5, new Pose3d(
+        Units.inchesToMeters(14.25),
+        Units.inchesToMeters(265.74),
+        Units.inchesToMeters(27.38),
+        new Rotation3d())), 
+      new AprilTag(6, new Pose3d(
+        Units.inchesToMeters(610.77),
+        Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+        Units.inchesToMeters(18.22),
+        new Rotation3d(0.0, 0.0, Math.PI))),
+      new AprilTag(7, new Pose3d(
+        Units.inchesToMeters(610.77),
+        Units.inchesToMeters(108.19),
+        Units.inchesToMeters(18.22),
+        new Rotation3d(0.0, 0.0, Math.PI))),  
+      new AprilTag(8, new Pose3d(
+        Units.inchesToMeters(40.45),
+        Units.inchesToMeters(42.19),
+        Units.inchesToMeters(18.22),
+        new Rotation3d()))), Units.inchesToMeters(651.25), Units.inchesToMeters(315.5));
+  }
   public static class Arm {
     public static final double kPArmPivot = 0;
     public static final double KIArmPivot = 0;
@@ -220,5 +270,4 @@ public static int channel;
 
     public static final double kDecreaseIntakeSpeed = 2; //test value 
   }
-
 }

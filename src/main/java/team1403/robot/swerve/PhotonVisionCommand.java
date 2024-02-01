@@ -9,29 +9,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class PhotonVisionCommand extends Command {
     private Limelight m_Limelight;
 
-    private final SwerveSubsystem m_swerve;
 
-    private final PIDController m_yawController;
-    private final PIDController m_distanceController;
-    private final PIDController m_thetaController;
-    private boolean isRotated = false;
-
-    public PhotonVisionCommand(Limelight limelight, SwerveSubsystem swerve) {
+    public PhotonVisionCommand(Limelight limelight) {
         m_Limelight = limelight;
-        m_swerve = swerve;
-
-        m_yawController = new PIDController(12, 0, 0.5);
-        m_distanceController = new PIDController(12, 0, 0.5);
-        m_thetaController = new PIDController(4, 0, 0);
     }
+
 
     @Override
     public void execute() {
         SmartDashboard.putNumber("ZDistance", m_Limelight.getZDistance());
         SmartDashboard.putNumber("XDistance", m_Limelight.getXDistance());
-        SmartDashboard.putNumber("DirectDistance", m_Limelight.getDistanceFromTarget());
+        SmartDashboard.putNumber("DirectDistance", m_Limelight.getYDistance());
         SmartDashboard.putNumber("ZAngle", m_Limelight.getZAngle());
-        
         // turnRobotToTag();
     }
 
@@ -66,7 +55,6 @@ public class PhotonVisionCommand extends Command {
         } 
     
         return m_thetaController.calculate(rotationOfSwerve, m_Limelight.getZAngle());
-
     }
 
 }

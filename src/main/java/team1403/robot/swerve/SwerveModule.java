@@ -91,8 +91,8 @@ public class SwerveModule implements Device {
         System.err.println("CANCoder magnetic field strength is unacceptable.");
       }
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
-      //in units of rotations, oh shit we have to do a lot testing
-      magnetSensor.MagnetOffset = (m_absoluteEncoderOffset%(2*Math.PI))/(2*Math.PI);
+      //in units of rotations
+      magnetSensor.MagnetOffset = (m_absoluteEncoderOffset)/(2*Math.PI);
       magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
@@ -116,6 +116,9 @@ public class SwerveModule implements Device {
       m_steerRelativeEncoder.setVelocityConversionFactor(
           Swerve.kSteerRelativeEncoderVelocityConversionFactor);
       m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
+
+      m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+      m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
     }
   
     private void initSteerMotor() {
