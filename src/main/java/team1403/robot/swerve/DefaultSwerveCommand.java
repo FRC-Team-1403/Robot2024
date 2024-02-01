@@ -108,7 +108,7 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
+    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().get().getDegrees();
 
     double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 

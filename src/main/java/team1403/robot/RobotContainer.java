@@ -45,7 +45,7 @@ public class RobotContainer {
     // m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    
+
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
 
     configureBindings();
@@ -75,8 +75,8 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 13,
-        () -> 4.4,
+        () -> 3,
+        () -> 5.5,
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
