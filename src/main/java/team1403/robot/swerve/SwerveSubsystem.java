@@ -28,6 +28,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -50,6 +51,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
  private SwerveModuleState[] m_states = new SwerveModuleState[4];
  private final SwerveDrivePoseEstimator m_odometer;
+private Field2d m_field = new Field2d();
 
  private Translation2d frontRight = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
@@ -90,6 +92,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   *                   used to construct this subsystem
   */
  public SwerveSubsystem(Limelight limelight) {
+  SmartDashboard.putData("Field", m_field);
   //  super("Swerve Subsystem", parameters);
    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
    m_Limelight = limelight;
@@ -553,7 +556,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
-
+   m_field.setRobotPose(m_odometer.getEstimatedPosition());
    // Logging Output
 
    Logger.recordOutput("Odometer", m_odometer.getEstimatedPosition().toString());
