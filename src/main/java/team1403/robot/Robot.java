@@ -66,7 +66,7 @@ public class Robot extends LoggedRobot {
                       // be added.
     }
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight());
+    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(), m_robotContainer.getSwerveSubsystem());
   }
 
   /**
