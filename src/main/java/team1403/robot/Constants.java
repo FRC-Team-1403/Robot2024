@@ -266,7 +266,15 @@ public static int channel;
     public static final double kPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
+  }
 
+  public static class Intake {
     public static final double kDecreaseIntakeSpeed = 2; //test value 
+  }
+  
+  public static class Wrist {
+    public static final double kPWrist = 0;
+    public static final double KIWrist = 0;
+    public static final double KDWrist = 0;
   }
 }
