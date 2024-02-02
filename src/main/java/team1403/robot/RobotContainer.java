@@ -75,8 +75,8 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 3,
-        () -> 5.5,
+        () -> 13.3,
+        () -> 5.4,
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 

@@ -31,6 +31,8 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_xsupplier;
   private final DoubleSupplier m_ysupplier;
   private boolean m_isFieldRelative;
+  private double tempKP = 0;
+  private double tempKI = 0;
 
   private SlewRateLimiter m_verticalTranslationLimiter;
   private SlewRateLimiter m_horizontalTranslationLimiter;
@@ -79,9 +81,11 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(0.1, 0, 0);
+    m_controller = new PIDController(0.5, 1, 0);
 
     addRequirements(m_drivetrainSubsystem);
+
+
   }
 
   @Override
@@ -90,7 +94,7 @@ public class DefaultSwerveCommand extends Command {
 
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
-    }
+    } 
 
     SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
 
@@ -110,7 +114,7 @@ public class DefaultSwerveCommand extends Command {
     Translation2d offset = new Translation2d();
 
 
-    double given_current_angle =  m_drivetrainSubsystem.getNavxAhrs().get().getDegrees();
+    double given_current_angle =  m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
     double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));;
     double constraint_current_angle = GetConstraintAngle(given_current_angle);
     double final_target_angle = 0;
@@ -122,13 +126,16 @@ public class DefaultSwerveCommand extends Command {
       final_target_angle = -(constraint_current_angle - given_target_angle);
     else if(constraint_current_angle > 0 && given_target_angle > 0 && constraint_current_angle < given_target_angle)
       final_target_angle = (given_target_angle - constraint_current_angle);
-       
+    else 
+      final_target_angle = (given_target_angle - constraint_current_angle);
     
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
+    SmartDashboard.putNumber("Target Angle",final_target_angle);
+    
 
-    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
+    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(final_target_angle) - Math.abs(constraint_current_angle)) > 0)
 
-      angular = m_controller.calculate(target_angle,0);
+      angular = m_controller.calculate(0,final_target_angle);
       // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
       //angular = m_controller.calculate(sub2,0);
 
