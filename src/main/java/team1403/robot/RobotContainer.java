@@ -4,6 +4,8 @@
 
 package team1403.robot;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -75,8 +77,8 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 13.3,
-        () -> 5.4,
+        () -> 2.61, //3 significant digits
+        () -> 0,
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
@@ -101,7 +103,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return AutoSelector.getAutonomousCommandChooser().getSelected();
+    return new PathPlannerAuto("taxiAuto");
   }
 
   public Limelight getLimelight(){

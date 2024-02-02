@@ -10,7 +10,7 @@ public class AutoSelector {
     //Todo update and fix this
     public static SendableChooser<Command> getAutonomousCommandChooser()  {
         SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.setDefaultOption("Auto", new PathPlannerAuto("Auto"));
+        autoChooser.setDefaultOption("taxi path", new PathPlannerAuto("taxiAuto"));
         autoChooser.addOption("Amp Optimal", new PathPlannerAuto("Amp Optimal"));
         autoChooser.addOption("realistic auton", new PathPlannerAuto("realistic auton"));
         autoChooser.addOption("source optimal", new PathPlannerAuto("source optimal"));
