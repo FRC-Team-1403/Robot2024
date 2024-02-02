@@ -80,6 +80,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); //1.70498046875
     public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);//2.70498046875
 
+
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
@@ -90,7 +91,6 @@ public class Constants {
         * Swerve.kSteerReduction / 60.0;
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-
     public static final double kMaxSpeed = 14.5;
 
     public static final double kMaxAngularSpeed = 50;
@@ -114,7 +114,6 @@ public class Constants {
    * and understand overall wiring.
    */
   public static class CanBus {
-
     // Swerve CanBus ids
     public static final int frontLeftDriveId = 6;
     public static final int frontLeftSteerId = 7;
@@ -134,7 +133,16 @@ public class Constants {
 
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
-    public static final int hangerMotor = 0;    
+   //other
+    public static final int intakeMotor = 0;
+    public static final int shooterMotorTop = 0;
+    public static final int shooterMotorBottom = 0;
+    public static final int intakeMotorTop = 0;
+    public static final int intakeMotorBottom = 0;
+    public static final int definiteHangerMotor = 0;
+    public static final int possibleHangerMotor = 0;
+    public static final int m_pivotMotor = 0;
+    public static final int wristMotor = 0;
   }
 
   public static class Turret {
@@ -143,15 +151,26 @@ public class Constants {
     public static final int hallEffectPort = 1;
     // checked with phoenix
     public static final int turretMotor = 19;
-  
   }
   /**
    * Ports on the RoboRIO.
    */
   public static class RioPorts {
+    //remove
+    public static final int kWristAbsoluteEncoder = 1; //DIO
 
+    public static final int kExtensionMinMagneticSwitch = 2; //DIO
+    public static final int kExtensionMaxMagneticSwitch = 3; //DIO
+    //actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
+    public static final int intakePhotogate1 = 0;
+    public static final int shooterPhotogate = 0;
+    public static final int kArmLimitSwitch = 0;
+    public static final int kArmAbsoluteEncoder = 0;
+    //photogates
+    public static final int shooterPhotoswitch = 0;
+    public static final int kIntakePhotogae2 = 0;
   }
 
   /**
@@ -241,5 +260,12 @@ public static int channel;
         Units.inchesToMeters(42.19),
         Units.inchesToMeters(18.22),
         new Rotation3d()))), Units.inchesToMeters(651.25), Units.inchesToMeters(315.5));
+  }
+  public static class Arm {
+    public static final double kPArmPivot = 0;
+    public static final double KIArmPivot = 0;
+    public static final double KDArmPivot = 0;
+
+    public static final double kDecreaseIntakeSpeed = 2; //test value 
   }
 }

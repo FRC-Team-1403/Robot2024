@@ -2,6 +2,8 @@ package team1403.robot.swerve;
 
 import java.util.Optional;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -26,6 +28,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -48,6 +51,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
  private SwerveModuleState[] m_states = new SwerveModuleState[4];
  private final SwerveDrivePoseEstimator m_odometer;
+private Field2d m_field = new Field2d();
 
  private Translation2d frontRight = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
@@ -88,6 +92,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   *                   used to construct this subsystem
   */
  public SwerveSubsystem(Limelight limelight) {
+  SmartDashboard.putData("Field", m_field);
   //  super("Swerve Subsystem", parameters);
    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
    m_Limelight = limelight;
@@ -530,7 +535,7 @@ public class SwerveSubsystem extends SubsystemBase  {
       tagCount++;
     }
   } else {
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    m_odometer.update(getGyroscopeRotation(),getModulePositions());
   }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
@@ -551,5 +556,22 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
+   m_field.setRobotPose(m_odometer.getEstimatedPosition());
+   // Logging Output
+
+   Logger.recordOutput("Odometer", m_odometer.getEstimatedPosition().toString());
+   Logger.recordOutput("Speed", m_speedLimiter);
+   Logger.recordOutput("Amount of Roll", getGyroRoll());
+
+   Logger.recordOutput("Chassis Speeds", m_chassisSpeeds.toString());
+   Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
+   Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
+   Logger.recordOutput("Back Left Absolute Encoder Angle", m_modules[2].getAbsoluteAngle());
+   Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
+
+
+   Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
+
+
  }
 }

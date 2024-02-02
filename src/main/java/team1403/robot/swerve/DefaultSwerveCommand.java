@@ -79,7 +79,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(1, 0, 0);
+    m_controller = new PIDController(0.1, 0, 0);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -108,14 +108,14 @@ public class DefaultSwerveCommand extends Command {
         * Swerve.kMaxSpeed;
     double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
-    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
-    double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 
+
+    double given_current_angle =  m_drivetrainSubsystem.getNavxAhrs().get().getDegrees();
+    double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));;
     double constraint_current_angle = GetConstraintAngle(given_current_angle);
     double final_target_angle = 0;
-    
-    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
 
+    
     if (constraint_current_angle < 0)
       final_target_angle = GetFinalTargetAngleForNegativeCurrentAngle(constraint_current_angle, given_current_angle, given_target_angle);
     else if(constraint_current_angle > 0 && given_target_angle > 0 && constraint_current_angle > given_target_angle)
@@ -123,10 +123,12 @@ public class DefaultSwerveCommand extends Command {
     else if(constraint_current_angle > 0 && given_target_angle > 0 && constraint_current_angle < given_target_angle)
       final_target_angle = (given_target_angle - constraint_current_angle);
        
+    
+    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
 
+    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
 
-    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(final_target_angle) - Math.abs(constraint_current_angle)) > Vision.rotationCutoff)
-      angular = m_controller.calculate(final_target_angle,0);
+      angular = m_controller.calculate(target_angle,0);
       // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
       //angular = m_controller.calculate(sub2,0);
 
