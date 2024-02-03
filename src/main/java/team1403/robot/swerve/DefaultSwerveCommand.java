@@ -114,11 +114,11 @@ public class DefaultSwerveCommand extends Command {
     Translation2d offset = new Translation2d();
 
 
-    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
+    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getRotation2d().getDegrees();
     double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble(), m_xsupplier.getAsDouble()));
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     double constraint_current_angle = GetConstraintAngle(given_current_angle);
-    double final_target_angle = GetConstraintAngle(given_current_angle - Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble(), m_xsupplier.getAsDouble())));
+    double final_target_angle = GetConstraintAngle(given_current_angle - given_target_angle);
 
     // if (constraint_current_angle < 0)
     //   final_target_angle = GetFinalTargetAngleForNegativeCurrentAngle(constraint_current_angle, given_current_angle, given_target_angle);
