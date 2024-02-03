@@ -103,7 +103,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new PathPlannerAuto("taxiAuto");
+    return AutoSelector.getSelectedAuto();
   }
 
   public Limelight getLimelight(){

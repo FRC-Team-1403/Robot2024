@@ -67,6 +67,8 @@ public class Robot extends LoggedRobot {
     }
     m_robotContainer = new RobotContainer();
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
+
+    AutoSelector.initAutoChooser();
   }
 
   /**
