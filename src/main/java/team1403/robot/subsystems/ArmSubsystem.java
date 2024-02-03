@@ -66,14 +66,14 @@ public class ArmSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-      m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armAbsoluteEncoder.get(), m_pivotAngleSetpoint), -1, 1));
+    //m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armAbsoluteEncoder.get(), m_pivotAngleSetpoint), -1, 1));
     Logger.recordOutput("Arm Angle Setpoint", m_pivotAngleSetpoint);
     Logger.recordOutput("Pivot Motor RPM", getPivotMotorSpeed());
     Logger.recordOutput("Arm Limitswitch", getArmLimitSwitch());
     // run the arm if limit switch not pressed 
       if (!m_limitSwitch.get()) 
       m_pivotMotor.set(
-        m_pivotMotor.get() + MathUtil.clamp(
+        MathUtil.clamp(
             m_pivotPid.calculate(
                 m_armAbsoluteEncoder.getAbsolutePosition(), m_pivotAngleSetpoint), 
                 -1,
