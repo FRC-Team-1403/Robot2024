@@ -6,6 +6,7 @@ import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
@@ -15,6 +16,7 @@ public class Wrist extends SubsystemBase {
     private CougarSparkMax m_wristMotor;
     private final PIDController m_wristPid;
     private final ArmFeedforward m_wristFeedforward;
+    private DutyCycleEncoder m_wristAbsoluteEncoder;
     private double m_wristAngle;
     private double lastSpeed = 0;
 
@@ -22,16 +24,14 @@ public class Wrist extends SubsystemBase {
     m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
     m_wristPid = new PIDController(Constants.Wrist.kPWrist, Constants.Wrist.KIWrist, Constants.Wrist.KDWrist);
     m_wristFeedforward = new ArmFeedforward(Constants.Wrist.kSWrist, Constants.Wrist.kGWrist, Constants.Wrist.kVWrist, Constants.Wrist.kAWrist);
-
+    m_wristAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kwristAbsoluteEncoder);
   }
   public double getWristAngle() {
-    return m_wristAngle;
-    
+    return m_wristAngle = m_wristAbsoluteEncoder.get();
   }
 
-  public void setWristAngle(){
-    m_wristMotor.set(m_wristPid.calculate(m_wristMotor.getEncoder().getPosition(), 10));
-
+  public void setWristAngle(double wristAngle){
+    m_wristMotor.set(m_wristPid.calculate(m_wristAngle, wristAngle));
 
   }
 
@@ -64,9 +64,10 @@ public class Wrist extends SubsystemBase {
   }
 
 public void periodic() {
-  m_wristAngle = m_wristMotor.getEncoder().getPosition();
+  m_wristAngle = m_wristAbsoluteEncoder.get();
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
-   Logger.recordOutput("Wrist Angle", getWristAngle());  }
+   Logger.recordOutput("Wrist Angle", getWristAngle());  
+  }
 }

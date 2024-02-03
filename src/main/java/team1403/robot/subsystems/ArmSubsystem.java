@@ -25,6 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final CANSparkMax m_pivotMotor;
   private final DutyCycleEncoder m_armAbsoluteEncoder;
   private final PIDController m_pivotPid;
+  //TODO: no limit switch
   private final DigitalInput m_ArmLimitSwitch;
   private double m_pivotAngleSetpoint;
   private double m_tolerance;
@@ -40,8 +41,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
     m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
-    m_limitSwitch = new WpiLimitSwitch("maxArmLimitSwitch",
-        Constants.RioPorts.kArmLimitSwitch);
+    m_limitSwitch = new WpiLimitSwitch("maxArmLimitSwitch", Constants.RioPorts.kArmLimitSwitch);
     m_pivotPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot);
     
   }
@@ -66,7 +66,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
   @Override
   public void periodic() {
-      m_pivotMotor.set(MathUtil.clamp(m_pivotPid.calculate(m_armAbsoluteEncoder.get(), m_pivotAngleSetpoint), -1, 1));
     Logger.recordOutput("Arm Angle Setpoint", m_pivotAngleSetpoint);
     Logger.recordOutput("Pivot Motor RPM", getPivotMotorSpeed());
     Logger.recordOutput("Arm Limitswitch", getArmLimitSwitch());

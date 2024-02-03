@@ -172,6 +172,8 @@ public class Constants {
     //photogates
     public static final int shooterPhotoswitch = 0;
     public static final int kIntakePhotogae2 = 0;
+    //Wrist 
+    public static final int kwristAbsoluteEncoder = 0;
   }
 
   /**

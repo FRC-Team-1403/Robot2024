@@ -20,12 +20,12 @@ public class RunWrist extends Command {
     @Override
     public void initialize() {
         m_wrist.setWristSpeed(m_wristSpeed);
-        m_wristBoreEncoder.reset();
+        //m_wristBoreEncoder.reset();
     }
 
     @Override
     public void execute() {
-        m_wristAngle = m_wristBoreEncoder.get();
+        // m_wristAngle = m_wristBoreEncoder.get();
 
         if(m_wristAngle == Constants.Wrist.topLimit){
             m_wrist.softTopLimitWrist();
