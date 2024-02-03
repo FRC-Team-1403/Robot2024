@@ -71,7 +71,7 @@ private Field2d m_field = new Field2d();
 
  private final PIDController m_driftCorrectionPid = new PIDController(0.75, 0, 0);
  private double m_desiredHeading = 0;
- private double m_speedLimiter = 0.6;
+//  private double m_speedLimiter = 0.6;
 
  private Translation2d m_offset;
 
@@ -151,34 +151,11 @@ private Field2d m_field = new Field2d();
 
    m_offset = new Translation2d();
    m_rollOffset = -m_navx2.getRoll();
-   setSpeedLimiter(0.5);
  }
 
  public void setDisableVision(boolean disable)
  {
   m_disableVision = disable;
- }
-
- /**
-  * Increases the speed limiter by amt. The speed limiter will not exceed 1.
-  *
-  * @param amt the amount to increase the speed by
-  */
- public void increaseSpeed(double amt) {
-    setSpeedLimiter(m_speedLimiter + amt);
- }
-
- /**
-  * Decreases the speed limiter by amt. The speed limiter will not go below 0.
-  *
-  * @param amt the amount to decrease the speed by
-  */
- public void decreaseSpeed(double amt) {
-    setSpeedLimiter(m_speedLimiter - amt);
- }
-
- public void setSpeedLimiter(double amt) {
-   m_speedLimiter = MathUtil.clamp(amt, 0, 1);
  }
 
  /**
@@ -270,7 +247,7 @@ private Field2d m_field = new Field2d();
   * @return a Rotation2d object that contains the gyroscope's heading
   */
  public Rotation2d getGyroscopeRotation() {
-   return m_navx2.getRotation2d();
+   return m_navx2.get180to180Rotation2d();
  }
 
  /**
@@ -324,7 +301,7 @@ private Field2d m_field = new Field2d();
 
    for (int i = 0; i < m_modules.length; i++) {
      m_modules[i].set((states[i].speedMetersPerSecond
-         / Swerve.kMaxSpeed) * m_speedLimiter,
+         / Swerve.kMaxSpeed),
          states[i].angle.getRadians());
    }
  }
@@ -466,12 +443,12 @@ private Field2d m_field = new Field2d();
       return chassisSpeeds;
    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
-   if (Math.abs(m_navx2.getAngularVelocity()) > 0.1) {
+   if (Math.abs(m_navx2.getAngularVelocity()) > 0.3) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
-   } else if (translationalVelocity > 1) {
+   } else if (translationalVelocity > 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(),
          m_desiredHeading);
-     if (Math.abs(calc) >= 0.55) {
+     if (Math.abs(calc) >= 0.35) {
        chassisSpeeds.omegaRadiansPerSecond += calc;
      }
    }
@@ -539,7 +516,7 @@ private Field2d m_field = new Field2d();
   }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
-   SmartDashboard.putNumber("Speed", m_speedLimiter);
+   //SmartDashboard.putNumber("Speed", m_speedLimiter);
    SmartDashboard.putNumber("Roll Degrees", getGyroscopeRotation().getDegrees());
 
    if (this.m_isXModeEnabled) {
@@ -560,7 +537,7 @@ private Field2d m_field = new Field2d();
    // Logging Output
 
    Logger.recordOutput("Odometer", m_odometer.getEstimatedPosition().toString());
-   Logger.recordOutput("Speed", m_speedLimiter);
+  //  Logger.recordOutput("Speed", m_speedLimiter);
    Logger.recordOutput("Amount of Roll", getGyroRoll());
 
    Logger.recordOutput("Chassis Speeds", m_chassisSpeeds.toString());
