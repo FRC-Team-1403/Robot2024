@@ -110,15 +110,15 @@ public class SwerveModule implements Device {
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(drivePositionConversionFactor / 60.0);
   
+      m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
+      m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
+
       //Config steer relative encoder
       m_steerRelativeEncoder.setPositionConversionFactor(
           Swerve.kSteerRelativeEncoderPositionConversionFactor);
       m_steerRelativeEncoder.setVelocityConversionFactor(
           Swerve.kSteerRelativeEncoderVelocityConversionFactor);
       m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
-
-      m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
-      m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
     }
   
     private void initSteerMotor() {
