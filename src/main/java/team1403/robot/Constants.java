@@ -273,8 +273,19 @@ public static int channel;
   }
   
   public static class Wrist {
+    //PID (test values)
     public static final double kPWrist = 0;
     public static final double KIWrist = 0;
     public static final double KDWrist = 0;
+    //feedforward (test values)
+    public static final double kSWrist = 0;
+    public static final double kGWrist = 0;
+    public static final double kVWrist = 0;
+    public static final double kAWrist = 0;
+    //soft limits (add values)
+    public static final double topLimit = 0;
+    public static final double bottomLimit = 0;
+    public static final double feedforwardVelocity = 0;  //((lastSpeed / 60) / 2 * (Math.PI)); conversion from RPM to rad per sec?
+    public static final double feedforwardAcc = 0; //acceleration
   }
 }

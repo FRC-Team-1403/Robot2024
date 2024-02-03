@@ -25,7 +25,10 @@ public class RunWrist extends Command {
     @Override
     public void execute() {
         m_wrist.setWristSpeed(m_wristSpeed);       //update wrist speed later
+        //if(m_wristBoreEncoder.get() = Constants.Wrist.topLimit){
+
     }
+    
 
     @Override
     public boolean isFinished() {
