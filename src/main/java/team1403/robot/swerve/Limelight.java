@@ -1,8 +1,11 @@
 
 package team1403.robot.swerve;
 
+import java.util.Optional;
+
 import javax.swing.tree.ExpandVetoException;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -23,6 +26,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1403.robot.Constants;
 
 public class Limelight extends SubsystemBase {
   private PhotonCamera limeLight;
@@ -33,6 +37,7 @@ public class Limelight extends SubsystemBase {
   private double cameraHeightMeters = 0.559;
   private double targetHeightMeters = 1.3208;
   private double cameraPitchDegrees = -35;
+  private int targetCount = 0;
 
   public Limelight() {
     // Photonvision
@@ -40,6 +45,8 @@ public class Limelight extends SubsystemBase {
     limeLight = new PhotonCamera("1403Camera");
 
     // 0: April Tags
+
+
     // 1: Reflective Tape
     limeLight.setPipelineIndex(0);
     
@@ -48,6 +55,7 @@ public class Limelight extends SubsystemBase {
     try
     {
       fieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+
     }
     catch(Exception e)
     {
@@ -56,18 +64,20 @@ public class Limelight extends SubsystemBase {
     //Cone detection
   }
 
+  // public double getTagXPos(){
+  //   return Constants.Vision.fieldLayout.;
+  // }
+
+
   public double getZDistance() {
-    result = limeLight.getLatestResult();
-    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getZ() : 0;  
+    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getZ() : 0;  
   }
 
   public double getXDistance() {
-    result = limeLight.getLatestResult();
-    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getX() : 0;
+    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getX() : 0;  
   }
 
   public double getDistanceFromTarget() {
-    result = limeLight.getLatestResult();
     if (result.hasTargets()) {
       double distanceToTarget =  PhotonUtils.calculateDistanceToTargetMeters(
         cameraHeightMeters,
@@ -80,14 +90,16 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getYDistance() {
-    result = limeLight.getLatestResult();
     return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getY() : 0;
   }
 
   public double getZAngle() {
-    return Math.acos(getZDistance() / getDistanceFromTarget());
+    //  return Units.degreesToRadians(result.hasTargets() ? fieldLayout.getTagPose((result.getBestTarget().getFiducialId())).get().getRotation().getZ()  : 0);
+    double angle = result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() : 0;
+    return result.hasTargets() ? Units.radiansToDegrees(angle) : 0;
+   
   }
-  
+
   public double getXAngle(){
     return result.getBestTarget().getSkew();
   }
@@ -95,6 +107,7 @@ public class Limelight extends SubsystemBase {
   public double getYAngle(){
     return result.getBestTarget().getYaw();
   }
+
 
   public double getAmbiguity(){
     return result.getBestTarget().getPoseAmbiguity();
@@ -106,7 +119,15 @@ public class Limelight extends SubsystemBase {
 
   public Pose3d getDistance(){
     if(hasTarget())
-        return PhotonUtils.estimateFieldToRobotAprilTag(result.getBestTarget().getBestCameraToTarget(), fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get(), new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,0.0,0.0)));
+    {
+      Optional<Pose3d> pose = fieldLayout.getTagPose(result.getBestTarget().getFiducialId());
+      if(pose.isEmpty())
+      {
+        System.err.println("RIP code");
+        return null;
+      }
+      return PhotonUtils.estimateFieldToRobotAprilTag(result.getBestTarget().getBestCameraToTarget(), pose.get(), new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,0.0,0.0)));
+    }
     else
         return null;
   }
@@ -116,18 +137,27 @@ public class Limelight extends SubsystemBase {
     Rotation3d rot = pose.getRotation();
     return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getZ()));
   }
+  
 
   public Matrix<N3,N1> getPosStdv(){
+    if(!hasTarget())
+      return null;
     return new Matrix<N3,N1>(VecBuilder.fill(getXDistance()*getAmbiguity(),getYDistance()*getAmbiguity(),result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()*getAmbiguity()));
-    
   }
 
   @Override
   public void periodic() {
     result = limeLight.getLatestResult();
+    
+    Logger.recordOutput("Target Visible?", hasTarget());
+    
     if(hasTarget())
     {
       SmartDashboard.putString("pos", getDistance().toString());
+      Logger.recordOutput("Position", getDistance().toString());
+      Logger.recordOutput("X Distance", getXDistance());
+      Logger.recordOutput("Y Distance", getYDistance());
+      Logger.recordOutput("Z Distance", getZDistance());
     }
   }
 }
