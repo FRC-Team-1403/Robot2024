@@ -63,7 +63,7 @@ private Field2d m_field = new Field2d();
 
  private Translation2d backRight = new Translation2d(
      -Constants.Swerve.kTrackWidth / 2.0,
-     -Constants.Swerve.kWheelBase / 2.0);
+    -Constants.Swerve.kWheelBase / 2.0);
 
  private Translation2d backLeft = new Translation2d(
      -Constants.Swerve.kTrackWidth / 2.0,
