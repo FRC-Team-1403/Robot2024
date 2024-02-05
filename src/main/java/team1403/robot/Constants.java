@@ -263,10 +263,23 @@ public static int channel;
         new Rotation3d()))), Units.inchesToMeters(651.25), Units.inchesToMeters(315.5));
   }
   public static class Arm {
-    public static final double kPArmPivot = 0;
+    //Intake
+    public static double kDecreaseIntakeSpeed = 1.0;
+
+    public static final double KPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
 
-    public static final double kDecreaseIntakeSpeed = 2; //test value 
+    public static double kAbsolutePivotOffset = 355.5375784610152-180+10;
+    public static double kMaxPivotAngle = 256.84208720995503;
+    public static final double kFrameAngle = 250.24629;
+    public static final double kFrameClearanceAngle = 234.5; //cone angle
+    public static final double kMinPivotAngle = 132.211;
+    public static final double kPivotAngleMaxAmperage = 40;
+    public static final double kHorizonAngle = 210;
+    public static final double kPivotLimitSwitchOffset = -6;
+    public static final double kBaseArmLength = 0;
+
+    public static final double kArmConversionFactor = 1;
   }
 }

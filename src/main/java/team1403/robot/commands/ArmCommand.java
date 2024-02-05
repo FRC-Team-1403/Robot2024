@@ -22,11 +22,12 @@ public class ArmCommand extends Command {
 
    @Override
    public void initialize() {
-        m_arm.setArmSetpoint(m_pivotAngle);
+        m_arm.setAbsolutePivotAngle(m_pivotAngle);
    }
 
    @Override
    public void execute() {  
+        
    }
 
    @Override
