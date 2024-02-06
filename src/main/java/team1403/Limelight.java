@@ -1,11 +1,10 @@
 
-package team1403.robot.swerve;
+package team1403;
 
 import java.util.Optional;
 
 import javax.swing.tree.ExpandVetoException;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -26,7 +25,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.robot.Constants;
 
 public class Limelight extends SubsystemBase {
   private PhotonCamera limeLight;
@@ -37,16 +35,13 @@ public class Limelight extends SubsystemBase {
   private double cameraHeightMeters = 0.559;
   private double targetHeightMeters = 1.3208;
   private double cameraPitchDegrees = -35;
-  private int targetCount = 0;
 
   public Limelight() {
     // Photonvision
     PortForwarder.add(5800, "photonvision.local", 5800);
-    limeLight = new PhotonCamera("1403Camera");
+    limeLight = new PhotonCamera("Camera_Module_v1");
 
     // 0: April Tags
-
-
     // 1: Reflective Tape
     limeLight.setPipelineIndex(0);
     
@@ -64,17 +59,12 @@ public class Limelight extends SubsystemBase {
     //Cone detection
   }
 
-  // public double getTagXPos(){
-  //   return Constants.Vision.fieldLayout.;
-  // }
-
-
   public double getZDistance() {
-    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getZ() : 0;  
+    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getZ() : 0;  
   }
 
   public double getXDistance() {
-    return result.hasTargets() ? fieldLayout.getTagPose(result.getBestTarget().getFiducialId()).get().getX() : 0;  
+    return result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getX() : 0;
   }
 
   public double getDistanceFromTarget() {
@@ -94,12 +84,9 @@ public class Limelight extends SubsystemBase {
   }
 
   public double getZAngle() {
-    //  return Units.degreesToRadians(result.hasTargets() ? fieldLayout.getTagPose((result.getBestTarget().getFiducialId())).get().getRotation().getZ()  : 0);
-    double angle = result.hasTargets() ? result.getBestTarget().getBestCameraToTarget().getRotation().getAngle() : 0;
-    return result.hasTargets() ? Units.radiansToDegrees(angle) : 0;
-   
+    return result.hasTargets() ? fieldLayout.getTagPose((result.getBestTarget().getFiducialId())).get().getRotation().getZ() : 0;
   }
-
+  
   public double getXAngle(){
     return result.getBestTarget().getSkew();
   }
@@ -107,7 +94,6 @@ public class Limelight extends SubsystemBase {
   public double getYAngle(){
     return result.getBestTarget().getYaw();
   }
-
 
   public double getAmbiguity(){
     return result.getBestTarget().getPoseAmbiguity();
@@ -142,22 +128,15 @@ public class Limelight extends SubsystemBase {
   public Matrix<N3,N1> getPosStdv(){
     if(!hasTarget())
       return null;
-    return new Matrix<N3,N1>(VecBuilder.fill(getXDistance()*getAmbiguity(),getYDistance()*getAmbiguity(),result.getBestTarget().getBestCameraToTarget().getRotation().getAngle()*getAmbiguity()));
+    return new Matrix<N3,N1>(VecBuilder.fill(getXDistance()*getAmbiguity(),getYDistance()*getAmbiguity(),result.getBestTarget().getBestCameraToTarget().getRotation().getZ()*getAmbiguity()));
   }
 
   @Override
   public void periodic() {
     result = limeLight.getLatestResult();
-    
-    Logger.recordOutput("Target Visible?", hasTarget());
-    
     if(hasTarget())
     {
       SmartDashboard.putString("pos", getDistance().toString());
-      Logger.recordOutput("Position", getDistance().toString());
-      Logger.recordOutput("X Distance", getXDistance());
-      Logger.recordOutput("Y Distance", getYDistance());
-      Logger.recordOutput("Z Distance", getZDistance());
     }
   }
 }
