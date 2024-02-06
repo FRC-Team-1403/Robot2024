@@ -6,12 +6,14 @@ package team1403.robot.subsystems;
  */
 public class ArmState {
   public final double armPivot;
+  public final double wristAngle;
 
   /**
    * Initializes the ArmState class.
    */
-  public ArmState(double armPivot) {
+  public ArmState(double armPivot, double wrist) {
     this.armPivot = armPivot;
+    this.wristAngle = wrist;
 
   }
   
@@ -21,6 +23,8 @@ public class ArmState {
     int result = 1;
     long temp;
     temp = Double.doubleToLongBits(armPivot);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    temp = Double.doubleToLongBits(wristAngle);
     result = prime * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
@@ -38,6 +42,9 @@ public class ArmState {
     }
     ArmState other = (ArmState) obj;
     if (Double.doubleToLongBits(armPivot) != Double.doubleToLongBits(other.armPivot)) {
+      return false;
+    }
+    if (Double.doubleToLongBits(wristAngle) != Double.doubleToLongBits(other.wristAngle)) {
       return false;
     }
     return true;

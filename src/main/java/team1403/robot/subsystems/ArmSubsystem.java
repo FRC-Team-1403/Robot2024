@@ -1,14 +1,16 @@
 package team1403.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.MotorFeedbackSensor;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,8 +18,7 @@ import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.core.CougarSubsystem;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
-import team1403.robot.*;
-import team1403.robot.Constants.Arm;
+import team1403.robot.Constants;
 
 /**
  * Class creating the arm subsystem. The subsystem takes care of moving the arm
@@ -26,29 +27,25 @@ import team1403.robot.Constants.Arm;
  * 
  */
 public class ArmSubsystem extends SubsystemBase {
-
   // Arm
-  private final CANSparkMax m_pivotMotor;
-  private final DutyCycleEncoder m_armAbsoluteEncoder;
+  private final CANSparkMax m_leftPivotMotor;
+  private final CANSparkMax m_rightPivotMotor;
+  private final AnalogEncoder m_armAbsoluteEncoder;
   private final PIDController m_pivotPid;
-  private final WpiLimitSwitch m_maxArmLimitSwitch;
 
   // Setpoints
   private double m_pivotAngleSetpoint;
-  private boolean previousLimitSwitchTrigger = true;
-  
+
   /**
    * Initializing the arn subsystem.
-   *
-   * @param injectedParameters Cougar injected parameters.
    */
   public ArmSubsystem() {
 
-    m_pivotMotor = new CANSparkMax(Constants.CanBus.m_pivotMotor, MotorType.kBrushless);
-    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
+    m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    m_armAbsoluteEncoder = new AnalogEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
-    m_maxArmLimitSwitch = new WpiLimitSwitch("maxArmLimitSwitch",
-        Constants.RioPorts.kArmLimitSwitch);
+    configWristMotor();
     configEncoders();
 
     m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
@@ -69,11 +66,21 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void configEncoders() {
     // Arm encoders
-    m_pivotMotor.getEncoder().setPositionConversionFactor(Constants.Arm.kArmConversionFactor);
-    m_pivotMotor.getEncoder().setPosition(getAbsolutePivotAngle());
+    m_leftPivotMotor.getEncoder().setPositionConversionFactor(1.53285964552);
+    m_leftPivotMotor.getEncoder().setPosition(getAbsolutePivotAngle());
   }
 
- 
+  /**
+   * Configures all the motors associated with the subsystem.
+   */
+  private void configWristMotor() {
+    // Pivot
+    m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
+    m_leftPivotMotor.enableVoltageCompensation(12);
+    m_leftPivotMotor.setSmartCurrentLimit(25);
+    m_rightPivotMotor.follow(m_leftPivotMotor, true);
+  }
+
   // --------------------------- Pivot Methods ---------------------------
 
   /**
@@ -99,28 +106,20 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param desiredAngle the angle to move the pivot to in degrees.
    */
-  public void setAbsolutePivotAngle(double desiredAngle) {
+  private void setAbsolutePivotAngle(double desiredAngle) {
     // Feedforward
     double currentAngle = getAbsolutePivotAngle();
     double normalizedCurrentAngle = currentAngle;
     while (normalizedCurrentAngle > 90) {
       normalizedCurrentAngle -= 90;
     }
-    double gravityCompensationFactor = ((.0004/23.128) * + .0009)
-     * Constants.Arm.kBaseArmLength;
-    double feedforward = gravityCompensationFactor;
-        // * Math.cos(Math.toRadians(normalizedCurrentAngle));
-    if ((currentAngle < 90 && currentAngle > 0) || (currentAngle > 270 && currentAngle < 360)) {
-      feedforward *= -1;
-    }
 
     // Feedback
     double feedback = -1 * m_pivotPid.calculate(currentAngle, desiredAngle);
 
-    SmartDashboard.putNumber("Arm Feedforward", feedforward);
     SmartDashboard.putNumber("Arm Feedback", feedback);
-    double speed = MathUtil.clamp(feedforward + feedback, -1, 1);
-    m_pivotMotor.set(speed);
+    double speed = MathUtil.clamp(feedback, -1, 1);
+    m_leftPivotMotor.set(speed);
   }
 
   /**
@@ -135,7 +134,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * Limits the given angle in between the min and max pivot angles as defined in
-   * the Arm.
+   * the RobotConfig.Arm.
    * 
    * @param angle the angle to limit.
    * @return the limited angle.
@@ -144,10 +143,8 @@ public class ArmSubsystem extends SubsystemBase {
     return MathUtil.clamp(angle, Constants.Arm.kMinPivotAngle, Constants.Arm.kMaxPivotAngle);
   }
 
-  // --------------------------- General methods ---------------------------
-
   /**
-   * Sets the setpoints for the pivot to go to.
+   * Sets the setpoints for the pivot, extension, wrist, and intake to go to.
    *
    * @param pivotAngle      the pivot angle.
    */
@@ -171,6 +168,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public boolean isAtSetpoint() {
     double currentPivotAngle = getAbsolutePivotAngle();
+
     if (Math.abs(currentPivotAngle - this.m_pivotAngleSetpoint) > 7) {
       return false;
     }
@@ -180,12 +178,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Pivot
-    if ((isInPivotBounds(getAbsolutePivotAngle()))
-        || isInPivotBounds(this.m_pivotAngleSetpoint)) {
+    if ((isInPivotBounds(getAbsolutePivotAngle())) || isInPivotBounds(this.m_pivotAngleSetpoint)) {
       setAbsolutePivotAngle(this.m_pivotAngleSetpoint);
-    } else if (m_pivotMotor.getOutputCurrent() > Constants.Arm.kPivotAngleMaxAmperage) {
-      m_pivotMotor.stopMotor();
+    } else if (m_leftPivotMotor.getOutputCurrent() > Constants.Arm.kPivotAngleMaxAmperage) {
+      m_leftPivotMotor.stopMotor();
     } else {
       setAbsolutePivotAngle(getAbsolutePivotAngle());
     }
@@ -195,14 +191,13 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
   }
 
-
   /**
    * Returns the object for the pivot motor.
    * 
    * @return the pivot motor.
    */
-  public CANSparkMax getPivotMotor() {
-    return m_pivotMotor;
+  public CANSparkMax getLeftPivotMotor() {
+    return m_leftPivotMotor;
   }
 
   /**
