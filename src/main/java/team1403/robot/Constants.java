@@ -169,6 +169,7 @@ public class Constants {
     public static final int shooterPhotogate = 0;
     public static final int kArmLimitSwitch = 0;
     public static final int kArmAbsoluteEncoder = 0;
+
     //photogates
     public static final int shooterPhotoswitch = 0;
     public static final int kIntakePhotogae2 = 0;
@@ -289,5 +290,7 @@ public static int channel;
     public static final double bottomLimit = 0;
     public static final double feedforwardVelocity = 0;  //((lastSpeed / 60) / 2 * (Math.PI)); conversion from RPM to rad per sec?
     public static final double feedforwardAcc = 0; //acceleration
+    //other
+    public static double kAbsoluteWristOffest = 0;
   }
 }
