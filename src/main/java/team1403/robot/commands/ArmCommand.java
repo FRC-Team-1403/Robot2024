@@ -4,7 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants.Arm;
-import team1403.robot.subsystems.ArmSubsystem;
+import team1403.robot.subsystems.arm.ArmSubsystem;
 
 public class ArmCommand extends Command {
    private ArmSubsystem m_arm;

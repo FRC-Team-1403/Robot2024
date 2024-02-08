@@ -1,7 +1,9 @@
 package team1403.lib.core;
 
 import java.util.function.Function;
-import edu.wpi.first.wpilibj.TimedRobot;
+
+import org.littletonrobotics.junction.LoggedRobot;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -57,7 +59,7 @@ import team1403.lib.util.Clock;
  * you when starting with the template cougar robot project.
  */
 @SuppressWarnings({"PMD.CommentSize", "PMD.TooManyMethods"})
-public class WpiLibRobotAdapter<T extends CougarRobot> extends TimedRobot {
+public class WpiLibRobotAdapter<T extends CougarRobot> extends LoggedRobot {
   /**
    * Constructor.
    *
