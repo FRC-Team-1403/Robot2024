@@ -28,6 +28,8 @@ public class Robot extends TimedRobot {
   private IntakeSubsystem m_intake = new IntakeSubsystem();
   private IntakeCommand m_intakeCommand = new IntakeCommand(m_intake);
   private CommandXboxController m_controller = new CommandXboxController(0);
+  private boolean isIntaked = false;
+  private boolean isPrimed = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -39,9 +41,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    SmartDashboard.putNumber("shooter", 0);
-    SmartDashboard.putNumber("intake", 0);
-    SmartDashboard.putBoolean("Second LimitSwitch", false);
+    SmartDashboard.putNumber("shooter", m_intake.getShooterRpm());
+    SmartDashboard.putNumber("intake", m_intake.getIntakeRpm());
+    SmartDashboard.putBoolean("isIntaked", isIntaked);
+    SmartDashboard.putBoolean("isPrimed", isPrimed);
   }
 
   /**
@@ -99,35 +102,22 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    double m_topNeoSpeed = SmartDashboard.getNumber("shooter", 0);
-    //double m_topNeoSpeed = m_controller.getRightTriggerAxis();
-    // if(m_controller.b().getAsBoolean())
-    // {
-    //   m_intake.setShooterRpm(m_topNeoSpeed);
-    // }
-    // else
-    // {
-    //   m_intake.setShooterRpm(0.0);
-    // }
+    isIntaked = SmartDashboard.getBoolean("isIntaked", false);
+    isPrimed = SmartDashboard.getBoolean("isPrimed", false);
 
-    
-    // if(m_controller.a().getAsBoolean())
-    //   m_intake.setIntakeSpeed(1);
-    // else if(m_controller.y().getAsBoolean())
-    //   m_intake.setIntakeRpm(-600);
-    // else
-    //   m_intake.setIntakeRpm(0.0);
-    boolean secondLimitSwitch = SmartDashboard.getBoolean("Second LimitSwitch", false);
-    if (m_controller.b().getAsBoolean()) {
-      while (!secondLimitSwitch) {
+    if (!m_controller.b().getAsBoolean()) {
+      return;
+    }
+
+    if (!isIntaked) { //Check if gamepiece is in the intake
         m_intake.setIntakeRpm(5000);
-      }
-      m_intake.setIntakeRpm(0);
-      while (secondLimitSwitch) {
-        m_intake.setIntakeSpeed(-0.1);
-      }
-      m_intake.setIntakeSpeed(0);
-      m_intake.setShooterRpm(5000);
+        isIntaked = m_intake.isShooterGateOn();
+    }
+    if (!isPrimed && isIntaked) {
+      m_intake.setIntakeSpeed(-0.1);
+      isPrimed = !m_intake.isShooterGateOn();
+    } else {
+      m_intake.setShooterRpm(6000);
       try {
         wait(3000);
       } catch (Exception e) {
@@ -140,6 +130,9 @@ public class Robot extends TimedRobot {
         e.printStackTrace();
       }
       m_intake.setIntakeRpm(0);
+      m_intake.setShooterRpm(0);
+      isPrimed = false;
+      isIntaked = false;
     }
   }
 

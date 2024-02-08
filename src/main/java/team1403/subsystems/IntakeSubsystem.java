@@ -4,13 +4,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.google.flatbuffers.Constants;
+import team1403.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
     private TalonFX m_topShooterMotor;
@@ -18,6 +19,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private CANSparkMax m_intake;
     private PIDController m_controller;
     private PIDController m_controller2;
+    private DigitalInput m_shooterPhotoGate;
+    private DigitalInput m_intakePhotoGate;
 
     private double rpm1;
     private double rpm2;
@@ -32,6 +35,16 @@ public class IntakeSubsystem extends SubsystemBase {
         rpm2 = 0;
         m_intake.setIdleMode(IdleMode.kBrake);
         m_bottomShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+        m_shooterPhotoGate = new DigitalInput(Constants.Intake.kShooterPhotoGateID);
+        m_intakePhotoGate = new DigitalInput(Constants.Intake.kIntakePhotoGateID);
+    }
+
+    public boolean isShooterGateOn() {
+        return m_shooterPhotoGate.get();
+    }
+
+    public boolean isIntakeGateOn() {
+        return m_intakePhotoGate.get();
     }
 
     public void setShooterRpm(double rpm)
@@ -39,9 +52,17 @@ public class IntakeSubsystem extends SubsystemBase {
         rpm1 = rpm;
     }
 
+    public double getShooterRpm() {
+        return rpm1;
+    }
+
     public void setIntakeRpm(double rpm)
     {
         rpm2 = rpm;
+    }
+
+    public double getIntakeRpm() {
+        return rpm2;
     }
 
     public void setTopNeoSpeed(double speed) {
