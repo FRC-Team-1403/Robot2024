@@ -6,12 +6,10 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import team1403.lib.util.Dimension;
-import team1403.robot.Datables.ShooterValues;
 
 /**
  * This class holds attributes for the robot configuration.
@@ -132,7 +130,8 @@ public class Constants {
    //other
     public static final int intakeMotor = 0;
     // other
-    public static finalm_shooterSpeed int hangerMotor = 0;
+    public static final int m_shooterSpeed = 0;
+    public final int  hangerMotor = 0;
     public static final int shooterMotorTop = 0;
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;
@@ -275,6 +274,7 @@ public class Constants {
     public static double kMaxPivotAngle;
     public static double kMinPivotAngle;
     public static double kPivotAngleMaxAmperage;
+    public static double kDecreaseIntakeSpeed;
   }
 
   public static class Intake {
