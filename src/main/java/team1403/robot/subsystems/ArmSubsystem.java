@@ -41,7 +41,6 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public ArmSubsystem() {
 
-    m_pivotPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot);
 
     m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
@@ -54,7 +53,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     Constants.Arm.kAbsolutePivotOffset = 0;
     double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
-    Constants.Arm.kAbsolutePivotOffset = difference;
+    Constants.Arm.kAbsolutePivotOffset = (int) difference;
 
     this.m_pivotAngleSetpoint = getAbsolutePivotAngle();    
   }
@@ -106,7 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param desiredAngle the angle to move the pivot to in degrees.
    */
-  private void setAbsolutePivotAngle(double desiredAngle) {
+  public void setAbsolutePivotAngle(double desiredAngle) {
     // Feedforward
     double currentAngle = getAbsolutePivotAngle();
     double normalizedCurrentAngle = currentAngle;

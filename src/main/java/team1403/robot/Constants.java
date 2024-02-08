@@ -270,6 +270,10 @@ public class Constants {
     public static final double KPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
+    public static int kAbsolutePivotOffset;
+    public static double kMaxPivotAngle;
+    public static double kMinPivotAngle;
+    public static double kPivotAngleMaxAmperage;
   }
 
   public static class Intake {
@@ -300,24 +304,14 @@ public class Constants {
     public static double kPWristMotor = 0;
     public static double kIWristMotor = 0;
     public static double KDWristMotor = 0;
-  }
-  
-  public static class Wrist {
-    //PID (test values)
-    public static final double kPWrist = 0;
-    public static final double KIWrist = 0;
-    public static final double KDWrist = 0;
-    //feedforward (test values)
-    public static final double kSWrist = 0;
-    public static final double kGWrist = 0;
-    public static final double kVWrist = 0;
-    public static final double kAWrist = 0;
-    //soft limits (add values)
-    public static final double topLimit = 0;
-    public static final double bottomLimit = 0;
-    public static final double feedforwardVelocity = 0;  //((lastSpeed / 60) / 2 * (Math.PI)); conversion from RPM to rad per sec?
-    public static final double feedforwardAcc = 0; //acceleration
-    //other
-    public static double kAbsoluteWristOffest = 0;
+    public static double topLimit;
+    public static double bottomLimit;
+    public static double kAbsoluteWristOffest;
+    public static double kSWrist;
+    public static double kVWrist;
+    public static double kAWrist;
+    public static double kGWrist;
+    public static double feedforwardVelocity;
+    public static double feedforwardAcc;
   }
 }
