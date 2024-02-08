@@ -11,11 +11,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Arm;
 
-public class WristSubsystem {
+public class WristSubsystem extends SubsystemBase {
   private final CANSparkMax m_wristMotor;
   private final DutyCycleEncoder m_wristAbsoluteEncoder;
   private double m_wristAngleSetpoint;
