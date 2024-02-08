@@ -41,6 +41,8 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public ArmSubsystem() {
 
+    m_pivotPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot, Constants.Arm.kPArmPivot);
+
     m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     m_armAbsoluteEncoder = new AnalogEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
@@ -54,9 +56,7 @@ public class ArmSubsystem extends SubsystemBase {
     double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
     Constants.Arm.kAbsolutePivotOffset = difference;
 
-    this.m_pivotAngleSetpoint = getAbsolutePivotAngle();
-
-    
+    this.m_pivotAngleSetpoint = getAbsolutePivotAngle();    
   }
 
   // --------------------------- Setup methods ---------------------------
