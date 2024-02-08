@@ -140,7 +140,7 @@ public class SwerveSubsystem extends SubsystemBase  {
               this // Reference to this subsystem to set requirements
       );
   m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+       getModulePositions(), new Pose2d(2, 7, new Rotation2d(0)));
   m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
 
@@ -284,7 +284,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
  public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
-   m_chassisSpeeds = chassisSpeeds;
+  drive(chassisSpeeds, new Translation2d());
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
  /**

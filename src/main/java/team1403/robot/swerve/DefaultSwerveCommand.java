@@ -156,8 +156,6 @@ public class DefaultSwerveCommand extends Command {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
 
-    SmartDashboard.putString("pose2d", m_drivetrainSubsystem.getPose().toString());
-
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }
        

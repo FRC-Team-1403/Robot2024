@@ -5,6 +5,7 @@
 package team1403.robot;
 
 import com.google.flatbuffers.Table;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.util.Units;
@@ -52,7 +53,7 @@ public class RobotContainer {
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_dataTable = new Tables();
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
-
+    NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     configureBindings();
   }
 
@@ -106,7 +107,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return AutoSelector.getSelectedAuto();
+    return AutoSelector.getSelectedAuto().andThen(new InstantCommand(() -> m_swerve.stop()));
   }
 
   public Limelight getLimelight(){
