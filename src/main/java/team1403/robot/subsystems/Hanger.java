@@ -29,9 +29,11 @@ public class Hanger extends SubsystemBase{
   }
 
 public void ifLimitHit() {
-  if (isAtTop() == true || isAtBottom() == true) {
-    m_rightHangerMotor.set(0);
-    m_leftHangerMotor.set(0);
+  
+  if (isAtTop() || isAtBottom()) {
+
+    m_definiteHangerMotor.set(0);
+    m_possibleHangerMotor.set(0);
   } else {
     m_rightHangerMotor.set(3);
     m_leftHangerMotor.set(3);

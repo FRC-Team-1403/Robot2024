@@ -80,7 +80,7 @@ public class SwerveDrivePath extends Command {
   public void initialize() {
     m_drivetrain.zeroGyroscope();
 
-    m_drivetrain.setSpeedLimiter(1);
+    // m_drivetrain.setSpeedLimiter(1);
 
     m_trajectory = TrajectoryGenerator.generateTrajectory(
         m_startPose,
@@ -111,7 +111,7 @@ public class SwerveDrivePath extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    m_drivetrain.setSpeedLimiter(0.6);
+    // m_drivetrain.setSpeedLimiter(0.6);
     m_drivetrain.stop();
   }
 }

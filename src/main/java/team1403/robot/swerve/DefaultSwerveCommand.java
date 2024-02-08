@@ -31,11 +31,15 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_xsupplier;
   private final DoubleSupplier m_ysupplier;
   private boolean m_isFieldRelative;
+  private double tempKP = 0;
+  private double tempKI = 0;
 
   private SlewRateLimiter m_verticalTranslationLimiter;
   private SlewRateLimiter m_horizontalTranslationLimiter;
 
   private PIDController m_controller;
+
+  private double m_speedLimiter = 0.2;
 
   /**
    * Creates the swerve command.
@@ -79,18 +83,26 @@ public class DefaultSwerveCommand extends Command {
 
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
-    m_controller = new PIDController(1, 0, 0);
+    m_controller = new PIDController(1.25, 1, 0);
 
     addRequirements(m_drivetrainSubsystem);
+
+    SmartDashboard.putNumber("P Value", tempKP);
+    SmartDashboard.putNumber("I Value", tempKI);
   }
 
   @Override
   public void execute() {
-    m_drivetrainSubsystem.setSpeedLimiter(0.2 + (m_speedSupplier.getAsDouble() * 0.8));
+    tempKP = SmartDashboard.getNumber("P Value", tempKP);
+    tempKI = SmartDashboard.getNumber("I Value", tempKI);
+    m_controller.setP(tempKP);
+    m_controller.setI(tempKI);
+
+    m_speedLimiter = 0.2 + (m_speedSupplier.getAsDouble() * 0.8);
 
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
-    }
+    } 
 
     SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
 
@@ -103,41 +115,37 @@ public class DefaultSwerveCommand extends Command {
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     double vertical = m_verticalTranslationLimiter.calculate(m_verticalTranslationSupplier.getAsDouble())
-        * Swerve.kMaxSpeed;
+        * Swerve.kMaxSpeed * m_speedLimiter;
     double horizontal = m_horizontalTranslationLimiter.calculate(m_horizontalTranslationSupplier.getAsDouble())
-        * Swerve.kMaxSpeed;
-    double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed;
+        * Swerve.kMaxSpeed * m_speedLimiter;
+    double angular = squareNum(m_rotationSupplier.getAsDouble()) * Swerve.kMaxAngularSpeed * m_speedLimiter;
     Translation2d offset = new Translation2d();
-    double robotAngleinDegrees = m_drivetrainSubsystem.getNavxAhrs().get0to360Rotation2d().getDegrees();
-
-    double target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
-
-    // double sub = 0;
-
-    if((Math.abs(target_angle) + Math.abs(robotAngleinDegrees)) < 180) target_angle = target_angle - robotAngleinDegrees;
-    else target_angle = target_angle + robotAngleinDegrees;
-
-    if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees > 180) target_angle = - ((360 - target_angle) + robotAngleinDegrees);
-    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle > 180) target_angle = (360 - robotAngleinDegrees) + target_angle;
-    else if(target_angle > robotAngleinDegrees && target_angle - robotAngleinDegrees < 180) target_angle = target_angle - robotAngleinDegrees;
-    else if(robotAngleinDegrees > target_angle && robotAngleinDegrees - target_angle < 180) target_angle = -(robotAngleinDegrees - target_angle);
-    else if(target_angle == robotAngleinDegrees) target_angle = 0;
-    else if(target_angle - robotAngleinDegrees == 180 || robotAngleinDegrees - target_angle == 180) target_angle = 180;
-    else if(target_angle - robotAngleinDegrees == 0 || robotAngleinDegrees - target_angle == 0) target_angle = 0;
 
 
+    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getRotation2d().getDegrees();
+    double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX()));
+    // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
+    double constraint_current_angle = GetConstraintAngle(given_current_angle);
+    double final_target_angle = 0;
 
-    // if(Math.abs(robotAngleinDegrees - target_angle) > 180)
-    //   sub = 180;
+    if (constraint_current_angle < 0)
+      final_target_angle = GetFinalTargetAngleForNegativeCurrentAngle(constraint_current_angle, given_current_angle, given_target_angle);
+    else if(constraint_current_angle > 0 && given_target_angle > 0 && constraint_current_angle > given_target_angle)
+      final_target_angle = -(constraint_current_angle - given_target_angle);
+    else if(constraint_current_angle > 0 && given_current_angle > 0 && constraint_current_angle < given_current_angle)
+      final_target_angle = ((180 - given_current_angle) - constraint_current_angle);
+    else if(constraint_current_angle > 0 && given_current_angle > 0 && constraint_current_angle > given_current_angle)
+      final_target_angle = -((180 - given_current_angle) - given_target_angle); 
+    else 
+      final_target_angle = (given_target_angle - constraint_current_angle);
 
-    //double sub2 = target_angle - robotAngleinDegrees;
-
-
+    
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
-    SmartDashboard.putNumber("Target Angle", target_angle);
+    SmartDashboard.putNumber("Target Angle",final_target_angle);
+    
 
-    if(m_aimbotSupplier.getAsBoolean() && Math.abs(Math.abs(target_angle) - Math.abs(robotAngleinDegrees)) > Vision.rotationCutoff)
-      angular = m_controller.calculate(target_angle,0);
+    if(m_aimbotSupplier.getAsBoolean() && Math.abs(final_target_angle) > 0)
+      angular = m_controller.calculate(0, final_target_angle);
       // angular = m_controller.calculate(robotAngleinDegrees, target_angle);
       //angular = m_controller.calculate(sub2,0);
 
@@ -152,6 +160,28 @@ public class DefaultSwerveCommand extends Command {
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }
+       
+  public static double GetConstraintAngle(double angle) {
+      while(angle > 180)
+        angle -= 360;
+      while(angle < -180)
+       angle += 360;
+      return angle;
+  }
+   
+    public static double GetFinalTargetAngleForNegativeCurrentAngle(double constraint_current_angle,
+    double given_current_angle, double given_target_angle) {
+      double calculated_current_angle = constraint_current_angle;
+        
+      if(constraint_current_angle*-1 + given_target_angle > 180)
+        calculated_current_angle = 360 + constraint_current_angle;
+           
+      double calculated_target_angle = calculated_current_angle - given_target_angle;
+       
+      double final_target_angle = -calculated_target_angle;
+      return final_target_angle;
+    }
+
 
   private double squareNum(double num) {
     double sign = Math.signum(num);

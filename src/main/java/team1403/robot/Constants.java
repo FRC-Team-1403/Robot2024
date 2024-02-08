@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import team1403.lib.util.Dimension;
+import team1403.robot.Datables.ShooterValues;
 
 /**
  * This class holds attributes for the robot configuration.
@@ -87,11 +88,10 @@ public class Constants {
         * Swerve.kSteerReduction / 60.0;
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kMaxSpeed = 14.5;
+    public static final double kMaxSpeed = 4.5;
 
-    public static final double kMaxAngularSpeed = 50;
-    // (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); //
-    // 39.795095397
+    public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
+
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kCurrentLimit = 40;
@@ -129,9 +129,10 @@ public class Constants {
 
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
-    // other
+   //other
     public static final int intakeMotor = 0;
-    public static final int hangerMotor = 0;
+    // other
+    public static finalm_shooterSpeed int hangerMotor = 0;
     public static final int shooterMotorTop = 0;
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;

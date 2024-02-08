@@ -4,13 +4,16 @@
 
 package team1403.robot;
 
+import com.google.flatbuffers.Table;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import team1403.robot.commands.AimbotCommand;
+import team1403.robot.Datables.Tables;
 import team1403.robot.subsystems.ArmSubsystem;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
@@ -33,7 +36,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
-
+  private final Tables m_dataTable;
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
 
@@ -44,11 +47,11 @@ public class RobotContainer {
     // Configure the trigger bindings
     m_limelight = new Limelight();
     m_swerve = new SwerveSubsystem(m_limelight);
-    //m_arm = new ArmSubsystem();
+    // m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    //m_swerve = new SwerveSubsystem(m_limelight);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight, m_swerve);
+    m_dataTable = new Tables();
+    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
 
     configureBindings();
   }
@@ -77,12 +80,11 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 1.9,
-        () -> 0.8,
+        () -> 12.70, //3 significant digits
+        () -> 5.36,
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-    
     //m_operatorController.a().onTrue(m_aimbot);
   }
 
@@ -104,7 +106,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return AutoSelector.getAutonomousCommandChooser().getSelected();
+    return AutoSelector.getSelectedAuto();
   }
 
   public Limelight getLimelight(){
@@ -114,4 +116,10 @@ public class RobotContainer {
   public SwerveSubsystem getSwerveSubsystem() {
     return m_swerve;
   }
+
+  public Tables getDataTables(){
+    return m_dataTable;
+  }
+
+
 }

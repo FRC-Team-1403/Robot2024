@@ -54,6 +54,15 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
     return super.getRotation2d();
   }
 
+  public Rotation2d getConstraintedRotation(){
+    double angle = super.getRotation2d().getDegrees();
+    while(angle > 180)
+      angle -= 360;
+    while(angle < -180)
+      angle += 360;
+    return new Rotation2d(Units.degreesToRadians(angle));
+  }
+
   public Rotation2d get180to180Rotation2d(){
     double a = super.getRotation2d().getDegrees();
     while(a > 180)
@@ -96,6 +105,6 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
 
   @Override
   public Rotation2d getRotation2d() {
-      return super.getRotation2d();
+      return get180to180Rotation2d();
   }
 }
