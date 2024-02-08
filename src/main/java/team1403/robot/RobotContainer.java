@@ -30,6 +30,7 @@ public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
   private Limelight m_limelight;
+  //private AimbotCommand m_aimbot;
   private ArmSubsystem m_arm;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
@@ -84,7 +85,7 @@ public class RobotContainer {
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-    
+    //m_operatorController.a().onTrue(m_aimbot);
   }
 
   private double deadband(double value, double deadband) {
