@@ -92,7 +92,7 @@ public class Wrist extends SubsystemBase {
   }
 
 public void periodic() {
-  m_wristAngle = m_wristAbsoluteEncoder.get();
+   m_wristAngle = m_wristAbsoluteEncoder.get();
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
