@@ -4,15 +4,11 @@
 
 package team1403;
 
-import javax.lang.model.util.ElementScanner14;
-
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import team1403.commands.IntakeCommand;
 import team1403.subsystems.IntakeSubsystem;
 
 /**
@@ -26,10 +22,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
   private IntakeSubsystem m_intake = new IntakeSubsystem();
-  private IntakeCommand m_intakeCommand = new IntakeCommand(m_intake);
-  private CommandXboxController m_controller = new CommandXboxController(0);
-  private boolean isIntaked = false;
-  private boolean isPrimed = false;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -43,8 +36,8 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("shooter", m_intake.getShooterRpm());
     SmartDashboard.putNumber("intake", m_intake.getIntakeRpm());
-    SmartDashboard.putBoolean("isIntaked", isIntaked);
-    SmartDashboard.putBoolean("isPrimed", isPrimed);
+    SmartDashboard.putBoolean("isIntaked", Constants.Intake.isIntaked);
+    SmartDashboard.putBoolean("isPrimed", Constants.Intake.isPrimed);
   }
 
   /**
@@ -102,38 +95,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    isIntaked = SmartDashboard.getBoolean("isIntaked", false);
-    isPrimed = SmartDashboard.getBoolean("isPrimed", false);
 
-    if (!m_controller.b().getAsBoolean()) {
-      return;
-    }
-
-    if (!isIntaked) { //Check if gamepiece is in the intake
-        m_intake.setIntakeRpm(5000);
-        isIntaked = m_intake.isShooterGateOn();
-    }
-    if (!isPrimed && isIntaked) {
-      m_intake.setIntakeSpeed(-0.1);
-      isPrimed = !m_intake.isShooterGateOn();
-    } else {
-      m_intake.setShooterRpm(6000);
-      try {
-        wait(3000);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      m_intake.setIntakeRpm(5000);
-      try {
-        wait(1000);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      m_intake.setIntakeRpm(0);
-      m_intake.setShooterRpm(0);
-      isPrimed = false;
-      isIntaked = false;
-    }
   }
 
   @Override

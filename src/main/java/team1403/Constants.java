@@ -23,5 +23,7 @@ public final class Constants {
     public static final int kIntakeCANID = 12;
     public static final int kShooterPhotoGateID = 0;
     public static final int kIntakePhotoGateID = 1;
+    public static boolean isIntaked = false;
+    public static boolean isPrimed = false;
   }
 }
