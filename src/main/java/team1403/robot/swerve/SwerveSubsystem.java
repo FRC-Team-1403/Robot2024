@@ -448,7 +448,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
-   SmartDashboard.putNumber("Anuglar vel",0 m_navx2.getAngularVelocity());
+   SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
    if (Math.abs(m_navx2.getAngularVelocity()) > 0.5) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
