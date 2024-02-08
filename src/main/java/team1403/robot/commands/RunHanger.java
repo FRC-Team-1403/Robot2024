@@ -7,19 +7,19 @@ import team1403.robot.subsystems.Hanger;
 
 public class RunHanger extends Command {
     private double m_hangerSpeed;
-    private Hanger m_definiteHangerMotor;
-    private Hanger m_possibleHangerMotor;
+    private Hanger m_rightHangerMotor;
+    private Hanger m_leftHangerMotor;
 
-    public RunHanger(Hanger definiteHangerMotor, Hanger possibleHangerMotor, double hangerSpeed) {
-        m_definiteHangerMotor = definiteHangerMotor;
-        m_possibleHangerMotor = possibleHangerMotor;
+    public RunHanger(Hanger rightHangerMotor, Hanger leftHangerMotor, double hangerSpeed) {
+        m_rightHangerMotor = rightHangerMotor;
+        m_leftHangerMotor = leftHangerMotor;
         m_hangerSpeed = hangerSpeed;
     }
 
     @Override
     public void initialize() {
-        m_definiteHangerMotor.setHangerSpeed(m_hangerSpeed);
-        m_possibleHangerMotor.setHangerSpeed(m_hangerSpeed);
+        m_rightHangerMotor.setHangerSpeed(m_hangerSpeed);
+        m_leftHangerMotor.setHangerSpeed(m_hangerSpeed);
     }
 
     @Override
@@ -29,8 +29,9 @@ public class RunHanger extends Command {
 
     @Override
     public boolean isFinished() { 
-        if (m_definiteHangerMotor.isAtTop()) {
-            m_definiteHangerMotor.setHangerSpeed(0);
+        if (m_rightHangerMotor.isAtTop()) {
+            m_rightHangerMotor.setHangerSpeed(0);
+            m_leftHangerMotor.setHangerSpeed(0);
             return true;
         }
         return false;
