@@ -12,7 +12,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import team1403.lib.util.Dimension;
 
-
 /**
  * This class holds attributes for the robot configuration.
  *
@@ -28,10 +27,9 @@ import team1403.lib.util.Dimension;
  */
 public class Constants {
 
-  //Variables to used by all subsystems.
+  // Variables to used by all subsystems.
   public static final Dimension robotDimensions = new Dimension(0, 0, 0);
-  public static final Dimension wristDimensions = new Dimension(0, 0, 0); //TODO
-
+  public static final Dimension wristDimensions = new Dimension(0, 0, 0); // TODO
 
   public static double kRobotHeight = 32;
   public static double kHeightFromGround = 33.465;
@@ -63,23 +61,21 @@ public class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(17.5);
     public static final double kWheelBase = Units.inchesToMeters(17.5);
 
-    public static final SwerveDriveKinematics kDriveKinematics = 
-        new SwerveDriveKinematics(
-            // Front left
-            new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
-            // Front right
-            
-            new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
-            // Back left
-            new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
-            // Back right
-            new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        // Front left
+        new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
+        // Front right
 
-    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI); //1.70498046875
-    public static final double frontRightEncoderOffset = -(0.009203884727314 - Math.PI); //2.70498046875
-    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); //1.70498046875
-    public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);//2.70498046875
+        new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
+        // Back left
+        new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
+        // Back right
+        new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
+    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI); // 1.70498046875
+    public static final double frontRightEncoderOffset = -(0.009203884727314 - Math.PI); // 2.70498046875
+    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); // 1.70498046875
+    public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);// 2.70498046875
 
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -94,7 +90,8 @@ public class Constants {
     public static final double kMaxSpeed = 14.5;
 
     public static final double kMaxAngularSpeed = 50;
-    // (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
+    // (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); //
+    // 39.795095397
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kCurrentLimit = 40;
@@ -102,8 +99,7 @@ public class Constants {
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;
 
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints
-        = new TrapezoidProfile.Constraints(
+    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeed,
         kMaxAngularAccelerationRadiansPerSecondSquared);
   }
@@ -133,36 +129,40 @@ public class Constants {
 
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
-   //other
-   public static final int intakeMotor = 0;
-   public static final int hangerMotor = 0;
+    // other
+    public static final int intakeMotor = 0;
+    public static final int hangerMotor = 0;
     public static final int shooterMotorTop = 0;
     public static final int shooterMotorBottom = 0;
     public static final int intakeMotorTop = 0;
     public static final int intakeMotorBottom = 0;
+    public static final int rightHangerMotor = 0;
+    public static final int leftHangerMotor = 0;
     public static final int definiteHangerMotor = 0;
     public static final int possibleHangerMotor = 0;
-    public static final int m_pivotMotor = 0;
+    public static final int rightPivotMotorID = 0;
+    public static final int leftPivotMotorID = 0;
     public static final int wristMotor = 0;
   }
 
   public static class Turret {
-    public static final double absEncoderGearRatio = 18.0/120.0;
+    public static final double absEncoderGearRatio = 18.0 / 120.0;
     public static final int absEncoderPort = 5;
     public static final int hallEffectPort = 1;
     // checked with phoenix
     public static final int turretMotor = 19;
   }
+
   /**
    * Ports on the RoboRIO.
    */
   public static class RioPorts {
-    //remove
-    public static final int kWristAbsoluteEncoder = 1; //DIO
+    // remove
+    public static final int kWristAbsoluteEncoder = 1; // DIO
 
-    public static final int kExtensionMinMagneticSwitch = 2; //DIO
-    public static final int kExtensionMaxMagneticSwitch = 3; //DIO
-    //actual
+    public static final int kExtensionMinMagneticSwitch = 2; // DIO
+    public static final int kExtensionMaxMagneticSwitch = 3; // DIO
+    // actual
     public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
     public static final int intakePhotogate1 = 0;
@@ -172,6 +172,8 @@ public class Constants {
     //photogates
     public static final int shooterPhotoswitch = 0;
     public static final int kIntakePhotogae2 = 0;
+    //Wrist 
+    public static final int kwristAbsoluteEncoder = 0;
   }
 
   /**
@@ -213,60 +215,103 @@ public class Constants {
 
   public static class Hanger {
 
-public static int channel;
+    public static int channel;
 
   }
 
-  public static class Vision {    
+  public static class Vision {
     public static final double rotationCutoff = 5;
     public static boolean isRotated = false;
     public static AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout(Arrays.asList(
-      new AprilTag(1,   (new Pose3d(
-        Units.inchesToMeters(610.77),
-        Units.inchesToMeters(42.19),
-        Units.inchesToMeters(18.22),
-        new Rotation3d(0.0, 0.0, Math.PI)))),
-      new AprilTag(2, new Pose3d(
-        Units.inchesToMeters(610.77),
-        Units.inchesToMeters(108.19),
-        Units.inchesToMeters(18.22),
-        new Rotation3d(0.0, 0.0, Math.PI))),
-      new AprilTag(3,new Pose3d(
-        Units.inchesToMeters(610.77),
-        Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
-        Units.inchesToMeters(18.22),
-        new Rotation3d(0.0, 0.0, Math.PI))),
-      new AprilTag(4, new Pose3d(
-        Units.inchesToMeters(636.96),
-        Units.inchesToMeters(265.74),
-        Units.inchesToMeters(27.38),
-        new Rotation3d(0.0, 0.0, Math.PI))), 
-      new AprilTag(5, new Pose3d(
-        Units.inchesToMeters(14.25),
-        Units.inchesToMeters(265.74),
-        Units.inchesToMeters(27.38),
-        new Rotation3d())), 
-      new AprilTag(6, new Pose3d(
-        Units.inchesToMeters(610.77),
-        Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
-        Units.inchesToMeters(18.22),
-        new Rotation3d(0.0, 0.0, Math.PI))),
-      new AprilTag(7, new Pose3d(
-        Units.inchesToMeters(610.77),
-        Units.inchesToMeters(108.19),
-        Units.inchesToMeters(18.22),
-        new Rotation3d(0.0, 0.0, Math.PI))),  
-      new AprilTag(8, new Pose3d(
-        Units.inchesToMeters(40.45),
-        Units.inchesToMeters(42.19),
-        Units.inchesToMeters(18.22),
-        new Rotation3d()))), Units.inchesToMeters(651.25), Units.inchesToMeters(315.5));
+        new AprilTag(1, (new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(42.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI)))),
+        new AprilTag(2, new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(108.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI))),
+        new AprilTag(3, new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI))),
+        new AprilTag(4, new Pose3d(
+            Units.inchesToMeters(636.96),
+            Units.inchesToMeters(265.74),
+            Units.inchesToMeters(27.38),
+            new Rotation3d(0.0, 0.0, Math.PI))),
+        new AprilTag(5, new Pose3d(
+            Units.inchesToMeters(14.25),
+            Units.inchesToMeters(265.74),
+            Units.inchesToMeters(27.38),
+            new Rotation3d())),
+        new AprilTag(6, new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(174.19), // FIRST's diagram has a typo (it says 147.19)
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI))),
+        new AprilTag(7, new Pose3d(
+            Units.inchesToMeters(610.77),
+            Units.inchesToMeters(108.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d(0.0, 0.0, Math.PI))),
+        new AprilTag(8, new Pose3d(
+            Units.inchesToMeters(40.45),
+            Units.inchesToMeters(42.19),
+            Units.inchesToMeters(18.22),
+            new Rotation3d()))),
+        Units.inchesToMeters(651.25), Units.inchesToMeters(315.5));
   }
+
   public static class Arm {
-    public static final double kPArmPivot = 0;
+    public static final double KPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
+    public static int kAbsolutePivotOffset;
+    public static double kMaxPivotAngle;
+    public static double kMinPivotAngle;
+    public static double kPivotAngleMaxAmperage;
+  }
 
+  public static class Intake {
     public static final double kDecreaseIntakeSpeed = 2; //test value 
+    public static double kAbsolutePivotOffset = 40;
+    public static double kMaxPivotAngle = 100.0;
+    public static final double kFrameAngle = 250.24629;
+    public static final double kFrameClearanceAngle = 234.5; // cone angle
+    public static final double kMinPivotAngle = 132.211;
+    public static final double kPivotAngleMaxAmperage = 40;
+    public static final double kHorizonAngle = 210;
+    public static final double kPivotLimitSwitchOffset = -6;
+    public static final double kBaseArmLength = 0;
+
+    public static final double kArmConversionFactor = 1;
+  }
+
+  public static class Wrist {
+    public static double kWristConversionFactor = 0;
+    public static double kAbsoluteWristOffset = 0;
+    public static double kMinWristAngle = 0;
+    public static double kMaxWristAngle = 0;
+
+    public static final double KPWrist = 0;
+    public static final double KIWrist = 0;
+    public static final double KDWrist = 0;
+
+    public static double kPWristMotor = 0;
+    public static double kIWristMotor = 0;
+    public static double KDWristMotor = 0;
+    public static double topLimit;
+    public static double bottomLimit;
+    public static double kAbsoluteWristOffest;
+    public static double kSWrist;
+    public static double kVWrist;
+    public static double kAWrist;
+    public static double kGWrist;
+    public static double feedforwardVelocity;
+    public static double feedforwardAcc;
   }
 }

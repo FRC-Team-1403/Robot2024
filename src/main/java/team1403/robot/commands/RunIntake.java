@@ -30,7 +30,7 @@ public class RunIntake extends Command {
    @Override
    public void execute() {  
         if(m_intakePhotogate1.get()){
-            intake_shooter.setIntakeSpeed(m_intakeSpeed / Constants.Arm.kDecreaseIntakeSpeed); 
+            intake_shooter.setIntakeSpeed(m_intakeSpeed / Constants.Arm.kDecreaseIntakeSpeed);      
         } 
    }
    @Override
