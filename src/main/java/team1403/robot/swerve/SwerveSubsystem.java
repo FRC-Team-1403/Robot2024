@@ -219,7 +219,8 @@ public class SwerveSubsystem extends SubsystemBase  {
  }
 
  /**
-  * Set the position of thte odometry.
+  * Set the position o
+  f thte odometry.
   *
   * @param pose the new position of the odometry.
   */
