@@ -56,7 +56,6 @@ public class SwerveSubsystem extends SubsystemBase  {
  private final SwerveDrivePoseEstimator m_odometer;
  private Field2d m_field = new Field2d();
 
-
  private Translation2d frontRight = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
      -Constants.Swerve.kWheelBase / 2.0);
@@ -227,10 +226,6 @@ public class SwerveSubsystem extends SubsystemBase  {
    m_odometer.setPose(pose);
  }
 
- public SwerveDrivePoseEstimator getOdometer() {
-   return m_odometer;
- }
-
  /**
   * Reset the position of the drivetrain odometry.
   */
@@ -304,8 +299,7 @@ public class SwerveSubsystem extends SubsystemBase  {
        states, Swerve.kMaxSpeed);
 
    for (int i = 0; i < m_modules.length; i++) {
-     m_modules[i].set((states[i].speedMetersPerSecond
-         / Swerve.kMaxSpeed),
+     m_modules[i].set((states[i].speedMetersPerSecond / Swerve.kMaxSpeed),
          states[i].angle.getRadians());
    }
  }
@@ -553,7 +547,5 @@ public class SwerveSubsystem extends SubsystemBase  {
 
 
    Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
-
-
  }
 }

@@ -67,6 +67,7 @@ public class Robot extends LoggedRobot {
       Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may
                       // be added.
     }
+
     m_robotContainer = new RobotContainer();
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
 
@@ -138,8 +139,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    int xPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getX();
-    int yPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getY();
+   // int xPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getX();
+   // int yPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getY();
   //  ShooterValues vals =  m_robotContainer.getDataTables().compute(xPos,yPos);
   //   SmartDashboard.putString("Data Tables", vals.toString());
     m_VisionCommand.execute();

@@ -1,4 +1,4 @@
-package team1403.robot.subsystems;
+package team1403.robot.subsystems.arm;
 
 /**
  * Creates the ArmState class.

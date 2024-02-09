@@ -1,23 +1,12 @@
-package team1403.robot.subsystems;
+package team1403.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.MotorFeedbackSensor;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.lib.core.CougarLibInjectedParameters;
-import team1403.lib.core.CougarSubsystem;
-import team1403.lib.device.wpi.CougarSparkMax;
-import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
 /**
