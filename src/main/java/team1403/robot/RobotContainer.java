@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.robot.Datables.Tables;
-import team1403.robot.subsystems.ArmSubsystem;
+import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
 import team1403.robot.swerve.PhotonVisionCommand;

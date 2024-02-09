@@ -222,7 +222,7 @@ public class Constants {
   public static class Vision {
     public static final double rotationCutoff = 5;
     public static boolean isRotated = false;
-    public static AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout(Arrays.asList(
+    public static final AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout(Arrays.asList(
         new AprilTag(1, (new Pose3d(
             Units.inchesToMeters(610.77),
             Units.inchesToMeters(42.19),
@@ -279,8 +279,8 @@ public class Constants {
 
   public static class Intake {
     public static final double kDecreaseIntakeSpeed = 2; //test value 
-    public static double kAbsolutePivotOffset = 40;
-    public static double kMaxPivotAngle = 100.0;
+    public static final double kAbsolutePivotOffset = 40;
+    public static final double kMaxPivotAngle = 100.0;
     public static final double kFrameAngle = 250.24629;
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kMinPivotAngle = 132.211;
@@ -293,26 +293,26 @@ public class Constants {
   }
 
   public static class Wrist {
-    public static double kWristConversionFactor = 0;
-    public static double kAbsoluteWristOffset = 0;
-    public static double kMinWristAngle = 0;
-    public static double kMaxWristAngle = 0;
+    public static final double kWristConversionFactor = 0;
+    public static final double kAbsoluteWristOffset = 0;
 
     public static final double KPWrist = 0;
     public static final double KIWrist = 0;
     public static final double KDWrist = 0;
 
-    public static double kPWristMotor = 0;
-    public static double kIWristMotor = 0;
-    public static double KDWristMotor = 0;
-    public static double topLimit;
-    public static double bottomLimit;
-    public static double kAbsoluteWristOffest;
-    public static double kSWrist;
-    public static double kVWrist;
-    public static double kAWrist;
-    public static double kGWrist;
-    public static double feedforwardVelocity;
-    public static double feedforwardAcc;
+    public static final double kPWristMotor = 0;
+    public static final double kIWristMotor = 0;
+    public static final double KDWristMotor = 0;
+    public static final double kTopLimit = 0;
+    public static final double kTopIntakeLimit = 0;
+    public static final double kBottomLimit = 0;
+    public static final double kBottomIntakeLimit = 0;
+    public static final double kAbsoluteWristOffest = 0;
+    public static final double kSWrist = 0;
+    public static final double kVWrist = 0;
+    public static final double kAWrist = 0;
+    public static final double kGWrist = 0;
+    public static final double feedforwardVelocity = 0;
+    public static final double feedforwardAcc = 0;
   }
 }
