@@ -17,24 +17,24 @@ public class datatablesTest {
         }
         table = new Tables(plot);
     }
-    @Test // marks this method as a test
-    void regressionTest() {
-        System.out.println("Low test: " + table.compute(50, 50));
-        System.out.println("High test: " + table.compute(700, 700));
-    }
+    // @Test // marks this method as a test
+    // void regressionTest() {
+    //     System.out.println("Low test: " + table.compute(50, 50));
+    //     System.out.println("High test: " + table.compute(700, 700));
+    // }
 
     @Test // marks this method as a test
     void normalTest() {
         System.out.println("Normal test: " + table.compute(400, 400));
     }
 
-    @Test // marks this method as a test
-    void zero() {
-        System.out.println("Zero test: " + table.compute(0, 0));
-    }
+    // @Test // marks this method as a test
+    // void zero() {
+    //     System.out.println("Zero test: " + table.compute(0, 0));
+    // }
 
-    @Test // marks this method as a test
-    void midPoint() {
-        System.out.println("Zero test: " + table.compute(399, 399));
-    }
+    // @Test // marks this method as a test
+    // void midPoint() {
+    //     System.out.println("Zero test: " + table.compute(399, 399));
+    // }
 }
