@@ -12,8 +12,10 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -69,7 +72,7 @@ public class SwerveSubsystem extends SubsystemBase  {
      -Constants.Swerve.kTrackWidth / 2.0,
      Constants.Swerve.kWheelBase / 2.0);
 
- private final PIDController m_driftCorrectionPid = new PIDController(0.75, 0, 0);
+ private final PIDController m_driftCorrectionPid = new PIDController(0.15, 0, 0);
  private double m_desiredHeading = 0;
 //  private double m_speedLimiter = 0.6;
 
@@ -136,7 +139,7 @@ public class SwerveSubsystem extends SubsystemBase  {
               this // Reference to this subsystem to set requirements
       );
   m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+       getModulePositions(), new Pose2d(2, 7, new Rotation2d(0)));
   m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
 
@@ -276,7 +279,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
  public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
-   m_chassisSpeeds = chassisSpeeds;
+  drive(chassisSpeeds, new Translation2d());
    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
  }
  /**
@@ -438,11 +441,12 @@ public class SwerveSubsystem extends SubsystemBase  {
       return chassisSpeeds;
    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
-   if (Math.abs(m_navx2.getAngularVelocity()) > 0.3) {
+   SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
+   SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
+   if (Math.abs(m_navx2.getAngularVelocity()) > 0.5) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
-   } else if (translationalVelocity > 0.1) {
-     double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(),
-         m_desiredHeading);
+   } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
+     double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
      if (Math.abs(calc) >= 0.35) {
        chassisSpeeds.omegaRadiansPerSecond += calc;
      }
