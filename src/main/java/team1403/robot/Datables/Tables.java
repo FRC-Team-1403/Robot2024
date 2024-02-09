@@ -1,13 +1,13 @@
 package team1403.robot.Datables;
 
 public class Tables {
-    private static ShooterValues[][] table;
+    private ShooterValues[][] table;
 
-    public Tables() {
-        table = new ShooterValues[14][14];
-        setValues();
+    public Tables(ShooterValues[][] table) {
+        this.table = table;
+
     }
-    public static void setValues() {
+    public void setValues(ShooterValues[][] table) {
         table[1][1] = new ShooterValues(10, 10, 10);
         table[1][2] = new ShooterValues(20, 20, 10);
         table[2][1] = new ShooterValues(30, 30, 20);

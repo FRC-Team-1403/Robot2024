@@ -37,7 +37,6 @@ public class RobotContainer {
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
-  private final Tables m_dataTable;
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
 
@@ -51,7 +50,6 @@ public class RobotContainer {
     // m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    m_dataTable = new Tables();
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     configureBindings();
@@ -116,10 +114,6 @@ public class RobotContainer {
 
   public SwerveSubsystem getSwerveSubsystem() {
     return m_swerve;
-  }
-
-  public Tables getDataTables(){
-    return m_dataTable;
   }
 
 
