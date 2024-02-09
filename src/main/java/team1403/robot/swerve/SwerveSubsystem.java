@@ -73,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase  {
      -Constants.Swerve.kTrackWidth / 2.0,
      Constants.Swerve.kWheelBase / 2.0);
 
- private final PIDController m_driftCorrectionPid = new PIDController(0.15, 0, 0);
+ private final PIDController m_driftCorrectionPid = new PIDController(0.25, 0, 0);
  private double m_desiredHeading = 0;
 //  private double m_speedLimiter = 0.6;
 
@@ -131,10 +131,10 @@ public class SwerveSubsystem extends SubsystemBase  {
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  Optional<Alliance> alliance = DriverStation.getAlliance();
-                  if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                  }
+                  // Optional<Alliance> alliance = DriverStation.getAlliance();
+                  // if (alliance.isPresent()) {
+                  //   return alliance.get() == DriverStation.Alliance.Red;
+                  // }
                   return false;
               },
               this // Reference to this subsystem to set requirements
