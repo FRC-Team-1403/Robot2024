@@ -3,6 +3,7 @@ package team1403.robot.swerve;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
+import org.opencv.features2d.FlannBasedMatcher;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -140,7 +141,7 @@ public class SwerveSubsystem extends SubsystemBase  {
               this // Reference to this subsystem to set requirements
       );
   m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(2, 7, new Rotation2d(0)));
+       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
   m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
 
