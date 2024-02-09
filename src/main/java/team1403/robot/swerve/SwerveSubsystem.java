@@ -3,6 +3,7 @@ package team1403.robot.swerve;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.Logger;
+import org.opencv.features2d.FlannBasedMatcher;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -72,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase  {
      -Constants.Swerve.kTrackWidth / 2.0,
      Constants.Swerve.kWheelBase / 2.0);
 
- private final PIDController m_driftCorrectionPid = new PIDController(0.15, 0, 0);
+ private final PIDController m_driftCorrectionPid = new PIDController(0.25, 0, 0);
  private double m_desiredHeading = 0;
 //  private double m_speedLimiter = 0.6;
 
@@ -130,16 +131,16 @@ public class SwerveSubsystem extends SubsystemBase  {
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  Optional<Alliance> alliance = DriverStation.getAlliance();
-                  if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                  }
+                  // Optional<Alliance> alliance = DriverStation.getAlliance();
+                  // if (alliance.isPresent()) {
+                  //   return alliance.get() == DriverStation.Alliance.Red;
+                  // }
                   return false;
               },
               this // Reference to this subsystem to set requirements
       );
   m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(2, 7, new Rotation2d(0)));
+       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
   m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
 
@@ -218,7 +219,8 @@ public class SwerveSubsystem extends SubsystemBase  {
  }
 
  /**
-  * Set the position of thte odometry.
+  * Set the position o
+  f thte odometry.
   *
   * @param pose the new position of the odometry.
   */
