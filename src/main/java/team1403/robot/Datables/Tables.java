@@ -49,7 +49,7 @@ class Values<T> {
     public T low;
     public int highDataDistance =0;
     public int lowDataDistance = 0;
-    private final int count = 1;
+    private final int count = 4;
 
     public Values(T high, T low) {
         this.high = high;
@@ -84,10 +84,8 @@ class Values<T> {
             return null;
         }
         while (locationRounded != 0 && locationRounded < data.length) {
-            try {
                 if (data[locationRounded] != null) 
                     return data[locationRounded];
-            } catch (Exception e) {}
             locationRounded += count;
             highDataDistance += count;
         }
@@ -100,10 +98,8 @@ class Values<T> {
             return null;
         }
         while (locationRounded != 0 && locationRounded < data.length) {
-            try {
                 if (data[locationRounded] != null) 
                     return data[locationRounded];
-            } catch (Exception e) {}
             locationRounded -= count;
             lowDataDistance += count;
         }
