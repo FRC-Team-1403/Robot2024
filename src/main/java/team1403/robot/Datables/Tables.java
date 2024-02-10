@@ -14,8 +14,6 @@ public class Tables {
         table[2][2] = new ShooterValues(40, 40, 20);
     }
     public ShooterValues compute(int locationX, int locationY) {
-        if (locationX == 0 || locationY == 0)
-        return new ShooterValues(0, 0, 0);
         Values<ShooterValues[]> pointsX = new Values<>();
         pointsX.findClosest(table, locationX);
         System.out.println();
@@ -25,10 +23,9 @@ public class Tables {
         pointsHigh.findClosest(pointsX.high, locationY);
         System.out.println(pointsHigh.highDataDistance);
         ShooterValues high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance, pointsHigh.lowDataDistance);
-        System.out.println(high);
-        System.out.println();
+        System.out.println("High is :" + high);
         ShooterValues low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance, pointsLow.lowDataDistance);
-        System.out.println(low);
+        System.out.println("Low is :" + low);
         System.out.println();
         if (pointsX.highDataDistance  == 0) {
             return high;

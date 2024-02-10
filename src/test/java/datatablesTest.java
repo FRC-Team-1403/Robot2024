@@ -34,6 +34,6 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void midPoint() {
-        System.out.println("Zero test: " + table.compute(399, 399));
+        System.out.println("Mid test: " + table.compute(398, 398));
     }
 }

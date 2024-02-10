@@ -28,10 +28,10 @@ public class ShooterValues {
         interpolate(this.robotAngle, selfDistance, other.robotAngle, otherDistance));
      }
 
-    public static double interpolate(double highData, int highDataDistance, double lowData, int lowDataDistance) {
-        return ((highData / highDataDistance) + (lowData / lowDataDistance)) *
-        (highDataDistance * lowDataDistance) / 4;
+     public static double interpolate(double highData, int highDataDistance, double lowData, int lowDataDistance) {
+        return (highData * lowDataDistance + lowData * highDataDistance) / (highDataDistance + lowDataDistance);
     }
+    
     public ShooterValues(double angle, double rpm, double offset) {
         this.angle = angle;
         this.rpm = rpm;
