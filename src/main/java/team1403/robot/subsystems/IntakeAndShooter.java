@@ -42,7 +42,7 @@ public class IntakeAndShooter extends SubsystemBase {
    */
   public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
     // intake motors and sensors
-    m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorTop,
+    m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorID,
         SparkRelativeEncoder.Type.kHallSensor);
     m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
     // shooter motors and sensors

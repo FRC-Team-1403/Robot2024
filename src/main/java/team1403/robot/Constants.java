@@ -109,40 +109,42 @@ public class Constants {
    */
   public static class CanBus {
     // Swerve CanBus ids
-    public static final int frontLeftDriveId = 6;
-    public static final int frontLeftSteerId = 7;
+    public static final int frontLeftDriveId = 13;
+    public static final int frontLeftSteerId = 12;
     public static final int frontLeftEncoderId = 3;
 
-    public static final int frontRightDriveId = 8;
-    public static final int frontRightSteerId = 9;
+    public static final int frontRightDriveId = 9;
+    public static final int frontRightSteerId = 8;
     public static final int frontRightEncoderId = 1;
 
-    public static final int backLeftDriveId = 10;
-    public static final int backLeftSteerId = 11;
+    public static final int backLeftDriveId = 11;
+    public static final int backLeftSteerId = 10;
     public static final int backLeftEncoderId = 2;
 
-    public static final int backRightDriveId = 12;
-    public static final int backRightSteerId = 13;
+    public static final int backRightDriveId = 7;
+    public static final int backRightSteerId = 6;
     public static final int backRightEncoderId = 4;
 
     public static final int intakeAndShooterMotorTop = 0;
     public static final int intakeAndShooterMotorBottom = 0;
-   //other
-    public static final int intakeMotor = 0;
-    // other
-    public static final int m_shooterSpeed = 0;
-    public final int  hangerMotor = 0;
-    public static final int shooterMotorTop = 0;
-    public static final int shooterMotorBottom = 0;
-    public static final int intakeMotorTop = 0;
-    public static final int intakeMotorBottom = 0;
-    public static final int rightHangerMotor = 0;
-    public static final int leftHangerMotor = 0;
-    public static final int definiteHangerMotor = 0;
-    public static final int possibleHangerMotor = 0;
+   //intake port
+    public static final int intakeMotor = 4;
+
+    //pivot motor ports (shoulder)
     public static final int rightPivotMotorID = 0;
     public static final int leftPivotMotorID = 0;
-    public static final int wristMotor = 0;
+
+    // hanger ID
+    public static final int rightHangerMotor = 0;
+    public static final int leftHangerMotor = 0;
+
+    //intake and shooter IDs
+    public static final int shooterMotorTopID = 0;
+    public static final int shooterMotorBottomID = 0;
+    public static final int intakeMotorID = 0;
+
+    //wrist 
+    public static final int wristMotor = 15;
   }
 
   public static class Turret {
@@ -277,7 +279,7 @@ public class Constants {
     public static double kDecreaseIntakeSpeed;
   }
 
-  public static class Intake {
+  public static class IntakeAndShooter {
     public static final double kDecreaseIntakeSpeed = 2; //test value 
     public static final double kAbsolutePivotOffset = 40;
     public static final double kMaxPivotAngle = 100.0;
@@ -290,6 +292,8 @@ public class Constants {
     public static final double kBaseArmLength = 0;
 
     public static final double kArmConversionFactor = 1;
+
+    public static final int m_shooterSpeed = 0;
   }
 
   public static class Wrist {
