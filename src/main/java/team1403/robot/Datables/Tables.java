@@ -18,17 +18,27 @@ public class Tables {
     public ShooterValues compute(int locationX, int locationY) {
         Values<ShooterValues[]> pointsX = new Values<>();
         pointsX.findClosest(table, locationX);
-        System.out.println();
         Values<ShooterValues> pointsLow = new Values<>();
-        pointsLow.findClosest(pointsX.low, locationY);
+        if (pointsX.low != null) {
+            pointsLow.findClosest(pointsX.low, locationY);
+        }
         Values<ShooterValues> pointsHigh = new Values<>();
-        pointsHigh.findClosest(pointsX.high, locationY);
-        System.out.println(pointsHigh.highDataDistance);
-        ShooterValues high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance,
-                pointsHigh.lowDataDistance);
-        System.out.println("High is :" + high);
-        ShooterValues low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance,
-                pointsLow.lowDataDistance);
+        if (pointsX.high != null) {
+            pointsHigh.findClosest(pointsX.high, locationY);
+        }
+        if (pointsX.low != null) {
+            pointsLow.findClosest(pointsX.low, locationY);
+        }
+        ShooterValues high = null;
+        ShooterValues low = null;
+        if (pointsHigh.high != null && pointsHigh.low != null) {
+            high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance,
+                    pointsHigh.lowDataDistance);
+        } 
+        if (pointsLow.high != null && pointsLow.low != null) {
+            low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance,
+                    pointsLow.lowDataDistance);
+        }
         System.out.println("Low is :" + low);
         System.out.println();
         if (pointsX.highDataDistance == 0) {
@@ -83,16 +93,14 @@ class Values<T> {
         if (data == null) {
             return null;
         }
-        while (locationRounded >=  0 && locationRounded < data.length) {
-            if (data[locationRounded] != null){
+        while (locationRounded >= 0 && locationRounded < data.length) {
+            if (data[locationRounded] != null) {
                 return data[locationRounded];
             }
-            System.out.print(locationRounded + ",");
             locationRounded += count;
             highDataDistance += count;
         }
         highDataDistance = 0;
-        System.out.println("Miss High");
         return null;
     }
 
@@ -101,15 +109,12 @@ class Values<T> {
             return null;
         }
         while (locationRounded >= 0 && locationRounded < data.length) {
-            if (data[locationRounded] != null){
+            if (data[locationRounded] != null) {
                 return data[locationRounded];
             }
-                    System.out.print(locationRounded + ",");
-
             locationRounded -= count;
             lowDataDistance += count;
         }
-                System.out.println("Miss Low");
         lowDataDistance = 0;
         return null;
     }

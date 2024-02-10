@@ -24,11 +24,7 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void normalTest() {
-        try {
         System.out.println("Normal test: " + table.compute(400, 400));
-        }catch(Exception e) {
-            e.fillInStackTrace();
-        } 
     }
 
     @Test // marks this method as a test
@@ -38,6 +34,6 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void midPoint() {
-        System.out.println("Mid test: " + table.compute(398, 398));
+        System.out.println("Mod test: " + table.compute(399, 399));
     }
 }
