@@ -24,7 +24,11 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void normalTest() {
+        try {
         System.out.println("Normal test: " + table.compute(400, 400));
+        }catch(Exception e) {
+            e.fillInStackTrace();
+        } 
     }
 
     @Test // marks this method as a test

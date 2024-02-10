@@ -7,12 +7,14 @@ public class Tables {
         this.table = table;
 
     }
+
     public void setValues(ShooterValues[][] table) {
         table[1][1] = new ShooterValues(10, 10, 10);
         table[1][2] = new ShooterValues(20, 20, 10);
         table[2][1] = new ShooterValues(30, 30, 20);
         table[2][2] = new ShooterValues(40, 40, 20);
     }
+
     public ShooterValues compute(int locationX, int locationY) {
         Values<ShooterValues[]> pointsX = new Values<>();
         pointsX.findClosest(table, locationX);
@@ -22,29 +24,30 @@ public class Tables {
         Values<ShooterValues> pointsHigh = new Values<>();
         pointsHigh.findClosest(pointsX.high, locationY);
         System.out.println(pointsHigh.highDataDistance);
-        ShooterValues high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance, pointsHigh.lowDataDistance);
+        ShooterValues high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance,
+                pointsHigh.lowDataDistance);
         System.out.println("High is :" + high);
-        ShooterValues low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance, pointsLow.lowDataDistance);
+        ShooterValues low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance,
+                pointsLow.lowDataDistance);
         System.out.println("Low is :" + low);
         System.out.println();
-        if (pointsX.highDataDistance  == 0) {
+        if (pointsX.highDataDistance == 0) {
             return high;
-        }
-        else if (pointsX.lowDataDistance  == 0) {
+        } else if (pointsX.lowDataDistance == 0) {
             return low;
         }
         return new ShooterValues(
                 ShooterValues.interpolate(high.angle, pointsX.highDataDistance, low.angle, pointsX.lowDataDistance),
                 ShooterValues.interpolate(high.rpm, pointsX.highDataDistance, low.rpm, pointsX.lowDataDistance),
-                ShooterValues.interpolate(high.robotAngle, pointsX.highDataDistance, low.robotAngle, pointsX.lowDataDistance)
-        );
+                ShooterValues.interpolate(high.robotAngle, pointsX.highDataDistance, low.robotAngle,
+                        pointsX.lowDataDistance));
     }
 }
 
 class Values<T> {
     public T high;
     public T low;
-    public int highDataDistance =0;
+    public int highDataDistance = 0;
     public int lowDataDistance = 0;
     private final int count = 4;
 
@@ -66,13 +69,13 @@ class Values<T> {
         if (this.low == null) {
             this.low = this.high;
             this.lowDataDistance = this.highDataDistance;
-            this.high =  findHigh(roundOffHigh.value + this.count, data);
-            this.highDataDistance =+ count;
-        }else  if (this.high == null) {
+            this.high = findHigh(roundOffHigh.value + this.count, data);
+            this.highDataDistance = +count;
+        } else if (this.high == null) {
             this.high = this.low;
             this.highDataDistance = this.lowDataDistance;
-            this.low =  findLow(roundOffLow.value - this.count, data);
-            this.lowDataDistance =+ count;
+            this.low = findLow(roundOffLow.value - this.count, data);
+            this.lowDataDistance = +count;
         }
     }
 
@@ -80,13 +83,16 @@ class Values<T> {
         if (data == null) {
             return null;
         }
-        while (locationRounded != 0 && locationRounded < data.length) {
-                if (data[locationRounded] != null) 
-                    return data[locationRounded];
+        while (locationRounded >=  0 && locationRounded < data.length) {
+            if (data[locationRounded] != null){
+                return data[locationRounded];
+            }
+            System.out.print(locationRounded + ",");
             locationRounded += count;
             highDataDistance += count;
         }
         highDataDistance = 0;
+        System.out.println("Miss High");
         return null;
     }
 
@@ -94,34 +100,37 @@ class Values<T> {
         if (data == null) {
             return null;
         }
-        while (locationRounded != 0 && locationRounded < data.length) {
-                if (data[locationRounded] != null) 
-                    return data[locationRounded];
+        while (locationRounded >= 0 && locationRounded < data.length) {
+            if (data[locationRounded] != null){
+                return data[locationRounded];
+            }
+                    System.out.print(locationRounded + ",");
+
             locationRounded -= count;
             lowDataDistance += count;
         }
+                System.out.println("Miss Low");
         lowDataDistance = 0;
         return null;
     }
 }
 
-
 class RoundOff {
     public int value;
     public int offset;
+
     public RoundOff(int count, int num, int increment) {
         value = num;
         while (value % count != 0) {
             value += increment;
-            offset++;
+            offset += Math.abs(increment);
         }
     }
 }
 
 class SimpleRegression {
     public static double calc(double first, double last, int distanceFirst, int distanceLast) {
-        double slope = (first - last) / (distanceFirst - distanceLast);
-        double x = (last - slope * distanceLast) / slope;
-        return x;
+        double l = (first - last) / (distanceFirst - distanceLast);
+        return (last - l * distanceLast) / l;
     }
 }
