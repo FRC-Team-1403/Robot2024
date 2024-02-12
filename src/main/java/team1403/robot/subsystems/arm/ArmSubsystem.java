@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
@@ -19,7 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
   // Arm
   private final CANSparkMax m_leftPivotMotor;
   private final CANSparkMax m_rightPivotMotor;
-  private final AnalogEncoder m_armAbsoluteEncoder;
+  private final DutyCycleEncoder m_armAbsoluteEncoder;
   private final PIDController m_pivotPid;
 
   // Setpoints
@@ -29,20 +30,14 @@ public class ArmSubsystem extends SubsystemBase {
    * Initializing the arn subsystem.
    */
   public ArmSubsystem() {
-
-
     m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
     m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    m_armAbsoluteEncoder = new AnalogEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
+    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
     configWristMotor();
     configEncoders();
 
     m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
-
-    Constants.Arm.kAbsolutePivotOffset = 0;
-    double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
-    Constants.Arm.kAbsolutePivotOffset = (int) difference;
 
     this.m_pivotAngleSetpoint = getAbsolutePivotAngle();    
   }
@@ -54,8 +49,8 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void configEncoders() {
     // Arm encoders
-    m_leftPivotMotor.getEncoder().setPositionConversionFactor(1.53285964552);
-    m_leftPivotMotor.getEncoder().setPosition(getAbsolutePivotAngle());
+    // m_leftPivotMotor.getEncoder().setPositionConversionFactor(1.53285964552);
+    // m_leftPivotMotor.getEncoder().setPosition(getAbsolutePivotAngle());
   }
 
   /**
@@ -79,14 +74,11 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double getAbsolutePivotAngle() {
     double value = (m_armAbsoluteEncoder.getAbsolutePosition() * 360) + Constants.Arm.kAbsolutePivotOffset;
-
-    if (value < 0) {
-      value += 360;
-    }
-    if (value > 360) {
-      value -= 360;
-    }
     return value;
+  }
+
+  public PIDController getPidController() {
+    return m_pivotPid;
   }
 
   /**
@@ -98,15 +90,12 @@ public class ArmSubsystem extends SubsystemBase {
     // Feedforward
     double currentAngle = getAbsolutePivotAngle();
     double normalizedCurrentAngle = currentAngle;
-    while (normalizedCurrentAngle > 90) {
-      normalizedCurrentAngle -= 90;
-    }
 
     // Feedback
-    double feedback = -1 * m_pivotPid.calculate(currentAngle, desiredAngle);
+    double feedback = m_pivotPid.calculate(normalizedCurrentAngle, desiredAngle);
 
     SmartDashboard.putNumber("Arm Feedback", feedback);
-    double speed = MathUtil.clamp(feedback, -1, 1);
+    double speed = MathUtil.clamp(feedback + Constants.Arm.kFeedForward, -1, 1);
     m_leftPivotMotor.set(speed);
   }
 
@@ -140,6 +129,10 @@ public class ArmSubsystem extends SubsystemBase {
     this.m_pivotAngleSetpoint = limitPivotAngle(pivotAngle);
   }
 
+  public void setArmSpeed(double speed) {
+    m_leftPivotMotor.set(speed);
+  }
+
   /**
    * Sets the setpoints for the pivot, extension, wrist, and intake to go to.
    *
@@ -166,12 +159,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if ((isInPivotBounds(getAbsolutePivotAngle())) || isInPivotBounds(this.m_pivotAngleSetpoint)) {
+    if (isInPivotBounds(this.m_pivotAngleSetpoint)) {
       setAbsolutePivotAngle(this.m_pivotAngleSetpoint);
     } else if (m_leftPivotMotor.getOutputCurrent() > Constants.Arm.kPivotAngleMaxAmperage) {
       m_leftPivotMotor.stopMotor();
-    } else {
-      setAbsolutePivotAngle(getAbsolutePivotAngle());
     }
 
     // Track Values

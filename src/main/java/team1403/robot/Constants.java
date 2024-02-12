@@ -71,10 +71,10 @@ public class Constants {
         // Back right
         new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -(4.667903537536006 - Math.PI); // 1.70498046875
-    public static final double frontRightEncoderOffset = -(0.009203884727314 - Math.PI); // 2.70498046875
-    public static final double backLeftEncoderOffset = -(4.680175383839091 - Math.PI); // 1.70498046875
-    public static final double backRightEncoderOffset = -(5.776971647177325 + Math.PI);// 2.70498046875
+    public static final double frontLeftEncoderOffset = -(Math.PI);
+    public static final double frontRightEncoderOffset = -0.55;
+    public static final double backLeftEncoderOffset = 0; //4.743068596142402
+    public static final double backRightEncoderOffset = 1.25;//-0.2966
 
     public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -86,7 +86,7 @@ public class Constants {
         * Swerve.kSteerReduction / 60.0;
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kMaxSpeed = 4.5;
+    public static final double kMaxSpeed = 6;
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
 
@@ -111,39 +111,34 @@ public class Constants {
     // Swerve CanBus ids
     public static final int frontLeftDriveId = 13;
     public static final int frontLeftSteerId = 12;
-    public static final int frontLeftEncoderId = 3;
+    public static final int frontLeftEncoderId = 22;
 
     public static final int frontRightDriveId = 9;
     public static final int frontRightSteerId = 8;
-    public static final int frontRightEncoderId = 1;
+    public static final int frontRightEncoderId = 20;
 
     public static final int backLeftDriveId = 11;
     public static final int backLeftSteerId = 10;
-    public static final int backLeftEncoderId = 2;
+    public static final int backLeftEncoderId = 21;
 
     public static final int backRightDriveId = 7;
     public static final int backRightSteerId = 6;
-    public static final int backRightEncoderId = 4;
-
-    public static final int intakeAndShooterMotorTop = 0;
-    public static final int intakeAndShooterMotorBottom = 0;
-   //intake port
-    public static final int intakeMotor = 4;
+    public static final int backRightEncoderId = 23;
 
     //pivot motor ports (shoulder)
-    public static final int rightPivotMotorID = 0;
-    public static final int leftPivotMotorID = 0;
+    public static final int rightPivotMotorID = 5;
+    public static final int leftPivotMotorID = 14;
 
     // hanger ID
     public static final int rightHangerMotor = 0;
     public static final int leftHangerMotor = 0;
 
     //intake and shooter IDs
-    public static final int shooterMotorTopID = 0;
-    public static final int shooterMotorBottomID = 0;
-    public static final int intakeMotorID = 0;
+    public static final int shooterMotorTopID = 2;
+    public static final int shooterMotorBottomID = 1;
+    public static final int intakeMotorID = 4;
 
-    //wrist 
+    //wrist
     public static final int wristMotor = 15;
   }
 
@@ -165,17 +160,12 @@ public class Constants {
     public static final int kExtensionMinMagneticSwitch = 2; // DIO
     public static final int kExtensionMaxMagneticSwitch = 3; // DIO
     // actual
-    public static final int intakeLimitSwitchPort = 0;
     public static final int LEDPort = 0;
-    public static final int intakePhotogate1 = 0;
-    public static final int shooterPhotogate = 0;
-    public static final int kArmLimitSwitch = 0;
+    public static final int intakePhotogate1 = 2;
+    public static final int shooterPhotogate = 3;
     public static final int kArmAbsoluteEncoder = 0;
-    //photogates
-    public static final int shooterPhotoswitch = 0;
-    public static final int kIntakePhotogae2 = 0;
     //Wrist 
-    public static final int kwristAbsoluteEncoder = 0;
+    public static final int kwristAbsoluteEncoder = 1;
   }
 
   /**
@@ -269,54 +259,42 @@ public class Constants {
   }
 
   public static class Arm {
-    public static final double KPArmPivot = 0;
+    public static final double KPArmPivot = 0.02;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
-    public static int kAbsolutePivotOffset;
-    public static double kMaxPivotAngle;
-    public static double kMinPivotAngle;
-    public static double kPivotAngleMaxAmperage;
-    public static double kDecreaseIntakeSpeed;
+    public static final int kAbsolutePivotOffset = 0;
+    public static final double kMaxPivotAngle = 350;
+    public static final double kMinPivotAngle = 270;
+    public static final double kPivotAngleMaxAmperage = 0;
+    public static final double kDecreaseIntakeSpeed = 0;
+    public static final double kFeedForward = 0;
   }
 
   public static class IntakeAndShooter {
     public static final double kDecreaseIntakeSpeed = 2; //test value 
     public static final double kAbsolutePivotOffset = 40;
-    public static final double kMaxPivotAngle = 100.0;
     public static final double kFrameAngle = 250.24629;
     public static final double kFrameClearanceAngle = 234.5; // cone angle
-    public static final double kMinPivotAngle = 132.211;
     public static final double kPivotAngleMaxAmperage = 40;
     public static final double kHorizonAngle = 210;
     public static final double kPivotLimitSwitchOffset = -6;
     public static final double kBaseArmLength = 0;
 
     public static final double kArmConversionFactor = 1;
-
-    public static final int m_shooterSpeed = 0;
   }
 
   public static class Wrist {
     public static final double kWristConversionFactor = 0;
     public static final double kAbsoluteWristOffset = 0;
 
-    public static final double KPWrist = 0;
+    public static final double KPWrist = 0.1;
     public static final double KIWrist = 0;
     public static final double KDWrist = 0;
 
-    public static final double kPWristMotor = 0;
-    public static final double kIWristMotor = 0;
-    public static final double KDWristMotor = 0;
-    public static final double kTopLimit = 0;
+    public static final double kTopLimit = 270;
     public static final double kTopIntakeLimit = 0;
-    public static final double kBottomLimit = 0;
+    public static final double kBottomLimit = 170;
     public static final double kBottomIntakeLimit = 0;
     public static final double kAbsoluteWristOffest = 0;
-    public static final double kSWrist = 0;
-    public static final double kVWrist = 0;
-    public static final double kAWrist = 0;
-    public static final double kGWrist = 0;
-    public static final double feedforwardVelocity = 0;
-    public static final double feedforwardAcc = 0;
   }
 }

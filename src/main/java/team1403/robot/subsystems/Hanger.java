@@ -17,12 +17,12 @@ public class Hanger extends SubsystemBase{
 
 
   public Hanger(CougarLibInjectedParameters injectedParameters) {
-    m_definiteHangerMotor = CougarSparkMax.makeBrushless("Definite Hanger Motor", Constants.CanBus.definiteHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
-    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Possible Hanger Motor", Constants.CanBus.possibleHangerMotor, null);
+    m_definiteHangerMotor = CougarSparkMax.makeBrushless("Left Hanger Motor", Constants.CanBus.leftHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
+    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Right Hanger Motor", Constants.CanBus.rightHangerMotor, null);
 
 
-  m_hangerLimitSwitchTop = new WpiLimitSwitch("limit switch Top", Constants.Hanger.channel);
-  m_hangerLimitSwitchBottom = new WpiLimitSwitch("limit switch Bottom", Constants.Hanger.channel);
+    m_hangerLimitSwitchTop = new WpiLimitSwitch("limit switch Top", Constants.Hanger.channel);
+    m_hangerLimitSwitchBottom = new WpiLimitSwitch("limit switch Bottom", Constants.Hanger.channel);
   }
 
   public void setHangerSpeed(double speed) {

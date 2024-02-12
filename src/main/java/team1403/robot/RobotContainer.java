@@ -10,12 +10,15 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.robot.Datables.Tables;
+import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.arm.ArmSubsystem;
+import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
 import team1403.robot.swerve.PhotonVisionCommand;
@@ -33,6 +36,8 @@ public class RobotContainer {
   private Limelight m_limelight;
   //private AimbotCommand m_aimbot;
   private ArmSubsystem m_arm;
+  private Wrist m_wrist;
+  private IntakeAndShooter m_shooter;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
@@ -48,7 +53,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     m_limelight = new Limelight();
     m_swerve = new SwerveSubsystem(m_limelight);
-    // m_arm = new ArmSubsystem();
+    m_arm = new ArmSubsystem();
+    m_wrist = new Wrist(m_arm);
+    m_shooter = new IntakeAndShooter();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_dataTable = new Tables();
@@ -116,6 +123,23 @@ public class RobotContainer {
 
   public SwerveSubsystem getSwerveSubsystem() {
     return m_swerve;
+  }
+
+  public CommandXboxController getOps() {
+    return m_operatorController;
+  }
+
+  public ArmSubsystem getArmSubsystem() {
+    return m_arm;
+  }
+
+  public Wrist getWristSubsystem() {
+    return m_wrist;
+  }
+
+  public IntakeAndShooter getIntakeShooterSubsystem()
+  {
+    return m_shooter;
   }
 
   public Tables getDataTables(){
