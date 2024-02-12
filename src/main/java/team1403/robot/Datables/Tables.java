@@ -1,21 +1,15 @@
 package team1403.robot.Datables;
+import java.util.HashMap;
 
 public class Tables {
-    private ShooterValues[][] table;
+    private HashMap3D table;
 
-    public Tables(ShooterValues[][] table) {
+    public Tables(HashMap3D table) {
         this.table = table;
 
     }
 
-    public void setValues(ShooterValues[][] table) {
-        table[1][1] = new ShooterValues(10, 10, 10);
-        table[1][2] = new ShooterValues(20, 20, 10);
-        table[2][1] = new ShooterValues(30, 30, 20);
-        table[2][2] = new ShooterValues(40, 40, 20);
-    }
-
-    public ShooterValues compute(int locationX, int locationY) {
+    public ShooterValues compute(int distance) {
         Values<ShooterValues[]> pointsX = new Values<>();
         pointsX.findClosest(table, locationX);
         Values<ShooterValues> pointsLow = new Values<>();
@@ -34,10 +28,15 @@ public class Tables {
         if (pointsHigh.high != null && pointsHigh.low != null) {
             high = pointsHigh.high.interpolateOther(pointsHigh.low, pointsHigh.highDataDistance,
                     pointsHigh.lowDataDistance);
-        } 
+        } else {
+            return pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance,
+                    pointsLow.lowDataDistance);
+        }
         if (pointsLow.high != null && pointsLow.low != null) {
             low = pointsLow.high.interpolateOther(pointsLow.low, pointsLow.highDataDistance,
                     pointsLow.lowDataDistance);
+        } else {
+            return high;
         }
         System.out.println("Low is :" + low);
         System.out.println();
@@ -54,57 +53,71 @@ public class Tables {
     }
 }
 
-class Values<T> {
-    public T high;
-    public T low;
-    public int highDataDistance = 0;
-    public int lowDataDistance = 0;
-    private final int count = 4;
+class Values {
+    public ShooterValues highLeft;
+    public ShooterValues highRight;
+    public ShooterValues lowLeft;
+    public ShooterValues lowRight;
+    public int xhighDataDistance = 0;
+    public int yhighDataDistance = 0;
+    public int xlowDataDistance = 0;
+    public int ylowDataDistance = 0;
 
-    public Values(T high, T low) {
-        this.high = high;
-        this.low = low;
-    }
+    private final int count = 4;
 
     public Values() {
     }
 
-    public void findClosest(T[] data, int location) {
-        RoundOff roundOffHigh = new RoundOff(count, location, 1);
-        highDataDistance = roundOffHigh.offset;
-        RoundOff roundOffLow = new RoundOff(count, location, -1);
-        lowDataDistance = roundOffLow.offset;
+    public ShooterValues get()
+    public void findClosest(ShooterValues[][] data, int xlocation, int ylocation) {
+        RoundOff roundOffXHigh = new RoundOff(count, xlocation, 1);
+        xhighDataDistance = roundOffXHigh.offset;
+        RoundOff roundOffXLow = new RoundOff(count, xlocation, -1);
+        xlowDataDistance = roundOffXLow.offset;
+        RoundOff roundOffYHigh = new RoundOff(count, xlocation, 1);
+        yhighDataDistance = roundOffYHigh.offset;
+        RoundOff roundOffYLow = new RoundOff(count, xlocation, -1);
+        ylowDataDistance = roundOffXHigh.offset;
         this.high = findHigh(roundOffHigh.value, data);
         this.low = findLow(roundOffLow.value, data);
         if (this.low == null) {
             this.low = this.high;
             this.lowDataDistance = this.highDataDistance;
             this.high = findHigh(roundOffHigh.value + this.count, data);
-            this.highDataDistance = +count;
+            this.highDataDistance += count;
         } else if (this.high == null) {
             this.high = this.low;
             this.highDataDistance = this.lowDataDistance;
             this.low = findLow(roundOffLow.value - this.count, data);
-            this.lowDataDistance = +count;
+            this.lowDataDistance += count;
         }
     }
 
-    private T findHigh(int locationRounded, T[] data) {
+    private Points findHigh(int xlocationRounded, int ylocationRounded, ShooterValues[][] data,  ) {
+
         if (data == null) {
             return null;
         }
-        while (locationRounded >= 0 && locationRounded < data.length) {
-            if (data[locationRounded] != null) {
-                return data[locationRounded];
+        while (xlocationRounded >= 0 && xlocationRounded < data.length) {
+            if (data[xlocationRounded] != null) {
+                while (ylocationRounded >= 0 && ylocationRounded < data[xlocationRounded].length) {
+                    if (data[xlocationRounded][ylocationRounded] != null) {
+                        return 
+                    }
+                    xlocationRounded += count;
+                    xhighDataDistance += count;
+                }
             }
-            locationRounded += count;
-            highDataDistance += count;
+            xlocationRounded += count;
+            xhighDataDistance += count;
         }
-        highDataDistance = 0;
+        xhighDataDistance = 0;
+        xhighDataDistance = 0;
         return null;
     }
 
-    private T findLow(int locationRounded, T[] data) {
+
+    private Points findLow(int locationRounded, T[] data) {
         if (data == null) {
             return null;
         }
@@ -118,6 +131,13 @@ class Values<T> {
         lowDataDistance = 0;
         return null;
     }
+}
+
+class Points {
+    ShooterValues high;
+    ShooterValues low;
+    int xDistance;
+    int yDistance;
 }
 
 class RoundOff {
@@ -136,6 +156,9 @@ class RoundOff {
 class SimpleRegression {
     public static double calc(double first, double last, int distanceFirst, int distanceLast) {
         double l = (first - last) / (distanceFirst - distanceLast);
+        if (l == 0) {
+            l = 1;
+        }
         return (last - l * distanceLast) / l;
     }
 }

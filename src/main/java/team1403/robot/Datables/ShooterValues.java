@@ -4,7 +4,7 @@ public class ShooterValues {
     public double angle;
     public double rpm;
     public double robotAngle;
-    private final int regressionThreshold = 8;
+    private final int regressionThreshold = 16;
     public ShooterValues interpolateOther(ShooterValues other, int selfDistance, int otherDistance) {
         if (selfDistance  == 0) {
             return this;
@@ -29,7 +29,11 @@ public class ShooterValues {
      }
 
      public static double interpolate(double highData, int highDataDistance, double lowData, int lowDataDistance) {
-        return (highData * lowDataDistance + lowData * highDataDistance) / (highDataDistance + lowDataDistance);
+        int divide = (highDataDistance + lowDataDistance);
+        if (divide == 0) {
+            divide = 1;
+        }
+        return (highData * lowDataDistance + lowData * highDataDistance) / divide;
     }
     
     public ShooterValues(double angle, double rpm, double offset) {
