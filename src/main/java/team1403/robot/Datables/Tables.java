@@ -1,5 +1,4 @@
 package team1403.robot.Datables;
-import java.util.HashMap;
 
 public class Tables {
     private HashMap3D table;
@@ -7,6 +6,9 @@ public class Tables {
     public Tables(HashMap3D table) {
         this.table = table;
 
+    }
+    public ShooterValues get(int distance, int xSpeed, int ySpeed) {
+        return table.getValue(distance, xSpeed, ySpeed);
     }
 
     public ShooterValues compute(int distance) {
