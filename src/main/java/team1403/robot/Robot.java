@@ -131,28 +131,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   // int xPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getX();
-   // int yPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getY();
-  //  ShooterValues vals =  m_robotContainer.getDataTables().compute(xPos,yPos);
-  //   SmartDashboard.putString("Data Tables", vals.toString());
-
-  // SmartDashboard.putNumber("P Value", tempP);
-  // SmartDashboard.putNumber("I Value", tempI);
-
-  // SmartDashboard.getNumber("P Value", 0);
-  // SmartDashboard.getNumber("I Value", 0)3
-
-  // m_robotContainer.getArmSubsystem().getPidController().setP(tempP);
-  // m_robotContainer.getArmSubsystem().getPidController().setI(tempI);
-
-  //   m_VisionCommand.execute();
-
-  //   m_robotContainer.getWristSubsystem().setWristSpeed(m_robotContainer.getOps().getLeftY() * 0.3);
-  //   m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * 0.3);
-  //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(m_robotContainer.getOps().povUp().getAsBoolean() ? 0.8 : 0);
-  //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(m_robotContainer.getOps().povDown().getAsBoolean() ? -0.8 : 0);
-  //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(m_robotContainer.getOps().povRight().getAsBoolean() ? 0.8 : 0);
-  //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(m_robotContainer.getOps().povLeft().getAsBoolean() ? -0.8 : 0);
 
     m_robotContainer.getWristSubsystem().setWristAngle(200);
     m_robotContainer.getArmSubsystem().moveArm(340);
