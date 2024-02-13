@@ -13,7 +13,7 @@ public class ArmCommand extends Command {
    private double m_tolerance;
 
 
-   public ArmCommand(ArmSubsystem arm, DutyCycleEncoder armAbsoluteEncoder, double pivotAngle,double tolerance ) {
+   public ArmCommand(ArmSubsystem arm, DutyCycleEncoder armAbsoluteEncoder, double pivotAngle, double tolerance) {
        m_arm = arm;
        m_pivotAngle = pivotAngle;
        m_armAbsoluteEncoder = armAbsoluteEncoder;
@@ -22,7 +22,7 @@ public class ArmCommand extends Command {
 
    @Override
    public void initialize() {
-        m_arm.setAbsolutePivotAngle(m_pivotAngle);
+        m_arm.moveArm(m_pivotAngle);
    }
 
    @Override

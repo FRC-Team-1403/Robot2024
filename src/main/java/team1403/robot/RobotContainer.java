@@ -10,6 +10,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -37,13 +39,13 @@ public class RobotContainer {
   //private AimbotCommand m_aimbot;
   private ArmSubsystem m_arm;
   private Wrist m_wrist;
-  private IntakeAndShooter m_shooter;
+  private IntakeAndShooter m_endeff;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
-  private DigitalInput m_intakePhotogate;
-  private DigitalInput m_shooterPhotogate;
+
+  private final PowerDistribution m_powerDistribution;
 
 
 
@@ -54,10 +56,12 @@ public class RobotContainer {
     m_swerve = new SwerveSubsystem(m_limelight);
     m_arm = new ArmSubsystem();
     m_wrist = new Wrist(m_arm);
-    m_shooter = new IntakeAndShooter();
+    m_endeff = new IntakeAndShooter();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
+    // Enables power distribution logging
+    m_powerDistribution = new PowerDistribution(Constants.CanBus.kPowerDistributionID, ModuleType.kRev);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     configureBindings();
   }
@@ -135,13 +139,8 @@ public class RobotContainer {
     return m_wrist;
   }
 
-  public IntakeAndShooter getIntakeShooterSubsystem()
-  {
-    return m_shooter;
-  }
-
-  public Tables getDataTables(){
-    return m_dataTable;
+  public IntakeAndShooter getIntakeShooterSubsystem() {
+    return m_endeff;
   }
 
 }

@@ -139,7 +139,9 @@ public class Constants {
     public static final int intakeMotorID = 4;
 
     //wrist
-    public static final int wristMotor = 15;
+    public static final int wristMotorID = 15;
+
+    public static final int kPowerDistributionID = 60;
   }
 
   public static class Turret {

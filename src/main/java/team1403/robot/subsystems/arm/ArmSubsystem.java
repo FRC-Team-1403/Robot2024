@@ -2,9 +2,10 @@ package team1403.robot.subsystems.arm;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,12 +31,11 @@ public class ArmSubsystem extends SubsystemBase {
    * Initializing the arn subsystem.
    */
   public ArmSubsystem() {
-    m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+    m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
+    m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
     m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
-    configWristMotor();
-    configEncoders();
+    configPivotMotors();
 
     m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
 
@@ -45,18 +45,9 @@ public class ArmSubsystem extends SubsystemBase {
   // --------------------------- Setup methods ---------------------------
 
   /**
-   * Configures all the encoders associated with the susbystem.
-   */
-  private void configEncoders() {
-    // Arm encoders
-    // m_leftPivotMotor.getEncoder().setPositionConversionFactor(1.53285964552);
-    // m_leftPivotMotor.getEncoder().setPosition(getAbsolutePivotAngle());
-  }
-
-  /**
    * Configures all the motors associated with the subsystem.
    */
-  private void configWristMotor() {
+  private void configPivotMotors() {
     // Pivot
     m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
     m_leftPivotMotor.enableVoltageCompensation(12);
@@ -86,7 +77,7 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param desiredAngle the angle to move the pivot to in degrees.
    */
-  public void setAbsolutePivotAngle(double desiredAngle) {
+  private void setAbsolutePivotAngle(double desiredAngle) {
     // Feedforward
     double currentAngle = getAbsolutePivotAngle();
     double normalizedCurrentAngle = currentAngle;
