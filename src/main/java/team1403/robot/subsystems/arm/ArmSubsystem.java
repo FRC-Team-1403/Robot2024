@@ -39,7 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
 
-    this.m_pivotAngleSetpoint = getAbsolutePivotAngle();    
+    this.m_pivotAngleSetpoint = getPivotAngle();    
   }
 
   // --------------------------- Setup methods ---------------------------
@@ -63,7 +63,7 @@ public class ArmSubsystem extends SubsystemBase {
    *
    * @return The angle of the pivot in degrees.
    */
-  public double getAbsolutePivotAngle() {
+  public double getPivotAngle() {
     double value = (m_armAbsoluteEncoder.getAbsolutePosition() * 360) + Constants.Arm.kAbsolutePivotOffset;
     return value;
   }
@@ -79,7 +79,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void setAbsolutePivotAngle(double desiredAngle) {
     // Feedforward
-    double currentAngle = getAbsolutePivotAngle();
+    double currentAngle = getPivotAngle();
     double normalizedCurrentAngle = currentAngle;
 
     // Feedback
@@ -139,7 +139,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the arm is at the current setpoint.
    */
   public boolean isAtSetpoint() {
-    double currentPivotAngle = getAbsolutePivotAngle();
+    double currentPivotAngle = getPivotAngle();
 
     if (Math.abs(currentPivotAngle - this.m_pivotAngleSetpoint) > 7) {
       return false;
@@ -157,7 +157,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // Track Values
-    SmartDashboard.putNumber("Pivot Angle", getAbsolutePivotAngle());
+    SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
   }
 

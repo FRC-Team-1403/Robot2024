@@ -72,7 +72,7 @@ public class Wrist extends SubsystemBase {
 public void periodic() {
     getWristAngle();
 
-   if(isInBounds(m_wristAngleSetpoint) && m_arm.getAbsolutePivotAngle() > Constants.Arm.kMinPivotAngle + 20)
+   if(isInBounds(m_wristAngleSetpoint) && m_arm.getPivotAngle() > Constants.Arm.kMinPivotAngle + 20)
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);

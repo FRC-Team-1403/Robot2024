@@ -13,7 +13,7 @@ import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
 import team1403.robot.Constants;
 
-public class Hanger extends SubsystemBase{
+public class Hanger extends SubsystemBase {
   private WpiLimitSwitch m_hangerLimitSwitchTop;
   private WpiLimitSwitch m_hangerLimitSwitchBottom;
   private CougarSparkMax m_definiteHangerMotor;
