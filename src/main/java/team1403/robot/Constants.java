@@ -108,66 +108,56 @@ public class Constants {
    * and understand overall wiring.
    */
   public static class CanBus {
+
+    private static final int kTBD = 0;
+
     // Swerve CanBus ids
-    public static final int frontLeftDriveId = 13;
-    public static final int frontLeftSteerId = 12;
-    public static final int frontLeftEncoderId = 22;
+    public static final int frontLeftDriveID = 13;
+    public static final int frontLeftSteerID = 12;
+    public static final int frontLeftEncoderID = 22;
 
-    public static final int frontRightDriveId = 9;
-    public static final int frontRightSteerId = 8;
-    public static final int frontRightEncoderId = 20;
+    public static final int frontRightDriveID = 9;
+    public static final int frontRightSteerID = 8;
+    public static final int frontRightEncoderID = 20;
 
-    public static final int backLeftDriveId = 11;
-    public static final int backLeftSteerId = 10;
-    public static final int backLeftEncoderId = 21;
+    public static final int backLeftDriveID = 11;
+    public static final int backLeftSteerID = 10;
+    public static final int backLeftEncoderID = 21;
 
-    public static final int backRightDriveId = 7;
-    public static final int backRightSteerId = 6;
-    public static final int backRightEncoderId = 23;
+    public static final int backRightDriveID = 7;
+    public static final int backRightSteerID = 6;
+    public static final int backRightEncoderID = 23;
 
-    //pivot motor ports (shoulder)
+    // pivot motor ports (shoulder)
     public static final int rightPivotMotorID = 5;
     public static final int leftPivotMotorID = 14;
 
     // hanger ID
-    public static final int rightHangerMotor = 0;
-    public static final int leftHangerMotor = 0;
+    public static final int rightHangerMotorID = kTBD;
+    public static final int leftHangerMotorID = kTBD;
 
-    //intake and shooter IDs
+    // intake and shooter IDs
     public static final int shooterMotorTopID = 2;
     public static final int shooterMotorBottomID = 1;
     public static final int intakeMotorID = 4;
 
-    //wrist
+    // wrist
     public static final int wristMotorID = 15;
 
     public static final int kPowerDistributionID = 60;
-  }
-
-  public static class Turret {
-    public static final double absEncoderGearRatio = 18.0 / 120.0;
-    public static final int absEncoderPort = 5;
-    public static final int hallEffectPort = 1;
-    // checked with phoenix
-    public static final int turretMotor = 19;
   }
 
   /**
    * Ports on the RoboRIO.
    */
   public static class RioPorts {
-    // remove
-    public static final int kWristAbsoluteEncoder = 1; // DIO
-
-    public static final int kExtensionMinMagneticSwitch = 2; // DIO
-    public static final int kExtensionMaxMagneticSwitch = 3; // DIO
     // actual
     public static final int LEDPort = 0;
     public static final int intakePhotogate1 = 2;
     public static final int shooterPhotogate = 3;
     public static final int kArmAbsoluteEncoder = 0;
     //Wrist 
-    public static final int kwristAbsoluteEncoder = 1;
+    public static final int kwristAbsoluteEncoder = 1; // DIO
   }
 
   /**

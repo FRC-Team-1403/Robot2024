@@ -21,8 +21,8 @@ public class Hanger extends SubsystemBase {
 
 
   public Hanger(CougarLibInjectedParameters injectedParameters) {
-    m_definiteHangerMotor = CougarSparkMax.makeBrushless("Left Hanger Motor", Constants.CanBus.leftHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
-    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Right Hanger Motor", Constants.CanBus.rightHangerMotor, SparkRelativeEncoder.Type.kHallSensor);
+    m_definiteHangerMotor = CougarSparkMax.makeBrushless("Left Hanger Motor", Constants.CanBus.leftHangerMotorID, SparkRelativeEncoder.Type.kHallSensor);
+    m_possibleHangerMotor = CougarSparkMax.makeBrushless("Right Hanger Motor", Constants.CanBus.rightHangerMotorID, SparkRelativeEncoder.Type.kHallSensor);
 
     m_possibleHangerMotor.follow((AdvancedMotorController)m_definiteHangerMotor);
 
