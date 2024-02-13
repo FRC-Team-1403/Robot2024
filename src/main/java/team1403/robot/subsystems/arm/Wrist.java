@@ -73,7 +73,7 @@ public void periodic() {
     getWristAngle();
 
    if(isInBounds(m_wristAngleSetpoint) && m_arm.getAbsolutePivotAngle() > Constants.Arm.kMinPivotAngle + 20)
-    setWristAngle(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
+    setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
 
