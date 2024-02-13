@@ -265,6 +265,7 @@ public class Constants {
     public static final double kFrameAngle = 250.24629;
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kHorizonAngle = 210;
+    public static final double kSpeedReduction = 2.0; // test value
   }
 
   public static class Wrist {
