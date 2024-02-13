@@ -144,7 +144,7 @@ public class Constants {
     // wrist
     public static final int wristMotorID = 15;
 
-    public static final int kPowerDistributionID = 60;
+    public static final int powerDistributionID = 60;
   }
 
   /**
@@ -257,22 +257,14 @@ public class Constants {
     public static final int kAbsolutePivotOffset = 0;
     public static final double kMaxPivotAngle = 350;
     public static final double kMinPivotAngle = 270;
-    public static final double kPivotAngleMaxAmperage = 0;
-    public static final double kDecreaseIntakeSpeed = 0;
-    public static final double kFeedForward = 0;
+    public static final double kPivotMotorMaxAmperage = 40;
   }
 
   public static class IntakeAndShooter {
-    public static final double kDecreaseIntakeSpeed = 2; //test value 
     public static final double kAbsolutePivotOffset = 40;
     public static final double kFrameAngle = 250.24629;
     public static final double kFrameClearanceAngle = 234.5; // cone angle
-    public static final double kPivotAngleMaxAmperage = 40;
     public static final double kHorizonAngle = 210;
-    public static final double kPivotLimitSwitchOffset = -6;
-    public static final double kBaseArmLength = 0;
-
-    public static final double kArmConversionFactor = 1;
   }
 
   public static class Wrist {

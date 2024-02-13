@@ -61,7 +61,7 @@ public class RobotContainer {
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
-    m_powerDistribution = new PowerDistribution(Constants.CanBus.kPowerDistributionID, ModuleType.kRev);
+    m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     configureBindings();
   }
