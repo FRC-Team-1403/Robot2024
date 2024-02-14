@@ -18,15 +18,15 @@ import team1403.robot.Constants;
  * 
  */
 public class ArmSubsystem extends SubsystemBase {
-  // lead pivot motor
-  private final CANSparkMax m_leftPivotMotor;
-  // following pivot motor
-  private final CANSparkMax m_rightPivotMotor;
-  private final DutyCycleEncoder m_armAbsoluteEncoder;
-  private final PIDController m_pivotPid;
+  // lead motor
+  private final CANSparkMax m_leftMotor;
+  // following motor
+  private final CANSparkMax m_rightMotor;
+  private final DutyCycleEncoder m_encoder;
+  private final PIDController m_armPid;
 
   // Setpoints
-  private double m_pivotAngleSetpoint;
+  private double m_angleSetpoint;
 
   private boolean m_currentLimitTripped = false;
 
@@ -34,15 +34,15 @@ public class ArmSubsystem extends SubsystemBase {
    * Initializing the arn subsystem.
    */
   public ArmSubsystem() {
-    m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
-    m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
-    m_armAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
+    m_leftMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
+    m_rightMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
+    m_encoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
     configPivotMotors();
 
-    m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
+    m_armPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
 
-    this.m_pivotAngleSetpoint = getPivotAngle();    
+    this.m_angleSetpoint = getPivotAngle();    
   }
 
   // --------------------------- Setup methods ---------------------------
@@ -51,11 +51,10 @@ public class ArmSubsystem extends SubsystemBase {
    * Configures all the motors associated with the subsystem.
    */
   private void configPivotMotors() {
-    // Pivot
-    m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
-    m_leftPivotMotor.enableVoltageCompensation(Constants.Arm.kPivotMotorVoltageLimit);
-    m_leftPivotMotor.setSmartCurrentLimit(Constants.Arm.kPivotMotorCurrentLimit);
-    m_rightPivotMotor.follow(m_leftPivotMotor, true);
+    m_leftMotor.setIdleMode(IdleMode.kBrake);
+    m_leftMotor.enableVoltageCompensation(Constants.Arm.kPivotMotorVoltageLimit);
+    m_leftMotor.setSmartCurrentLimit(Constants.Arm.kPivotMotorCurrentLimit);
+    m_rightMotor.follow(m_leftMotor, true);
   }
 
   // --------------------------- Pivot Methods ---------------------------
@@ -67,12 +66,12 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The angle of the pivot in degrees.
    */
   public double getPivotAngle() {
-    double value = (m_armAbsoluteEncoder.getAbsolutePosition() * 360) + Constants.Arm.kAbsolutePivotOffset;
+    double value = (m_encoder.getAbsolutePosition() * 360) + Constants.Arm.kAbsolutePivotOffset;
     return value;
   }
 
   public PIDController getPidController() {
-    return m_pivotPid;
+    return m_armPid;
   }
 
   /**
@@ -86,11 +85,11 @@ public class ArmSubsystem extends SubsystemBase {
     double normalizedCurrentAngle = currentAngle;
 
     // Feedback
-    double feedback = m_pivotPid.calculate(normalizedCurrentAngle, desiredAngle);
+    double feedback = m_armPid.calculate(normalizedCurrentAngle, desiredAngle);
 
     SmartDashboard.putNumber("Arm Feedback", feedback);
     double speed = MathUtil.clamp(feedback, -1, 1);
-    m_leftPivotMotor.set(speed);
+    m_leftMotor.set(speed);
   }
 
   /**
@@ -120,11 +119,11 @@ public class ArmSubsystem extends SubsystemBase {
    * @param pivotAngle      the pivot angle.
    */
   public void moveArm(double pivotAngle) {
-    this.m_pivotAngleSetpoint = limitPivotAngle(pivotAngle);
+    this.m_angleSetpoint = limitPivotAngle(pivotAngle);
   }
 
   public void setArmSpeed(double speed) {
-    m_leftPivotMotor.set(speed);
+    m_leftMotor.set(speed);
   }
 
   /**
@@ -133,7 +132,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @param state the setpoints for the arm to move to.
    */
   public void moveArm(ArmState state) {
-    this.m_pivotAngleSetpoint = limitPivotAngle(state.armPivot);
+    this.m_angleSetpoint = limitPivotAngle(state.armPivot);
   }
 
   /**
@@ -144,7 +143,7 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     double currentPivotAngle = getPivotAngle();
 
-    if (Math.abs(currentPivotAngle - this.m_pivotAngleSetpoint) > 7) {
+    if (Math.abs(currentPivotAngle - this.m_angleSetpoint) > 7) {
       return false;
     }
 
@@ -153,11 +152,11 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (isInPivotBounds(this.m_pivotAngleSetpoint)) {
-      setAbsolutePivotAngle(this.m_pivotAngleSetpoint);
-    } else if (m_leftPivotMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
+    if (isInPivotBounds(this.m_angleSetpoint)) {
+      setAbsolutePivotAngle(this.m_angleSetpoint);
+    } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
       m_currentLimitTripped = true;
-      m_leftPivotMotor.stopMotor();
+      m_leftMotor.stopMotor();
     }
 
     // Track Values
@@ -172,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return the pivot motor.
    */
   public CANSparkMax getLeftPivotMotor() {
-    return m_leftPivotMotor;
+    return m_leftMotor;
   }
 
   /**
@@ -181,6 +180,6 @@ public class ArmSubsystem extends SubsystemBase {
    * @return the setpoint in degrees.
    */
   public double getPivotAngleSetpoint() {
-    return m_pivotAngleSetpoint;
+    return m_angleSetpoint;
   }
 }
