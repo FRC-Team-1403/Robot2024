@@ -132,8 +132,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
 
-    m_robotContainer.getWristSubsystem().setWristAngle(200);
-    m_robotContainer.getArmSubsystem().moveArm(340);
+    // for testing only
+    // m_robotContainer.getWristSubsystem().setWristAngle(200);
+    // m_robotContainer.getArmSubsystem().moveArm(340);
 
   }
 
