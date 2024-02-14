@@ -128,7 +128,7 @@ public class Constants {
     public static final int backRightSteerID = 6;
     public static final int backRightEncoderID = 23;
 
-    // pivot motor ports (shoulder)
+    // pivot motor ports (arm)
     public static final int rightPivotMotorID = 5;
     public static final int leftPivotMotorID = 14;
 
@@ -144,6 +144,7 @@ public class Constants {
     // wrist
     public static final int wristMotorID = 15;
 
+    // other
     public static final int powerDistributionID = 60;
   }
 
