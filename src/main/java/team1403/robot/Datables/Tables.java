@@ -1,5 +1,7 @@
 package team1403.robot.Datables;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ public class Tables {
     public Tables(HashMap<Double, ShooterValues> table) {
         this.table = table;
         this.computeTable = table;
+        init();
     }
 
     public double roundToTenths(double num) {
@@ -24,12 +27,16 @@ public class Tables {
     public void init() {
         boolean evenIteration = false;
         double currentLocation = 0;
-        for (Map.Entry<Double, ShooterValues> entry : table.entrySet()) {
-            double key = entry.getKey();
+        ArrayList<Double> sortedKeys = new ArrayList<Double>(table.keySet());
+        Collections.sort(sortedKeys);
+        for (int x = 0; x < sortedKeys.size(); x++) {
+            double key = sortedKeys.get(x);
             if (!evenIteration) {
                 currentLocation = key;
+                evenIteration = true;
                 continue;
             }
+            evenIteration = false;
             while (key != currentLocation) {
                 currentLocation += increment;
                 table.put(currentLocation, compute(currentLocation));
@@ -62,9 +69,6 @@ public class Tables {
                 break;
             }
         }
-
-        System.out.println("Low Data: " + lowData + ", High Data: " + highData +
-                ", Low Data Dist: " + lowDataDistance + ", High Data Dist: " + highDataDistance);
         return new ShooterValues(interpolate(highData.angle, highDataDistance, lowData.angle, lowDataDistance),
                 interpolate(highData.rpm, highDataDistance, lowData.rpm, lowDataDistance),
                 interpolate(highData.robotAngle, highDataDistance, lowData.robotAngle, lowDataDistance));
@@ -75,7 +79,6 @@ public class Tables {
                 Math.abs(highDataDistance * lowDataDistance);
     }
 }
-
 
 class RoundOff {
     public int value;
