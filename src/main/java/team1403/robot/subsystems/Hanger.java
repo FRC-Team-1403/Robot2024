@@ -57,8 +57,8 @@ public class Hanger extends SubsystemBase {
   public void periodic() {
     Logger.recordOutput("Hanger Temp", m_definiteHangerMotor.getMotorTemperature());
     Logger.recordOutput("Hanger RPM", m_definiteHangerMotor.getVoltageCompensationNominalVoltage());
-    Logger.recordOutput("Hanger Temp", m_possibleHangerMotor.getMotorTemperature());
-    Logger.recordOutput("Hanger RPM", m_possibleHangerMotor.getVoltageCompensationNominalVoltage());
+    Logger.recordOutput("Second Hanger Temp", m_possibleHangerMotor.getMotorTemperature());
+    Logger.recordOutput("Second Hanger RPM", m_possibleHangerMotor.getVoltageCompensationNominalVoltage());
   }
 }
 //top limit switch: go up until hits the top; bottom limit switch: down until hits the bottom (at - speed)
