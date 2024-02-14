@@ -21,7 +21,7 @@ public class Tables {
     }
 
     public ShooterValues get(double location) {
-        return table.get(roundToTenths(location));
+        return compute(roundToTenths(location));
     }
 
     public void init() {
