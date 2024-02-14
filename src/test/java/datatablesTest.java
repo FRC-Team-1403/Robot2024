@@ -36,6 +36,6 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void midPoint() {
-        System.out.println("Mod test: " + table.get(45));
+        System.out.println("Mod test: " + table.get(45.2));
     }
 }
