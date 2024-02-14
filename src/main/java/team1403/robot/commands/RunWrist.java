@@ -21,7 +21,6 @@ public class RunWrist extends Command {
     @Override
     public void execute() {
     }
-    
 
     @Override
     public boolean isFinished() {

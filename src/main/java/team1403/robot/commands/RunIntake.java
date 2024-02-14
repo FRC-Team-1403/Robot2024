@@ -29,8 +29,9 @@ public class RunIntake extends Command {
    //slows down intake motor when intakePhotogate1 is hit 
    @Override
    public void execute() {  
-        if(m_intakePhotogate1.get()){
-            intake_shooter.setIntakeSpeed(m_intakeSpeed / Constants.Arm.kDecreaseIntakeSpeed);      
+        if(m_intakePhotogate1.get())
+        {
+            intake_shooter.setIntakeSpeed(m_intakeSpeed / Constants.IntakeAndShooter.kSpeedReduction);      
         } 
    }
    @Override

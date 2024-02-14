@@ -102,17 +102,17 @@ public class SwerveSubsystem extends SubsystemBase  {
    m_Limelight = limelight;
    m_modules = new SwerveModule[] {
        new SwerveModule("Front Left Module",
-           CanBus.frontLeftDriveId, CanBus.frontLeftSteerId,
-           CanBus.frontLeftEncoderId, Swerve.frontLeftEncoderOffset),
+           CanBus.frontLeftDriveID, CanBus.frontLeftSteerID,
+           CanBus.frontLeftEncoderID, Swerve.frontLeftEncoderOffset),
        new SwerveModule("Front Right Module",
-           CanBus.frontRightDriveId, CanBus.frontRightSteerId,
-           CanBus.frontRightEncoderId, Swerve.frontRightEncoderOffset),
+           CanBus.frontRightDriveID, CanBus.frontRightSteerID,
+           CanBus.frontRightEncoderID, Swerve.frontRightEncoderOffset),
        new SwerveModule("Back Left Module",
-           CanBus.backLeftDriveId, CanBus.backLeftSteerId,
-           CanBus.backLeftEncoderId, Swerve.backLeftEncoderOffset),
+           CanBus.backLeftDriveID, CanBus.backLeftSteerID,
+           CanBus.backLeftEncoderID, Swerve.backLeftEncoderOffset),
        new SwerveModule("Back Right Module",
-           CanBus.backRightDriveId, CanBus.backRightSteerId,
-           CanBus.backRightEncoderId, Swerve.backRightEncoderOffset),
+           CanBus.backRightDriveID, CanBus.backRightSteerID,
+           CanBus.backRightEncoderID, Swerve.backRightEncoderOffset),
    };
   AutoBuilder.configureHolonomic(
               this::getPose, // Robot pose supplier

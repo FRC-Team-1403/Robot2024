@@ -40,14 +40,14 @@ public class IntakeAndShooter extends SubsystemBase {
    *
    * @param injectedParameters injected parameters.
    */
-  public IntakeAndShooter(CougarLibInjectedParameters injectedParameters) {
+  public IntakeAndShooter() {
     // intake motors and sensors
-    m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorTop,
+    m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorID,
         SparkRelativeEncoder.Type.kHallSensor);
     m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
     // shooter motors and sensors
-    m_shooterMotorTop = new CougarTalonFx("Top Shooter Motor", Constants.CanBus.shooterMotorBottom);
-    m_shooterMotorBottom = new CougarTalonFx("Bottom Shooter Motor", Constants.CanBus.shooterMotorBottom);
+    m_shooterMotorTop = new CougarTalonFx("Top Shooter Motor", Constants.CanBus.shooterMotorTopID);
+    m_shooterMotorBottom = new CougarTalonFx("Bottom Shooter Motor", Constants.CanBus.shooterMotorBottomID);
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
   }
 
@@ -147,8 +147,8 @@ public class IntakeAndShooter extends SubsystemBase {
    */
   public void setShooterSpeed(double speed) {
     lastSpeed = speed;
-    m_shooterMotorTop.setSpeed(-(speed));
-    m_shooterMotorBottom.setSpeed(speed);
+    m_shooterMotorTop.setSpeed(-speed);
+    m_shooterMotorBottom.setSpeed(-speed);
     // if there is an error when testing (note doesn't get shot out) try changing
     // the direction of the motor
 
