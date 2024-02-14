@@ -18,14 +18,17 @@ import team1403.robot.Constants;
  * 
  */
 public class ArmSubsystem extends SubsystemBase {
-  // Arm
+  // lead pivot motor
   private final CANSparkMax m_leftPivotMotor;
+  // following pivot motor
   private final CANSparkMax m_rightPivotMotor;
   private final DutyCycleEncoder m_armAbsoluteEncoder;
   private final PIDController m_pivotPid;
 
   // Setpoints
   private double m_pivotAngleSetpoint;
+
+  private boolean m_currentLimitTripped = false;
 
   /**
    * Initializing the arn subsystem.
@@ -50,8 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
   private void configPivotMotors() {
     // Pivot
     m_leftPivotMotor.setIdleMode(IdleMode.kBrake);
-    m_leftPivotMotor.enableVoltageCompensation(12);
-    m_leftPivotMotor.setSmartCurrentLimit(25);
+    m_leftPivotMotor.enableVoltageCompensation(Constants.Arm.kPivotMotorVoltageLimit);
+    m_leftPivotMotor.setSmartCurrentLimit(Constants.Arm.kPivotMotorCurrentLimit);
     m_rightPivotMotor.follow(m_leftPivotMotor, true);
   }
 
@@ -153,12 +156,14 @@ public class ArmSubsystem extends SubsystemBase {
     if (isInPivotBounds(this.m_pivotAngleSetpoint)) {
       setAbsolutePivotAngle(this.m_pivotAngleSetpoint);
     } else if (m_leftPivotMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
+      m_currentLimitTripped = true;
       m_leftPivotMotor.stopMotor();
     }
 
     // Track Values
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
+    SmartDashboard.putBoolean("Arm Current Trip", m_currentLimitTripped);
   }
 
   /**

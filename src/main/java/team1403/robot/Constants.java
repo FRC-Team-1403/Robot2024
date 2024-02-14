@@ -258,6 +258,9 @@ public class Constants {
     public static final double kMaxPivotAngle = 350;
     public static final double kMinPivotAngle = 270;
     public static final double kPivotMotorMaxAmperage = 40;
+
+    public static final int kPivotMotorCurrentLimit = 25;
+    public static final double kPivotMotorVoltageLimit = 12;
   }
 
   public static class IntakeAndShooter {

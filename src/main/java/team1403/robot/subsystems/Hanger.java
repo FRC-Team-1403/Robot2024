@@ -34,7 +34,7 @@ public class Hanger extends SubsystemBase {
     m_definiteHangerMotor.set(MathUtil.clamp(speed, -1, 1));
   }
 
-  public void ifLimitHit() {
+  public void runHanger() {
     if (isAtTop() || isAtBottom()) {
       setHangerSpeed(0);
     } else {
