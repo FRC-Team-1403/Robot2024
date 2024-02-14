@@ -36,10 +36,14 @@ public class Hanger extends SubsystemBase {
 
   public void runHanger() {
     if (isAtTop() || isAtBottom()) {
-      setHangerSpeed(0);
+      stopHanger();
     } else {
       setHangerSpeed(1);
     }
+  }
+
+  public void stopHanger() {
+    setHangerSpeed(0);
   }
 
   public boolean isAtTop() {
