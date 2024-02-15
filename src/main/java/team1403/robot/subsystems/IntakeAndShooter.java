@@ -18,17 +18,17 @@ public class IntakeAndShooter extends SubsystemBase {
 
   // constant that should be in constants >:(
   private double lastSpeed = 0;
+  
   // Intake motor
   private static CougarSparkMax m_intakeMotor;
-
-  // photogate
-  private DigitalInput m_intakePhotogate;
-  // shooter photogate
-  private DigitalInput m_shooterPhotogate;
-
+  
   // shooter motors
   private CougarTalonFx m_shooterMotorTop;
   private CougarTalonFx m_shooterMotorBottom;
+
+  // photogates
+  private DigitalInput m_intakePhotogate;
+  private DigitalInput m_shooterPhotogate;
 
   /**
    * creating shooter devices.
