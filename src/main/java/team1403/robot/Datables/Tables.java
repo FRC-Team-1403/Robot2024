@@ -42,6 +42,8 @@ public class Tables {
         ShooterValues lowData = null;
         ShooterValues highData = null;
         double lowDataDistance = Double.NEGATIVE_INFINITY;
+        double lowDataX = 0;
+        double highDataX = 0;
         double highDataDistance = Double.POSITIVE_INFINITY;
 
         for (Map.Entry<Double, ShooterValues> entry : computeTable.entrySet()) {
@@ -51,23 +53,25 @@ public class Tables {
             if (check < 0 && check > lowDataDistance) {
                 lowDataDistance = check;
                 lowData = value;
+                lowDataX = location;
             } else if (check > 0 && check < highDataDistance) {
                 highDataDistance = check;
                 highData = value;
             } else if (check == 0) {
                 lowData = value;
                 highData = value;
+                highDataX = location;
                 break;
             }
         }
-        return new ShooterValues(interpolate(highData.angle, highDataDistance, lowData.angle, lowDataDistance, location),
-                interpolate(highData.rpm, highDataDistance, lowData.rpm, lowDataDistance, location),
-                interpolate(highData.robotAngle, highDataDistance, lowData.robotAngle, lowDataDistance, location));
+        return new ShooterValues(interpolate(highData.angle, highDataX, lowData.angle, lowDataX, location),
+                interpolate(highData.rpm, highDataX, lowData.rpm, lowDataX, location),
+                interpolate(highData.robotAngle, highDataX, lowData.robotAngle, lowDataX, location));
     }
 
     private double interpolate(double highData, double highDataDistance, double lowData, double lowDataDistance, double location) {
         return lowData + ((location - lowDataDistance) / (highDataDistance - lowDataDistance)) * (highData - lowData);
-    }
+        }
 }
 
 class RoundOff {

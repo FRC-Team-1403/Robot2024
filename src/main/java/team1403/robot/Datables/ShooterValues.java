@@ -3,7 +3,8 @@ package team1403.robot.Datables;
 public class ShooterValues {
     public double angle;
     public double rpm;
-    public double robotAngle;  
+    public double robotAngle;
+    public Object checkPlot;  
       
     public ShooterValues(double angle, double rpm, double offset) {
         this.angle = angle;
