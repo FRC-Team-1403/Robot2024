@@ -20,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private PIDController m_controller2;
     private DigitalInput m_shooterPhotoGate;
     private DigitalInput m_intakePhotoGate;
+    private       DigitalInput          m_test ;
 
     private double rpm1;
     private double rpm2;
@@ -36,6 +37,8 @@ public class IntakeSubsystem extends SubsystemBase {
         m_bottomShooterMotor.setNeutralMode(NeutralModeValue.Coast);
         m_shooterPhotoGate = new DigitalInput(Constants.Intake.kShooterPhotoGateID);
         m_intakePhotoGate = new DigitalInput(Constants.Intake.kIntakePhotoGateID);
+                m_test = new DigitalInput(3);
+
     }
 
     public boolean isShooterGateOn() {
@@ -91,6 +94,10 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic()
     {
+        SmartDashboard.putBoolean("PhotoGate1", m_intakePhotoGate.get());
+                SmartDashboard.putBoolean("PhotoGate2", isShooterGateOn());
+        SmartDashboard.putBoolean("Test", m_test.get());
+
         double deltaSpeed = m_controller.calculate(m_intake.getEncoder().getVelocity(), rpm2);
         m_intake.set(m_intake.get() + deltaSpeed);
 
