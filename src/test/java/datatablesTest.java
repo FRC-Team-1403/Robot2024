@@ -12,7 +12,7 @@ public class datatablesTest {
     @BeforeEach
     void setup() {
         HashMap<Double, ShooterValues> plot = new HashMap<Double, ShooterValues>();
-        for (double j = 10; j < 60; j += .1) {
+        for (double j = 10; j < 60; j += 1.5) {
             plot.put(j, new ShooterValues((j + 1) * 10, (j + 1) * 10, (j + 1) * 10));
         }
         table = new Tables(plot);
@@ -26,7 +26,7 @@ public class datatablesTest {
 
     @Test // marks this method as a test
     void normalTest() {
-        System.out.println("Normal test: " + table.get(42.1));
+        System.out.println("Normal test: " + table.get(42));
     }
 
     @Test // marks this method as a test

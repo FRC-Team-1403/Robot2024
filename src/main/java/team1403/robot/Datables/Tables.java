@@ -12,7 +12,7 @@ public class Tables {
 
     public Tables(HashMap<Double, ShooterValues> table) {
         this.table = table;
-        this.computeTable = table;
+        this.computeTable.putAll(table);
         init();
     }
 
@@ -21,29 +21,21 @@ public class Tables {
     }
 
     public ShooterValues get(double location) {
-        return compute(roundToTenths(location));
+        return table.get(roundToTenths(location));
     }
 
     public void init() {
-        boolean evenIteration = false;
-        double currentLocation = 0;
         ArrayList<Double> sortedKeys = new ArrayList<Double>(table.keySet());
         Collections.sort(sortedKeys);
-        for (int x = 0; x < sortedKeys.size(); x++) {
-            double key = sortedKeys.get(x);
-            if (!evenIteration) {
-                currentLocation = key;
-                evenIteration = true;
-                continue;
+        for (int x = 1; x < sortedKeys.size(); x++) {
+            double low = roundToTenths(sortedKeys.get(x - 1));
+            double high = roundToTenths(sortedKeys.get(x));
+            while (low < high) {
+                table.put(low, compute(low));
+                low += increment;
+                low = roundToTenths(low);
             }
-            evenIteration = false;
-            while (key != currentLocation) {
-                currentLocation += increment;
-                table.put(currentLocation, compute(currentLocation));
-            }
-
         }
-
     }
 
     public ShooterValues compute(double location) {
@@ -56,7 +48,6 @@ public class Tables {
             double key = entry.getKey();
             ShooterValues value = entry.getValue();
             double check = key - location;
-            // if key negative then it lower
             if (check < 0 && check > lowDataDistance) {
                 lowDataDistance = check;
                 lowData = value;
@@ -69,14 +60,13 @@ public class Tables {
                 break;
             }
         }
-        return new ShooterValues(interpolate(highData.angle, highDataDistance, lowData.angle, lowDataDistance),
-                interpolate(highData.rpm, highDataDistance, lowData.rpm, lowDataDistance),
-                interpolate(highData.robotAngle, highDataDistance, lowData.robotAngle, lowDataDistance));
+        return new ShooterValues(interpolate(highData.angle, highDataDistance, lowData.angle, lowDataDistance, location),
+                interpolate(highData.rpm, highDataDistance, lowData.rpm, lowDataDistance, location),
+                interpolate(highData.robotAngle, highDataDistance, lowData.robotAngle, lowDataDistance, location));
     }
 
-    private double interpolate(double highData, double highDataDistance, double lowData, double lowDataDistance) {
-        return ((highData / highDataDistance) + Math.abs(lowData / lowDataDistance)) *
-                Math.abs(highDataDistance * lowDataDistance);
+    private double interpolate(double highData, double highDataDistance, double lowData, double lowDataDistance, double location) {
+        return lowData + ((location - lowDataDistance) / (highDataDistance - lowDataDistance)) * (highData - lowData);
     }
 }
 
