@@ -97,7 +97,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
+    SmartDashboard.putBoolean("Shooter photo gate", m_intake.isShooterGateOn());
+    SmartDashboard.putBoolean("Intake photo gate", m_intake.isIntakeGateOn());
   }
 
   @Override

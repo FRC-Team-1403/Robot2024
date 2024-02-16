@@ -21,8 +21,8 @@ public final class Constants {
     public static final int kIntakeNeoTopCanID = 4;
     public static final int kIntakeNeoBottomCANID = 3;
     public static final int kIntakeCANID = 12;
-    public static final int kShooterPhotoGateID = 0;
-    public static final int kIntakePhotoGateID = 1;
+    public static final int kShooterPhotoGateID = 1;
+    public static final int kIntakePhotoGateID = 2;
     public static boolean isIntaked = false;
     public static boolean isPrimed = false;
   }
