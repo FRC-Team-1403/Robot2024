@@ -49,8 +49,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
         // m_driverController.y().onTrue(new RunCommand(() -> m_intake.setShooterSpeed(0.2)));
-   m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntakeSpeed(-.1))).onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.a().onTrue(new IntakeCommand(m_intake, 0.3))
+   //m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntakeSpeed(-.1))).onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    m_driverController.a().onTrue(new IntakeCommand(m_intake, 1))
     .onFalse(new InstantCommand(() -> m_intake.intakeStop(), m_intake));
     m_driverController.b().onTrue(new ShootCommand(m_intake, 0.3, 0.5))
     .onFalse(new InstantCommand(() -> m_intake.everythingStop(), m_intake));

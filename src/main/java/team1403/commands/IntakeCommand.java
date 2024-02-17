@@ -7,11 +7,13 @@ import team1403.subsystems.IntakeSubsystem;
 
 public class IntakeCommand extends Command {
     private IntakeSubsystem m_intake;
-    public IntakeCommand(IntakeSubsystem intake) {
+    private double m_speed;
+    public IntakeCommand(IntakeSubsystem intake, double speed) {
         m_intake = intake;
+        m_speed = speed;
     }
     @Override public boolean isFinished() {
-      boolean stop = !m_intake.isShooterGateOn();
+      boolean stop = !m_intake.isShooterSwitchTripped();
       if (stop) {
         m_intake.setIntakeSpeed(0);
       }
@@ -20,14 +22,14 @@ public class IntakeCommand extends Command {
 
     @Override
     public void execute() {
-      if (!m_intake.isIntakeGateOn()) {
-        m_intake.setIntakeSpeed(0.2);
-      }
-      else if(m_intake.isShooterGateOn()) {
-        while (m_intake.isIntakeGateOn()) {
+      if(m_intake.isShooterSwitchTripped()) {
+        while (m_intake.isIntakeSwitchTripped()) {
           m_intake.setIntakeSpeed(-0.2);
         }
       }
-      else m_intake.setIntakeSpeed(1);
+      else if (!m_intake.isIntakeSwitchTripped()) {
+        m_intake.setIntakeSpeed(m_speed/3.0);
+      }
+      else m_intake.setIntakeSpeed(m_speed);
     }
 }

@@ -20,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
     private PIDController m_controller2;
     private DigitalInput m_shooterPhotoGate;
     private DigitalInput m_intakePhotoGate;
-    private DigitalInput m_test;
 
     private boolean m_isShooterFinished = false;
     private boolean m_loaded = false;
@@ -106,7 +105,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("Intake Photoswitch", isIntakeSwitchTripped());
         SmartDashboard.putBoolean("Shooter Photoswitch", isShooterSwitchTripped());
-        SmartDashboard.putBoolean("Test", m_test.get());
 
         //double deltaSpeed = m_controller.calculate(m_intakeMotor.getEncoder().getVelocity(), intakeRPM);
 
