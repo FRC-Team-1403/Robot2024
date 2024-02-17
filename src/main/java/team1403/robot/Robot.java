@@ -32,6 +32,8 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
+  private double tempWristAngle;
+  private double tempArmAngle;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -64,6 +66,12 @@ public class Robot extends LoggedRobot {
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
 
     AutoSelector.initAutoChooser();
+
+    tempWristAngle = 100;
+    tempArmAngle = 130;
+
+    SmartDashboard.putNumber("Wrist Setpoint", tempWristAngle);
+    SmartDashboard.putNumber("Arm Setpoint", tempArmAngle);
   }
 
   /**
@@ -126,16 +134,24 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
+    
+    Constants.Arm.kArmAngle = m_robotContainer.getArmSubsystem().getPivotAngle() + Constants.Wrist.kAbsoluteWristOffset;
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    Constants.Arm.kArmAngle = m_robotContainer.getArmSubsystem().getPivotAngle() + Constants.Wrist.kAbsoluteWristOffset;
+    tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint", tempWristAngle);
+    tempArmAngle = SmartDashboard.getNumber("Arm Setpoint", tempArmAngle);
+    SmartDashboard.putNumber("Wrist Abs Angle",Constants.Arm.kArmAngle);
 
     // for testing only
     // m_robotContainer.getWristSubsystem().setWristAngle(200);
-    // m_robotContainer.getArmSubsystem().moveArm(340);
-
+    //m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //135
+    //m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
+    m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
+    m_robotContainer.getWristSubsystem().setWristSpeed(m_robotContainer.getOps().getLeftY() * 0.1);
   }
 
   @Override

@@ -5,7 +5,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +26,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final CANSparkMax m_rightMotor;
   private final DutyCycleEncoder m_encoder;
   private final PIDController m_armPid;
+  private final ArmFeedforward m_feedforward;
 
   // Setpoints
   private double m_angleSetpoint;
@@ -34,6 +37,7 @@ public class ArmSubsystem extends SubsystemBase {
    * Initializing the arn subsystem.
    */
   public ArmSubsystem() {
+    m_feedforward = new ArmFeedforward(0, 0.03, 0.0001);
     m_leftMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
     m_encoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
@@ -80,16 +84,12 @@ public class ArmSubsystem extends SubsystemBase {
    * @param desiredAngle the angle to move the pivot to in degrees.
    */
   private void setAbsolutePivotAngle(double desiredAngle) {
-    // Feedforward
-    double currentAngle = getPivotAngle();
-    double normalizedCurrentAngle = currentAngle;
+    //Feedback
+    double feedback = m_armPid.calculate(getPivotAngle(), desiredAngle);
 
-    // Feedback
-    double feedback = m_armPid.calculate(normalizedCurrentAngle, desiredAngle);
-
-    SmartDashboard.putNumber("Arm Feedback", feedback);
-    double speed = MathUtil.clamp(feedback, -1, 1);
-    m_leftMotor.set(speed);
+    SmartDashboard.putNumber("Arm speed", feedback);
+    double speed = MathUtil.clamp(feedback, -.4, .4);
+    setArmSpeed(speed);
   }
 
   /**
@@ -123,7 +123,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmSpeed(double speed) {
-    m_leftMotor.set(speed);
+    double feedforward = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
+    if(isOverUpperBound())m_leftMotor.set(-0.1);
+    else if(isUnderLowerBound())m_leftMotor.set(0.1);
+    else m_leftMotor.set(speed + feedforward);
   }
 
   /**
@@ -150,14 +153,22 @@ public class ArmSubsystem extends SubsystemBase {
     return true;
   }
 
+  public boolean isOverUpperBound(){
+    return (getPivotAngle() >= Constants.Arm.kMaxPivotAngle);
+  }
+
+   public boolean isUnderLowerBound(){
+    return (getPivotAngle() <= Constants.Arm.kMinPivotAngle);
+  }
+
   @Override
   public void periodic() {
-    if (isInPivotBounds(this.m_angleSetpoint)) {
-      setAbsolutePivotAngle(this.m_angleSetpoint);
-    } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
-      m_currentLimitTripped = true;
-      m_leftMotor.stopMotor();
-    }
+    // if (isInPivotBounds(this.m_angleSetpoint)) {
+    //   setAbsolutePivotAngle(this.m_angleSetpoint);
+    // } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
+    //   m_currentLimitTripped = true;
+    //   m_leftMotor.stopMotor();
+    // }
 
     // Track Values
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
