@@ -280,11 +280,12 @@ public class Constants {
     //Shooting 136 - front on
     //Shooting 132 - from either side angled
     public static double kShootingAngle = 160;
+    public static boolean kIntaked = false;
   }
   
   public static class Wrist {
     public static final double kWristConversionFactor = 0;
-    public static final double kAbsoluteWristOffset = 0;
+    public static final double kAbsoluteWristOffset = -6;
 
     public static double KPWrist = 0.0092;
     public static final double KIWrist = 0.0;
