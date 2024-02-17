@@ -5,9 +5,14 @@
 package team1403;
 
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.Constants.Intake;
+import team1403.commands.IntakeCommand;
 import team1403.commands.RunIntakeCommand;
+import team1403.commands.ShootCommand;
 import team1403.subsystems.IntakeSubsystem;
 
 /**
@@ -18,18 +23,17 @@ import team1403.subsystems.IntakeSubsystem;
  */
 public class RobotContainer {
   private IntakeSubsystem m_intake;
-
+  private boolean isIntake = false;
   // The robot's subsystems and commands are defined here...
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(Constants.OperatorConstants.kDriverControllerPort);
 
-  private final RunIntakeCommand m_intakeCommand = new RunIntakeCommand(m_intake);
    
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-
+    m_intake = new IntakeSubsystem();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -44,8 +48,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+        // m_driverController.y().onTrue(new RunCommand(() -> m_intake.setShooterSpeed(0.2)));
+    m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntakeSpeed(-.1))).onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    m_driverController.a().onTrue(new IntakeCommand(m_intake));
+        m_driverController.x().onTrue(new ShootCommand(m_intake));
 
-    m_driverController.b().onTrue(m_intakeCommand);
   }
 
   /**

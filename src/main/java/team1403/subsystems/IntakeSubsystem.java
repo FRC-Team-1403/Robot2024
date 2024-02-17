@@ -32,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
         m_controller = new PIDController(0.00001, 0, 0);
         m_controller2 = new PIDController(0.00001, 0, 0);
         rpm1 = 0;
-        rpm2 = 0;
+                rpm2 = 0;
         m_intake.setIdleMode(IdleMode.kBrake);
         m_bottomShooterMotor.setNeutralMode(NeutralModeValue.Coast);
         m_shooterPhotoGate = new DigitalInput(Constants.Intake.kShooterPhotoGateID);
@@ -90,7 +90,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setIntakeSpeed(double speed) {
         m_intake.set(speed);
     }
-
+    public void setShooterSpeed(double speed) {
+        m_bottomShooterMotor.set(speed);
+        m_topShooterMotor.set(speed);
+    }
     @Override
     public void periodic()
     {
@@ -99,13 +102,10 @@ public class IntakeSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Test", m_test.get());
 
         double deltaSpeed = m_controller.calculate(m_intake.getEncoder().getVelocity(), rpm2);
-        m_intake.set(m_intake.get() + deltaSpeed);
 
         double deltaSpeed2 = m_controller2.calculate(-m_topShooterMotor.getVelocity().getValueAsDouble() * 60, rpm1);
-        m_topShooterMotor.set(m_topShooterMotor.get() - deltaSpeed2);
 
         deltaSpeed2 = m_controller2.calculate(-m_bottomShooterMotor.getVelocity().getValueAsDouble() * 60, rpm1);
-        m_bottomShooterMotor.set(m_bottomShooterMotor.get() - deltaSpeed2);
 
         SmartDashboard.putNumber("intake rpm", rpm2);   
         SmartDashboard.putNumber("shooter rpm", rpm1);

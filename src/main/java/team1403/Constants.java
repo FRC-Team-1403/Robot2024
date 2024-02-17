@@ -18,8 +18,8 @@ public final class Constants {
   }
 
   public static class Intake {
-    public static final int kIntakeNeoTopCanID = 4;
-    public static final int kIntakeNeoBottomCANID = 3;
+    public static final int kIntakeNeoTopCanID = 2;
+    public static final int kIntakeNeoBottomCANID = 1;
     public static final int kIntakeCANID = 12;
     public static final int kShooterPhotoGateID = 1;
     public static final int kIntakePhotoGateID = 2;

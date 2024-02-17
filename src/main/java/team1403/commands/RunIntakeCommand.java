@@ -19,14 +19,13 @@ public class RunIntakeCommand extends Command {
     public void execute() {
         Intake.isIntaked = SmartDashboard.getBoolean("isIntaked", false);
         Intake.isPrimed = SmartDashboard.getBoolean("isPrimed", false);
-
         
         if (!Intake.isIntaked) { //Check if gamepiece is in the intake
             m_intake.setIntakeRpm(5000);
             Intake.isIntaked = m_intake.isShooterGateOn();
         }
         if (!Intake.isPrimed && Intake.isIntaked) {
-          m_intake.setIntakeSpeed(-0.1);
+          m_intake.setIntakeSpeed(0.1);
           Intake.isPrimed = !m_intake.isShooterGateOn();
         } else {
           m_intake.setShooterRpm(6000);
