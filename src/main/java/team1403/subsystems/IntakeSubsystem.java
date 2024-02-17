@@ -40,7 +40,6 @@ public class IntakeSubsystem extends SubsystemBase {
                 m_test = new DigitalInput(3);
 
     }
-
     public boolean isShooterGateOn() {
         return m_shooterPhotoGate.get();
     }
@@ -94,6 +93,12 @@ public class IntakeSubsystem extends SubsystemBase {
         m_bottomShooterMotor.set(speed);
         m_topShooterMotor.set(speed);
     }
+
+    public void setEverythingSpeed(double speed) {
+        setIntakeSpeed(speed);
+        setShooterSpeed(speed);
+    }
+
     @Override
     public void periodic()
     {

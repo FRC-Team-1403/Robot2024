@@ -5,6 +5,7 @@
 package team1403;
 
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -14,6 +15,7 @@ import team1403.commands.IntakeCommand;
 import team1403.commands.ShootCommand;
 import team1403.subsystems.IntakeSubsystem;
 import team1403.commands.IntakeRollback;
+import team1403.commands.ShooterReady; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,21 +43,34 @@ public class RobotContainer {
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
+   * predicate, or via the named factoofdszzzzzzzsssssssssssssssssssssssx  tries in {@link
    * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
    * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
   private void configureBindings() {
-        // m_driverController.y().onTrue(new RunCommand(() -> m_intake.setShooterSpeed(0.2)));
-    m_driverController.y().onTrue(new IntakeRollback(m_intake))
-      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
-      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    new Trigger(() -> SmartDashboard.getBoolean("button y", false))
+      .onTrue(new IntakeRollback(m_intake));
+    new Trigger(() -> SmartDashboard.getBoolean("button a",false))
+      .onTrue(new IntakeCommand(m_intake, 1.0));
+    new Trigger(() -> SmartDashboard.getBoolean("button b",false))
+      .onTrue(new ShootCommand(m_intake));
+    new Trigger(() -> SmartDashboard.getBoolean("button x",false))
+      // .onTrue(new ShooterReady(m_intake, 1000));
+            .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
 
-        //m_driverController.x().onTrue(new ShootCommand(m_intake));
+    new Trigger(() -> SmartDashboard.getBoolean("button test",false))
+      .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
 
+    // m_driverController.y().onTrue(new IntakeRollback(m_intake))
+    //   .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    // m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
+    //   .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    // m_driverController.b().onTrue(new ShootCommand(m_intake))
+    //   .onFalse(new InstantCommand(() -> m_intake.setEverythingSpeed(0)));
+    // m_driverController.x().onTrue(new ShooterReady(m_intake, 100))
+    //   .onFalse(new InstantCommand(() -> m_intake.setShooterSpeed(0)));
   }
 
   /**
