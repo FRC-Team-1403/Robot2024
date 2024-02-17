@@ -7,20 +7,22 @@ import team1403.subsystems.IntakeSubsystem;
 
 public class ShootCommand extends Command {
     private IntakeSubsystem m_intake;
-    private boolean isIntaked;
-    public ShootCommand(IntakeSubsystem intake) {
+    private double m_intakeSpeed;
+    private double m_shooterSpeed;
+
+    public ShootCommand(IntakeSubsystem intake, double intakeSpeed, double shooterSpeed) {
         m_intake = intake;
+        m_intakeSpeed = intakeSpeed;
+        m_shooterSpeed = shooterSpeed;
     }
-    // @Override public boolean isFinished() {
-    //   return m_intake.isIntakeGateOn() && m_intake.isShooterGateOn();
-    // }
+    
+    @Override public boolean isFinished() {
+       return m_intake.isShooterFinished();
+    }
 
     @Override
     public void execute() {
-        m_intake.setIntakeSpeed(.001);
-            m_intake.setShooterRpm(1000);;
-        // if (m_intake.isIntakeGateOn() && m_intake.isShooterGateOn()) {
-        //     m_intake.setShooterRpm(0);
-        //     }
+        m_intake.setIntakeSpeed(m_intakeSpeed);
+        m_intake.setShooterSpeed(m_shooterSpeed);
     }
 }

@@ -15,104 +15,110 @@ import team1403.Constants;
 public class IntakeSubsystem extends SubsystemBase {
     private TalonFX m_topShooterMotor;
     private TalonFX m_bottomShooterMotor;
-    private CANSparkMax m_intake;
+    private CANSparkMax m_intakeMotor;
     private PIDController m_controller;
     private PIDController m_controller2;
     private DigitalInput m_shooterPhotoGate;
     private DigitalInput m_intakePhotoGate;
-    private       DigitalInput          m_test ;
+    private DigitalInput m_test;
 
-    private double rpm1;
-    private double rpm2;
+    private boolean m_isShooterFinished = false;
+    private boolean m_loaded = false;
+
+    private double targetSpeed;
+    private double shooterRPM;
+    private double intakeRPM;
     
     public IntakeSubsystem() {
+        
         m_topShooterMotor = new TalonFX(Constants.Intake.kIntakeNeoTopCanID);
         m_bottomShooterMotor = new TalonFX(Constants.Intake.kIntakeNeoBottomCANID);
-        m_intake = new CANSparkMax(Constants.Intake.kIntakeCANID, CANSparkMax.MotorType.kBrushless);
+        m_intakeMotor = new CANSparkMax(Constants.Intake.kIntakeCANID, CANSparkMax.MotorType.kBrushless);
         m_controller = new PIDController(0.00001, 0, 0);
         m_controller2 = new PIDController(0.00001, 0, 0);
-        rpm1 = 0;
-                rpm2 = 0;
-        m_intake.setIdleMode(IdleMode.kBrake);
-        m_bottomShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+        shooterRPM = 0;
+        intakeRPM = 0;
         m_shooterPhotoGate = new DigitalInput(Constants.Intake.kShooterPhotoGateID);
         m_intakePhotoGate = new DigitalInput(Constants.Intake.kIntakePhotoGateID);
-                m_test = new DigitalInput(3);
 
     }
 
-    public boolean isShooterGateOn() {
+    public void intakeStop() {
+        m_intakeMotor.set(0.0);
+    }
+
+    public void shooterStop() {
+        m_topShooterMotor.set(0.0);
+        m_bottomShooterMotor.set(0.0);
+    }
+    
+    public boolean isShooterSwitchTripped() {
         return m_shooterPhotoGate.get();
     }
 
-    public boolean isIntakeGateOn() {
+    public boolean isIntakeSwitchTripped() {
         return m_intakePhotoGate.get();
     }
 
-    public void setShooterRpm(double rpm)
-    {
-        rpm1 = rpm;
-    }
-
-    public double getShooterRpm() {
-        return rpm1;
-    }
-
-    public void setIntakeRpm(double rpm)
-    {
-        rpm2 = rpm;
-    }
-
-    public double getIntakeRpm() {
-        return rpm2;
-    }
-
-    public void setTopNeoSpeed(double speed) {
-        m_topShooterMotor.set(speed);
-    }
-
-    public void getTopNeoSpeed() {
-        m_topShooterMotor.get();
-    }
-
-    public void setBottomNeoSpeed(double speed) {
+    public void setShooterSpeed(double speed) {
+        targetSpeed = speed;
+        m_topShooterMotor.set(-(speed));
         m_bottomShooterMotor.set(speed);
-    }
-
-    public void getBottomNeoSpeed() {
-        m_bottomShooterMotor.get();
-    }
-
-    public void setTalonSpeed(double speed) {
-        m_intake.set(speed);
     }
 
     public void setIntakeSpeed(double speed) {
-        m_intake.set(speed);
+        m_intakeMotor.set(speed);
     }
-    public void setShooterSpeed(double speed) {
-        m_bottomShooterMotor.set(speed);
-        m_topShooterMotor.set(speed);
+
+    public boolean isShooterFinished() {
+        return m_isShooterFinished;
     }
+
+    public boolean isLoaded() {
+        return m_loaded;
+    }
+
+    public void everythingStop() {
+        intakeStop();
+        shooterStop();
+    }
+
     @Override
     public void periodic()
     {
-        SmartDashboard.putBoolean("PhotoGate1", m_intakePhotoGate.get());
-                SmartDashboard.putBoolean("PhotoGate2", isShooterGateOn());
+        if (isShooterSwitchTripped()) {
+            while (isIntakeSwitchTripped()) {
+                setIntakeSpeed(-0.1);
+            }
+        }
+
+        if (!isIntakeSwitchTripped() && isShooterSwitchTripped()) {
+            m_loaded = false;
+            m_isShooterFinished = true;
+        }
+        else if (isIntakeSwitchTripped() && isShooterSwitchTripped()) {
+            m_isShooterFinished = false;
+        }
+
+        if (isIntakeSwitchTripped()) {
+            m_loaded = true;
+        }
+
+        SmartDashboard.putBoolean("Intake Photoswitch", isIntakeSwitchTripped());
+        SmartDashboard.putBoolean("Shooter Photoswitch", isShooterSwitchTripped());
         SmartDashboard.putBoolean("Test", m_test.get());
 
-        double deltaSpeed = m_controller.calculate(m_intake.getEncoder().getVelocity(), rpm2);
+        //double deltaSpeed = m_controller.calculate(m_intakeMotor.getEncoder().getVelocity(), intakeRPM);
 
-        double deltaSpeed2 = m_controller2.calculate(-m_topShooterMotor.getVelocity().getValueAsDouble() * 60, rpm1);
+        //double deltaSpeed2 = m_controller2.calculate(-m_topShooterMotor.getVelocity().getValueAsDouble() * 60, shooterRPM);
 
-        deltaSpeed2 = m_controller2.calculate(-m_bottomShooterMotor.getVelocity().getValueAsDouble() * 60, rpm1);
+        //deltaSpeed2 = m_controller2.calculate(-m_bottomShooterMotor.getVelocity().getValueAsDouble() * 60, shooterRPM);
 
-        SmartDashboard.putNumber("intake rpm", rpm2);   
-        SmartDashboard.putNumber("shooter rpm", rpm1);
+        SmartDashboard.putNumber("intake rpm", intakeRPM);   
+        SmartDashboard.putNumber("shooter rpm", shooterRPM);
 
-        SmartDashboard.putNumber("intake speed", m_intake.get()); 
+        SmartDashboard.putNumber("intake speed", m_intakeMotor.get()); 
         SmartDashboard.putNumber("shooter speed", m_topShooterMotor.get());
-        SmartDashboard.putNumber("velocity", -m_bottomShooterMotor.getVelocity().getValueAsDouble() * 60);
     }
 }
 
