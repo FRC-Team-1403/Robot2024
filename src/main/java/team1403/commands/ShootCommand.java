@@ -11,9 +11,9 @@ public class ShootCommand extends Command {
     public ShootCommand(IntakeSubsystem intake) {
         m_intake = intake;
     }
-    // @Override public boolean isFinished() {
-    //   return m_intake.isIntakeGateOn() && m_intake.isShooterGateOn();
-    // }
+    @Override public boolean isFinished() {
+       return m_intake.isIntakeGateOn() && m_intake.isShooterGateOn();
+    }
 
     @Override
     public void execute() {

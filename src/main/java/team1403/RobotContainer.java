@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.Constants.Intake;
 import team1403.commands.IntakeCommand;
-import team1403.commands.RunIntakeCommand;
 import team1403.commands.ShootCommand;
 import team1403.subsystems.IntakeSubsystem;
+import team1403.commands.IntakeRollback;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,9 +49,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
         // m_driverController.y().onTrue(new RunCommand(() -> m_intake.setShooterSpeed(0.2)));
-    m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setIntakeSpeed(-.1))).onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.a().onTrue(new IntakeCommand(m_intake));
-        m_driverController.x().onTrue(new ShootCommand(m_intake));
+    m_driverController.y().onTrue(new IntakeRollback(m_intake))
+      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
+      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+
+        //m_driverController.x().onTrue(new ShootCommand(m_intake));
 
   }
 
