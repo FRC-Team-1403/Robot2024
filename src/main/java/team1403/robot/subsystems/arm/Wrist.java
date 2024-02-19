@@ -41,6 +41,8 @@ public class Wrist extends SubsystemBase {
     m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_arm = arm;
 
+    m_wristAngleSetpoint = 94;
+
     SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
   
