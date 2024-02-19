@@ -285,7 +285,7 @@ public class Constants {
   
   public static class Wrist {
     public static final double kWristConversionFactor = 0;
-    public static final double kAbsoluteWristOffset = -6;
+    public static final double kAbsoluteWristOffset = 0;
 
     public static double KPWrist = 0.0092;
     public static final double KIWrist = 0.0;

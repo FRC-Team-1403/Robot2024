@@ -166,12 +166,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (isInPivotBounds(this.m_angleSetpoint)) {
-    //   setAbsolutePivotAngle(this.m_angleSetpoint);
-    // } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
-    //   m_currentLimitTripped = true;
-    //   m_leftMotor.stopMotor();
-    // }
+    if (isInPivotBounds(this.m_angleSetpoint)) {
+      setAbsolutePivotAngle(this.m_angleSetpoint);
+    } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
+      m_currentLimitTripped = true;
+      m_leftMotor.stopMotor();
+    }
 
     m_armPid.setP(Constants.Arm.KPArmPivot);
     m_armPid.setI(Constants.Arm.KIArmPivot);
