@@ -50,11 +50,12 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setWristAngle(double wristAngle) {
-    m_wristAngleSetpoint = wristAngle;
+    m_wristAngleSetpoint = limitAngle(wristAngle);
   }
   
   public void increaseWristAngle(double wristAngleIncrement) {
     m_wristAngleSetpoint += wristAngleIncrement;
+    m_wristAngleSetpoint = limitAngle(m_wristAngleSetpoint);
   }
   
   //Bound while shooting
@@ -67,7 +68,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public double limitAngle(double angle) {
-    return MathUtil.clamp(m_wristAngle, Constants.Wrist.kBottomLimit, Constants.Wrist.kTopLimit);
+    return MathUtil.clamp(angle, Constants.Wrist.kBottomLimit, Constants.Wrist.kTopLimit);
   }
 
   // public double limitTuckAngle(double angle) {
@@ -75,7 +76,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public boolean isAtSetpoint() {
-    return Math.abs(m_wristAngle - m_wristAngleSetpoint) <= 0.1;
+    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
   }
 
   public void setWristSpeed(double speed) {
@@ -88,7 +89,7 @@ public class Wrist extends SubsystemBase {
     else if(isUnderLowerBound()){ 
       m_wristMotor.set(MathUtil.clamp(speed, 0, 0.1));
     }
-    else m_wristMotor.set(speed);
+    else m_wristMotor.set(MathUtil.clamp(speed,-0.1,0.1));
   }
 
   public boolean isOverUpperBound(){
@@ -108,6 +109,8 @@ public void periodic() {
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
+   SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
+   SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());

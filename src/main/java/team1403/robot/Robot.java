@@ -141,18 +141,26 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    Constants.Arm.kArmAngle = m_robotContainer.getArmSubsystem().getPivotAngle() + Constants.Wrist.kAbsoluteWristOffset;
     tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint", tempWristAngle);
     tempArmAngle = SmartDashboard.getNumber("Arm Setpoint", tempArmAngle);
-    SmartDashboard.putNumber("Wrist Abs Angle",Constants.Arm.kArmAngle);
 
     // for testing only
-    // m_robotContainer.getWristSubsystem().setWristAngle(200);
-    //m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //135
-    //m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
-    m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
-    m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
-    // m_robotContainer.getWristSubsystem().setWristSpeed(m_robotContainer.getOps().getLeftY() * 0.1);
+    // m_robotContainer.getWristSubsystem().setWristAngle(200); //135
+    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
+    // m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
+    // m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
+
+    if(m_robotContainer.getDriverController().leftBumper().getAsBoolean())
+    {
+      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1.0);
+      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.3);
+    }
+    else
+    {
+      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
+      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
+    }
+
   }
 
   @Override

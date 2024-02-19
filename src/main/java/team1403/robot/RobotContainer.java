@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.robot.Datables.Tables;
+import team1403.robot.commands.ArmCommand;
+import team1403.robot.commands.RunWrist;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
@@ -96,8 +99,21 @@ public class RobotContainer {
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
     //m_operatorController.a().onTrue(m_aimbot);
-  }
+    m_operatorController.a().onTrue(new InstantCommand(() -> m_arm.moveArm(130)));
+    m_operatorController.x().onTrue(new SequentialCommandGroup(
+    new RunWrist(m_wrist,140),
+    new ArmCommand(m_arm,Constants.Arm.kIntakeSetpoint,2),
+    new RunWrist(m_wrist,133)
+    ));
 
+    m_operatorController.y().onTrue(new RunWrist(m_wrist,179));
+    m_operatorController.b().onTrue(new ArmCommand(m_arm,220,2));
+    // m_operatorController.y().onTrue(new SequentialCommandGroup(
+    // new RunWrist(m_wrist,307),
+    // new ArmCommand(m_arm,205,2)
+    // ));
+  }
+  
   private double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {
@@ -129,6 +145,10 @@ public class RobotContainer {
 
   public CommandXboxController getOps() {
     return m_operatorController;
+  }
+
+  public CommandXboxController getDriverController() {
+    return m_driverController;
   }
 
   public ArmSubsystem getArmSubsystem() {

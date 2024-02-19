@@ -88,7 +88,7 @@ public class ArmSubsystem extends SubsystemBase {
     double feedback = m_armPid.calculate(getPivotAngle(), desiredAngle);
 
     SmartDashboard.putNumber("Arm speed", feedback);
-    double speed = MathUtil.clamp(feedback, -.4, .4);
+    double speed = MathUtil.clamp(feedback, -.3, .3);
     setArmSpeed(speed);
   }
 
@@ -163,12 +163,12 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (isInPivotBounds(this.m_angleSetpoint)) {
-    //   setAbsolutePivotAngle(this.m_angleSetpoint);
-    // } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
-    //   m_currentLimitTripped = true;
-    //   m_leftMotor.stopMotor();
-    // }
+    if (isInPivotBounds(this.m_angleSetpoint)) {
+      setAbsolutePivotAngle(this.m_angleSetpoint);
+    } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
+      m_currentLimitTripped = true;
+      m_leftMotor.stopMotor();
+    }
 
     // Track Values
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
