@@ -40,6 +40,8 @@ public class Wrist extends SubsystemBase {
     m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_arm = arm;
 
+    m_wristAngleSetpoint = 94;
+
     SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
   
@@ -50,7 +52,11 @@ public class Wrist extends SubsystemBase {
   public void setWristAngle(double wristAngle) {
     m_wristAngleSetpoint = wristAngle;
   }
-
+  
+  public void increaseWristAngle(double wristAngleIncrement) {
+    m_wristAngleSetpoint += wristAngleIncrement;
+  }
+  
   //Bound while shooting
   public boolean isInBounds(double angle) {
     return (angle <= Constants.Wrist.kTopLimit && angle >= Constants.Wrist.kBottomLimit);
@@ -73,12 +79,16 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setWristSpeed(double speed) {
-    double feedforward = m_feedforward.calculate(Units.degreesToRadians(getWristAngle()), 0);
-    if(getWristAngle() >Constants.Arm.kArmAngle) 
-    feedforward = m_feedforward2.calculate(Units.degreesToRadians(getWristAngle()), 0);
-    if(isOverUpperBound()) m_wristMotor.set(-0.1);
-    else if(isUnderLowerBound()) m_wristMotor.set(0.1);
-    else m_wristMotor.set(speed - feedforward);
+    //double feedforward = m_feedforward.calculate(Units.degreesToRadians(getWristAngle()), 0);
+    //if(getWristAngle() > Constants.Arm.kArmAngle) 
+    //feedforward = m_feedforward2.calculate(Units.degreesToRadians(getWristAngle()), 0);
+    if(isOverUpperBound()) {
+      m_wristMotor.set(MathUtil.clamp(speed, -0.1, 0));
+    }
+    else if(isUnderLowerBound()){ 
+      m_wristMotor.set(MathUtil.clamp(speed, 0, 0.1));
+    }
+    else m_wristMotor.set(speed);
   }
 
   public boolean isOverUpperBound(){

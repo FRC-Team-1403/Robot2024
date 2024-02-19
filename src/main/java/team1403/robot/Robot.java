@@ -151,7 +151,8 @@ public class Robot extends LoggedRobot {
     //m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //135
     //m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
     m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
-    m_robotContainer.getWristSubsystem().setWristSpeed(m_robotContainer.getOps().getLeftY() * 0.1);
+    m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
+    // m_robotContainer.getWristSubsystem().setWristSpeed(m_robotContainer.getOps().getLeftY() * 0.1);
   }
 
   @Override

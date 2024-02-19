@@ -283,6 +283,6 @@ public class Constants {
     public static final double KDWrist = 0;
 
     public static final double kTopLimit = 180;//180
-    public static final double kBottomLimit = 11;//41
+    public static final double kBottomLimit = 41;//41
   }
 }
