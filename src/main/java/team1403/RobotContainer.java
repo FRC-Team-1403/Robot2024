@@ -64,10 +64,10 @@ public class RobotContainer {
 
     m_driverController.y().onTrue(new IntakeRollback(m_intake))
       .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
+    m_driverController.a().onTrue(new IntakeCommand(m_intake, 6.0))
       .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.b().onTrue(new ShootCommand(m_intake, 800))
-      .onFalse(new InstantCommand(() -> m_intake.setEverythingSpeed(0)));
+    m_driverController.b().onTrue(new ShootCommand(m_intake, 300));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_intake.setShooterRpm(120)));
   }
 
   /**
