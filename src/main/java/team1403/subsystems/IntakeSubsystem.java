@@ -103,7 +103,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic()
     {
         SmartDashboard.putBoolean("PhotoGate1", m_intakePhotoGate.get());
-                SmartDashboard.putBoolean("PhotoGate2", isShooterGateOn());
+                SmartDashboard.putBoolean("PhotoGate2", m_shooterPhotoGate.get());
         SmartDashboard.putBoolean("Test", m_test.get());
 
         double deltaSpeed = m_controller.calculate(m_intake.getEncoder().getVelocity(), rpm2);

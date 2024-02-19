@@ -15,7 +15,6 @@ import team1403.commands.IntakeCommand;
 import team1403.commands.ShootCommand;
 import team1403.subsystems.IntakeSubsystem;
 import team1403.commands.IntakeRollback;
-import team1403.commands.ShooterReady; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,27 +49,25 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    new Trigger(() -> SmartDashboard.getBoolean("button y", false))
-      .onTrue(new IntakeRollback(m_intake));
-    new Trigger(() -> SmartDashboard.getBoolean("button a",false))
-      .onTrue(new IntakeCommand(m_intake, 1.0));
-    new Trigger(() -> SmartDashboard.getBoolean("button b",false))
-      .onTrue(new ShootCommand(m_intake));
-    new Trigger(() -> SmartDashboard.getBoolean("button x",false))
-      // .onTrue(new ShooterReady(m_intake, 1000));
-            .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
+    // new Trigger(() -> SmartDashboard.getBoolean("button y", false))
+    //   .onTrue(new IntakeRollback(m_intake));
+    // new Trigger(() -> SmartDashboard.getBoolean("button a",false))
+    //   .onTrue(new IntakeCommand(m_intake, 1.0));
+    // new Trigger(() -> SmartDashboard.getBoolean("button b",false))
+    //   .onTrue(new ShootCommand(m_intake));
+    // new Trigger(() -> SmartDashboard.getBoolean("button x",false))
+    //   // .onTrue(new ShooterReady(m_intake, 1000));
+    //         .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
 
-    new Trigger(() -> SmartDashboard.getBoolean("button test",false))
-      .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
+    // new Trigger(() -> SmartDashboard.getBoolean("button test",false))
+    //   .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
 
-    // m_driverController.y().onTrue(new IntakeRollback(m_intake))
-    //   .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    // m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
-    //   .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    // m_driverController.b().onTrue(new ShootCommand(m_intake))
-    //   .onFalse(new InstantCommand(() -> m_intake.setEverythingSpeed(0)));
-    // m_driverController.x().onTrue(new ShooterReady(m_intake, 100))
-    //   .onFalse(new InstantCommand(() -> m_intake.setShooterSpeed(0)));
+    m_driverController.y().onTrue(new IntakeRollback(m_intake))
+      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    m_driverController.a().onTrue(new IntakeCommand(m_intake, 1.0))
+      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
+    m_driverController.b().onTrue(new ShootCommand(m_intake, 800))
+      .onFalse(new InstantCommand(() -> m_intake.setEverythingSpeed(0)));
   }
 
   /**
