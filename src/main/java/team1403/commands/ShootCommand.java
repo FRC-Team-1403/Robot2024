@@ -15,7 +15,7 @@ public class ShootCommand extends Command {
     private double rpm;
     private boolean ready = false;
     private boolean crossed = false;
-    private int done = 0;
+    private int done = 60;
 
     public ShootCommand(IntakeSubsystem intake, double rpm) {
         m_intake = intake;

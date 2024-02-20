@@ -63,7 +63,6 @@ public class IntakeSubsystem extends SubsystemBase {
         m_intake.set(speed);
     } 
     public void stopAll() {
-        setIntakeSpeed(0);
         setShooterSpeed(0);
         setShooterRPM(0);
     }
