@@ -37,11 +37,6 @@ public class Tables {
         return Math.round(num / theta_precision) * theta_precision;
     }
 
-    public static double round_r(double num)
-    {
-        return Math.round(num / data_precision) * data_precision;
-    }
-
     public ShooterValues get(double location) {
         return data.get(roundToTenths(location));
     }
@@ -73,7 +68,7 @@ public class Tables {
         double theta = Math.atan2(x + offset.doubleValue(), y);
         double r = Math.hypot(x + offset.doubleValue(), y);
 
-        ShooterValues ret = data.get(round_r(r));
+        ShooterValues ret = data.get(roundToTenths(r));
 
         if(ret == null)
             return null;
