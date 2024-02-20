@@ -6,12 +6,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Tables {
-    private HashMap<Double, ShooterValues> table = new HashMap<Double, ShooterValues>();
+    //key = radius (m), value is whatever we want to store
+    //in this case we cannot store thetaz here, and we will init it later
+    private HashMap<Double, ShooterValues> data = new HashMap<Double, ShooterValues>();
+
+    //key = theta (radians), value is the distance x offset
+    private HashMap<Double, Double> offsets;
+
+    //all interpolation is precomputed
+    public static final double data_precision = 0.5;
+    //theta is in radians
+    public static final double theta_precision = 0.05;
+    
     private final double increment = 0.1;
     private HashMap<Double, ShooterValues> computeTable = new HashMap<Double, ShooterValues>();
 
-    public Tables(HashMap<Double, ShooterValues> table) {
-        this.table = table;
+    public Tables(HashMap<Double, ShooterValues> table,HashMap<Double, Double> offsets ) {
+        this.data = table;
+        this.offsets = offsets;
         this.computeTable.putAll(table);
         init();
     }
@@ -20,24 +32,56 @@ public class Tables {
         return Math.round(num * 10.0) / 10.0;
     }
 
+    private static double round_theta(double num)
+    {
+        return Math.round(num / theta_precision) * theta_precision;
+    }
+
+    public static double round_r(double num)
+    {
+        return Math.round(num / data_precision) * data_precision;
+    }
+
     public ShooterValues get(double location) {
-        return table.get(roundToTenths(location));
+        return data.get(roundToTenths(location));
     }
 
     public void init() {
-        ArrayList<Double> sortedKeys = new ArrayList<Double>(table.keySet());
+        ArrayList<Double> sortedKeys = new ArrayList<Double>(data.keySet());
         Collections.sort(sortedKeys);
         for (int x = 1; x < sortedKeys.size(); x++) {
             double low = roundToTenths(sortedKeys.get(x - 1));
             double high = roundToTenths(sortedKeys.get(x));
             while (low < high) {
-                table.put(low, compute(low));
+                data.put(low, compute(low));
                 low += increment;
                 low = roundToTenths(low);
             }
         }
     }
 
+    //this function assumes the target is at 0,0
+    public ShooterValues getValues(double x, double y)
+    {
+        double nonoffsettheta = Math.atan2(x,y);
+
+        Double offset = offsets.get(round_theta(nonoffsettheta));
+
+        if(offset == null)
+            return null;
+
+        double theta = Math.atan2(x + offset.doubleValue(), y);
+        double r = Math.hypot(x + offset.doubleValue(), y);
+
+        ShooterValues ret = data.get(round_r(r));
+
+        if(ret == null)
+            return null;
+
+        ret.thetaz = theta;
+                
+        return ret;
+    }
     public ShooterValues compute(double location) {
         ShooterValues lowData = null;
         ShooterValues highData = null;

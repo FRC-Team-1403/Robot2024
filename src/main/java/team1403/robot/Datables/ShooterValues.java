@@ -5,7 +5,8 @@ public class ShooterValues {
     public double rpm;
     public double robotAngle;
     public Object checkPlot;  
-      
+    public double thetaz;
+
     public ShooterValues(double angle, double rpm, double offset) {
         this.angle = angle;
         this.rpm = rpm;
