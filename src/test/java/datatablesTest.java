@@ -15,7 +15,7 @@ public class datatablesTest {
         for (double j = 10; j < 60; j += 1.5) {
             testPlot.put(j, new ShooterValues((j + 1) * 10, (j + 1) * 10, (j + 1) * 10));
         }
-        table = new Tables(testPlot);
+        table = new Tables(testPlot, null);
          for (double j = 10; j < 60; j = roundToTenths(j + 0.1)) {
             checkPlot.put(j, new ShooterValues((j + 1) * 10, (j + 1) * 10, (j + 1) * 10));
         }
@@ -47,5 +47,10 @@ public class datatablesTest {
     void midPoint() {
         System.out.println("Mid test: " + table.get(45.2) + " Other: " + checkPlot.get(45.2));
         // assert(table.get(45.2) ==  checkPlot.get(45.2));
+    }
+    @Test 
+    void angleShot() {
+        ShooterValues val = table.getValues(30, 30);
+        
     }
 }
