@@ -23,7 +23,7 @@ public class IntakeCommand extends Command {
     @Override
     public void execute() {
       if (!m_intake.isIntakeGateOn()) {
-        m_intake.setIntakeSpeed(m_speed / 3.0);
+        m_intake.setIntakeSpeed(m_speed / 10.0);
       }
       else m_intake.setIntakeSpeed(m_speed);
     }

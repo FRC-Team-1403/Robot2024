@@ -3,7 +3,9 @@ package team1403.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.PubSub;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,25 +22,22 @@ public class IntakeSubsystem extends SubsystemBase {
     private PIDController m_controller2;
     private DigitalInput m_shooterPhotoGate;
     private DigitalInput m_intakePhotoGate;
-    private       DigitalInput          m_test ;
+    private double intakeRPM;
+    private double shooterRPM;
 
-    private double rpm1;
-    private double rpm2;
     
     public IntakeSubsystem() {
         m_topShooterMotor = new TalonFX(Constants.Intake.kIntakeNeoTopCanID);
         m_bottomShooterMotor = new TalonFX(Constants.Intake.kIntakeNeoBottomCANID);
         m_intake = new CANSparkMax(Constants.Intake.kIntakeCANID, CANSparkMax.MotorType.kBrushless);
-        m_controller = new PIDController(0.00132, .000015, 0);
-        m_controller2 = new PIDController(0.00132, 0.00015, 0);
-        rpm1 = 0;
-                rpm2 = 0;
-        m_intake.setIdleMode(IdleMode.kBrake);
+        m_controller = new PIDController(0.00148, .000078, 0);
+        m_controller2 = new PIDController(0.00148, 0.00078,0);
+
+        m_topShooterMotor.setNeutralMode(NeutralModeValue.Coast);
         m_bottomShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+        m_intake.setIdleMode(IdleMode.kBrake);
         m_shooterPhotoGate = new DigitalInput(Constants.Intake.kShooterPhotoGateID);
         m_intakePhotoGate = new DigitalInput(Constants.Intake.kIntakePhotoGateID);
-                m_test = new DigitalInput(3);
-
     }
     public boolean isShooterGateOn() {
         return m_shooterPhotoGate.get();
@@ -48,54 +47,30 @@ public class IntakeSubsystem extends SubsystemBase {
         return m_intakePhotoGate.get();
     }
 
-    public void setShooterRpm(double rpm)
-    {
-        rpm1 = rpm;
+    public void setShooterRPM(double rpm) {
+        shooterRPM = rpm;
     }
 
-    public double getShooterRpmTop() {
+    public double getShooterRPMTop() {
         return  -(m_topShooterMotor.getVelocity().getValueAsDouble() *600/2048) * 60.0;
     }
-    public double getShooterRpmBottom() {
+
+    public double getShooterRPMBottom() {
         return  -(m_bottomShooterMotor.getVelocity().getValueAsDouble() *600/2048) * 60.0;
-    }
-    public void setIntakeRpm(double rpm)
-    {
-        rpm2 = rpm;
-    }
-
-
-    public void setTopNeoSpeed(double speed) {
-        m_topShooterMotor.set(speed);
-    }
-
-    public void getTopNeoSpeed() {
-        m_topShooterMotor.get();
-    }
-
-    public void setBottomNeoSpeed(double speed) {
-        m_bottomShooterMotor.set(speed);
-    }
-
-    public void getBottomNeoSpeed() {
-        m_bottomShooterMotor.get();
-    }
-
-    public void setTalonSpeed(double speed) {
-        m_intake.set(speed);
     }
 
     public void setIntakeSpeed(double speed) {
         m_intake.set(speed);
+    } 
+    public void stopAll() {
+        setIntakeSpeed(0);
+        setShooterSpeed(0);
+        setShooterRPM(0);
     }
+
     public void setShooterSpeed(double speed) {
         m_bottomShooterMotor.set(speed);
         m_topShooterMotor.set(speed);
-    }
-
-    public void setEverythingSpeed(double speed) {
-        setIntakeSpeed(speed);
-        setShooterSpeed(speed);
     }
 
     @Override
@@ -103,18 +78,15 @@ public class IntakeSubsystem extends SubsystemBase {
     {
         SmartDashboard.putBoolean("PhotoGate1", m_intakePhotoGate.get());
                 SmartDashboard.putBoolean("PhotoGate2", m_shooterPhotoGate.get());
-        SmartDashboard.putBoolean("Test", m_test.get());
-        double deltaSpeed2 = m_controller2.calculate(getShooterRpmTop(), rpm1);
-
-        double deltaSpeed = m_controller2.calculate(getShooterRpmBottom(), rpm1);
-        m_bottomShooterMotor.set(-deltaSpeed);
-        m_topShooterMotor.set(-deltaSpeed2);
-        SmartDashboard.putNumber("intake rpm", rpm2);   
-        SmartDashboard.putNumber("shooter rpm", rpm1);
-
+        double deltaSpeedTop = m_controller2.calculate(getShooterRPMTop(), shooterRPM);
+        double deltaSpeedBottom = m_controller2.calculate(getShooterRPMBottom(), shooterRPM);
+        SmartDashboard.putNumber("intake rpm", intakeRPM);   
+        SmartDashboard.putNumber("shooter rpm", intakeRPM);
+        m_bottomShooterMotor.set(MathUtil.clamp(-deltaSpeedBottom, -1, 1));
+        m_topShooterMotor.set(MathUtil.clamp(-deltaSpeedTop, -1, 1));
         SmartDashboard.putNumber("intake speed", m_intake.get()); 
         SmartDashboard.putNumber("shooter speed", m_topShooterMotor.get());
-        SmartDashboard.putNumber("velocity",getShooterRpmBottom());
+        SmartDashboard.putNumber("velocity", getShooterRPMTop());
     }
 }
 

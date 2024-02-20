@@ -62,12 +62,12 @@ public class RobotContainer {
     // new Trigger(() -> SmartDashboard.getBoolean("button test",false))
     //   .onTrue(new InstantCommand(() -> m_intake.setShooterSpeed(.1)));
 
-    m_driverController.y().onTrue(new IntakeRollback(m_intake))
-      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.a().onTrue(new IntakeCommand(m_intake, 6.0))
-      .onFalse(new InstantCommand(() -> m_intake.setIntakeSpeed(0)));
-    m_driverController.b().onTrue(new ShootCommand(m_intake, 300));
-    m_driverController.x().onTrue(new InstantCommand(() -> m_intake.setShooterRpm(120)));
+    m_driverController.y().onTrue(new IntakeRollback(m_intake));
+    m_driverController.a().onTrue(new IntakeCommand(m_intake, .8));
+    m_driverController.b().onTrue(new ShootCommand(m_intake, 800));
+    m_driverController.x().whileTrue(new RunCommand(() -> m_intake.setShooterRPM(1000)))
+      .whileFalse(new RunCommand(() -> m_intake.setShooterSpeed(0)));
+    m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_intake.stopAll()));
   }
 
   /**

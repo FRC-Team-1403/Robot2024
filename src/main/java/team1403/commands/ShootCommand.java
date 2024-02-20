@@ -12,19 +12,19 @@ import team1403.subsystems.IntakeSubsystem;
 
 public class ShootCommand extends Command {
     private IntakeSubsystem m_intake;
-    private double speed;
+    private double rpm;
     private boolean ready = false;
     private boolean crossed = false;
     private int done = 0;
 
-    public ShootCommand(IntakeSubsystem intake, double speed) {
+    public ShootCommand(IntakeSubsystem intake, double rpm) {
         m_intake = intake;
-        this.speed = speed;
+        this.rpm = rpm;
     }
 
     @Override
     public void initialize() {
-        m_intake.setShooterRpm(speed);
+        m_intake.setShooterRPM(rpm);
     }
 
     @Override
@@ -32,7 +32,8 @@ public class ShootCommand extends Command {
         // waits 4ms
         boolean isDone = done == 2;
         if (isDone) {
-            m_intake.setEverythingSpeed(0);
+            m_intake.setIntakeSpeed(0);
+            m_intake.setShooterSpeed(0);
         }
         return isDone;
 
@@ -40,8 +41,8 @@ public class ShootCommand extends Command {
 
     @Override
     public void execute() {
-        m_intake.setShooterRpm(speed);
-        if (ready || (m_intake.getShooterRpmBottom() > speed / 1.2 &&  m_intake.getShooterRpmTop() > speed / 1.2)) {
+        m_intake.setShooterRPM(rpm);
+        if (ready || (m_intake.getShooterRPMBottom() > rpm / 1.1 &&  m_intake.getShooterRPMTop() > rpm / 1.1)) {
             m_intake.setIntakeSpeed(1);
             ready = true;
         }
