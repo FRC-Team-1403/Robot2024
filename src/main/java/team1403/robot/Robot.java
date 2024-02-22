@@ -69,11 +69,12 @@ public class Robot extends LoggedRobot {
 
     AutoSelector.initAutoChooser();
 
-    tempWristAngle = 100;
-    tempArmAngle = 130;
-
-    SmartDashboard.putNumber("Wrist Setpoint", tempWristAngle);
-    SmartDashboard.putNumber("Arm Setpoint", tempArmAngle);
+    // tempWristAngle = 100;
+    // tempArmAngle = 130;
+    m_robotContainer.getSwerveSubsystem().zeroGyroscope();
+    m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
+    m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
+    SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
   }
 
   /**
@@ -145,17 +146,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
-    // tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
-    // wristP = SmartDashboard.getNumber("Wrist P Control", wristP);
-    // Constants.Wrist.KPWrist = wristP;
-    // tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
-
-
-    // armD = SmartDashboard.getNumber("Arm D Control", armD);
-    // armI =SmartDashboard.getNumber("Arm I Control", armI);
-    // Constants.Arm.KDArmPivot = armD;
-    // Constants.Arm.KIArmPivot = armI;
+    Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
 
     // for testing only
     // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
