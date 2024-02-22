@@ -30,8 +30,8 @@ public class Wrist extends SubsystemBase {
     private ArmSubsystem m_arm;
 
   public Wrist(ArmSubsystem arm) {
-    m_feedforward = new ArmFeedforward(0, 0.08, 0.0001);
-    m_feedforward2 = new ArmFeedforward(0, 0.04, 0.0001);
+    // m_feedforward = new ArmFeedforward(0, 0.08, 0.0001);
+    // m_feedforward2 = new ArmFeedforward(0, 0.04, 0.0001);
     m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotorID, SparkRelativeEncoder.Type.kHallSensor);
     m_wristPid = new PIDController(Constants.Wrist.KPWrist, Constants.Wrist.KIWrist, Constants.Wrist.KDWrist);
     //m_wristFeedforward = new ArmFeedforward(Constants.Wrist.kSWrist, Constants.Wrist.kGWrist, Constants.Wrist.kVWrist, Constants.Wrist.kAWrist);
@@ -76,7 +76,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public boolean isAtSetpoint() {
-    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
+    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
   }
 
   public void setWristSpeed(double speed) {

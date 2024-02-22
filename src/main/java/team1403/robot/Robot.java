@@ -11,6 +11,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,11 +70,12 @@ public class Robot extends LoggedRobot {
 
     AutoSelector.initAutoChooser();
 
-    tempWristAngle = 100;
-    tempArmAngle = 130;
-
-    SmartDashboard.putNumber("Wrist Setpoint", tempWristAngle);
-    SmartDashboard.putNumber("Arm Setpoint", tempArmAngle);
+    // tempWristAngle = 100;
+    // tempArmAngle = 130;
+    m_robotContainer.getSwerveSubsystem().zeroGyroscope();
+    m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
+    m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
+    SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
   }
 
   /**
@@ -121,7 +125,10 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic() { //100
+    m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
+    m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
+
   }
 
   @Override
@@ -134,32 +141,37 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
-    
-    Constants.Arm.kArmAngle = m_robotContainer.getArmSubsystem().getPivotAngle() + Constants.Wrist.kAbsoluteWristOffset;
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint", tempWristAngle);
-    tempArmAngle = SmartDashboard.getNumber("Arm Setpoint", tempArmAngle);
+    Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
 
     // for testing only
     // m_robotContainer.getWristSubsystem().setWristAngle(200); //135
     // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
+    // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle);
     // m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
     // m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
 
-    if(m_robotContainer.getDriverController().leftBumper().getAsBoolean())
+    // m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.3);      
+
+    if(m_robotContainer.getOps().leftBumper().getAsBoolean())
     {
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1.0);
-      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.3);
+      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1);
     }
-    else
-    {
+    else if(m_robotContainer.getOps().rightBumper().getAsBoolean()){ 
+      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(-.075);
+    } else if(m_robotContainer.getOps().povUp().getAsBoolean())
+      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(1);
+    else{
       m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
       m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
     }
+    
+    // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
+    // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
 
   }
 

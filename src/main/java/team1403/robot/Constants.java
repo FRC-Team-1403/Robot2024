@@ -252,11 +252,10 @@ public class Constants {
   }
 
   public static class Arm {
-    public static final double KPArmPivot = 0.025;
+    public static final double KPArmPivot = 0.011;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
     public static final double kAbsolutePivotOffset = 0;
-    public static double kArmAngle =0;
 
     public static final double kMaxPivotAngle = 230;//180
     public static final double kMinPivotAngle = 75;
@@ -266,6 +265,7 @@ public class Constants {
     public static final double kPivotMotorVoltageLimit = 12;
 
     public static final double kIntakeSetpoint = 90;
+    public static final double kAmpSetpoint = 210;
   }
 
   public static class IntakeAndShooter {
@@ -273,19 +273,23 @@ public class Constants {
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kHorizonAngle = 210; 
     public static final double kSpeedReduction = 2.0; // test value
+    //Shooting 136 - front on
+    //Shooting 132 - from either side angled
+    public static double kShootingAngle = 160;
   }
-
+  
   public static class Wrist {
     public static final double kWristConversionFactor = 0;
     public static final double kAbsoluteWristOffset = 0;
 
-    public static final double KPWrist = 0.01;
-    public static final double KIWrist = 0;
+    public static final double KPWrist = 0.021;
+    public static final double KIWrist = 0.0;
     public static final double KDWrist = 0;
 
-    public static final double kTopLimit = 320;//180
-    public static final double kBottomLimit = 41;//41
+    public static final double kTopLimit = 320;
+    public static final double kBottomLimit = 41;
 
-    public static final double kIntakeSetpoint =  133;
+    public static final double kIntakeSetpoint = 134;
+    public static final double kAmpSetpoint = 156.5;
   }
 }
