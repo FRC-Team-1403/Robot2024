@@ -88,8 +88,7 @@ public class ArmSubsystem extends SubsystemBase {
     double feedback = m_armPid.calculate(getPivotAngle(), desiredAngle);
 
     SmartDashboard.putNumber("Arm speed", feedback);
-    double speed = MathUtil.clamp(feedback, -.3, .3);
-    setArmSpeed(speed);
+    setArmSpeed(feedback);
   }
 
   /**
@@ -123,10 +122,10 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmSpeed(double speed) {
-    double feedforward = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
-    if(isOverUpperBound())m_leftMotor.set(-0.1);
-    else if(isUnderLowerBound())m_leftMotor.set(0.1);
-    else m_leftMotor.set(speed + feedforward);
+    double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
+    if (isOverUpperBound()) m_leftMotor.set(-0.1);
+    else if (isUnderLowerBound()) m_leftMotor.set(0.1);
+    else m_leftMotor.set(MathUtil.clamp(speed + ff, -0.3, 0.3));
   }
 
   /**
