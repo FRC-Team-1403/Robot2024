@@ -42,12 +42,13 @@ public class Wrist extends SubsystemBase {
     m_arm = arm;
 
     m_wristAngleSetpoint = 94;
+    m_wristMotorSpeed = 0;
 
-    SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
+    // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
   
   public double getWristAngle() {
-    return m_wristAngle = m_wristAbsoluteEncoder.getAbsolutePosition() * 360;
+    return m_wristAngle;
   }
 
   public void setWristAngle(double wristAngle) {
@@ -115,7 +116,6 @@ public class Wrist extends SubsystemBase {
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
     m_wristMotor.set(m_wristMotorSpeed);
-    m_wristPid.setP(Constants.Wrist.KPWrist);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
