@@ -266,6 +266,7 @@ public class Constants {
 
     public static final double kIntakeSetpoint = 90;
     public static final double kAmpSetpoint = 210;
+    public static final double kDriveSetpoint = 130;
   }
 
   public static class IntakeAndShooter {
@@ -291,5 +292,11 @@ public class Constants {
 
     public static final double kIntakeSetpoint = 134;
     public static final double kAmpSetpoint = 156.5;
+    public static final double kDriveSetpoint = 140;
+
+    public static final double kWristUpperLimit = 150;
+    public static final double kWristLowerLimit = 130;
+    public static final double kWrsitConstraint = 140;
+    public static final double kArmConstraint = 120;
   }
 }

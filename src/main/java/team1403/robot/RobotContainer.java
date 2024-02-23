@@ -22,6 +22,7 @@ import team1403.robot.Datables.Tables;
 import team1403.robot.commands.ArmCommand;
 import team1403.robot.commands.RunIntakeShooterAuto;
 import team1403.robot.commands.RunWrist;
+import team1403.robot.commands.WristConstraintCommand;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
@@ -110,28 +111,14 @@ public class RobotContainer {
     //   new RunWrist(m_wrist, Constants.IntakeAndShooter.kShootingAngle,2)
     // ));
 
-    m_operatorController.b().onTrue(new RunWrist(m_wrist, 90, 2));
+    m_operatorController.x().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint));
 
-    m_operatorController.x().onTrue(new SequentialCommandGroup(
-      new RunWrist(m_wrist, 140,2),
-      new ArmCommand(m_arm, 130, 2)
-    ));
+    m_operatorController.a().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kIntakeSetpoint, Constants.Wrist.kIntakeSetpoint));
 
-    m_operatorController.a().onTrue(new SequentialCommandGroup(
-    new RunWrist(m_wrist,140,2),
-    new ArmCommand(m_arm,Constants.Arm.kIntakeSetpoint,2),
-    new RunWrist(m_wrist,133,2)
-    ));
-    m_operatorController.y().onTrue(new SequentialCommandGroup(
-    new ArmCommand(m_arm,Constants.Arm.kAmpSetpoint,2),
-    new RunWrist(m_wrist,Constants.Wrist.kAmpSetpoint,2)
-    ));
+    m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
+
     m_operatorController.povDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
     
-
-
-
-
 
   }
   
