@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import team1403.robot.Datables.Tables;
 import team1403.robot.commands.ArmCommand;
 import team1403.robot.commands.RunIntakeShooterAuto;
 import team1403.robot.commands.RunWrist;
