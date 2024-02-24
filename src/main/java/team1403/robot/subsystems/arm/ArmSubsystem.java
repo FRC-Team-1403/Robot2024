@@ -28,6 +28,8 @@ public class ArmSubsystem extends SubsystemBase {
   private final PIDController m_armPid;
   private final ArmFeedforward m_feedforward;
 
+  private double tempFF;
+
   // Setpoints
   private double m_angleSetpoint;
 

@@ -120,8 +120,6 @@ public class RobotContainer {
     m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
 
     m_operatorController.povDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
-    
-
   }
   
   private double deadband(double value, double deadband) {

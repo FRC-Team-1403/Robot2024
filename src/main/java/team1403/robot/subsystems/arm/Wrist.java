@@ -116,6 +116,7 @@ public class Wrist extends SubsystemBase {
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
     m_wristMotor.set(m_wristMotorSpeed);
+    m_wristPid.setP(Constants.Wrist.KPWrist);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
