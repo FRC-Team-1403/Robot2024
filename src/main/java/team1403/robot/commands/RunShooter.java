@@ -17,12 +17,14 @@ public class RunShooter extends Command {
 
     @Override
     public void initialize() {
-        new WaitCommand(1); // TODO: test time
-        m_shooter.setShooterSpeed(m_shooterSpeed);
+
     }
 
     @Override
-    public void execute() {}
+    public void execute() {
+              new WaitCommand(1); // TODO: test time
+        m_shooter.setShooterSpeed(m_shooterSpeed);
+    }
 
     @Override
     public boolean isFinished() {

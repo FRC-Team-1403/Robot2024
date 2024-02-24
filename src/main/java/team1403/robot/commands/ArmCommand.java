@@ -8,15 +8,13 @@ import team1403.robot.subsystems.arm.ArmSubsystem;
 
 public class ArmCommand extends Command {
    private ArmSubsystem m_arm;
-   private final DutyCycleEncoder m_armAbsoluteEncoder;
    private double m_pivotAngle;
    private double m_tolerance;
 
 
-   public ArmCommand(ArmSubsystem arm, DutyCycleEncoder armAbsoluteEncoder, double pivotAngle, double tolerance) {
+   public ArmCommand(ArmSubsystem arm, double pivotAngle, double tolerance) {
        m_arm = arm;
        m_pivotAngle = pivotAngle;
-       m_armAbsoluteEncoder = armAbsoluteEncoder;
        m_tolerance = tolerance;
    }
 
@@ -27,12 +25,11 @@ public class ArmCommand extends Command {
 
    @Override
    public void execute() {
-    
    }
-
+   
    @Override
    public boolean isFinished() {  
-        return m_tolerance >= Math.abs(m_armAbsoluteEncoder.get() - m_pivotAngle);
+        return Math.abs(m_arm.getPivotAngle() - m_pivotAngle) <= m_tolerance;
     }
 
 

@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3180912944479708,
-        "y": 5.808970906303563
+        "x": 1.39,
+        "y": 5.52
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0606036927418556,
-        "y": 6.109373108294031
+        "x": 1.79,
+        "y": 5.52
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.691358503547252,
-        "y": 6.869574599045419
+        "x": 2.93,
+        "y": 5.52
       },
       "prevControl": {
-        "x": 2.00304312568514,
-        "y": 7.635084224892067
-      },
-      "nextControl": {
-        "x": 3.347338822179498,
-        "y": 6.140026394211425
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.691358503547252,
-        "y": 5.520830018680052
-      },
-      "prevControl": {
-        "x": 2.581006674244631,
-        "y": 6.041935879275761
+        "x": 2.53,
+        "y": 5.52
       },
       "nextControl": null,
       "isLocked": false,
@@ -49,31 +33,18 @@
   "eventMarkers": [
     {
       "name": "shoot preloaded note",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "sequential",
         "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "intake and shoot note 2",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "intake and shoot note 3",
-      "waypointRelativePos": 2.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Run Intake"
+              }
+            }
+          ]
         }
       }
     }

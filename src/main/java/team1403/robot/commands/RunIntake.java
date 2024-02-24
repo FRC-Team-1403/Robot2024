@@ -1,5 +1,6 @@
 package team1403.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
@@ -12,6 +13,7 @@ public class RunIntake extends Command {
    public RunIntake(IntakeAndShooter intake, double intakeSpeed) {
         this.m_intake = intake;
         m_intakeSpeed = intakeSpeed;
+        // m_time = time;
    }
 
    @Override
@@ -22,10 +24,7 @@ public class RunIntake extends Command {
    //slows down intake motor when intakePhotogate1 is hit 
    @Override
    public void execute() {  
-        if(m_intake.isIntakePhotogateTriggered())
-        {
             m_intake.setIntakeSpeed(m_intakeSpeed / Constants.IntakeAndShooter.kSpeedReduction);      
-        } 
    }
    @Override
    public boolean isFinished() {
