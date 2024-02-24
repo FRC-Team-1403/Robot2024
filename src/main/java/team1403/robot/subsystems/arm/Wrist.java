@@ -78,7 +78,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public boolean isAtSetpoint() {
-    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 1.0;
+    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
   }
 
   public void setWristSpeed(double speed) {

@@ -1,7 +1,9 @@
+
 package team1403.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
@@ -17,6 +19,7 @@ public class IntakeShooterLoop extends Command {
     private enum State
     {
         RESET,
+        LOWER,
         INTAKE,
         RAISE,
         LOAD, 
@@ -43,48 +46,65 @@ public class IntakeShooterLoop extends Command {
     @Override
     public void execute()
     {
+        SmartDashboard.putString("State", m_state.toString());
         switch(m_state)
         {
             case RESET:
-                m_arm.moveArm(Constants.Arm.kIntakeSetpoint);
-                m_wrist.setWristAngle(Constants.Wrist.kIntakeSetpoint);
-                m_intakeAndShooter.setIntakeSpeed(1.0);
+                m_wrist.setWristAngle(140);
+                m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterSpeed(0.0);
-                m_state = State.INTAKE;
+                if(m_wrist.isAtSetpoint())
+                {
+                    m_arm.moveArm(Constants.Arm.kIntakeSetpoint);
+                    m_state = State.LOWER;
+                }
+                break;
+            case LOWER:
+                if(m_arm.isAtSetpoint())
+                {
+                    m_wrist.setWristAngle(Constants.Wrist.kIntakeSetpoint);
+                    m_intakeAndShooter.setIntakeSpeed(1.0);
+                    m_state = State.INTAKE;
+                }
                 break;
             case INTAKE:
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
                     m_intakeAndShooter.setIntakeSpeed(0.4);
-                if(m_intakeAndShooter.isShooterPhotogateTriggered()) {
-                    m_arm.moveArm(Constants.IntakeAndShooter.kShootingAngle);
-                    m_wrist.setWristAngle(130);
+                if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
+                    m_arm.moveArm(107);
+                    m_intakeAndShooter.shooterStop();
+                    //m_wrist.setWristAngle(130);
                     m_state = State.RAISE;
                 }
-            break;
+                break;
             case RAISE:
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
-                    m_intakeAndShooter.setIntakeSpeed(-0.2);
+                    m_wrist.setWristAngle(Constants.IntakeAndShooter.kShootingAngle);
+                    m_intakeAndShooter.setIntakeSpeed(-0.3);
                     m_state = State.LOAD;
                 }
-            break;
+                break;
             case LOAD:
-                if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
-                    m_intakeAndShooter.setShooterSpeed(0.8);
+                if(!m_intakeAndShooter.shooterPhotogateCheckTrigger()) {
                     m_intakeAndShooter.intakeStop();
+                if(m_wrist.isAtSetpoint()) {
+                    m_intakeAndShooter.setShooterSpeed(0.8);
                     m_state = State.LOADED;
                 }
-            break;
+                }
+                break;
             case LOADED:
+                
                 //TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {                
                     m_intakeAndShooter.setIntakeSpeed(0.5);
                     m_state = State.SHOOT;
                 }
-            break;
-            case SHOOT:
-                if(!m_intakeAndShooter.isIntakePhotogateTriggered())
+                break;
+            case SHOOT:       
+                if(!m_intakeAndShooter.intakePhotogateCheckTrigger())
                     m_state = State.RESET;
-            break;
+                break;
         }     
     }
 

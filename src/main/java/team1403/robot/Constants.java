@@ -279,7 +279,7 @@ public class Constants {
     public static final double kSpeedReduction = 2.0; // test value
     //Shooting 136 - front on
     //Shooting 132 - from either side angled
-    public static double kShootingAngle = 160;
+    public static double kShootingAngle = 136;
   }
   
   public static class Wrist {

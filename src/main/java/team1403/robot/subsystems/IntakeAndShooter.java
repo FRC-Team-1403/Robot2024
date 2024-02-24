@@ -9,6 +9,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
+import team1403.lib.device.AdvancedMotorController.CougarIdleMode;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.CougarTalonFx;
 import team1403.robot.Constants;
@@ -55,6 +56,8 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorTop = new CougarTalonFx("Top Shooter Motor", Constants.CanBus.shooterMotorTopID);
     m_shooterMotorBottom = new CougarTalonFx("Bottom Shooter Motor", Constants.CanBus.shooterMotorBottomID);
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
+    m_shooterMotorTop.setIdleMode(CougarIdleMode.BRAKE);
+    m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
   }
 
   /**
@@ -105,11 +108,11 @@ public class IntakeAndShooter extends SubsystemBase {
   }
   public boolean shooterPhotogateCheckTrigger() {
     int value = isShooterPhotogateTriggered() ? 1 : 0;
-    return m_shooterFilter.calculate(value) == 1;
+    return m_shooterFilter.calculate(value) > .5;
   }
     public boolean intakePhotogateCheckTrigger() {
     int value = isIntakePhotogateTriggered() ? 1 : 0;
-    return m_intakeFilter.calculate(value) == 1;
+    return m_intakeFilter.calculate(value) > .5;
   }
   /**
    * is shooter photogate triggered.

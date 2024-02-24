@@ -149,13 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the arm is at the current setpoint.
    */
   public boolean isAtSetpoint() {
-    double currentPivotAngle = getPivotAngle();
-
-    if (Math.abs(currentPivotAngle - this.m_angleSetpoint) > 0.25) {
-      return false;
-    }
-
-    return true;
+    return Math.abs(getPivotAngle() - m_angleSetpoint) <= 1.0;
   }
 
   public boolean isOverUpperBound(){
