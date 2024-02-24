@@ -26,6 +26,7 @@ public class Wrist extends SubsystemBase {
     private ArmFeedforward m_feedforward2;
 
     private double m_wristAngleSetpoint;
+    private double m_wristMotorSpeed;
 
     private ArmSubsystem m_arm;
 
@@ -41,12 +42,13 @@ public class Wrist extends SubsystemBase {
     m_arm = arm;
 
     m_wristAngleSetpoint = 94;
+    m_wristMotorSpeed = 0;
 
-    SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
+    // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
   
   public double getWristAngle() {
-    return m_wristAngle = m_wristAbsoluteEncoder.getAbsolutePosition() * 360;
+    return m_wristAngle;
   }
 
   public void setWristAngle(double wristAngle) {
@@ -76,7 +78,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public boolean isAtSetpoint() {
-    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
+    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 1.0;
   }
 
   public void setWristSpeed(double speed) {
@@ -84,29 +86,37 @@ public class Wrist extends SubsystemBase {
     //if(getWristAngle() > Constants.Arm.kArmAngle) 
     //feedforward = m_feedforward2.calculate(Units.degreesToRadians(getWristAngle()), 0);
     if(isOverUpperBound()) {
-      m_wristMotor.set(MathUtil.clamp(speed, -0.1, 0));
+      m_wristMotorSpeed = MathUtil.clamp(speed, -0.1, 0);
     }
-    else if(isUnderLowerBound()){ 
-      m_wristMotor.set(MathUtil.clamp(speed, 0, 0.1));
+    else if(isUnderLowerBound()) { 
+      m_wristMotorSpeed = MathUtil.clamp(speed, 0, 0.1);
     }
-    else m_wristMotor.set(MathUtil.clamp(speed,-0.1,0.1));
+    else {
+      m_wristMotorSpeed = MathUtil.clamp(speed,-0.75,0.75);
+    }
+      
   }
 
-  public boolean isOverUpperBound(){
+  private boolean isOverUpperBound(){
     return (getWristAngle() >= Constants.Wrist.kTopLimit);
   }
 
-   public boolean isUnderLowerBound(){
+  private boolean isUnderLowerBound(){
     return (getWristAngle() <= Constants.Wrist.kBottomLimit);
   }
 
-public void periodic() {
-    getWristAngle();
+  @Override
+  public void periodic() {
+    m_wristAngle = m_wristAbsoluteEncoder.getAbsolutePosition() * 360.0;
 
-    m_wristPid.setP(SmartDashboard.getNumber("Wrist P", m_wristPid.getP()));
+    // tune PID with shuffleboard
+    // m_wristPid.setP(SmartDashboard.getNumber("Wrist P", m_wristPid.getP()));
 
    if(isInBounds(m_wristAngleSetpoint) && m_arm.getPivotAngle() > Constants.Arm.kMinPivotAngle)
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
+
+    m_wristMotor.set(m_wristMotorSpeed);
+    m_wristPid.setP(Constants.Wrist.KPWrist);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);

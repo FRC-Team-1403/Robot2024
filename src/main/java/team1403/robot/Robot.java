@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import team1403.robot.Datables.ShooterValues;
 import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
@@ -37,6 +36,10 @@ public class Robot extends LoggedRobot {
   private RobotContainer m_robotContainer;
   private double tempWristAngle;
   private double tempArmAngle;
+  private double wristP;
+  private double armP;
+  private double armD;
+  private double armI;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -76,6 +79,18 @@ public class Robot extends LoggedRobot {
     m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
     m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
     SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
+
+    tempWristAngle = 100;
+    tempArmAngle = 130;
+
+    // SmartDashboard.putNumber("Arm Setpoint Control", tempArmAngle);
+    SmartDashboard.putNumber("Arm P Control", armP);
+    SmartDashboard.putNumber("Arm D Control", armD);
+    SmartDashboard.putNumber("Arm I Control", armI);
+    SmartDashboard.putNumber("Wrist P Control", wristP);
+    SmartDashboard.putNumber("Wrist Setpoint Control", tempWristAngle);
+
+    SmartDashboard.putNumber("Arm Setpoint Control", tempArmAngle);
   }
 
   /**
@@ -126,8 +141,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() { //100
-    m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
-    m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
+    // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
+    // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
 
   }
 
@@ -146,10 +161,20 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
+    // Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
+    // tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
+    // wristP = SmartDashboard.getNumber("Wrist P Control", wristP);
+    // Constants.Wrist.KPWrist = wristP;
+    // tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
+
+
+    // armD = SmartDashboard.getNumber("Arm D Control", armD);
+    // armI =SmartDashboard.getNumber("Arm I Control", armI);
+    // Constants.Arm.KDArmPivot = armD;
+    // Constants.Arm.KIArmPivot = armI;
 
     // for testing only
-    // m_robotContainer.getWristSubsystem().setWristAngle(200); //135
+    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
     // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
     // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle);
     // m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
