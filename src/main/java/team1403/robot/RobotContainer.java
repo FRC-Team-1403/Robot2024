@@ -120,7 +120,7 @@ public class RobotContainer {
     m_operatorController.a().onTrue(new SequentialCommandGroup(
     new RunWrist(m_wrist,140,2),
     new ArmCommand(m_arm,Constants.Arm.kIntakeSetpoint,2),
-    new RunWrist(m_wrist,133,2)
+    new RunWrist(m_wrist,135,2)
     ));
     m_operatorController.y().onTrue(new SequentialCommandGroup(
     new ArmCommand(m_arm,Constants.Arm.kAmpSetpoint,2),

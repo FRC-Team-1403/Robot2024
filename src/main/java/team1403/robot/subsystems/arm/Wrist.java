@@ -78,7 +78,7 @@ public class Wrist extends SubsystemBase {
   // }
 
   public boolean isAtSetpoint() {
-    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
+    return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 1.0;
   }
 
   public void setWristSpeed(double speed) {
@@ -92,7 +92,7 @@ public class Wrist extends SubsystemBase {
       m_wristMotorSpeed = MathUtil.clamp(speed, 0, 0.1);
     }
     else {
-      m_wristMotorSpeed = MathUtil.clamp(speed,-0.1,0.1);
+      m_wristMotorSpeed = MathUtil.clamp(speed,-0.75,0.75);
     }
       
   }
@@ -116,6 +116,7 @@ public class Wrist extends SubsystemBase {
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
     m_wristMotor.set(m_wristMotorSpeed);
+    m_wristPid.setP(Constants.Wrist.KPWrist);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
