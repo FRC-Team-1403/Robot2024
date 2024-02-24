@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
@@ -30,6 +31,9 @@ public class IntakeAndShooter extends SubsystemBase {
   // photogates
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
+   private LinearFilter m_shooterFilter = LinearFilter.movingAverage(2);
+    private LinearFilter m_intakeFilter = LinearFilter.movingAverage(2);
+
 
   /**
    * creating shooter devices.
@@ -99,7 +103,14 @@ public class IntakeAndShooter extends SubsystemBase {
     // the direction of the motor
 
   }
-
+  public boolean shooterPhotogateCheckTrigger() {
+    int value = isShooterPhotogateTriggered() ? 1 : 0;
+    return m_shooterFilter.calculate(value) == 1;
+  }
+    public boolean intakePhotogateCheckTrigger() {
+    int value = isIntakePhotogateTriggered() ? 1 : 0;
+    return m_intakeFilter.calculate(value) == 1;
+  }
   /**
    * is shooter photogate triggered.
    *
