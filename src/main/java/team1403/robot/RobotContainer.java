@@ -110,10 +110,13 @@ public class RobotContainer {
     //   new RunWrist(m_wrist, Constants.IntakeAndShooter.kShootingAngle,2)
     // ));
 
+    //when button X is pressed go to drive setpoint
     m_operatorController.x().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint));
 
+    //when button A is pressed go to intake setpoint
     m_operatorController.a().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kIntakeSetpoint, Constants.Wrist.kIntakeSetpoint));
 
+    //when button Y is pressed go to shooting setpoint
     m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
 
     m_operatorController.povDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));

@@ -299,7 +299,7 @@ public class Constants {
 
     public static final double kWristUpperLimit = 150;
     public static final double kWristLowerLimit = 130;
-    public static final double kWrsitConstraint = 140;
+    public static final double kWristConstraint = 140;
     public static final double kArmConstraint = 120;
   }
 }

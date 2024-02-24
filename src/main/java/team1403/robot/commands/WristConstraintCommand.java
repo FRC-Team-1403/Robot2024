@@ -27,7 +27,7 @@ public class WristConstraintCommand extends Command{
 
     if(m_arm.getPivotAngle() < Constants.Wrist.kArmConstraint && 
     (m_wrist.getWristAngle() > Constants.Wrist.kWristUpperLimit || m_wrist.getWristAngle() < Constants.Wrist.kWristLowerLimit)){
-        m_wrist.setWristAngle(Constants.Wrist.kWrsitConstraint);
+        m_wrist.setWristAngle(Constants.Wrist.kWristConstraint);
     }
         m_wrist.setWristAngle(m_wristSetpoint);
         m_arm.moveArm(m_armSetpoint);
