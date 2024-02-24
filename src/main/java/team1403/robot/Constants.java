@@ -154,8 +154,8 @@ public class Constants {
   public static class RioPorts {
     // actual
     public static final int LEDPort = 0;
-    public static final int intakePhotogate1 = 2;
-    public static final int shooterPhotogate = 3;
+    public static final int intakePhotogate1 = 3;
+    public static final int shooterPhotogate = 2;
     public static final int kArmAbsoluteEncoder = 0;
     //Wrist 
     public static final int kwristAbsoluteEncoder = 1; // DIO

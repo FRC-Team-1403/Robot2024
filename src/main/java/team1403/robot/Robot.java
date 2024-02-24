@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
@@ -34,6 +35,7 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
+  private IntakeShooterLoop m_combinedCommand;
   private double tempWristAngle;
   private double tempArmAngle;
   private double wristP;
@@ -70,6 +72,7 @@ public class Robot extends LoggedRobot {
 
     m_robotContainer = new RobotContainer();
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
+    m_combinedCommand = new IntakeShooterLoop(m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), m_robotContainer.getWristSubsystem(), () -> m_robotContainer.getOps().rightBumper().getAsBoolean());
 
     AutoSelector.initAutoChooser();
 
@@ -136,6 +139,7 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    m_combinedCommand.cancel();
   }
 
   /** This function is called periodically during autonomous. */
@@ -156,6 +160,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
+    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */
@@ -182,18 +187,21 @@ public class Robot extends LoggedRobot {
 
     // m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.3);      
 
-    if(m_robotContainer.getOps().leftBumper().getAsBoolean())
-    {
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1);
-    }
-    else if(m_robotContainer.getOps().rightBumper().getAsBoolean()){ 
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(-.075);
-    } else if(m_robotContainer.getOps().povUp().getAsBoolean())
-      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(1);
-    else{
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
-      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
-    }
+    // if(m_robotContainer.getOps().leftBumper().getAsBoolean())
+    // {
+    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1);
+    // }
+    // else if(m_robotContainer.getOps().rightBumper().getAsBoolean()){ 
+    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(-.075);
+    // } else if(m_robotContainer.getOps().povUp().getAsBoolean())
+    //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(1);
+    // else{
+    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
+    //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
+    // }
+
+
+
     
     // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
     // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);

@@ -3,6 +3,7 @@ package team1403.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.SparkRelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,6 +46,7 @@ public class IntakeAndShooter extends SubsystemBase {
     m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorID,
         SparkRelativeEncoder.Type.kHallSensor);
     m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
+    m_intakeMotor.setIdleMode(IdleMode.kBrake);
     // shooter motors and sensors
     m_shooterMotorTop = new CougarTalonFx("Top Shooter Motor", Constants.CanBus.shooterMotorTopID);
     m_shooterMotorBottom = new CougarTalonFx("Bottom Shooter Motor", Constants.CanBus.shooterMotorBottomID);
@@ -57,7 +59,7 @@ public class IntakeAndShooter extends SubsystemBase {
    * @return true or false depending on if it is trigered.
    */
   public boolean isIntakePhotogateTriggered() {
-    return m_intakePhotogate.get();
+    return !m_intakePhotogate.get();
   }
 
   /**
@@ -104,7 +106,7 @@ public class IntakeAndShooter extends SubsystemBase {
    * @return state of the shooter photogate.
    */
   public boolean isShooterPhotogateTriggered() {
-    return m_shooterPhotogate.get();
+    return !m_shooterPhotogate.get();
   }
 
   /**
