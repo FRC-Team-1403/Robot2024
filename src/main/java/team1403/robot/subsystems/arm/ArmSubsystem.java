@@ -28,8 +28,6 @@ public class ArmSubsystem extends SubsystemBase {
   private final PIDController m_armPid;
   private final ArmFeedforward m_feedforward;
 
-  private double tempFF;
-
   // Setpoints
   private double m_angleSetpoint;
 
@@ -46,7 +44,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     configPivotMotors();
 
-    m_armPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
+    m_armPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kIArmPivot, Constants.Arm.kDArmPivot);
 
     this.m_angleSetpoint = getPivotAngle();
   }
@@ -174,11 +172,6 @@ public class ArmSubsystem extends SubsystemBase {
       m_currentLimitTripped = true;
       m_leftMotor.stopMotor();
     }
-
-    m_armPid.setP(Constants.Arm.KPArmPivot);
-    m_armPid.setI(Constants.Arm.KIArmPivot);
-    m_armPid.setD(Constants.Arm.KDArmPivot);
-    
 
     // Track Values
     

@@ -253,10 +253,10 @@ public class Constants {
 
   public static class Arm {
     // all angles are in degrees
-    public static final double KPArmPivot = 0.0128;
-    public static double KIArmPivot = 0.0;
-    public static double KDArmPivot = 0;
-    public static final double kAbsolutePivotOffset = 0;
+    public static final double kPArmPivot = 0.0128;
+    public static double kIArmPivot = 0.0;
+    public static double kDArmPivot = 0;
+    public static final double kAbsolutePivotOffset = 0.1;
     public static double kFeedforwardG = 0.03;
     public static final double kFeedforwardV = 0.0001;
 
@@ -285,16 +285,16 @@ public class Constants {
   
   public static class Wrist {
     public static final double kWristConversionFactor = 0;
-    public static final double kAbsoluteWristOffset = 0;
+    public static final double kAbsoluteWristOffset = 1.25;
 
-    public static double KPWrist = 0.0092;
-    public static final double KIWrist = 0.0;
-    public static final double KDWrist = 0;
+    public static final double kPWrist = 0.0092;
+    public static final double kIWrist = 0.0;
+    public static final double kDWrist = 0;
 
     public static final double kTopLimit = 165;
     public static final double kBottomLimit = 0;
 
-    public static final double kIntakeSetpoint = 134;
+    public static final double kIntakeSetpoint = 133;
     public static final double kAmpSetpoint = 156.5;
     public static final double kDriveSetpoint = 140;
 
@@ -302,5 +302,6 @@ public class Constants {
     public static final double kWristLowerLimit = 130;
     public static final double kWristConstraint = 140;
     public static final double kArmConstraint = 120;
+    public static final double kWristMotorAmpage = 40;
   }
 }

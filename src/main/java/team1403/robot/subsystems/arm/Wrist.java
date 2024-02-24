@@ -21,9 +21,6 @@ public class Wrist extends SubsystemBase {
     private final PIDController m_wristPid;
     //private final ArmFeedforward m_wristFeedforward;
     private DutyCycleEncoder m_wristAbsoluteEncoder;
-    private double m_wristAngle;
-    private ArmFeedforward m_feedforward;
-    private ArmFeedforward m_feedforward2;
 
     private double m_wristAngleSetpoint;
     private double m_wristMotorSpeed;
@@ -34,21 +31,23 @@ public class Wrist extends SubsystemBase {
     // m_feedforward = new ArmFeedforward(0, 0.08, 0.0001);
     // m_feedforward2 = new ArmFeedforward(0, 0.04, 0.0001);
     m_wristMotor = CougarSparkMax.makeBrushless("Wrist Motor", Constants.CanBus.wristMotorID, SparkRelativeEncoder.Type.kHallSensor);
-    m_wristPid = new PIDController(Constants.Wrist.KPWrist, Constants.Wrist.KIWrist, Constants.Wrist.KDWrist);
+    m_wristPid = new PIDController(Constants.Wrist.kPWrist, Constants.Wrist.kIWrist, Constants.Wrist.kDWrist);
     //m_wristFeedforward = new ArmFeedforward(Constants.Wrist.kSWrist, Constants.Wrist.kGWrist, Constants.Wrist.kVWrist, Constants.Wrist.kAWrist);
     m_wristAbsoluteEncoder = new DutyCycleEncoder(Constants.RioPorts.kwristAbsoluteEncoder);
 
     m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_arm = arm;
 
-    m_wristAngleSetpoint = 94;
-    m_wristMotorSpeed = 0;
+    SmartDashboard.putNumber("init wrist angle", getWristAngle());
+    m_wristAngleSetpoint = getWristAngle();
+
+
 
     // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
   
   public double getWristAngle() {
-    return m_wristAngle;
+  return m_wristAbsoluteEncoder.getAbsolutePosition() * 360.0 + Constants.Wrist.kAbsoluteWristOffset;
   }
 
   public void setWristAngle(double wristAngle) {
@@ -64,7 +63,7 @@ public class Wrist extends SubsystemBase {
   public boolean isInBounds(double angle) {
     return (angle <= Constants.Wrist.kTopLimit && angle >= Constants.Wrist.kBottomLimit);
   }
-
+  
   // public boolean isInTuckBound(double angle) {
   //   return (angle <= Constants.Wrist.kTopIntakeLimit && angle >= Constants.Wrist.kBottomIntakeLimit);
   // }
@@ -107,24 +106,23 @@ public class Wrist extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_wristAngle = m_wristAbsoluteEncoder.getAbsolutePosition() * 360.0;
+    double wristAngle = getWristAngle();
+    if(isInBounds(m_wristAngleSetpoint) && m_arm.getPivotAngle() > Constants.Arm.kMinPivotAngle){
+      setWristSpeed(m_wristPid.calculate(wristAngle, m_wristAngleSetpoint));
 
-    // tune PID with shuffleboard
-    // m_wristPid.setP(SmartDashboard.getNumber("Wrist P", m_wristPid.getP()));
+    }else if (m_wristMotor.getOutputCurrent() > Constants.Wrist.kWristMotorAmpage) {
+      m_wristMotor.stopMotor();
+    }
 
-   if(isInBounds(m_wristAngleSetpoint) && m_arm.getPivotAngle() > Constants.Arm.kMinPivotAngle)
-    setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
-    m_wristMotor.set(m_wristMotorSpeed);
-    m_wristPid.setP(Constants.Wrist.KPWrist);
-
-   SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
-   SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
+   SmartDashboard.putNumber("Wrist Angle", wristAngle);
+   SmartDashboard.putNumber("Wrist Setpoint", m_wristAngleSetpoint);
+   SmartDashboard.putBoolean("Is within bounds",isInBounds(wristAngle));
    SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
-   Logger.recordOutput("Wrist Angle", getWristAngle());
+   Logger.recordOutput("Wrist Angle", wristAngle);
   
   }
 }
