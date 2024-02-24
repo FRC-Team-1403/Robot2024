@@ -76,6 +76,10 @@ public class ArmSubsystem extends SubsystemBase {
     return value;
   }
 
+  public double getSetpoint(){
+    return m_angleSetpoint;
+  }
+
   public PIDController getPidController() {
     return m_armPid;
   }
