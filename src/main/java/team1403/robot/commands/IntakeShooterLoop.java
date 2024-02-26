@@ -3,6 +3,7 @@ package team1403.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
@@ -16,6 +17,7 @@ public class IntakeShooterLoop extends Command {
     private ArmSubsystem m_arm;
     private Wrist m_wrist;
     private BooleanSupplier m_trigger;
+    private BooleanSupplier m_amp;
 
     private enum State
     {
@@ -30,11 +32,12 @@ public class IntakeShooterLoop extends Command {
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, BooleanSupplier trigger) {
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, BooleanSupplier trigger, BooleanSupplier amp) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
         m_wrist = wrist;
+        m_amp = amp;
     }
 
     @Override
@@ -100,7 +103,12 @@ public class IntakeShooterLoop extends Command {
                 }
                 break;
             case LOADED:
-                
+                if(m_amp.getAsBoolean())
+                {
+                    m_arm.moveArm(Constants.Arm.kAmpSetpoint);
+                    m_wrist.setWristAngle(Constants.Wrist.kAmpSetpoint);
+                    m_intakeAndShooter.setShooterSpeed(0.6);
+                }
                 //TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {                
                     m_intakeAndShooter.setIntakeSpeed(0.5);
