@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
+import team1403.robot.subsystems.IntakeAndShooter.Check;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 
@@ -85,12 +86,17 @@ public class IntakeShooterLoop extends Command {
                 }
                 break;
             case LOAD:
-                if(!m_intakeAndShooter.shooterPhotogateCheckTrigger()) {
+                if(m_intakeAndShooter.isShooterPhotogateCheckTrigger() == Check.FALSE) {
                     m_intakeAndShooter.intakeStop();
-                if(m_wrist.isAtSetpoint()) {
-                    m_intakeAndShooter.setShooterSpeed(0.8);
-                    m_state = State.LOADED;
+                    if(m_wrist.isAtSetpoint()) {
+                        m_intakeAndShooter.setShooterSpeed(0.8);
+                        m_state = State.LOADED;
+                    }
                 }
+                else if (m_intakeAndShooter.isShooterPhotogateCheckTrigger() == Check.MAYBE) {
+                    m_intakeAndShooter.setIntakeSpeed(.5);
+                }else {
+                    m_intakeAndShooter.setIntakeSpeed(1);
                 }
                 break;
             case LOADED:
@@ -102,7 +108,7 @@ public class IntakeShooterLoop extends Command {
                 }
                 break;
             case SHOOT:       
-                if(!m_intakeAndShooter.intakePhotogateCheckTrigger())
+                if(m_intakeAndShooter.isIntakePhotogateCheckTrigger() == Check.FALSE)
                     m_state = State.RESET;
                 break;
         }     

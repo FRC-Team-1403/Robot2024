@@ -106,13 +106,32 @@ public class IntakeAndShooter extends SubsystemBase {
     // the direction of the motor
 
   }
-  public boolean shooterPhotogateCheckTrigger() {
-    int value = isShooterPhotogateTriggered() ? 1 : 0;
-    return m_shooterFilter.calculate(value) > .5;
+  public enum Check {
+    TRUE,
+    FALSE,
+    MAYBE
   }
-    public boolean intakePhotogateCheckTrigger() {
-    int value = isIntakePhotogateTriggered() ? 1 : 0;
-    return m_intakeFilter.calculate(value) > .5;
+  public Check isShooterPhotogateCheckTrigger() {
+    int value = isShooterPhotogateTriggered() ? 1 : 0;
+    if (value == 1) {
+      return Check.TRUE;
+    }else if(value == 0){
+      return Check.FALSE;
+    }
+    else {
+      return Check.MAYBE;
+    }
+  }
+    public Check isIntakePhotogateCheckTrigger() {
+     int value = isIntakePhotogateTriggered() ? 1 : 0;
+    if (value == 1) {
+      return Check.TRUE;
+    }else if(value == 0){
+      return Check.FALSE;
+    }
+    else {
+      return Check.MAYBE;
+    }
   }
   /**
    * is shooter photogate triggered.
