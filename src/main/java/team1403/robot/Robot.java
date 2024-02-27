@@ -74,7 +74,10 @@ public class Robot extends LoggedRobot {
     m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
     m_combinedCommand = new IntakeShooterLoop(m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
     m_robotContainer.getWristSubsystem(), () -> m_robotContainer.getOps().rightBumper().getAsBoolean(),
-    () -> m_robotContainer.getOps().leftBumper().getAsBoolean());
+    () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), () -> m_robotContainer.getOps().a().getAsBoolean(),
+    () -> m_robotContainer.getOps().b().getAsBoolean(),
+    () -> m_robotContainer.getOps().x().getAsBoolean(),
+    () -> m_robotContainer.getOps().povUp().getAsBoolean());
 
     AutoSelector.initAutoChooser();
 
@@ -85,11 +88,10 @@ public class Robot extends LoggedRobot {
     //m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
     SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
 
-    tempWristAngle = 100;
-    tempArmAngle = 130;
-
-    SmartDashboard.putNumber("Wrist Setpoint Control", tempWristAngle);
-    SmartDashboard.putNumber("Arm Setpoint Control", tempArmAngle);
+    tempWristAngle = Constants.Wrist.kIntakeSetpoint;
+    tempArmAngle = Constants.Arm.kIntakeSetpoint;
+    SmartDashboard.putNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint);
+    SmartDashboard.putNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM);
   }
 
   /**
@@ -162,37 +164,13 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    //tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
-    //tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
+    // tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
+    // tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
 
     // for testing only
-    //m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
-    //m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //100
-    // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle);
-    // m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
-    // m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
-
-    // m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.3);
-
-    // if(m_robotContainer.getOps().leftBumper().getAsBoolean())
-    // {
-    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1);
-    // }
-    // else if(m_robotContainer.getOps().rightBumper().getAsBoolean()){ 
-    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(-.075);
-    // } else if(m_robotContainer.getOps().povUp().getAsBoolean())
-    //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(1);
-    // else{
-    //   m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
-    //   m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
-    // }
-
-
-
-    
-    // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
-    // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
-
+    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
+    // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //100
+   // m_robotContainer.getIntakeShooterSubsystem().setShooterRPM(400);
   }
 
   @Override

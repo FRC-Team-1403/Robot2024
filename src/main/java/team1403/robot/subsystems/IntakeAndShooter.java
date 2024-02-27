@@ -5,8 +5,10 @@ import org.littletonrobotics.junction.Logger;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.AdvancedMotorController.CougarIdleMode;
@@ -32,8 +34,10 @@ public class IntakeAndShooter extends SubsystemBase {
   // photogates
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
-   private LinearFilter m_shooterFilter = LinearFilter.movingAverage(2);
-    private LinearFilter m_intakeFilter = LinearFilter.movingAverage(2);
+  private LinearFilter m_shooterFilter = LinearFilter.movingAverage(2);
+  private LinearFilter m_intakeFilter = LinearFilter.movingAverage(2);
+  private PIDController m_bottomShooter;
+  private PIDController m_topShooter;
 
 
   /**
@@ -58,6 +62,11 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
     m_shooterMotorTop.setIdleMode(CougarIdleMode.BRAKE);
     m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
+    m_bottomShooter = new PIDController(0.00001, 0.0 , 0.0);
+    m_topShooter = new PIDController(0.00001, 0.0, 0.0);
+
+    m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
+    m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
   }
 
   /**
@@ -149,10 +158,16 @@ public class IntakeAndShooter extends SubsystemBase {
     }
   }
 
+  public void setShooterRPM(double rpm) {
+    m_bottomShooter.setSetpoint(rpm);
+    m_topShooter.setSetpoint(rpm);
+  }
   /**
    * Stopping the shooter motors.
    */
   public void shooterStop() {
+    m_bottomShooter.setSetpoint(0);
+        m_topShooter.setSetpoint(0);
     m_shooterMotorTop.setSpeed(0);
     m_shooterMotorBottom.setSpeed(0);
   }
@@ -173,6 +188,10 @@ public class IntakeAndShooter extends SubsystemBase {
 
   public void periodic() {
     Logger.recordOutput("Intake Top Motor Temp", m_intakeMotor.getMotorTemperature());
-    Logger.recordOutput("Intake Top Motor RPM", m_intakeMotor.getVoltageCompensationNominalVoltage());
+    SmartDashboard.putNumber("Intake Top Motor RPM", -m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue());
+    SmartDashboard.putNumber("RPM setpoint",  m_topShooter.getSetpoint());
+    SmartDashboard.putBoolean("Shooter Ready", Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() / 0.05);
+    m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
+    m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));
   }
 }

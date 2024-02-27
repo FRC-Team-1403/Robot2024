@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import team1403.lib.util.Dimension;
+import team1403.robot.subsystems.arm.ArmState;
 
 /**
  * This class holds attributes for the robot configuration.
@@ -253,11 +254,11 @@ public class Constants {
 
   public static class Arm {
     // all angles are in degrees
-    public static final double KPArmPivot = 0.0128;
-    public static double KIArmPivot = 0.0;
-    public static double KDArmPivot = 0;
+    public static final double KPArmPivot = 0.0125;
+    public static final double KIArmPivot = 0.0;
+    public static final double KDArmPivot = 0;
     public static final double kAbsolutePivotOffset = 0;
-    public static double kFeedforwardG = 0.03;
+    public static final double kFeedforwardG = 0.03;
     public static final double kFeedforwardV = 0.0001;
 
     public static final double kMaxPivotAngle = 230;//180
@@ -266,11 +267,15 @@ public class Constants {
 
     public static final int kPivotMotorCurrentLimit = 25;
     public static final double kPivotMotorVoltageLimit = 12;
+    public static final ArmState KStageLineSetPoint = null;
 
-    public static final double kIntakeSetpoint = 90;
-    public static final double kAmpSetpoint = 210;
-    public static final double kDriveSetpoint = 130;
+    public static  double kIntakeSetpoint = 90;
+    public static  double kAmpSetpoint = 210;
+    public static  double kLoadingSetpoint = 150;
+    public static  double kDriveSetpoint = 114;
+    public static  double kDefaultClose = 114;
   }
+
 
   public static class IntakeAndShooter {
     public static final double kFrameAngle = 250.24629;
@@ -279,7 +284,9 @@ public class Constants {
     public static final double kSpeedReduction = 2.0; // test value
     //Shooting 136 - front on
     //Shooting 132 - from either side angled
-    public static double kShootingAngle = 136;
+    public static  double kShootingAngle = 147;
+    public static double kStageLineRPM = 6000;
+    public static double kCenterLineRPM = 5500;
   }
   
   public static class Wrist {
@@ -290,12 +297,16 @@ public class Constants {
     public static final double KIWrist = 0.0;
     public static final double KDWrist = 0;
 
-    public static final double kTopLimit = 165;
+    public static final double kTopLimit = 180;
     public static final double kBottomLimit = 0;
 
-    public static final double kIntakeSetpoint = 134;
-    public static final double kAmpSetpoint = 156.5;
-    public static final double kDriveSetpoint = 140;
+    public static  double kIntakeSetpoint = 134;
+    public static  double kAmpSetpoint = 160.5;
+    public static  double kLoadingSetpoint = 90;
+    public static  double kDriveSetpoint = 140;
+    public static  double kDefaultClose = 136;
+    public static double kStageLineSetpoint = 122;
+    public static double kCenterLineSetpoint = 115;
 
     public static final double kWristUpperLimit = 150;
     public static final double kWristLowerLimit = 130;

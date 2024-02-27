@@ -102,7 +102,15 @@ public class RobotContainer {
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-
+    m_operatorController.y()
+    .onTrue(new InstantCommand(() -> m_endeff.setShooterRPM(-3000)))
+    .onFalse(new InstantCommand(() -> m_endeff.shooterStop()));
+    //     m_operatorController.rightBumper()
+    // .onTrue(new InstantCommand(() -> m_endeff.setShooterRPM(200)))
+    // .onFalse(new InstantCommand(() -> m_endeff.shooterStop()));
+    //         m_operatorController.leftBumper()
+    // .onTrue(new InstantCommand(() -> m_endeff.setIntakeSpeed(0.9)))
+    // .onFalse(new InstantCommand(() -> m_endeff.intakeStop()));
 
     // m_operatorController.b().onTrue(new SequentialCommandGroup(
     //   new RunWrist(m_wrist, 140,2),
@@ -118,12 +126,17 @@ public class RobotContainer {
 
     //when button Y is pressed go to shooting setpoint
     // m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
-    m_operatorController.y().onTrue(new SequentialCommandGroup(
-      new RunWrist(m_wrist, Constants.Wrist.kAmpSetpoint, 2.0),
-      new ArmCommand(m_arm, Constants.Arm.kAmpSetpoint, 2.0)
-    ));
+    // m_operatorController.y().onTrue(new SequentialCommandGroup(
+    //   new RunWrist(m_wrist, Constants.Wrist.kAmpSetpoint),
+    //   new ArmCommand(m_arm, Constants.Arm.kAmpSetpoint)
+    // ));
 
-    //m_operatorController.povDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
+    // m_operatorController.b().onTrue(new SequentialCommandGroup(
+    //   new RunWrist(m_wrist, Constants.Wrist.kLoadingSetpoint),
+    //   new ArmCommand(m_arm, Constants.Arm.kLoadingSetpoint)
+    // ));
+
+    //m_operatorController.poxvDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
     
 
   }

@@ -9,13 +9,11 @@ import team1403.robot.subsystems.arm.ArmSubsystem;
 public class ArmCommand extends Command {
    private ArmSubsystem m_arm;
    private double m_pivotAngle;
-   private double m_tolerance;
 
 
-   public ArmCommand(ArmSubsystem arm, double pivotAngle, double tolerance) {
+   public ArmCommand(ArmSubsystem arm, double pivotAngle) {
        m_arm = arm;
        m_pivotAngle = pivotAngle;
-       m_tolerance = tolerance;
    }
 
    @Override
@@ -29,7 +27,7 @@ public class ArmCommand extends Command {
    
    @Override
    public boolean isFinished() {  
-        return Math.abs(m_arm.getPivotAngle() - m_pivotAngle) <= m_tolerance;
+        return m_arm.isAtSetpoint();
     }
 
 

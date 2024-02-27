@@ -131,7 +131,7 @@ public class ArmSubsystem extends SubsystemBase {
     double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
     if (isOverUpperBound()) m_leftMotor.set(-0.1);
     else if (isUnderLowerBound()) m_leftMotor.set(0.1);
-    else m_leftMotor.set(MathUtil.clamp(speed + ff, -1, 1));
+    else m_leftMotor.set(MathUtil.clamp(speed + ff, -0.7, 0.8));
   }
 
   /**
@@ -149,7 +149,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the arm is at the current setpoint.
    */
   public boolean isAtSetpoint() {
-    return Math.abs(getPivotAngle() - m_angleSetpoint) <= 1.0;
+    return Math.abs(getPivotAngle() - m_angleSetpoint) <= 5.0;
   }
 
   public boolean isOverUpperBound(){
