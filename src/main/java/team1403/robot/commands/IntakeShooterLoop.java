@@ -3,7 +3,6 @@ package team1403.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.networktables.BooleanTopic;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -83,7 +82,7 @@ public class IntakeShooterLoop extends Command {
                 if(m_arm.isAtSetpoint())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kIntakeSetpoint);
-                    m_intakeAndShooter.setIntakeSpeed(0.8);
+                    m_intakeAndShooter.setIntakeSpeed(1);
                     m_state = State.INTAKE;
                 }
                 break;
@@ -91,7 +90,7 @@ public class IntakeShooterLoop extends Command {
             case INTAKE:
             {
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
-                    m_intakeAndShooter.setIntakeSpeed(0.6);
+                    m_intakeAndShooter.setIntakeSpeed(0.7);
                 if(m_loading.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kLoadingSetpoint);
@@ -151,7 +150,6 @@ public class IntakeShooterLoop extends Command {
             }
             case LOADED:
             {
-                // TODO when shooting drive make it set the arm back
                 if(m_amp.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kAmpSetpoint);
@@ -176,7 +174,6 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
                 }
                 
-                // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {                
                     m_intakeAndShooter.setIntakeSpeed(0.5);
                     m_state = State.SHOOT;
