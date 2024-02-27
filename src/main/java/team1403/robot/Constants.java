@@ -160,6 +160,15 @@ public class Constants {
     public static final int kArmAbsoluteEncoder = 0;
     //Wrist 
     public static final int kwristAbsoluteEncoder = 1; // DIO
+    //Hanger
+    public static final int kleftHangerMotorID = 0;
+    public static final int krightHangerMotorID = 0;
+    public static final int kleftServoID = 0;
+    public static final int krightServoID = 0;
+    public static final int kHangerLimitLeftTopID = 0;
+    public static final int kHangerLimitRightBottomID = 0;
+    public static final int kHangerLimitRightTopID = 0;
+    public static final int kHangerLimitLeftBottomID = 0;
   }
 
   /**
@@ -198,13 +207,7 @@ public class Constants {
      */
     public static final double seekCenterTolerance = 10.0;
   }
-
-  public static class Hanger {
-
-    public static int channel;
-
-  }
-
+  
   public static class Vision {
     public static final double rotationCutoff = 5;
     public static boolean isRotated = false;
@@ -277,14 +280,12 @@ public class Constants {
   }
 
 
+
   public static class IntakeAndShooter {
     public static final double kFrameAngle = 250.24629;
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kHorizonAngle = 210; 
     public static final double kSpeedReduction = 2.0; // test value
-    //Shooting 136 - front on
-    //Shooting 132 - from either side angled
-    public static  double kShootingAngle = 147;
     public static double kStageLineRPM = 6000;
     public static double kCenterLineRPM = 5500;
   }
@@ -307,6 +308,7 @@ public class Constants {
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 122;
     public static double kCenterLineSetpoint = 115;
+    public static  double kShootingAngle = 147;
 
     public static final double kWristUpperLimit = 150;
     public static final double kWristLowerLimit = 130;
