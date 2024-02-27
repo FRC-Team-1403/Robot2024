@@ -131,7 +131,7 @@ public class IntakeShooterLoop extends Command {
             case RAISE:
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
-                    m_wrist.setWristAngle(Constants.IntakeAndShooter.kShootingAngle);
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
                     m_intakeAndShooter.setIntakeSpeed(-0.4);
                     m_state = State.LOAD;
                 }

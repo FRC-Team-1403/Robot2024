@@ -34,6 +34,7 @@ public class RobotContainer {
   private ArmSubsystem m_arm;
   private Wrist m_wrist;
   private IntakeAndShooter m_endeff;
+  private HangerSubsystem m_hanger;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
@@ -91,44 +92,10 @@ public class RobotContainer {
         () -> 5.36,
         () -> m_driverController.getRightTriggerAxis()));
     
-    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
-    m_operatorController.y()
-    .onTrue(new InstantCommand(() -> m_endeff.setShooterRPM(-3000)))
-    .onFalse(new InstantCommand(() -> m_endeff.shooterStop()));
-    //     m_operatorController.rightBumper()
-    // .onTrue(new InstantCommand(() -> m_endeff.setShooterRPM(200)))
-    // .onFalse(new InstantCommand(() -> m_endeff.shooterStop()));
-    //         m_operatorController.leftBumper()
-    // .onTrue(new InstantCommand(() -> m_endeff.setIntakeSpeed(0.9)))
-    // .onFalse(new InstantCommand(() -> m_endeff.intakeStop()));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-    // m_operatorController.b().onTrue(new SequentialCommandGroup(
-    //   new RunWrist(m_wrist, 140,2),
-    //   new ArmCommand(m_arm, 170, 2), //shooting auto 110 pivot
-    //   new RunWrist(m_wrist, Constants.IntakeAndShooter.kShootingAngle,2)
-    // ));
-
-    //when button X is pressed go to drive setpoint
-    //m_operatorController.x().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint));
-
-    //when button A is pressed go to intake setpoint
-    //m_operatorController.a().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kIntakeSetpoint, Constants.Wrist.kIntakeSetpoint));
-
-    //when button Y is pressed go to shooting setpoint
-    // m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
-    // m_operatorController.y().onTrue(new SequentialCommandGroup(
-    //   new RunWrist(m_wrist, Constants.Wrist.kAmpSetpoint),
-    //   new ArmCommand(m_arm, Constants.Arm.kAmpSetpoint)
-    // ));
-
-    // m_operatorController.b().onTrue(new SequentialCommandGroup(
-    //   new RunWrist(m_wrist, Constants.Wrist.kLoadingSetpoint),
-    //   new ArmCommand(m_arm, Constants.Arm.kLoadingSetpoint)
-    // ));
-
-    //m_operatorController.poxvDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
-    
-
+    m_operatorController.povLeft().onTrue(new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
+    m_operatorController.povRight().onTrue(new InstantCommand(() -> m_hanger.setServoAngle(90)));
   }
   
   private double deadband(double value, double deadband) {
@@ -178,6 +145,10 @@ public class RobotContainer {
 
   public IntakeAndShooter getIntakeShooterSubsystem() {
     return m_endeff;
+  }
+
+  public HangerSubsystem getHangerSubsystem(){
+    return m_hanger;
   }
 
 }

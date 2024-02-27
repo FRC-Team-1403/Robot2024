@@ -55,6 +55,8 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    m_robotContainer.getHangerSubsystem().setServoAngle(0);
+    m_robotContainer.getHangerSubsystem().runHanger(0);
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
@@ -86,7 +88,7 @@ public class Robot extends LoggedRobot {
     m_robotContainer.getSwerveSubsystem().zeroGyroscope();
     //m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
     //m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
-    SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
+    SmartDashboard.putNumber("Shooting Setpoint", Constants.Wrist.kShootingAngle);
 
     tempWristAngle = Constants.Wrist.kIntakeSetpoint;
     tempArmAngle = Constants.Arm.kIntakeSetpoint;
