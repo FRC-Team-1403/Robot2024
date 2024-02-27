@@ -40,9 +40,9 @@ public class IntakeShooterLoop extends Command {
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, 
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine, LED led) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;

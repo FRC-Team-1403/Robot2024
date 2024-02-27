@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.robot.commands.RunIntakeShooterAuto;
+import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
+import team1403.robot.subsystems.LED;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
@@ -35,6 +37,7 @@ public class RobotContainer {
   private Wrist m_wrist;
   private IntakeAndShooter m_endeff;
   private HangerSubsystem m_hanger;
+  private LED m_led;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
@@ -52,6 +55,7 @@ public class RobotContainer {
     m_arm = new ArmSubsystem();
     m_wrist = new Wrist(m_arm);
     m_endeff = new IntakeAndShooter();
+    m_led = new LED();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
@@ -151,4 +155,7 @@ public class RobotContainer {
     return m_hanger;
   }
 
+  public LED getLEDSubsystem() {
+    return m_led;
+  }
 }
