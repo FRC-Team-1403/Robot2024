@@ -19,11 +19,7 @@ import team1403.robot.Constants;
 /**
  * creating the intake and shooter class.
  */
-public class IntakeAndShooter extends SubsystemBase {
-
-  // constant that should be in constants >:(
-  private double lastSpeed = 0;
-  
+public class IntakeAndShooter extends SubsystemBase {  
   // Intake motor
   private static CougarSparkMax m_intakeMotor;
   
@@ -77,20 +73,6 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   /**
-   * if the intake is ready.
-   *
-   * @return true or false
-   */
-  public boolean intakeReady() {
-    if (lastSpeed == Math.abs(m_intakeMotor.getEncoder().getVelocity())
-        && lastSpeed == Math.abs(m_intakeMotor.getEncoder().getVelocity())) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  
-  /**
    * stopping intake.
    */
   public void intakeStop() {
@@ -107,7 +89,6 @@ public class IntakeAndShooter extends SubsystemBase {
     // stop();
     // return;
     // }
-    lastSpeed = speed;
     m_intakeMotor.set(speed);
     // if there is an error when testing (note doesn't get taken in) try changing
     // the direction of the motor
@@ -123,32 +104,6 @@ public class IntakeAndShooter extends SubsystemBase {
     return !m_shooterPhotogate.get();
   }
 
-  /**
-   * if the shooter is ready.
-   */
-  public boolean shooterReady() {
-    if (lastSpeed == Math.abs(m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue())
-        && lastSpeed == Math.abs(m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue())) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Checking if the speeds of the top ond bottom shooter motor are the same.
-   *
-   * @return true or false.
-   */
-  public boolean shooterSpeedIsEqual() {
-    if (Math.abs(m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()) == Math
-        .abs(m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue())) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public void setShooterRPM(double rpm) {
     m_bottomShooter.setSetpoint(rpm);
     m_topShooter.setSetpoint(rpm);
@@ -158,9 +113,7 @@ public class IntakeAndShooter extends SubsystemBase {
    */
   public void shooterStop() {
     m_bottomShooter.setSetpoint(0);
-        m_topShooter.setSetpoint(0);
-    m_shooterMotorTop.setSpeed(0);
-    m_shooterMotorBottom.setSpeed(0);
+    m_topShooter.setSetpoint(0);
   }
 
   /**
@@ -169,7 +122,6 @@ public class IntakeAndShooter extends SubsystemBase {
    * @param speed
    */
   public void setShooterSpeed(double speed) {
-    lastSpeed = speed;
     m_shooterMotorTop.setSpeed(-speed);
     m_shooterMotorBottom.setSpeed(-speed);
     // if there is an error when testing (note doesn't get shot out) try changing
