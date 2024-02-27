@@ -21,9 +21,6 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_loading;
     private double m_fpga;
     private BooleanSupplier m_reset;
-    private BooleanSupplier m_defaultClose;
-    private double driveRPM;
-    private double closeRPM;
     private BooleanSupplier m_stageLine;
     private BooleanSupplier m_centerLine;
 
