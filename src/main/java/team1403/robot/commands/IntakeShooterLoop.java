@@ -162,12 +162,14 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
                     m_intakeAndShooter.setShooterRPM(4800);
-                } else if(m_stageLine.getAsBoolean())
+                } 
+                else if(m_stageLine.getAsBoolean())
                 {
                     m_arm.moveArm(124);
                     m_wrist.setWristAngle(SmartDashboard.getNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint));
                     m_intakeAndShooter.setShooterRPM(SmartDashboard.getNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM));
-                } else if(m_centerLine.getAsBoolean())
+                }
+                else if(m_centerLine.getAsBoolean())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
                     m_arm.moveArm(200);
