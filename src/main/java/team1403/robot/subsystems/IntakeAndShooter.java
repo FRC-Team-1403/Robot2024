@@ -34,8 +34,6 @@ public class IntakeAndShooter extends SubsystemBase {
   // photogates
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
-  private LinearFilter m_shooterFilter = LinearFilter.movingAverage(2);
-  private LinearFilter m_intakeFilter = LinearFilter.movingAverage(2);
   private PIDController m_bottomShooter;
   private PIDController m_topShooter;
 
@@ -115,14 +113,7 @@ public class IntakeAndShooter extends SubsystemBase {
     // the direction of the motor
 
   }
-  public boolean shooterPhotogateCheckTrigger() {
-    int value = isShooterPhotogateTriggered() ? 1 : 0;
-    return m_shooterFilter.calculate(value) > .5;
-  }
-    public boolean intakePhotogateCheckTrigger() {
-    int value = isIntakePhotogateTriggered() ? 1 : 0;
-    return m_intakeFilter.calculate(value) > .5;
-  }
+
   /**
    * is shooter photogate triggered.
    *
