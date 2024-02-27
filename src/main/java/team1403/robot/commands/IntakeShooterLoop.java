@@ -174,6 +174,7 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
                 }
                 
+                // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {                
                     m_intakeAndShooter.setIntakeSpeed(0.5);
                     m_state = State.SHOOT;
