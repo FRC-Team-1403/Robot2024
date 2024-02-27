@@ -1,0 +1,73 @@
+package team1403.robot.subsystems;
+
+import org.littletonrobotics.junction.Logger;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkRelativeEncoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUsageId;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1403.robot.Constants;
+
+public class HangerSubsystem extends SubsystemBase {
+  private DigitalInput m_hangerLimitSwitchLeftTop;
+  private DigitalInput m_hangerLimitSwitchRightTop;
+  private DigitalInput m_hangerLimtiSwitchLeftBottom;
+  private DigitalInput m_hangerLimitSwitchRightBottom;
+  private CANSparkMax m_leftMotor;
+  private CANSparkMax m_rightMotor;
+  private Servo m_leftSwervo;
+  private Servo m_rightServo;
+
+
+  public HangerSubsystem() {
+    m_leftSwervo = new Servo(Constants.RioPorts.kleftServoID);
+    m_rightServo = new Servo(Constants.RioPorts.krightServoID);
+    
+    m_leftMotor = new CANSparkMax(Constants.RioPorts.kleftHangerMotorID, MotorType.kBrushless);
+    m_rightMotor = new CANSparkMax(Constants.RioPorts.krightHangerMotorID, MotorType.kBrushless);
+
+    m_hangerLimitSwitchLeftTop = new DigitalInput(Constants.RioPorts.kHangerLimitRightTopID);
+    m_hangerLimitSwitchRightTop = new DigitalInput(Constants.RioPorts.kHangerLimitLeftTopID);
+    m_hangerLimtiSwitchLeftBottom = new DigitalInput(Constants.RioPorts.kHangerLimitRightBottomID);
+    m_hangerLimitSwitchRightBottom = new DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
+
+    m_rightMotor.follow(m_leftMotor);
+  }
+
+  private void setHangerSpeed(double speed) {
+    m_leftMotor.set(MathUtil.clamp(speed, -1, 1));
+  }
+
+  public void runHanger(double speed) {
+    if (isAtTop()) {
+      stopHanger();
+    } else {
+      setHangerSpeed(speed);
+    }
+  }
+
+  public void stopHanger() {
+    setHangerSpeed(0);
+  }
+
+  public void setServoAngle(double speed) {
+    m_leftSwervo.setAngle(speed);
+  }
+
+  public boolean isAtTop() {
+    return m_hangerLimitSwitchLeftTop.get() && m_hangerLimitSwitchRightTop.get();
+  }
+
+  public boolean isAtBottom() {
+    return m_hangerLimtiSwitchLeftBottom.get() && m_hangerLimitSwitchRightBottom.get();
+  }
+
+  public void periodic() {
+    m_rightServo.setAngle(m_leftSwervo.getAngle());
+  }
+}
