@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
+import team1403.robot.subsystems.LED;
+import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 
@@ -22,6 +24,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_reset;
     private BooleanSupplier m_stageLine;
     private BooleanSupplier m_centerLine;
+    private LED m_led;
 
     private enum State
     {
@@ -39,7 +42,7 @@ public class IntakeShooterLoop extends Command {
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, 
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine, LED led) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -49,6 +52,7 @@ public class IntakeShooterLoop extends Command {
         m_reset = reset;
         m_stageLine = stageLine;
         m_centerLine = centerLine;
+        m_led = led;
     }
 
     @Override
@@ -182,6 +186,13 @@ public class IntakeShooterLoop extends Command {
                     m_state = State.SHOOT;
                     m_fpga = Timer.getFPGATimestamp();
                 }
+                
+                // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
+                //     m_led.setLedMode(LEDState.YELLOW);
+                // } else{
+                //     m_led.setLedMode(LEDState.OFF);
+                // }
+
                 break;
             }
             case SHOOT:       
