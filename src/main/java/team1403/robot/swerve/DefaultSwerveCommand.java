@@ -3,7 +3,10 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.ejml.ops.FConvertArrays;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -80,7 +83,6 @@ public class DefaultSwerveCommand extends Command {
     this.m_xsupplier = xtarget;
     this.m_ysupplier = ytarget;
     m_isFieldRelative = true;
-
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_controller = new PIDController(1.25, 1, 0);

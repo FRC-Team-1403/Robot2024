@@ -289,6 +289,16 @@ public class Constants {
     public static double kStageLineRPM = 6000;
     public static double kCenterLineRPM = 5500;
   }
+
+  public static class Auto{
+    public static boolean kAmp = false;
+    public static boolean kCenterLine = false;
+    public static boolean kStageLine = false;
+    public static boolean kDriveSetpoint = false;
+    public static boolean kFinished = false;
+    public static boolean kInAuto = false;
+    public static boolean kisIntaked = false;
+  }
   
   public static class Wrist {
     public static final double kWristConversionFactor = 0;

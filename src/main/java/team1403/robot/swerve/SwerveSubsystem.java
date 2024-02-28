@@ -17,6 +17,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -51,7 +52,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
   private int tagCount = 0;
-
+  private LinearFilter m_navxFilter;
  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
  private SwerveModuleState[] m_states = new SwerveModuleState[4];
  private final SwerveDrivePoseEstimator m_odometer;
@@ -98,6 +99,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  public SwerveSubsystem(Limelight limelight) {
   SmartDashboard.putData("Field", m_field);
   //  super("Swerve Subsystem", parameters);
+  m_navxFilter = LinearFilter.movingAverage(5);
    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
    m_Limelight = limelight;
    m_modules = new SwerveModule[] {
@@ -449,7 +451,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-   if (Math.abs(m_navx2.getAngularVelocity()) > 0.5) {
+   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) > 0.2) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);

@@ -55,8 +55,6 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
-    m_robotContainer.getHangerSubsystem().setServoAngle(0);
-    m_robotContainer.getHangerSubsystem().runHanger(0);
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
@@ -82,7 +80,8 @@ public class Robot extends LoggedRobot {
     () -> m_robotContainer.getOps().a().getAsBoolean(),
     () -> m_robotContainer.getOps().b().getAsBoolean(),
     () -> m_robotContainer.getOps().x().getAsBoolean(),
-    () -> m_robotContainer.getOps().povUp().getAsBoolean()
+    () -> m_robotContainer.getOps().povUp().getAsBoolean(),
+    () -> m_robotContainer.getOps().y().getAsBoolean()
     );
 
     AutoSelector.initAutoChooser();
@@ -98,6 +97,9 @@ public class Robot extends LoggedRobot {
     tempArmAngle = Constants.Arm.kIntakeSetpoint;
     SmartDashboard.putNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint);
     SmartDashboard.putNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM);
+
+    //m_robotContainer.getHangerSubsystem().setServoAngle(0);
+    //m_robotContainer.getHangerSubsystem().runHanger(0);
   }
 
   /**
@@ -138,7 +140,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    Constants.Auto.kInAuto = true;
+    Constants.Auto.kisIntaked = true;
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -156,6 +159,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    Constants.Auto.kInAuto = false;
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -175,7 +179,7 @@ public class Robot extends LoggedRobot {
 
     // for testing only
     // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
-    // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle); //100
+    // m_robotContainer.getArmSubsystem().moveArm(160); //100
    // m_robotContainer.getIntakeShooterSubsystem().setShooterRPM(400);
   }
 

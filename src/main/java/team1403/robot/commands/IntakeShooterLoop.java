@@ -25,6 +25,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_stageLine;
     private BooleanSupplier m_centerLine;
     private LED m_led;
+    private BooleanSupplier m_resetToReset;
 
     private enum State
     {
@@ -36,13 +37,14 @@ public class IntakeShooterLoop extends Command {
         LOADED,
         SHOOT,
         LOADING_STATION,
+        AUTOOVER
     }
 
     private State m_state;
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -53,13 +55,18 @@ public class IntakeShooterLoop extends Command {
         m_stageLine = stageLine;
         m_centerLine = centerLine;
         m_led = led;
+        m_resetToReset = resetToReset;
     }
 
     @Override
     public void initialize()
     {
-        m_state = State.RESET;
-
+        if(Constants.Auto.kisIntaked)
+            m_state = State.RAISE;
+        else
+            m_state = State.RESET;
+        Constants.Auto.kFinished = false;
+        
     }
 
 
@@ -127,7 +134,7 @@ public class IntakeShooterLoop extends Command {
                         m_state = State.RAISE;
                     }
                 }
-                if(m_reset.getAsBoolean()) {
+                if(m_reset.getAsBoolean() || m_resetToReset.getAsBoolean()) {
                     m_state = State.RESET;
                 }
                 break;
@@ -154,30 +161,33 @@ public class IntakeShooterLoop extends Command {
             }
             case LOADED:
             {
-                if(m_amp.getAsBoolean())
+                if(m_amp.getAsBoolean() || Constants.Auto.kAmp)
                 {
                     m_arm.moveArm(Constants.Arm.kAmpSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kAmpSetpoint);
                     m_intakeAndShooter.setShooterRPM(2400);
 
                 }
-                else if(m_reset.getAsBoolean())
+                else if(m_reset.getAsBoolean() || Constants.Auto.kDriveSetpoint)
                 {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
                     m_intakeAndShooter.setShooterRPM(4800);
                 } 
-                else if(m_stageLine.getAsBoolean())
+                else if(m_stageLine.getAsBoolean() || Constants.Auto.kStageLine)
                 {
                     m_arm.moveArm(124);
                     m_wrist.setWristAngle(SmartDashboard.getNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint));
                     m_intakeAndShooter.setShooterRPM(SmartDashboard.getNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM));
                 }
-                else if(m_centerLine.getAsBoolean())
+                else if(m_centerLine.getAsBoolean() || Constants.Auto.kCenterLine)
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
                     m_arm.moveArm(200);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
+                }
+                else if(m_resetToReset.getAsBoolean()) {
+                    m_state = State.RESET;
                 }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
@@ -199,15 +209,22 @@ public class IntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
                     if(Timer.getFPGATimestamp() - m_fpga > 0.1)
-                        m_state = State.RESET;
+                        if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
+                        else m_state = State.RESET;
                 }
                 break;
+
+            case AUTOOVER:
+            {
+                Constants.Auto.kisIntaked = false;
+                Constants.Auto.kFinished = true;
+            }
         }     
     }
 
     @Override
     public boolean isFinished()
     {
-        return false;
+        return Constants.Auto.kFinished;
     }
 }

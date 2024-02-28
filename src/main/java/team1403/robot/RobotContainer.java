@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.RunIntakeShooterAuto;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
@@ -56,13 +57,14 @@ public class RobotContainer {
     m_wrist = new Wrist(m_arm);
     m_endeff = new IntakeAndShooter();
     m_led = new LED();
+    // m_hanger = new HangerSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("Run Intake", new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
+    NamedCommands.registerCommand("Run Intake", new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, null, null, null, null, null, null, null));
     // NamedCommands.
     configureBindings();
 
@@ -98,8 +100,8 @@ public class RobotContainer {
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-    m_operatorController.povLeft().onTrue(new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
-    m_operatorController.povRight().onTrue(new InstantCommand(() -> m_hanger.setServoAngle(90)));
+    // m_operatorController.povLeft().onTrue(new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
+    // m_operatorController.povRight().onTrue(new InstantCommand(() -> m_hanger.setServoAngle(90)));
   }
   
   private double deadband(double value, double deadband) {
