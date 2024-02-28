@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3356955906458394,
+      "y": 5.514141427573006
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake and shooter loop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "one piece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake and shooter loop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2nd center line note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake and shooter loop"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
