@@ -314,11 +314,12 @@ public class Constants {
     public static  double kIntakeSetpoint = 134;
     public static  double kAmpSetpoint = 160.5;
     public static  double kLoadingSetpoint = 90;
-    public static  double kDriveSetpoint = 140;
+    public static  double kDriveSetpoint = 140;//140
     public static  double kDefaultClose = 136;
-    public static double kStageLineSetpoint = 122;
-    public static double kCenterLineSetpoint = 115;
+    public static double kStageLineSetpoint = 138;
+    public static double kCenterLineSetpoint = 115;//115
     public static  double kShootingAngle = 147;
+
 
     public static final double kWristUpperLimit = 150;
     public static final double kWristLowerLimit = 130;

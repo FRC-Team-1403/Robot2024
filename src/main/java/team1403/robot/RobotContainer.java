@@ -46,6 +46,8 @@ public class RobotContainer {
 
   private final PowerDistribution m_powerDistribution;
 
+  private IntakeShooterLoop m_autoCommand;
+
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -63,8 +65,10 @@ public class RobotContainer {
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
+    m_autoCommand = new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("Run Intake", new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, null, null, null, null, null, null, null));
+    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false));
+    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false));
     // NamedCommands.
     configureBindings();
 

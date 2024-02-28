@@ -108,6 +108,11 @@ public class IntakeAndShooter extends SubsystemBase {
     m_bottomShooter.setSetpoint(rpm);
     m_topShooter.setSetpoint(rpm);
   }
+
+  public double getShooterRPM(){
+    return m_bottomShooter.getSetpoint();
+  }
+
   /**
    * Stopping the shooter motors.
    */
@@ -127,6 +132,10 @@ public class IntakeAndShooter extends SubsystemBase {
     // if there is an error when testing (note doesn't get shot out) try changing
     // the direction of the motor
 
+  }
+
+  public boolean isReady(){
+    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() / 0.05;
   }
 
   public void periodic() {
