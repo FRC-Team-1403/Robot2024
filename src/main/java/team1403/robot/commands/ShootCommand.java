@@ -1,49 +1,82 @@
-// package team1403.robot.commands;
+
+package team1403.robot.commands;
+
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import team1403.robot.Constants;
+import team1403.robot.subsystems.IntakeAndShooter;
+import team1403.robot.subsystems.LED;
+import team1403.robot.subsystems.LED.LEDState;
+import team1403.robot.subsystems.arm.ArmSubsystem;
+import team1403.robot.subsystems.arm.Wrist;
+
+public class ShootCommand extends Command {
+    private IntakeAndShooter m_intakeAndShooter;
+    private ArmSubsystem m_arm;
+    private Wrist m_wrist;
+    private double m_fpga;
+
+    private enum State
+    {
+        RESET,
+        LOWER,
+        INTAKE,
+        RAISE,
+        LOAD, 
+        LOADED,
+        SHOOT,
+        LOADING_STATION,
+    }
+
+    private State m_state;
+    private boolean finished = false;
+
+    public ShootCommand(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist) {
+        m_intakeAndShooter = intakeAndShooter;
+        m_arm = arm;
+        m_wrist = wrist;
+    }
+
+    @Override
+    public void initialize()
+    {
+        m_state = State.LOADED;
+
+    }
 
 
+    @Override
+    public void execute()
+    {
+        SmartDashboard.putString("State", m_state.toString());
+        switch(m_state)
+        {
+            case LOADED:
+            {
+                     if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {                
+                    m_intakeAndShooter.setIntakeSpeed(0.5);
+                    m_state = State.SHOOT;
+                    m_fpga = Timer.getFPGATimestamp();
+                }
+                break;
+            }
+            case SHOOT:       
+                if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
+                {
+                    if(Timer.getFPGATimestamp() - m_fpga > 0.1)
+                        finished = true;
+                }
 
-// import edu.wpi.first.wpilibj.Timer;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import team1403.robot.subsystems.IntakeAndShooter;
+                break;
+        }     
+    }
 
-// public class ShootCommand extends Command {
-//     private IntakeAndShooter m_intake;
-//     private double rpm;
-//     private boolean ready = false;
-//     private boolean Done = false;
-//     private Timer timer = new Timer();
-
-//     public ShootCommand(IntakeAndShooter intake, double rpm) {
-//         m_intake = intake;
-//         this.rpm = rpm;
-//     }
-
-//     @Override
-//     public void initialize() {
-//         m_intake.setShooterRPM(rpm);
-//         timer.reset();
-//     }
-
-//     @Override
-//     public boolean isFinished() {
-//         // waits 4ms
-//         if (ready && timer.hasElapsed(1)) {
-//             m_intake.shooterStop();
-//             m_intake.setIntakeSpeed(0);
-//             return true;
-//         }
-//         return false;
-
-//     }
-
-//     @Override
-//     public void execute() {
-//         m_intake.setShooterRPM(rpm);
-//         if (!ready && (m_intake.getShooterRPMBottom() > rpm / 1.1 &&  m_intake.getShooterRPMTop() > rpm / 1.1)) {
-//             m_intake.setIntakeSpeed(1);
-//             ready = true;
-//             timer.reset();
-//             timer.start();
-//         }
-//     }
-// }
+    @Override
+    public boolean isFinished()
+    {
+        return finished;
+    }
+}

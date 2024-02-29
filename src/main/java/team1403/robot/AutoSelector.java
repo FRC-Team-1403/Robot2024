@@ -8,15 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoSelector {
-    private static SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser("threePieceAuto");
+    // private static SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser("");
 
     public static void initAutoChooser() {
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        // SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public static Command getSelectedAuto() {
-        Command auto = autoChooser.getSelected();
-        return auto;
+        // Command auto = autoChooser.getSelected();
+        return AutoBuilder.buildAuto("Actual Four Piece");
     }
 
 }

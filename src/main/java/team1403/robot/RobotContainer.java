@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.commands.IntakeCommand;
 import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.RunIntakeShooterAuto;
+import team1403.robot.commands.ShootCommand;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
@@ -65,10 +67,14 @@ public class RobotContainer {
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
-    m_autoCommand = new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false);
+    m_autoCommand = new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false));
-    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false));
+    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false));
+    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,false));
+    NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,true));
+    NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
+    NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
+
     // NamedCommands.
     configureBindings();
 

@@ -286,7 +286,7 @@ public class Constants {
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kHorizonAngle = 210; 
     public static final double kSpeedReduction = 2.0; // test value
-    public static double kStageLineRPM = 6000;
+    public static double kStageLineRPM = 5000;
     public static double kCenterLineRPM = 5500;
   }
 
@@ -298,6 +298,7 @@ public class Constants {
     public static boolean kFinished = false;
     public static boolean kInAuto = false;
     public static boolean kisIntaked = false;
+    public static boolean kSide = false;
   }
   
   public static class Wrist {
@@ -317,8 +318,9 @@ public class Constants {
     public static  double kDriveSetpoint = 140;//140
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 138;
+    public static double kStageLineSideSetpoint = 135;
     public static double kCenterLineSetpoint = 115;//115
-    public static  double kShootingAngle = 147;
+    public static  double kShootingAngle = 149;//147 for teleop working
 
 
     public static final double kWristUpperLimit = 150;

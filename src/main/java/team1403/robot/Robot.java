@@ -81,7 +81,8 @@ public class Robot extends LoggedRobot {
     () -> m_robotContainer.getOps().b().getAsBoolean(),
     () -> m_robotContainer.getOps().x().getAsBoolean(),
     () -> m_robotContainer.getOps().povUp().getAsBoolean(),
-    () -> m_robotContainer.getOps().y().getAsBoolean()
+    () -> m_robotContainer.getOps().y().getAsBoolean(),
+    false
     );
 
     AutoSelector.initAutoChooser();

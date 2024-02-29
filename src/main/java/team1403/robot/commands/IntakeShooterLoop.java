@@ -26,7 +26,8 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_centerLine;
     private LED m_led;
     private BooleanSupplier m_resetToReset;
-
+    private boolean m_side;
+    private Timer time;
     private enum State
     {
         RESET,
@@ -44,7 +45,7 @@ public class IntakeShooterLoop extends Command {
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset, boolean side) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -56,6 +57,7 @@ public class IntakeShooterLoop extends Command {
         m_centerLine =  centerLine;
         m_led = led;
         m_resetToReset =  resetToReset;
+        m_side = side;
     }
 
     @Override
@@ -66,6 +68,8 @@ public class IntakeShooterLoop extends Command {
         // else
         m_state = State.RESET;
         Constants.Auto.kFinished = false;
+        // time.reset();
+        // time.start();   
         
     }
 
@@ -153,7 +157,7 @@ public class IntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
-                        m_intakeAndShooter.setShooterRPM(4800);
+                        m_intakeAndShooter.setShooterRPM(4200);
                         if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
                             m_state = State.LOADED;
@@ -180,7 +184,8 @@ public class IntakeShooterLoop extends Command {
                 else if(m_stageLine.getAsBoolean())
                 {
                     m_arm.moveArm(124);
-                    m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
+                    if(m_side)m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint);
+                    else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
                 else if(m_centerLine.getAsBoolean())
