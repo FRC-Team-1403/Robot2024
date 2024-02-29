@@ -67,9 +67,7 @@ public class RobotContainer {
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
-<<<<<<< HEAD
-    m_combinedCommand = new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()-> false, () -> 0.0);
-=======
+
     m_combinedCommand = new IntakeShooterLoop(
       getIntakeShooterSubsystem(), getArmSubsystem(), 
       getWristSubsystem(), getLEDSubsystem(), 
@@ -83,9 +81,7 @@ public class RobotContainer {
       () -> getOps().leftBumper().getAsBoolean(),
       () -> getOps().getLeftY()
       );
-    
->>>>>>> 80d3c5d42577dd4ea934e60d07f1b91e29d36dd5
-    NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
+        NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0));
     NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0));
     NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
