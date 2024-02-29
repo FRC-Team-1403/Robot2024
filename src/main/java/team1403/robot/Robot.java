@@ -10,7 +10,12 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -75,16 +80,17 @@ public class Robot extends LoggedRobot {
     m_combinedCommand = new IntakeShooterLoop(
     m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
     m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
-    () -> m_robotContainer.getOps().rightBumper().getAsBoolean(),
-    () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), 
-    () -> m_robotContainer.getOps().a().getAsBoolean(),
-    () -> m_robotContainer.getOps().b().getAsBoolean(),
+    () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(),
+    () -> m_robotContainer.getOps().rightBumper().getAsBoolean(), 
     () -> m_robotContainer.getOps().x().getAsBoolean(),
+    () -> m_robotContainer.getOps().a().getAsBoolean(),
+    () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(),
     () -> m_robotContainer.getOps().povUp().getAsBoolean(),
     () -> m_robotContainer.getOps().y().getAsBoolean(),
-    false
+    () -> m_robotContainer.getOps().leftBumper().getAsBoolean(),
+    () -> m_robotContainer.getOps().getLeftY()
     );
-
+    // intake out joystick left up
     AutoSelector.initAutoChooser();
 
     // tempWristAngle = 100;
@@ -113,8 +119,18 @@ public class Robot extends LoggedRobot {
    * and
    * SmartDashboard integrated updating.
    */
+
+  public Rect getCenteredRect(Mat image, int width, int height){
+    return new Rect(image.width()/2-width/2, image.height()/2-height/2, width, height);
+  } 
+
   @Override
   public void robotPeriodic() {
+    Mat image = new Mat();
+    CameraServer.getVideo().grabFrame(image);
+
+
+    Imgproc.rectangle(image, getCenteredRect(image, 30, 20), new Scalar(0,255,0), 2, 0);
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or

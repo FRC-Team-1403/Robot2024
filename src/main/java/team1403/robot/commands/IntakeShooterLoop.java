@@ -2,6 +2,7 @@
 package team1403.robot.commands;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,13 +22,13 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_amp;
     private BooleanSupplier m_loading;
     private double m_fpga;
-    private BooleanSupplier m_reset;
+    private BooleanSupplier m_resetToNeutral;
     private BooleanSupplier m_stageLine;
     private BooleanSupplier m_centerLine;
     private LED m_led;
-    private BooleanSupplier m_resetToReset;
-    private boolean m_side;
-    private Timer time;
+    private BooleanSupplier m_resetToIntake;
+    private BooleanSupplier m_launchpad;
+    private DoubleSupplier m_expel;
     private enum State
     {
         RESET,
@@ -44,20 +45,22 @@ public class IntakeShooterLoop extends Command {
     private State m_state;
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
-            BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset, boolean side) {
+            BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
+            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
+            DoubleSupplier expel) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
         m_wrist = wrist;
         m_amp =  amp;
         m_loading =  loading;
-        m_reset =  reset;
+        m_resetToNeutral =  resetToNeutral;
         m_stageLine =  stageLine;
         m_centerLine =  centerLine;
         m_led = led;
-        m_resetToReset =  resetToReset;
-        m_side = side;
+        m_resetToIntake =  resetToIntake;
+        m_launchpad = launchpad;
+        m_expel = expel;
     }
 
     @Override
@@ -138,7 +141,7 @@ public class IntakeShooterLoop extends Command {
                         m_state = State.RAISE;
                     }
                 }
-                if(m_reset.getAsBoolean() || m_resetToReset.getAsBoolean()) {
+                if(m_resetToIntake.getAsBoolean() || m_resetToIntake.getAsBoolean()) {
                     m_state = State.RESET;
                 }
                 break;
@@ -157,6 +160,9 @@ public class IntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
+                        if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
+                            m_intakeAndShooter.setIntakeSpeed(-0.7);
+                        }
                         m_intakeAndShooter.setShooterRPM(4200);
                         if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
@@ -175,17 +181,20 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.setShooterRPM(2400);
 
                 }
-                else if(m_reset.getAsBoolean())
+                else if(m_trigger.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
                     m_intakeAndShooter.setShooterRPM(4800);
                 } 
-                else if(m_stageLine.getAsBoolean())
+                else if(m_launchpad.getAsBoolean())
                 {
                     m_arm.moveArm(124);
-                    if(m_side)m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint);
-                    else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
+                    m_wrist.setWristAngle(Constants.Wrist.kLaunchpadSetpoint);
+                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kLaunchpadRPM);
+                } else if(m_stageLine.getAsBoolean()){
+                    m_arm.moveArm(124);
+                    m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
                 else if(m_centerLine.getAsBoolean())
@@ -194,7 +203,7 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(200);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
                 }
-                else if(m_resetToReset.getAsBoolean()) {
+                else if(m_resetToIntake.getAsBoolean()) {
                     m_state = State.RESET;
                 }
                 
