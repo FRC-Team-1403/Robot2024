@@ -44,6 +44,7 @@ public class ShootCommand extends Command {
     public void initialize()
     {
         m_state = State.LOADED;
+        finished = false;
 
     }
 
