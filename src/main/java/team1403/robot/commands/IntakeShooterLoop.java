@@ -184,7 +184,7 @@ public class IntakeShooterLoop extends Command {
                 else if(m_stageLine.getAsBoolean())
                 {
                     m_arm.moveArm(124);
-                    if(m_side)m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint);
+                    if (m_side) m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint);
                     else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
