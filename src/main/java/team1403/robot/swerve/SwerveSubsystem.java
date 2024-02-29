@@ -137,7 +137,7 @@ public class SwerveSubsystem extends SubsystemBase  {
                   // if (alliance.isPresent()) {
                   //   return alliance.get() == DriverStation.Alliance.Red;
                   // }
-                  return Constants.Team;
+                  return true;
               },
               this // Reference to this subsystem to set requirements
       );
@@ -453,7 +453,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.2) {
+   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.5) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
