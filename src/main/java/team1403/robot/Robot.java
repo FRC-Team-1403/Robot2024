@@ -76,19 +76,12 @@ public class Robot extends LoggedRobot {
 
     AutoSelector.initAutoChooser();
 
-    // tempWristAngle = 100;
-    // tempArmAngle = 130;
-    //m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
-    //m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
     SmartDashboard.putNumber("Shooting Setpoint", Constants.Wrist.kShootingAngle);
 
     tempWristAngle = Constants.Wrist.kIntakeSetpoint;
     tempArmAngle = Constants.Arm.kIntakeSetpoint;
     SmartDashboard.putNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint);
     SmartDashboard.putNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM);
-
-    //m_robotContainer.getHangerSubsystem().setServoAngle(0);
-    //m_robotContainer.getHangerSubsystem().runHanger(0);
   }
 
   /**
@@ -140,9 +133,7 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() { //100
-    // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
-    // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
+  public void autonomousPeriodic() {
 
   }
 
@@ -163,13 +154,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
-    // tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
-
-    // for testing only
-    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
-    // m_robotContainer.getArmSubsystem().moveArm(160); //100
-   // m_robotContainer.getIntakeShooterSubsystem().setShooterRPM(400);
   }
 
   @Override

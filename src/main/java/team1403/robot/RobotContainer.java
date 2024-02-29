@@ -69,12 +69,9 @@ public class RobotContainer {
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
 
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false));
-    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,false));
-    NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,true));
-    NamedCommands.registerCommand("IntakeHold", new IntakeCommand(m_endeff, m_arm, m_wrist));
-    NamedCommands.registerCommand("ShootHold", new IntakeCommand(m_endeff, m_arm, m_wrist));
-
+    NamedCommands.registerCommand("First Piece", new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false));
+    NamedCommands.registerCommand("Shoot", new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,false));
+    NamedCommands.registerCommand("Shoot Side", new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,true));
 
     m_combinedCommand = new IntakeShooterLoop(
       m_endeff, m_arm, 
