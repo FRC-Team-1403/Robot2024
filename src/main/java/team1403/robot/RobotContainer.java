@@ -46,9 +46,9 @@ public class RobotContainer {
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
 
-  private final PowerDistribution m_powerDistribution;
+  private final IntakeShooterLoop m_combinedCommand;
 
-  private IntakeShooterLoop m_autoCommand;
+  private final PowerDistribution m_powerDistribution;
 
 
 
@@ -76,7 +76,6 @@ public class RobotContainer {
 
     // NamedCommands.
     configureBindings();
-
   }
 
   /**
@@ -109,8 +108,13 @@ public class RobotContainer {
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-    // m_operatorController.povLeft().onTrue(new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
-    // m_operatorController.povRight().onTrue(new InstantCommand(() -> m_hanger.setServoAngle(90)));
+
+    m_operatorController.povLeft().onTrue(
+      new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
+      .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
+    m_operatorController.povRight().onTrue(
+      new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
+      .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
   }
   
   private double deadband(double value, double deadband) {
@@ -168,5 +172,13 @@ public class RobotContainer {
 
   public LED getLEDSubsystem() {
     return m_led;
+  }
+
+  public PhotonVisionCommand getVisionCommand() {
+    return m_PhotonVisionCommand;
+  }
+
+  public IntakeShooterLoop getStateMachineCommand() {
+    return m_combinedCommand;
   }
 }

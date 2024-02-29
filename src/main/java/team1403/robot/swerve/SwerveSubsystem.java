@@ -133,22 +133,24 @@ public class SwerveSubsystem extends SubsystemBase  {
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  // Optional<Alliance> alliance = DriverStation.getAlliance();
-                  // if (alliance.isPresent()) {
-                  //   return alliance.get() == DriverStation.Alliance.Red;
-                  // }
+                  Optional<Alliance> alliance = DriverStation.getAlliance();
+                  if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                  }
                   return true;
               },
               this // Reference to this subsystem to set requirements
       );
-  m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-  m_odometer.update(getGyroscopeRotation(), getModulePositions());
-
 
   //  addDevice(m_navx2.getName(), m_navx2);
    if(m_navx2.isConnected())
     while (m_navx2.isCalibrating());
+
+    zeroGyroscope();
+
+    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
+    getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
    m_desiredHeading = getGyroscopeRotation().getDegrees();
 
@@ -444,14 +446,14 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param chassisSpeeds the given chassisspeeds
   * @return the corrected chassisspeeds
   */
- private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+ private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     if(!m_navx2.isConnected())
       return chassisSpeeds;
    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) > 0.2) {
+   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.5) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
@@ -478,7 +480,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   return m_navx2;
  }
 
- private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+ private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
    // Assuming the control loop runs in 20ms
    final double deltaTime = 0.02;
 
@@ -529,8 +531,8 @@ public class SwerveSubsystem extends SubsystemBase  {
    if (this.m_isXModeEnabled) {
      xMode();
    } else {
-      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
-     //m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+     //m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
 
      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
      setModuleStates(m_states);

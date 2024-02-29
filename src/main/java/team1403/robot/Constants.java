@@ -77,7 +77,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = 0; //4.743068596142402
     public static final double backRightEncoderOffset = 1.25;//-0.2966
 
-    public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
+    public static final double kDrivePositionConversionFactor = 0.05215454470665408;
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
@@ -165,9 +165,7 @@ public class Constants {
     public static final int krightHangerMotorID = 0;
     public static final int kleftServoID = 0;
     public static final int krightServoID = 0;
-    public static final int kHangerLimitLeftTopID = 0;
     public static final int kHangerLimitRightBottomID = 0;
-    public static final int kHangerLimitRightTopID = 0;
     public static final int kHangerLimitLeftBottomID = 0;
   }
 
@@ -289,10 +287,11 @@ public class Constants {
     public static double kStageLineRPM = 5000; //To test
     public static double kCenterLineRPM = 5500;
     public static double kLaunchpadRPM = 5000;
+    public static final double kCloseRPM = 4200;
     public static final double kExpelDeadzone = 0.15;
   }
 
-  public static class Auto{
+  public static class Auto {
     public static boolean kAmp = false;
     public static boolean kCenterLine = false;
     public static boolean kStageLine = false;
@@ -301,6 +300,12 @@ public class Constants {
     public static boolean kInAuto = false;
     public static boolean kisIntaked = false;
     public static boolean kSide = false;
+  }
+
+  public static class Hanger {
+    public static final double kTopLimit = 2;
+    public static final double kLockAngle = 170;
+    public static final double kUnlockAngle = 180;
   }
   
   public static class Wrist {

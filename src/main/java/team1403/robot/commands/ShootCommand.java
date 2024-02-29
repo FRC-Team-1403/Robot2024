@@ -1,15 +1,11 @@
 
 package team1403.robot.commands;
 
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
-import team1403.robot.subsystems.LED;
-import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 
@@ -44,6 +40,7 @@ public class ShootCommand extends Command {
     public void initialize()
     {
         m_state = State.LOADED;
+        finished = false;
 
     }
 
