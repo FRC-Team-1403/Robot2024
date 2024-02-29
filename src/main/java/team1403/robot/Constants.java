@@ -28,6 +28,8 @@ import team1403.robot.subsystems.arm.ArmState;
 public class Constants {
 
   // Variables to used by all subsystems.
+  //True is for Red, False is for Blue
+  public static final boolean Team  = true;
   public static final Dimension robotDimensions = new Dimension(0, 0, 0);
   public static final Dimension wristDimensions = new Dimension(0, 0, 0); // TODO
 
