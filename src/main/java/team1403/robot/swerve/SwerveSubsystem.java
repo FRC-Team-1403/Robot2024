@@ -445,6 +445,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   * 
   * @param chassisSpeeds the given chassisspeeds
   * @return the corrected chassisspeeds
+  
   */
  private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     if(!m_navx2.isConnected())
@@ -453,7 +454,7 @@ public class SwerveSubsystem extends SubsystemBase  {
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.5) {
+   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.4) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);

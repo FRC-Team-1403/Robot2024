@@ -162,6 +162,7 @@ public class IntakeShooterLoop extends Command {
                     if(m_wrist.isAtSetpoint()) {
                         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
                             m_intakeAndShooter.setIntakeSpeed(-0.7);
+                            m_intakeAndShooter.setShooterRPM(-1500);
                         }
                         m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                         if(m_intakeAndShooter.isReady()){
@@ -181,7 +182,7 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.setShooterRPM(2400);
 
                 }
-                else if(m_trigger.getAsBoolean())
+                else if(m_resetToNeutral.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);

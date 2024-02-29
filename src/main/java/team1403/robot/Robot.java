@@ -93,11 +93,14 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void robotPeriodic() {
-    Mat image = new Mat();
-    CameraServer.getVideo().grabFrame(image);
+    // Mat image = new Mat();
+    // long ret = CameraServer.getVideo().grabFrame(image);
 
+    // if(ret != 0)
+    // {
 
-    Imgproc.rectangle(image, getCenteredRect(image, 30, 20), new Scalar(0,255,0), 2, 0);
+    //   Imgproc.rectangle(image, getCenteredRect(image, 30, 20), new Scalar(0,255,0), 2, 0);
+    // }
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -158,6 +161,7 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    SmartDashboard.putBoolean("Right Trigger", m_robotContainer.getOps().rightTrigger().getAsBoolean());
   }
 
   @Override

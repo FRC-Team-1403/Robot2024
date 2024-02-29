@@ -121,14 +121,13 @@ public class RobotContainer {
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-
-    m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
-      .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
+    // m_operatorController.povLeft().onTrue(
+    //   new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
+    //   .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
       
-    m_operatorController.povRight().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
-      .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
+    // m_operatorController.povRight().onTrue(
+    //   new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
+    //   .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
   }
   
   private double deadband(double value, double deadband) {

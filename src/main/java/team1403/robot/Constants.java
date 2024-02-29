@@ -73,12 +73,14 @@ public class Constants {
         // Back right
         new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -(Math.PI);
+    public static final double frontLeftEncoderOffset = -Math.PI;
     public static final double frontRightEncoderOffset = -0.55;
     public static final double backLeftEncoderOffset = 0; //4.743068596142402
     public static final double backRightEncoderOffset = 1.25;//-0.2966
 
-    public static final double kDrivePositionConversionFactor = 0.05215454470665408;
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+
+    public static final double kDrivePositionConversionFactor = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI;
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
@@ -87,7 +89,6 @@ public class Constants {
     public static final double kSteerRelativeEncoderVelocityConversionFactor = 2.0 * Math.PI
         * Swerve.kSteerReduction / 60.0;
 
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
     public static final double kMaxSpeed = 6;
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
@@ -333,7 +334,7 @@ public class Constants {
     public static double kStageLineSetpoint = 138;//To test
     public static double kLaunchpadSetpoint = 136;
     public static double kCenterLineSetpoint = 115;//115
-    public static  double kShootingAngle = 149;//147 for teleop working
+    public static  double kShootingAngle = 147;//147 for teleop working
 
 
     public static final double kWristUpperLimit = 150;
