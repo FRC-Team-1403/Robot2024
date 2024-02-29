@@ -36,12 +36,6 @@ public class Robot extends LoggedRobot {
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
   private IntakeShooterLoop m_combinedCommand;
-  private double tempWristAngle;
-  private double tempArmAngle;
-  private double wristP;
-  private double armP;
-  private double armD;
-  private double armI;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -75,13 +69,6 @@ public class Robot extends LoggedRobot {
     m_combinedCommand = m_robotContainer.getStateMachineCommand();
 
     AutoSelector.initAutoChooser();
-
-    SmartDashboard.putNumber("Shooting Setpoint", Constants.Wrist.kShootingAngle);
-
-    tempWristAngle = Constants.Wrist.kIntakeSetpoint;
-    tempArmAngle = Constants.Arm.kIntakeSetpoint;
-    SmartDashboard.putNumber("Wrist Angle - Stage", Constants.Wrist.kStageLineSetpoint);
-    SmartDashboard.putNumber("Shooter RPM - Stage", Constants.IntakeAndShooter.kStageLineRPM);
   }
 
   /**

@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
 
 public class HangerSubsystem extends SubsystemBase {
-  private DigitalInput m_hangerLimitSwitchLeftTop;
-  private DigitalInput m_hangerLimitSwitchRightTop;
   private DigitalInput m_hangerLimtiSwitchLeftBottom;
   private DigitalInput m_hangerLimitSwitchRightBottom;
   private CANSparkMax m_leftMotor;
@@ -31,12 +29,12 @@ public class HangerSubsystem extends SubsystemBase {
     m_leftMotor = new CANSparkMax(Constants.RioPorts.kleftHangerMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.RioPorts.krightHangerMotorID, MotorType.kBrushless);
 
-    m_hangerLimitSwitchLeftTop = new DigitalInput(Constants.RioPorts.kHangerLimitRightTopID);
-    m_hangerLimitSwitchRightTop = new DigitalInput(Constants.RioPorts.kHangerLimitLeftTopID);
     m_hangerLimtiSwitchLeftBottom = new DigitalInput(Constants.RioPorts.kHangerLimitRightBottomID);
     m_hangerLimitSwitchRightBottom = new DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
 
     m_rightMotor.follow(m_leftMotor);
+
+    setServoAngle(Constants.Hanger.kUnlockAngle);
   }
 
   private void setHangerSpeed(double speed) {
@@ -45,8 +43,11 @@ public class HangerSubsystem extends SubsystemBase {
 
   public void runHanger(double speed) {
     if (isAtTop()) {
-      stopHanger();
-    } else {
+      setHangerSpeed(MathUtil.clamp(speed, -1, 0));
+    } else if (isAtBottom()) {
+      setHangerSpeed(MathUtil.clamp(speed, 0, 1));
+    }
+    else {
       setHangerSpeed(speed);
     }
   }
@@ -55,12 +56,13 @@ public class HangerSubsystem extends SubsystemBase {
     setHangerSpeed(0);
   }
 
-  public void setServoAngle(double speed) {
-    m_leftSwervo.setAngle(speed);
+  public void setServoAngle(double angle) {
+    m_leftSwervo.setAngle(angle);
+    m_rightServo.setAngle(angle);
   }
 
   public boolean isAtTop() {
-    return m_hangerLimitSwitchLeftTop.get() && m_hangerLimitSwitchRightTop.get();
+   return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
   }
 
   public boolean isAtBottom() {
@@ -68,6 +70,15 @@ public class HangerSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    m_rightServo.setAngle(m_leftSwervo.getAngle());
+    if(isAtBottom())
+    {
+      m_leftMotor.getEncoder().setPosition(0);
+      m_rightMotor.getEncoder().setPosition(0);
+    }
+
+    if(isAtTop())
+    {
+      setServoAngle(Constants.Hanger.kLockAngle);
+    }
   }
 }

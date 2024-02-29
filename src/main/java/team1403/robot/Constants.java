@@ -165,9 +165,7 @@ public class Constants {
     public static final int krightHangerMotorID = 0;
     public static final int kleftServoID = 0;
     public static final int krightServoID = 0;
-    public static final int kHangerLimitLeftTopID = 0;
     public static final int kHangerLimitRightBottomID = 0;
-    public static final int kHangerLimitRightTopID = 0;
     public static final int kHangerLimitLeftBottomID = 0;
   }
 
@@ -299,6 +297,12 @@ public class Constants {
     public static boolean kInAuto = false;
     public static boolean kisIntaked = false;
     public static boolean kSide = false;
+  }
+
+  public static class Hanger {
+    public static final double kTopLimit = 2;
+    public static final double kLockAngle = 170;
+    public static final double kUnlockAngle = 180;
   }
   
   public static class Wrist {
