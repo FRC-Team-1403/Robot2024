@@ -504,24 +504,20 @@ public class SwerveSubsystem extends SubsystemBase  {
  public void periodic() {
   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-  // if (m_Limelight.hasTarget()) {
-  //   Pose2d pose = m_Limelight.getDistance2D();
-  //   var x = m_Limelight.getPosStdv();
-  //   if(pose != null && !m_disableVision && tagCount > 0)
-  //   {
-  //     // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-  //     // m_desiredHeading = pose.getRotation().getDegrees();
-  //     m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
-  //   }
-  //   else if(pose != null && !m_disableVision && tagCount == 0)
-  //   {
-  //     m_odometer.setPose(pose);
-  //     // // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-  //     // m_desiredHeading = pose.getRotation().getDegrees();
-  //     tagCount++;
-  //   }
-  // } else {
+  if (m_Limelight.hasTarget()) {
+    Pose2d pose = m_Limelight.getDistance2D();
+    if(pose != null && !m_disableVision && tagCount > 0)
+    {
+      m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+    }
+    else if(pose != null && !m_disableVision && tagCount == 0)
+    {
+      m_odometer.setPose(pose);
+      tagCount++;
+    }
+  } else {
     m_odometer.update(getGyroscopeRotation(),getModulePositions());
+  }
   
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
