@@ -72,12 +72,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false));
     NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,false));
     NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,true));
-    NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
-    NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
 
     // NamedCommands.
     configureBindings();
-
   }
 
   /**
