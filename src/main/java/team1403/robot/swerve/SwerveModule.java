@@ -103,12 +103,14 @@ public class SwerveModule implements Device {
       //m_absoluteEncoder.setPositionToAbsolute();
       //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
   
-      // Config drive relative encoder
-      double drivePositionConversionFactor = Math.PI * Swerve.kWheelDiameterMeters 
-            * Swerve.kDriveReduction;
-      m_driveRelativeEncoder.setPositionConversionFactor(drivePositionConversionFactor);
+      // YAGSL website includes conversion factors for MK4 L3 drive, so instead of calcluating, 
+      // we are are using their number
+      // double drivePositionConversionFactor = Math.PI * Swerve.kWheelDiameterMeters 
+      //       * Swerve.kDriveReduction (gear ratios);
+
+      m_driveRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kDrivePositionConversionFactor);
       // Set velocity in terms of seconds
-      m_driveRelativeEncoder.setVelocityConversionFactor(drivePositionConversionFactor / 60.0);
+      m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
   
       m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
       m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);

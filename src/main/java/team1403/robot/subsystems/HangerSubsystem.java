@@ -33,8 +33,6 @@ public class HangerSubsystem extends SubsystemBase {
     m_hangerLimitSwitchRightBottom = new DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
 
     m_rightMotor.follow(m_leftMotor);
-
-    setServoAngle(Constants.Hanger.kUnlockAngle);
   }
 
   private void setHangerSpeed(double speed) {
@@ -56,9 +54,19 @@ public class HangerSubsystem extends SubsystemBase {
     setHangerSpeed(0);
   }
 
-  public void setServoAngle(double angle) {
+  private void setServoAngle(double angle) {
     m_leftSwervo.setAngle(angle);
     m_rightServo.setAngle(angle);
+  }
+
+  public void unlockHanger()
+  {
+    setServoAngle(Constants.Hanger.kUnlockAngle);
+  }
+
+  public void lockHanger()
+  {
+    setServoAngle(Constants.Hanger.kLockAngle);
   }
 
   public boolean isAtTop() {
@@ -78,7 +86,7 @@ public class HangerSubsystem extends SubsystemBase {
 
     if(isAtTop())
     {
-      setServoAngle(Constants.Hanger.kLockAngle);
+
     }
   }
 }

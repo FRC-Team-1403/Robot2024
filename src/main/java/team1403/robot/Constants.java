@@ -77,7 +77,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = 0; //4.743068596142402
     public static final double backRightEncoderOffset = 1.25;//-0.2966
 
-    public static final double kDriveReduction = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0);
+    public static final double kDrivePositionConversionFactor = 0.05215454470665408;
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
@@ -284,11 +284,12 @@ public class Constants {
     public static final double kFrameClearanceAngle = 234.5; // cone angle
     public static final double kHorizonAngle = 210; 
     public static final double kSpeedReduction = 2.0; // test value
-    public static double kStageLineRPM = 5000;
-    public static double kCenterLineRPM = 5500;
+    public static final double kStageLineRPM = 5000;
+    public static final double kCenterLineRPM = 5500;
+    public static final double kCloseRPM = 4200;
   }
 
-  public static class Auto{
+  public static class Auto {
     public static boolean kAmp = false;
     public static boolean kCenterLine = false;
     public static boolean kStageLine = false;

@@ -157,7 +157,7 @@ public class IntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
-                        m_intakeAndShooter.setShooterRPM(4200);
+                        m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                         if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
                             m_state = State.LOADED;
@@ -179,7 +179,7 @@ public class IntakeShooterLoop extends Command {
                 {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
-                    m_intakeAndShooter.setShooterRPM(4800);
+                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                 } 
                 else if(m_stageLine.getAsBoolean())
                 {
