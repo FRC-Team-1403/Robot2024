@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -101,6 +102,11 @@ public class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeed,
         kMaxAngularAccelerationRadiansPerSecondSquared);
+
+    //front-to-back-disp = ~8.568 inches 
+    //left-to-right-disp = 0 inches
+    //top-to-bottom disp = 17.82426 inches
+    public static final Transform3d kCameraOffset = new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,Units.degreesToRadians(35), Math.PI));
   }
 
   /**
