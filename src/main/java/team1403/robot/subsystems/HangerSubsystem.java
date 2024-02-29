@@ -44,8 +44,7 @@ public class HangerSubsystem extends SubsystemBase {
       setHangerSpeed(MathUtil.clamp(speed, -1, 0));
     } else if (isAtBottom()) {
       setHangerSpeed(MathUtil.clamp(speed, 0, 1));
-    }
-    else {
+    } else {
       setHangerSpeed(speed);
     }
   }
@@ -59,13 +58,11 @@ public class HangerSubsystem extends SubsystemBase {
     m_rightServo.setAngle(angle);
   }
 
-  public void unlockHanger()
-  {
+  public void unlockHanger() {
     setServoAngle(Constants.Hanger.kUnlockAngle);
   }
 
-  public void lockHanger()
-  {
+  public void lockHanger() {
     setServoAngle(Constants.Hanger.kLockAngle);
   }
 
@@ -82,11 +79,6 @@ public class HangerSubsystem extends SubsystemBase {
     {
       m_leftMotor.getEncoder().setPosition(0);
       m_rightMotor.getEncoder().setPosition(0);
-    }
-
-    if(isAtTop())
-    {
-
     }
   }
 }
