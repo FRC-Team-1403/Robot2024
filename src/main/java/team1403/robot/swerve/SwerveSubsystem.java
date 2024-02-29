@@ -141,14 +141,16 @@ public class SwerveSubsystem extends SubsystemBase  {
               },
               this // Reference to this subsystem to set requirements
       );
-  m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-  m_odometer.update(getGyroscopeRotation(), getModulePositions());
-
 
   //  addDevice(m_navx2.getName(), m_navx2);
    if(m_navx2.isConnected())
     while (m_navx2.isCalibrating());
+
+    zeroGyroscope();
+
+    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
+    getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
    m_desiredHeading = getGyroscopeRotation().getDegrees();
 

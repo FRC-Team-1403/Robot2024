@@ -46,9 +46,9 @@ public class RobotContainer {
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
 
-  private final PowerDistribution m_powerDistribution;
+  private final IntakeShooterLoop m_combinedCommand;
 
-  private IntakeShooterLoop m_autoCommand;
+  private final PowerDistribution m_powerDistribution;
 
 
 
@@ -67,11 +67,24 @@ public class RobotContainer {
     m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
-    m_autoCommand = new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false);
+
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,false));
     NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,false));
     NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,true));
+
+    m_combinedCommand = new IntakeShooterLoop(
+      m_endeff, m_arm, 
+      m_wrist, m_led, 
+      () -> m_operatorController.rightBumper().getAsBoolean(),
+      () -> m_operatorController.leftBumper().getAsBoolean(), 
+      () -> m_operatorController.a().getAsBoolean(),
+      () -> m_operatorController.b().getAsBoolean(),
+      () -> m_operatorController.x().getAsBoolean(),
+      () -> m_operatorController.povUp().getAsBoolean(),
+      () -> m_operatorController.y().getAsBoolean(),
+      false
+      );
 
     // NamedCommands.
     configureBindings();
@@ -166,5 +179,13 @@ public class RobotContainer {
 
   public LED getLEDSubsystem() {
     return m_led;
+  }
+
+  public PhotonVisionCommand getVisionCommand() {
+    return m_PhotonVisionCommand;
+  }
+
+  public IntakeShooterLoop getStateMachineCommand() {
+    return m_combinedCommand;
   }
 }

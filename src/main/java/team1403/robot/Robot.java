@@ -71,25 +71,13 @@ public class Robot extends LoggedRobot {
                     // be added.
 
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
-    m_combinedCommand = new IntakeShooterLoop(
-    m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
-    m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
-    () -> m_robotContainer.getOps().rightBumper().getAsBoolean(),
-    () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), 
-    () -> m_robotContainer.getOps().a().getAsBoolean(),
-    () -> m_robotContainer.getOps().b().getAsBoolean(),
-    () -> m_robotContainer.getOps().x().getAsBoolean(),
-    () -> m_robotContainer.getOps().povUp().getAsBoolean(),
-    () -> m_robotContainer.getOps().y().getAsBoolean(),
-    false
-    );
+    m_VisionCommand = m_robotContainer.getVisionCommand();
+    m_combinedCommand = m_robotContainer.getStateMachineCommand();
 
     AutoSelector.initAutoChooser();
 
     // tempWristAngle = 100;
     // tempArmAngle = 130;
-    m_robotContainer.getSwerveSubsystem().zeroGyroscope();
     //m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
     //m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
     SmartDashboard.putNumber("Shooting Setpoint", Constants.Wrist.kShootingAngle);
