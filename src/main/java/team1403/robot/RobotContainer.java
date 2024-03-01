@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.IntakeCommand;
 import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.RunIntakeShooterAuto;
@@ -84,12 +85,18 @@ public class RobotContainer {
       );
       
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0,() -> false));
-    NamedCommands.registerCommand("Stage",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> false));
-    NamedCommands.registerCommand("Amp Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> true));
-    NamedCommands.registerCommand("Lauchpad Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
-    NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
-    NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
+    NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false));
+    NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, true));
+    NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true, () -> false, () -> false, true));
+ 
+
+
+    // NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0,() -> false));
+    // NamedCommands.registerCommand("Stage",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> false));
+    // NamedCommands.registerCommand("Amp Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> true));
+    // NamedCommands.registerCommand("Lauchpad Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
+    // NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
+    // NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
 
     // NamedCommands.
     configureBindings();
