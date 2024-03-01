@@ -333,7 +333,7 @@ public class Constants {
     public static  double kDriveSetpoint = 140;//140
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 138;//To test
-    public static double kSideStageLineSetpoint = 136;
+    public static double kStageLineSideSetpoint = 136;
     public static double kLaunchpadSetpoint = 140;
     public static double kCenterLineSetpoint = 133;//115
     public static  double kShootingAngle = 147;//147 for teleop working

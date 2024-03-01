@@ -236,9 +236,9 @@ public class IntakeShooterLoop extends Command {
             case SHOOT:       
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
+                    //if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
                     if(Timer.getFPGATimestamp() - m_fpga > 0.1)
-                        if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
-                        else m_state = State.RESET;
+                        m_state = State.RESET;
                 }
                 break;
 
