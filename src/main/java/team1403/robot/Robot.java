@@ -131,10 +131,10 @@ public class Robot extends LoggedRobot {
     Constants.Auto.kInAuto = true;
     Constants.Auto.kisIntaked = true;
     // schedule the autonomous command (example)
+    m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_combinedCommand.cancel();
   }
 
   /** This function is called periodically during autonomous. */
