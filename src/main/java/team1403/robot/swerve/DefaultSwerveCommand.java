@@ -33,6 +33,7 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_speedSupplier;
   private final DoubleSupplier m_xsupplier;
   private final DoubleSupplier m_ysupplier;
+  private BooleanSupplier m_snipingMode;
   private boolean m_isFieldRelative;
   private double tempKP = 0;
   private double tempKI = 0;
@@ -71,7 +72,8 @@ public class DefaultSwerveCommand extends Command {
       BooleanSupplier aimbotSupplier,
       DoubleSupplier xtarget,
       DoubleSupplier ytarget,
-      DoubleSupplier speedSupplier) {
+      DoubleSupplier speedSupplier,
+      BooleanSupplier snipingMode) {
     this.m_drivetrainSubsystem = drivetrain;
     this.m_verticalTranslationSupplier = verticalTranslationSupplier;
     this.m_horizontalTranslationSupplier = horizontalTranslationSupplier;
@@ -82,6 +84,7 @@ public class DefaultSwerveCommand extends Command {
     this.m_aimbotSupplier = aimbotSupplier;
     this.m_xsupplier = xtarget;
     this.m_ysupplier = ytarget;
+    m_snipingMode = snipingMode;
     m_isFieldRelative = true;
     m_verticalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(8, -8, 0);
@@ -103,7 +106,9 @@ public class DefaultSwerveCommand extends Command {
     m_controller.setI(tempKI);
 
     m_speedLimiter = 0.2 + (m_speedSupplier.getAsDouble() * 0.8);
-
+    if (m_snipingMode.getAsBoolean()) {
+      m_speedLimiter = 0.05;
+    }
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
     } 
