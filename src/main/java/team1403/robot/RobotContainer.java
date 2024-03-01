@@ -82,10 +82,12 @@ public class RobotContainer {
       () -> getOps().getLeftY(),
       () -> getOps().rightBumper().getAsBoolean()
       );
-        NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
+      
+    NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0,() -> false));
-    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
-    NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> true));
+    NamedCommands.registerCommand("Stage",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> false));
+    NamedCommands.registerCommand("Amp Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> true));
+    NamedCommands.registerCommand("Lauchpad Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
     NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
     NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
 

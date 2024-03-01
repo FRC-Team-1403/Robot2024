@@ -292,7 +292,7 @@ public class Constants {
     public static final double kHorizonAngle = 210; 
     public static final double kSpeedReduction = 2.0; // test value
     public static double kStageLineRPM = 5000; //To test
-    public static double kCenterLineRPM = 5500;
+    public static double kCenterLineRPM = 6000;
     public static double kLaunchpadRPM = 5000;
     public static final double kCloseRPM = 4800;
     public static final double kExpelDeadzone = 0.15;
@@ -334,7 +334,7 @@ public class Constants {
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 138;//To test
     public static double kLaunchpadSetpoint = 140;
-    public static double kCenterLineSetpoint = 115;//115
+    public static double kCenterLineSetpoint = 133;//115
     public static  double kShootingAngle = 147;//147 for teleop working
 
 

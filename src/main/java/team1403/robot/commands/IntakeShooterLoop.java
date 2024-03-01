@@ -203,7 +203,7 @@ public class IntakeShooterLoop extends Command {
                 else if(m_centerLine.getAsBoolean())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
-                    m_arm.moveArm(200);
+                    m_arm.moveArm(130);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
                 } else if(m_ampShooting.getAsBoolean()){
                     m_wrist.setWristAngle(Constants.Wrist.kAmpShoootingSetpoint);

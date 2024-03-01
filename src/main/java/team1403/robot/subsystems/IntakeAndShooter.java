@@ -135,7 +135,7 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return Math.abs(m_bottomShooter.getSetpoint() - m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() * 0.05 && Math.abs(m_bottomShooter.getSetpoint() - m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() * 0.05 ;
+    return Math.abs(m_bottomShooter.getSetpoint() - m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() / 0.05 && Math.abs(m_bottomShooter.getSetpoint() - m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < m_bottomShooter.getSetpoint() / 0.05 ;
   }
 
   public void periodic() {
