@@ -29,6 +29,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_resetToIntake;
     private BooleanSupplier m_launchpad;
     private DoubleSupplier m_expel;
+    private BooleanSupplier m_ampShooting;
     private enum State
     {
         RESET,
@@ -47,7 +48,7 @@ public class IntakeShooterLoop extends Command {
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
-            DoubleSupplier expel) {
+            DoubleSupplier expel,BooleanSupplier ampShooting) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -61,6 +62,7 @@ public class IntakeShooterLoop extends Command {
         m_resetToIntake =  resetToIntake;
         m_launchpad = launchpad;
         m_expel = expel;
+        m_ampShooting = ampShooting;
     }
 
     @Override
@@ -203,6 +205,10 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
                     m_arm.moveArm(200);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
+                } else if(m_ampShooting.getAsBoolean()){
+                    m_wrist.setWristAngle(Constants.Wrist.kAmpShoootingSetpoint);
+                    m_arm.moveArm(124);
+                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
                 else if(m_resetToIntake.getAsBoolean()) {
                     m_state = State.RESET;

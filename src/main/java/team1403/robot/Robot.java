@@ -161,7 +161,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putBoolean("Right Trigger", m_robotContainer.getOps().rightTrigger().getAsBoolean());
   }
 
   @Override

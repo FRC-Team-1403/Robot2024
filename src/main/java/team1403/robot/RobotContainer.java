@@ -72,18 +72,20 @@ public class RobotContainer {
       getIntakeShooterSubsystem(), getArmSubsystem(), 
       getWristSubsystem(), getLEDSubsystem(), 
       () -> getOps().rightTrigger().getAsBoolean(),
-      () -> getOps().rightBumper().getAsBoolean(), 
+      () -> getOps().b().getAsBoolean(), 
       () -> getOps().x().getAsBoolean(),
       () -> getOps().a().getAsBoolean(),
       () -> getOps().leftTrigger().getAsBoolean(),
       () -> getOps().povUp().getAsBoolean(),
       () -> getOps().y().getAsBoolean(),
       () -> getOps().leftBumper().getAsBoolean(),
-      () -> getOps().getLeftY()
+      () -> getOps().getLeftY(),
+      () -> getOps().rightBumper().getAsBoolean()
       );
         NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0));
-    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0));
+    NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0,() -> false));
+    NamedCommands.registerCommand("Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
+    NamedCommands.registerCommand("Shoot Side",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> true));
     NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
     NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
 
@@ -119,7 +121,8 @@ public class RobotContainer {
         () -> 5.36,
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis() > .5));
-    
+
+
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
     // m_operatorController.povLeft().onTrue(
