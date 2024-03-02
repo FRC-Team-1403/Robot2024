@@ -124,7 +124,8 @@ public class Wrist extends SubsystemBase {
    SmartDashboard.putNumber("Wrist Speed", m_wristMotor.get());
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
-   Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
+   Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
+   Logger.recordOutput("Wrist Speed", m_wristMotor.get());
    Logger.recordOutput("Wrist Angle", getWristAngle());
   
   }

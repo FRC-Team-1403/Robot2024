@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.39,
-      "y": 5.52
+      "x": 0.7041386162544403,
+      "y": 6.67
     },
-    "rotation": 0
+    "rotation": 58.84794267676578
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "First Piece"
+          }
+        },
         {
           "type": "parallel",
           "data": {
@@ -18,13 +24,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Run Intake"
+                  "name": "Reset Shooter"
                 }
               },
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": null
+                  "pathName": "Top One Piece"
                 }
               }
             ]

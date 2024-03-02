@@ -4,13 +4,20 @@
 
 package team1403.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.Constants.Auto;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.IntakeCommand;
 import team1403.robot.commands.IntakeShooterLoop;
@@ -49,7 +56,7 @@ public class RobotContainer {
 
   private final PowerDistribution m_powerDistribution;
 
-
+  private SendableChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -71,8 +78,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false));
     NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, true));
     NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true, () -> false, () -> false, true));
+    NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false));
     // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
     // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
+
+    autoChooser = AutoBuilder.buildAutoChooser("Actual Four Piece");
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // NamedCommands.
     configureBindings();
@@ -137,7 +149,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return AutoSelector.getSelectedAuto().andThen(new InstantCommand(() -> m_swerve.stop()));
+    return autoChooser.getSelected().andThen(new InstantCommand(() -> m_swerve.stop()));
   }
 
   public Limelight getLimelight(){

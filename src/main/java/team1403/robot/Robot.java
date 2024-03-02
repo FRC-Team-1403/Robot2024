@@ -86,7 +86,7 @@ public class Robot extends LoggedRobot {
       () -> m_robotContainer.getOps().rightBumper().getAsBoolean()
       );
     // intake out joystick left up
-    AutoSelector.initAutoChooser();
+    // AutoSelector.initAutoChooser();
   }
 
   /**

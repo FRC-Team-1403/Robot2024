@@ -89,7 +89,7 @@ public class IntakeShooterLoop extends Command {
         {
             case RESET:
             {
-                m_wrist.setWristAngle(145);
+                m_wrist.setWristAngle(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
                 if(m_wrist.isAtSetpoint())
@@ -116,7 +116,7 @@ public class IntakeShooterLoop extends Command {
                 if(m_loading.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kLoadingSetpoint);
-                    m_wrist.setWristAngle(145);
+                    m_wrist.setWristAngle(140);
                     m_state = State.LOADING_STATION;
                 }
                 if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
@@ -138,7 +138,7 @@ public class IntakeShooterLoop extends Command {
                 if(m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
                     m_intakeAndShooter.intakeStop();
-                    m_wrist.setWristAngle(145);
+                    m_wrist.setWristAngle(140);
                     if(m_wrist.isAtSetpoint())
                     {
                         m_arm.moveArm(Constants.Arm.kDriveSetpoint);
