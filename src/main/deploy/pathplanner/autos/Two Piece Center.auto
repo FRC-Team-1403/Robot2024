@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3122346472613169,
-      "y": 5.5196408968316515
+      "x": 1.3674277229789629,
+      "y": 5.5768617000416905
     },
     "rotation": 0
   },
@@ -22,15 +22,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Reset Shooter"
+                  "pathName": "Center Two Piece"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Center One Piece"
+                  "name": "Shoot"
                 }
               }
             ]

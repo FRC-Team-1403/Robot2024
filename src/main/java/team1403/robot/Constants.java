@@ -141,8 +141,8 @@ public class Constants {
     public static final int leftPivotMotorID = 14;
 
     // hanger ID
-    public static final int rightHangerMotorID = kTBD;
-    public static final int leftHangerMotorID = kTBD;
+    public static final int rightHangerMotorID = 27;
+    public static final int leftHangerMotorID = 28;
 
     // intake and shooter IDs
     public static final int shooterMotorTopID = 2;
@@ -168,10 +168,8 @@ public class Constants {
     //Wrist 
     public static final int kwristAbsoluteEncoder = 1; // DIO
     //Hanger
-    public static final int kleftHangerMotorID = 0;
-    public static final int krightHangerMotorID = 0;
-    public static final int kleftServoID = 0;
-    public static final int krightServoID = 0;
+    public static final int kleftServoID = 8;
+    public static final int krightServoID = 9;
     public static final int kHangerLimitRightBottomID = 0;
     public static final int kHangerLimitLeftBottomID = 0;
   }
@@ -310,7 +308,8 @@ public class Constants {
   }
 
   public static class Hanger {
-    public static final double kTopLimit = 2;
+    public static final double kTopLimit = 36;
+    public static final double kBottomLimit = 3;
     public static final double kLockAngle = 170;
     public static final double kUnlockAngle = 180;
   }
@@ -333,7 +332,7 @@ public class Constants {
     public static  double kDriveSetpoint = 140;//140
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 138;//To test
-    public static double kStageLineSideSetpoint = 136;
+    public static double kStageLineSideSetpoint = 135;//136 version 2
     public static double kLaunchpadSetpoint = 140;
     public static double kCenterLineSetpoint = 133;//115
     public static  double kShootingAngle = 147;//147 for teleop working
