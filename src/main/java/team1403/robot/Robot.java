@@ -71,7 +71,20 @@ public class Robot extends LoggedRobot {
 
     m_robotContainer = new RobotContainer();
     m_VisionCommand = m_robotContainer.getVisionCommand();
-    m_combinedCommand = m_robotContainer.getStateMachineCommand();
+    m_combinedCommand =  new IntakeShooterLoop(
+      m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
+      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
+      () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(),
+      () -> m_robotContainer.getOps().b().getAsBoolean(), 
+      () -> m_robotContainer.getOps().x().getAsBoolean(),
+      () -> m_robotContainer.getOps().a().getAsBoolean(),
+      () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(),
+      () -> m_robotContainer.getOps().povUp().getAsBoolean(),
+      () -> m_robotContainer.getOps().y().getAsBoolean(),
+      () -> m_robotContainer.getOps().leftBumper().getAsBoolean(),
+      () -> m_robotContainer.getOps().getLeftY(),
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean()
+      );
     // intake out joystick left up
     AutoSelector.initAutoChooser();
   }

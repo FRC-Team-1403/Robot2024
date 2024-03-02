@@ -16,7 +16,8 @@ public class AutoSelector {
 
     public static Command getSelectedAuto() {
         // Command auto = autoChooser.getSelected();
-        return AutoBuilder.buildAuto("Actual Four Piece");
+        return AutoBuilder.buildAuto("No Auto");
     }
 
+    
 }

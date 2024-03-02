@@ -4,6 +4,8 @@ package team1403.robot.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -162,10 +164,6 @@ public class IntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
-                        if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
-                            m_intakeAndShooter.setIntakeSpeed(-0.7);
-                            m_intakeAndShooter.setShooterRPM(-1500);
-                        }
                         m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                         if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
@@ -210,9 +208,6 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
-                else if(m_resetToIntake.getAsBoolean()) {
-                    m_state = State.RESET;
-                }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
@@ -250,7 +245,17 @@ public class IntakeShooterLoop extends Command {
                 Constants.Auto.kDriveSetpoint = false;
                 break;
             }
-        }     
+        }    
+        if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
+            m_intakeAndShooter.setIntakeSpeed(-0.7);
+            m_intakeAndShooter.setShooterRPM(-1500);
+            // get approval 
+            // m_state = State.RESET;
+        }
+        if(m_resetToIntake.getAsBoolean()) {
+            m_state = State.RESET;
+        }
+        Logger.recordOutput("State", m_state.toString());
     }
 
     @Override

@@ -47,8 +47,6 @@ public class RobotContainer {
   private final CommandXboxController m_operatorController;
   private final PhotonVisionCommand m_PhotonVisionCommand; 
 
-  private final IntakeShooterLoop m_combinedCommand;
-
   private final PowerDistribution m_powerDistribution;
 
 
@@ -69,34 +67,12 @@ public class RobotContainer {
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
 
-    m_combinedCommand = new IntakeShooterLoop(
-      getIntakeShooterSubsystem(), getArmSubsystem(), 
-      getWristSubsystem(), getLEDSubsystem(), 
-      () -> getOps().rightTrigger().getAsBoolean(),
-      () -> getOps().b().getAsBoolean(), 
-      () -> getOps().x().getAsBoolean(),
-      () -> getOps().a().getAsBoolean(),
-      () -> getOps().leftTrigger().getAsBoolean(),
-      () -> getOps().povUp().getAsBoolean(),
-      () -> getOps().y().getAsBoolean(),
-      () -> getOps().leftBumper().getAsBoolean(),
-      () -> getOps().getLeftY(),
-      () -> getOps().rightBumper().getAsBoolean()
-      );
-      
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false));
     NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, true));
     NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true, () -> false, () -> false, true));
- 
-
-
-    // NamedCommands.registerCommand("First Piece",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false,  () -> false,  () -> false,()->false, () -> 0.0,() -> false));
-    // NamedCommands.registerCommand("Stage",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> false));
-    // NamedCommands.registerCommand("Amp Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> false,() -> 0.0, () -> true));
-    // NamedCommands.registerCommand("Lauchpad Shoot",new IntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true,  () -> false,  () -> false,() -> true,() -> 0.0, () -> false));
-    // NamedCommands.registerCommand("Intake", new IntakeCommand(m_endeff, m_arm, m_wrist));
-    // NamedCommands.registerCommand("Shooter", new ShootCommand(m_endeff, m_arm, m_wrist));
+    // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
+    // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
 
     // NamedCommands.
     configureBindings();
@@ -202,9 +178,5 @@ public class RobotContainer {
 
   public PhotonVisionCommand getVisionCommand() {
     return m_PhotonVisionCommand;
-  }
-
-  public IntakeShooterLoop getStateMachineCommand() {
-    return m_combinedCommand;
   }
 }

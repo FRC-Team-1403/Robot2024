@@ -3,6 +3,8 @@ package team1403.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -234,7 +236,8 @@ public class AutoIntakeShooterLoop extends Command {
                 Constants.Auto.kDriveSetpoint = false;
                 break;
             }
-        }     
+        }  
+        Logger.recordOutput("Auto State", m_state.toString());
     }
 
     @Override

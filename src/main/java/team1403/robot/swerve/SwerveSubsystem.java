@@ -61,7 +61,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  private Translation2d frontRight = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
      -Constants.Swerve.kWheelBase / 2.0);
-
+                                                                         
  private Translation2d frontLeft = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
      Constants.Swerve.kWheelBase / 2.0);
@@ -128,15 +128,16 @@ public class SwerveSubsystem extends SubsystemBase  {
                       Math.hypot(Swerve.kTrackWidth/2.0, Swerve.kWheelBase/2.0), // Drive base radius in meters. Distance from robot center to furthest module.
                       new ReplanningConfig() // Default path replanning config. See the API for the options here
               ),
+              
               () -> {
                   // Boolean supplier that controls when the path will be mirrored for the red alliance
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  // Optional<Alliance> alliance = DriverStation.getAlliance();
-                  // if (alliance.isPresent()) {
-                  //   return alliance.get() == DriverStation.Alliance.Red;
-                  // }
+                  Optional<Alliance> alliance = DriverStation.getAlliance();
+                  if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                  }
                   return true;
               },
               this // Reference to this subsystem to set requirements

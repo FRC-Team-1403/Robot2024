@@ -1,5 +1,7 @@
 package team1403.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -179,7 +181,9 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
     SmartDashboard.putBoolean("Arm Current Trip", m_currentLimitTripped);
-
+Logger.recordOutput("Pivot Angle", getPivotAngle());
+    Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());
+  Logger.recordOutput("Arm Current Trip", m_currentLimitTripped);
   }
 
   /**
