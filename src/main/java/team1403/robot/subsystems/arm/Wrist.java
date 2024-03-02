@@ -41,7 +41,7 @@ public class Wrist extends SubsystemBase {
     m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_arm = arm;
 
-    m_wristAngleSetpoint = 94;
+    m_wristAngleSetpoint = Constants.Wrist.kIntakeSetpoint;
     m_wristMotorSpeed = 0;
 
     // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
@@ -116,11 +116,12 @@ public class Wrist extends SubsystemBase {
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
     m_wristMotor.set(m_wristMotorSpeed);
-    m_wristPid.setP(Constants.Wrist.KPWrist);
+    //m_wristPid.setP(Constants.Wrist.KPWrist);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
    SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
+   SmartDashboard.putNumber("Wrist Speed", m_wristMotor.get());
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getVoltageCompensationNominalVoltage());
