@@ -158,7 +158,7 @@ public class AutoIntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isShooterPhotogateTriggered()) {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
-                        m_intakeAndShooter.setShooterRPM(3800);
+                        m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                         if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
                             m_state = State.LOADED;
