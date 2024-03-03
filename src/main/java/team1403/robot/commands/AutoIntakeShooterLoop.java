@@ -28,6 +28,7 @@ public class AutoIntakeShooterLoop extends Command {
     private BooleanSupplier m_centerLine;
     private LED m_led;
     private BooleanSupplier m_resetToReset;
+    private BooleanSupplier m_closeSideShoot;
     private boolean m_side;
     private Timer time;
     private enum State
@@ -47,7 +48,7 @@ public class AutoIntakeShooterLoop extends Command {
 
     public AutoIntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset, boolean side) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset, boolean side, BooleanSupplier closeSideShoot) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -60,6 +61,7 @@ public class AutoIntakeShooterLoop extends Command {
         m_led = led;
         m_resetToReset =  resetToReset;
         m_side = side;
+        m_closeSideShoot = closeSideShoot;
     }
 
     @Override
@@ -197,6 +199,10 @@ public class AutoIntakeShooterLoop extends Command {
                 }
                 else if(m_resetToReset.getAsBoolean()) {
                     m_state = State.RESET;
+                }
+                else if(m_closeSideShoot.getAsBoolean()) {
+                    m_wrist.setWristAngle(Constants.Wrist.kDefaultClose + 8);
+                    m_intakeAndShooter.setShooterRPM(6000);
                 }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot

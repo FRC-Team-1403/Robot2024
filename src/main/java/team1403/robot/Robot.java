@@ -74,16 +74,16 @@ public class Robot extends LoggedRobot {
     m_combinedCommand =  new IntakeShooterLoop(
       m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
       m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
-      () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(),
-      () -> m_robotContainer.getOps().b().getAsBoolean(), 
-      () -> m_robotContainer.getOps().x().getAsBoolean(),
-      () -> m_robotContainer.getOps().a().getAsBoolean(),
-      () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(),
-      () -> m_robotContainer.getOps().povUp().getAsBoolean(),
-      () -> m_robotContainer.getOps().y().getAsBoolean(),
-      () -> m_robotContainer.getOps().leftBumper().getAsBoolean(),
-      () -> m_robotContainer.getOps().getLeftY(),
-      () -> m_robotContainer.getOps().rightBumper().getAsBoolean()
+      () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(), // shoot
+      () -> m_robotContainer.getOps().b().getAsBoolean(), // amp
+      () -> m_robotContainer.getOps().x().getAsBoolean(), // loading station
+      () -> m_robotContainer.getOps().a().getAsBoolean(), // reset to intake
+      () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(), // stage line shot
+      () -> m_robotContainer.getOps().povUp().getAsBoolean(), // center line shot
+      () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
+      () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
+      () -> m_robotContainer.getOps().getLeftY(), // expel
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
       );
     // intake out joystick left up
     // AutoSelector.initAutoChooser();

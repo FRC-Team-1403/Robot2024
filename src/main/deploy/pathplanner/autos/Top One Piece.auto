@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7392210795817603,
-      "y": 4.432084533684738
+      "x": 0.7041386162544403,
+      "y": 6.67
     },
-    "rotation": -56.5346206536447
+    "rotation": 56.33
   },
   "command": {
     "type": "sequential",
@@ -22,15 +22,34 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Reset Shooter"
+                  "pathName": "Top One Piece"
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Side"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "Bottom One Piece"
+                  "pathName": "Move Out"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Reset Shooter"
                 }
               }
             ]

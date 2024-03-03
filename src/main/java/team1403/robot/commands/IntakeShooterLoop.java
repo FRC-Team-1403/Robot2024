@@ -180,7 +180,6 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(Constants.Arm.kAmpSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kAmpSetpoint);
                     m_intakeAndShooter.setShooterRPM(2400);
-
                 }
                 else if(m_resetToNeutral.getAsBoolean())
                 {
@@ -217,8 +216,7 @@ public class IntakeShooterLoop extends Command {
                         m_fpga = Timer.getFPGATimestamp(); 
                         m_state = State.SHOOT;
                     }
-
-                    }
+                }
                 
                 // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                 //     m_led.setLedMode(LEDState.YELLOW);
