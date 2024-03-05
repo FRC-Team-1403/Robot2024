@@ -72,11 +72,14 @@ public class AutoIntakeShooterLoop extends Command {
         // else
         m_state = State.RESET;
         Constants.Auto.kFinished = false;
+
+        if (m_intakeAndShooter.isIntakePhotogateTriggered() || m_intakeAndShooter.isShooterPhotogateTriggered())
+            m_state = State.INTAKE;
+        
         // time.reset();
         // time.start();
     }
-
-
+    
     @Override
     public void execute()
     {
@@ -183,7 +186,7 @@ public class AutoIntakeShooterLoop extends Command {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
                     m_intakeAndShooter.setShooterRPM(4800);
-                } 
+                }
                 else if(m_stageLine.getAsBoolean())
                 {
                     m_arm.moveArm(124);
@@ -204,6 +207,11 @@ public class AutoIntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kDefaultClose + 8);
                     m_intakeAndShooter.setShooterRPM(6000);
                 }
+
+                if(!m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint())
+                {
+                    Constants.Auto.kFinished = true;
+                }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
@@ -214,7 +222,7 @@ public class AutoIntakeShooterLoop extends Command {
                         m_state = State.SHOOT;
                     }
 
-                    }
+                }
                 
                 // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                 //     m_led.setLedMode(LEDState.YELLOW);
