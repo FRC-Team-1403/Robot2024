@@ -37,16 +37,20 @@ public class ArmSubsystem extends SubsystemBase {
    * Initializing the arn subsystem.
    */
   public ArmSubsystem() {
+<<<<<<< HEAD
     m_feedforward = new ArmFeedforward(0, 0.03, 0.0001);
+=======
+    m_feedforward = new ArmFeedforward(0, Constants.Arm.kFeedforwardG, Constants.Arm.kFeedforwardV);
+>>>>>>> de93c01b6f888be8b1d769ccbd1f9607b595ef44
     m_leftMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
     m_encoder = new DutyCycleEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
     configPivotMotors();
 
-    m_armPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
+    m_armPid = new PIDController(Constants.Arm.kPArmPivot, Constants.Arm.kIArmPivot, Constants.Arm.kDArmPivot);
 
-    this.m_angleSetpoint = getPivotAngle();    
+    this.m_angleSetpoint = getPivotAngle();
   }
 
   // --------------------------- Setup methods ---------------------------
@@ -74,6 +78,10 @@ public class ArmSubsystem extends SubsystemBase {
     return value;
   }
 
+  public double getSetpoint(){
+    return m_angleSetpoint;
+  }
+
   public PIDController getPidController() {
     return m_armPid;
   }
@@ -88,8 +96,12 @@ public class ArmSubsystem extends SubsystemBase {
     double feedback = m_armPid.calculate(getPivotAngle(), desiredAngle);
 
     SmartDashboard.putNumber("Arm speed", feedback);
+<<<<<<< HEAD
     double speed = MathUtil.clamp(feedback, -.3, .3);
     setArmSpeed(speed);
+=======
+    setArmSpeed(feedback);
+>>>>>>> de93c01b6f888be8b1d769ccbd1f9607b595ef44
   }
 
   /**
@@ -123,10 +135,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmSpeed(double speed) {
+<<<<<<< HEAD
     double feedforward = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
     if(isOverUpperBound())m_leftMotor.set(-0.1);
     else if(isUnderLowerBound())m_leftMotor.set(0.1);
     else m_leftMotor.set(speed + feedforward);
+=======
+    double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
+    if (isOverUpperBound()) m_leftMotor.set(-0.1);
+    else if (isUnderLowerBound()) m_leftMotor.set(0.1);
+    else m_leftMotor.set(MathUtil.clamp(speed + ff, -1, 1));
+>>>>>>> de93c01b6f888be8b1d769ccbd1f9607b595ef44
   }
 
   /**
@@ -146,7 +165,7 @@ public class ArmSubsystem extends SubsystemBase {
   public boolean isAtSetpoint() {
     double currentPivotAngle = getPivotAngle();
 
-    if (Math.abs(currentPivotAngle - this.m_angleSetpoint) > 7) {
+    if (Math.abs(currentPivotAngle - this.m_angleSetpoint) > 0.25) {
       return false;
     }
 
@@ -171,9 +190,11 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     // Track Values
+    
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
     SmartDashboard.putBoolean("Arm Current Trip", m_currentLimitTripped);
+
   }
 
   /**

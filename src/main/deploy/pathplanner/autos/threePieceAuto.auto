@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2,
-      "y": 2
+      "x": 1.39,
+      "y": 5.52
     },
     "rotation": 0
   },
@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "threePiece"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Run Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": null
+                }
+              }
+            ]
           }
         }
       ]

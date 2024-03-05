@@ -18,9 +18,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+<<<<<<< HEAD
 import team1403.robot.Datables.Tables;
 import team1403.robot.commands.ArmCommand;
 import team1403.robot.commands.RunWrist;
+=======
+import team1403.robot.commands.ArmCommand;
+import team1403.robot.commands.RunIntakeShooterAuto;
+import team1403.robot.commands.RunWrist;
+import team1403.robot.commands.WristConstraintCommand;
+>>>>>>> de93c01b6f888be8b1d769ccbd1f9607b595ef44
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
@@ -66,7 +73,10 @@ public class RobotContainer {
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
+    NamedCommands.registerCommand("Run Intake", new RunIntakeShooterAuto(m_endeff,m_wrist,m_arm));
+    // NamedCommands.
     configureBindings();
+
   }
 
   /**
@@ -98,6 +108,7 @@ public class RobotContainer {
         () -> m_driverController.getRightTriggerAxis()));
     
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve)); 
+<<<<<<< HEAD
     //m_operatorController.a().onTrue(m_aimbot);
     m_operatorController.a().onTrue(new InstantCommand(() -> m_arm.moveArm(130)));
     m_operatorController.x().onTrue(new SequentialCommandGroup(
@@ -112,6 +123,26 @@ public class RobotContainer {
     // new RunWrist(m_wrist,307),
     // new ArmCommand(m_arm,205,2)
     // ));
+=======
+
+
+    // m_operatorController.b().onTrue(new SequentialCommandGroup(
+    //   new RunWrist(m_wrist, 140,2),
+    //   new ArmCommand(m_arm, 170, 2), //shooting auto 110 pivot
+    //   new RunWrist(m_wrist, Constants.IntakeAndShooter.kShootingAngle,2)
+    // ));
+
+    //when button X is pressed go to drive setpoint
+    m_operatorController.x().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint));
+
+    //when button A is pressed go to intake setpoint
+    m_operatorController.a().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kIntakeSetpoint, Constants.Wrist.kIntakeSetpoint));
+
+    //when button Y is pressed go to shooting setpoint
+    m_operatorController.y().onTrue(new WristConstraintCommand(m_wrist, m_arm, Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint));
+
+    m_operatorController.povDown().onTrue(new RunIntakeShooterAuto(m_endeff, m_wrist, m_arm));
+>>>>>>> de93c01b6f888be8b1d769ccbd1f9607b595ef44
   }
   
   private double deadband(double value, double deadband) {
