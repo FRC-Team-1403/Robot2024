@@ -17,6 +17,7 @@ import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -51,7 +52,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
   private int tagCount = 0;
-
+  private LinearFilter m_navxFilter;
  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
  private SwerveModuleState[] m_states = new SwerveModuleState[4];
  private final SwerveDrivePoseEstimator m_odometer;
@@ -60,7 +61,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  private Translation2d frontRight = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
      -Constants.Swerve.kWheelBase / 2.0);
-
+                                                                         
  private Translation2d frontLeft = new Translation2d(
      Constants.Swerve.kTrackWidth / 2.0,
      Constants.Swerve.kWheelBase / 2.0);
@@ -98,6 +99,7 @@ public class SwerveSubsystem extends SubsystemBase  {
  public SwerveSubsystem(Limelight limelight) {
   SmartDashboard.putData("Field", m_field);
   //  super("Swerve Subsystem", parameters);
+  m_navxFilter = LinearFilter.movingAverage(5);
    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
    m_Limelight = limelight;
    m_modules = new SwerveModule[] {
@@ -126,27 +128,30 @@ public class SwerveSubsystem extends SubsystemBase  {
                       Math.hypot(Swerve.kTrackWidth/2.0, Swerve.kWheelBase/2.0), // Drive base radius in meters. Distance from robot center to furthest module.
                       new ReplanningConfig() // Default path replanning config. See the API for the options here
               ),
+              
               () -> {
                   // Boolean supplier that controls when the path will be mirrored for the red alliance
                   // This will flip the path being followed to the red side of the field.
                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                  // Optional<Alliance> alliance = DriverStation.getAlliance();
-                  // if (alliance.isPresent()) {
-                  //   return alliance.get() == DriverStation.Alliance.Red;
-                  // }
-                  return false;
+                  Optional<Alliance> alliance = DriverStation.getAlliance();
+                  if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                  }
+                  return true;
               },
               this // Reference to this subsystem to set requirements
       );
-  m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-       getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-  m_odometer.update(getGyroscopeRotation(), getModulePositions());
-
 
   //  addDevice(m_navx2.getName(), m_navx2);
    if(m_navx2.isConnected())
     while (m_navx2.isCalibrating());
+
+    zeroGyroscope();
+
+    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
+    getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
    m_desiredHeading = getGyroscopeRotation().getDegrees();
 
@@ -441,15 +446,16 @@ public class SwerveSubsystem extends SubsystemBase  {
   * 
   * @param chassisSpeeds the given chassisspeeds
   * @return the corrected chassisspeeds
+
   */
- private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+ private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     if(!m_navx2.isConnected())
       return chassisSpeeds;
    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-   if (Math.abs(m_navx2.getAngularVelocity()) > 0.5) {
+   if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.4) {
      m_desiredHeading = getGyroscopeRotation().getDegrees();
    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
@@ -476,7 +482,7 @@ public class SwerveSubsystem extends SubsystemBase  {
   return m_navx2;
  }
 
- private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+ private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
    // Assuming the control loop runs in 20ms
    final double deltaTime = 0.02;
 
@@ -500,24 +506,20 @@ public class SwerveSubsystem extends SubsystemBase  {
  public void periodic() {
   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-  // if (m_Limelight.hasTarget()) {
-  //   Pose2d pose = m_Limelight.getDistance2D();
-  //   var x = m_Limelight.getPosStdv();
-  //   if(pose != null && !m_disableVision && tagCount > 0)
-  //   {
-  //     // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-  //     // m_desiredHeading = pose.getRotation().getDegrees();
-  //     m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
-  //   }
-  //   else if(pose != null && !m_disableVision && tagCount == 0)
-  //   {
-  //     m_odometer.setPose(pose);
-  //     // // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-  //     // m_desiredHeading = pose.getRotation().getDegrees();
-  //     tagCount++;
-  //   }
-  // } else {
+  if (m_Limelight.hasTarget()) {
+    Pose2d pose = m_Limelight.getDistance2D();
+    if(pose != null && !m_disableVision && tagCount > 0)
+    {
+      m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+    }
+    else if(pose != null && !m_disableVision && tagCount == 0)
+    {
+      m_odometer.setPose(pose);
+      tagCount++;
+    }
+  } else {
     m_odometer.update(getGyroscopeRotation(),getModulePositions());
+  }
   
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
@@ -527,8 +529,8 @@ public class SwerveSubsystem extends SubsystemBase  {
    if (this.m_isXModeEnabled) {
      xMode();
    } else {
-      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
-     //m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+     //m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
 
      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
      setModuleStates(m_states);

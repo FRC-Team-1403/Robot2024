@@ -7,9 +7,8 @@ import team1403.robot.subsystems.arm.Wrist;
 public class RunWrist extends Command {
     private Wrist m_wrist;
     private double m_wristAngle;
-    private double m_tolerance;
 
-    public RunWrist(Wrist wrist, double wristAngle, double tolerance) {
+    public RunWrist(Wrist wrist, double wristAngle) {
         m_wrist = wrist;
         m_wristAngle = m_wrist.limitAngle(wristAngle);
     }

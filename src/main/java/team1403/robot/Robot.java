@@ -10,7 +10,12 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.opencv.core.Mat;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +24,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
@@ -34,12 +40,7 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
-  private double tempWristAngle;
-  private double tempArmAngle;
-  private double wristP;
-  private double armP;
-  private double armD;
-  private double armI;
+  private IntakeShooterLoop m_combinedCommand;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -69,28 +70,25 @@ public class Robot extends LoggedRobot {
                     // be added.
 
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
+    m_VisionCommand = m_robotContainer.getVisionCommand();
+    m_combinedCommand =  new IntakeShooterLoop(
+      m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
+      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
+      () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(), // shoot
+      () -> m_robotContainer.getOps().b().getAsBoolean(), // amp
+      () -> m_robotContainer.getOps().x().getAsBoolean(), // loading station
+      () -> m_robotContainer.getOps().a().getAsBoolean(), // reset to intake
+      () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(), // stage line shot
+      () -> m_robotContainer.getOps().povUp().getAsBoolean(), // center line shot
+      () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
+      () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
+      () -> m_robotContainer.getOps().getLeftY(), // expel
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
+      );
+    // intake out joystick left up
+    // AutoSelector.initAutoChooser();
 
-    AutoSelector.initAutoChooser();
-
-    // tempWristAngle = 100;
-    // tempArmAngle = 130;
-    m_robotContainer.getSwerveSubsystem().zeroGyroscope();
-    m_robotContainer.getSwerveSubsystem().getOdometer().setPose(new Pose2d( new Translation2d(1.39,5.52), new Rotation2d(0)));
-    m_robotContainer.getSwerveSubsystem().getNavxAhrs().zeroYaw();
-    SmartDashboard.putNumber("Shooting Setpoint", Constants.IntakeAndShooter.kShootingAngle);
-
-    tempWristAngle = 100;
-    tempArmAngle = 130;
-
-    // SmartDashboard.putNumber("Arm Setpoint Control", tempArmAngle);
-    SmartDashboard.putNumber("Arm P Control", armP);
-    SmartDashboard.putNumber("Arm D Control", armD);
-    SmartDashboard.putNumber("Arm I Control", armI);
-    SmartDashboard.putNumber("Wrist P Control", wristP);
-    SmartDashboard.putNumber("Wrist Setpoint Control", tempWristAngle);
-
-    SmartDashboard.putNumber("Arm Setpoint Control", tempArmAngle);
+    // SmartDashboard.putNumber("Servo Angle", 180);
   }
 
   /**
@@ -105,6 +103,14 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // Mat image = new Mat();
+    // long ret = CameraServer.getVideo().grabFrame(image);
+
+    // if(ret != 0)
+    // {
+
+    //   Imgproc.rectangle(image, getCenteredRect(image, 30, 20), new Scalar(0,255,0), 2, 0);
+    // }
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled
     // commands, running already-scheduled commands, removing finished or
@@ -131,8 +137,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    m_robotContainer.getSwerveSubsystem().setDisableVision(true);
+    Constants.Auto.kInAuto = true;
+    Constants.Auto.kisIntaked = true;
     // schedule the autonomous command (example)
+    m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -148,6 +157,8 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
+    Constants.Auto.kInAuto = false;
+    m_robotContainer.getSwerveSubsystem().setDisableVision(false);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -156,48 +167,14 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
+    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Constants.IntakeAndShooter.kShootingAngle = SmartDashboard.getNumber("Shooting Setpoint",0);
-    // tempArmAngle = SmartDashboard.getNumber("Arm Setpoint Control", tempArmAngle);
-    // wristP = SmartDashboard.getNumber("Wrist P Control", wristP);
-    // Constants.Wrist.KPWrist = wristP;
-    // tempWristAngle = SmartDashboard.getNumber("Wrist Setpoint Control", tempWristAngle);
-
-
-    // armD = SmartDashboard.getNumber("Arm D Control", armD);
-    // armI =SmartDashboard.getNumber("Arm I Control", armI);
-    // Constants.Arm.KDArmPivot = armD;
-    // Constants.Arm.KIArmPivot = armI;
-
-    // for testing only
-    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //135
-    // m_robotContainer.getWristSubsystem().setWristAngle(tempWristAngle); //100
-    // m_robotContainer.getArmSubsystem().moveArm(tempArmAngle);
-    // m_robotContainer.getArmSubsystem().setArmSpeed(m_robotContainer.getOps().getRightY() * -0.3);
-    // m_robotContainer.getWristSubsystem().increaseWristAngle(m_robotContainer.getOps().getLeftY());
-
-    // m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.3);      
-
-    if(m_robotContainer.getOps().leftBumper().getAsBoolean())
-    {
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(1);
-    }
-    else if(m_robotContainer.getOps().rightBumper().getAsBoolean()){ 
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(-.075);
-    } else if(m_robotContainer.getOps().povUp().getAsBoolean())
-      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(1);
-    else{
-      m_robotContainer.getIntakeShooterSubsystem().setIntakeSpeed(0.0);
-      m_robotContainer.getIntakeShooterSubsystem().setShooterSpeed(0.0);
-    }
-    
-    // m_robotContainer.getArmSubsystem().moveArm(Constants.Arm.kIntakeSetpoint);
-    // m_robotContainer.getWristSubsystem().setWristAngle(Constants.Wrist.kIntakeSetpoint);
-
+    // m_robotContainer.getHangerSubsystem().runHanger(0.1);
+    // m_robotContainer.getHangerSubsystem().setServoAngle(SmartDashboard.getNumber("Servo Angle", 180));
   }
 
   @Override

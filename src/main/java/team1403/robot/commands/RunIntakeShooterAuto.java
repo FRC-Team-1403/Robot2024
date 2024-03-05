@@ -26,6 +26,7 @@ public class RunIntakeShooterAuto extends Command {
     }
 
     @Override
+    
     public void execute(){
         m_wrist.setWristAngle(140);
         Timer.delay(0.15);

@@ -1,5 +1,7 @@
 package team1403.robot.subsystems.arm;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -131,7 +133,7 @@ public class ArmSubsystem extends SubsystemBase {
     double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
     if (isOverUpperBound()) m_leftMotor.set(-0.1);
     else if (isUnderLowerBound()) m_leftMotor.set(0.1);
-    else m_leftMotor.set(MathUtil.clamp(speed + ff, -1, 1));
+    else m_leftMotor.set(MathUtil.clamp(speed + ff, -0.7, 0.8));
   }
 
   /**
@@ -149,13 +151,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the arm is at the current setpoint.
    */
   public boolean isAtSetpoint() {
-    double currentPivotAngle = getPivotAngle();
-
-    if (Math.abs(currentPivotAngle - this.m_angleSetpoint) > 0.25) {
-      return false;
-    }
-
-    return true;
+    return Math.abs(getPivotAngle() - m_angleSetpoint) <= 5.0;
   }
 
   public boolean isOverUpperBound(){
@@ -185,7 +181,10 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
     SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
     SmartDashboard.putBoolean("Arm Current Trip", m_currentLimitTripped);
-
+    SmartDashboard.putBoolean("Arm IsAtSetpoint", isAtSetpoint());
+    Logger.recordOutput("Pivot Angle", getPivotAngle());
+    Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());
+    Logger.recordOutput("Arm Current Trip", m_currentLimitTripped);
   }
 
   /**

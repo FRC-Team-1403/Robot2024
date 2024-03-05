@@ -95,6 +95,10 @@ public class CougarTalonFx implements AdvancedMotorController {
     m_motor.stopMotor();
   }
 
+  public double get() {
+    return m_motor.get();
+  }
+
   @Override
   public void setAmpLimit(double amps) {
     System.err.println("[setAmpLimit] not yet supported on TalonFx!");
