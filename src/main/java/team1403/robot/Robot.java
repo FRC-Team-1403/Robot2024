@@ -101,11 +101,6 @@ public class Robot extends LoggedRobot {
    * and
    * SmartDashboard integrated updating.
    */
-
-  public Rect getCenteredRect(Mat image, int width, int height){
-    return new Rect(image.width()/2-width/2, image.height()/2-height/2, width, height);
-  } 
-
   @Override
   public void robotPeriodic() {
     // Mat image = new Mat();
