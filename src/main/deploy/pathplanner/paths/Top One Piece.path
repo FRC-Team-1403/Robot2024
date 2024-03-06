@@ -3,6 +3,7 @@
   "waypoints": [
     {
       "anchor": {
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Top One Piece.path
         "x": 0.7041386162544403,
         "y": 6.67
       },
@@ -10,6 +11,15 @@
       "nextControl": {
         "x": 0.9029392417759192,
         "y": 6.712444649960525
+=======
+        "x": 8.28,
+        "y": 3.03
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.232557073190157,
+        "y": 0.15599613146969946
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Source Side 1st Piece Shoot.path
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +30,13 @@
         "y": 7.09
       },
       "prevControl": {
+<<<<<<< Updated upstream:src/main/deploy/pathplanner/paths/Top One Piece.path
         "x": 2.311445547992389,
         "y": 6.873803141409371
+=======
+        "x": 3.3368788827838953,
+        "y": 2.661683993201716
+>>>>>>> Stashed changes:src/main/deploy/pathplanner/paths/Source Side 1st Piece Shoot.path
       },
       "nextControl": null,
       "isLocked": false,

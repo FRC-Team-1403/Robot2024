@@ -80,7 +80,7 @@ public class Constants {
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
 
-    public static final double kDrivePositionConversionFactor = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI;
+    public static final double kDrivePositionConversionFactor = 0.05215454470665408; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
