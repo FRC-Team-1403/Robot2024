@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.75,
+      "y": 6.7
+    },
+    "rotation": 60.95090147674095
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp Side 1st Piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp Side 2nd Piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Amp Side 3rd Piece"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
