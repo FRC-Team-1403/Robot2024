@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
+import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
 import team1403.robot.subsystems.LED.LEDState;
@@ -46,20 +47,19 @@ public class AutoIntakeShooterLoop extends Command {
 
     private State m_state;
 
-    public AutoIntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
-            BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier reset,
-            BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToReset, boolean side, BooleanSupplier closeSideShoot) {
+    public AutoIntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, 
+            BooleanSupplier stageLine, BooleanSupplier centerLine, boolean side, BooleanSupplier closeSideShoot) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
-        m_trigger = trigger;
+        m_trigger = () -> Blackbox.getTrigger();
         m_wrist = wrist;
-        m_amp =  amp;
-        m_loading =  loading;
-        m_reset =  reset;
+        m_amp =  () -> false;
+        m_loading =  () -> false;
+        m_reset =  () -> false;
         m_stageLine =  stageLine;
         m_centerLine =  centerLine;
         m_led = led;
-        m_resetToReset =  resetToReset;
+        m_resetToReset =  () -> false;
         m_side = side;
         m_closeSideShoot = closeSideShoot;
     }
@@ -204,17 +204,17 @@ public class AutoIntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kDefaultClose + 8);
                     m_intakeAndShooter.setShooterRPM(6000);
                 }
+
+                if(Constants.Auto.kInAuto && !m_trigger.getAsBoolean()) {
+                    m_state = State.AUTOOVER;
+                }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
-                if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
-                    if(Timer.getFPGATimestamp() - m_fpga > 1){
-                             
-                        m_intakeAndShooter.setIntakeSpeed(0.5);
-                        m_fpga = Timer.getFPGATimestamp(); 
-                        m_state = State.SHOOT;
-                    }
-
-                    }
+                if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isReady()) {                     
+                    m_intakeAndShooter.setIntakeSpeed(0.5);
+                    m_fpga = Timer.getFPGATimestamp(); 
+                    m_state = State.SHOOT;
+                }
                 
                 // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                 //     m_led.setLedMode(LEDState.YELLOW);
@@ -227,9 +227,11 @@ public class AutoIntakeShooterLoop extends Command {
             case SHOOT:       
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
-                    if(Timer.getFPGATimestamp() - m_fpga > 0.1)
+                    if(Timer.getFPGATimestamp() - m_fpga > 0.1) {
                         if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
                         else m_state = State.RESET;
+                        Blackbox.setTrigger(false);
+                    }
                 }
                 break;
 

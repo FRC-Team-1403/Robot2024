@@ -23,6 +23,7 @@ import team1403.robot.commands.IntakeCommand;
 import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.RunIntakeShooterAuto;
 import team1403.robot.commands.ShootCommand;
+import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
@@ -75,13 +76,14 @@ public class RobotContainer {
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
 
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false, () -> false));
-    NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true, () -> false, () -> false, true, () -> false));
-    NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> true, () -> false, () -> false, false, () -> false));
-    NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false, () -> false));
-    NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, () -> false, () -> false, () -> false, () -> false, () -> false, false, () -> true));
+    NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false));
+    NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, true, () -> false));
+    NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false));
+    NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false));
+    NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> true));
     // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
     // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
+    NamedCommands.registerCommand("Trigger Shot", new InstantCommand(() -> Blackbox.setTrigger(true)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
