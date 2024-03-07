@@ -12,21 +12,66 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Amp Side 1st Piece"
+            "name": "First Piece"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Amp Side 2nd Piece"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Side"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Amp Side 1st Piece"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Amp Side 3rd Piece"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Move To Second Piece"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Move To Third Piece"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot Side"
+                }
+              }
+            ]
           }
         }
       ]
