@@ -218,11 +218,11 @@ public class IntakeShooterLoop extends Command {
                     }
                 }
                 
-                // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
-                //     m_led.setLedMode(LEDState.YELLOW);
-                // } else{
-                //     m_led.setLedMode(LEDState.OFF);
-                // }
+                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isReady()){
+                    m_led.setLedMode(LEDState.GREEN);
+                } else{
+                    m_led.setLedMode(LEDState.WHITE);
+                }
 
                 break;
             }

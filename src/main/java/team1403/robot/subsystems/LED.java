@@ -14,7 +14,7 @@ public class LED extends SubsystemBase {
   /* Creates a new LED. */
   public LED() {
     this.blinkin = new Spark(Constants.RioPorts.LEDPort);
-    gamePieceState = LEDState.OFF;
+    gamePieceState = LEDState.WHITE;
 
   }
 
@@ -34,7 +34,7 @@ public class LED extends SubsystemBase {
   }
 
   public enum LEDState {
-    OFF(0.99, GamePiece.UNLOADED), YELLOW(0.69, GamePiece.LOADED);
+    WHITE(-0.21, GamePiece.NOTREADY), GREEN(0.77, GamePiece.READY);
 
     public final double colorValue;
     public final GamePiece gamePiece;
@@ -46,8 +46,8 @@ public class LED extends SubsystemBase {
   }
 
   public enum GamePiece {
-    LOADED,
-    UNLOADED,
+    READY,
+    NOTREADY,
   }
 
   @Override
