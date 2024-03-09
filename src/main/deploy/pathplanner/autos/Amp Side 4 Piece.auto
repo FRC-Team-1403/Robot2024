@@ -14,7 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "First Piece"
+            "name": "Trigger Shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "First Piece Side"
           }
         },
         {
@@ -22,15 +28,34 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Shoot Side"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side 1st Piece"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Shoot 1st Piece"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Trigger Shot"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Amp Side 1st Piece"
+                  "name": "Shoot Side"
                 }
               }
             ]
@@ -41,9 +66,28 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Move To Second Piece"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side 2nd Piece"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Shoot 2nd Piece"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Trigger Shot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -60,15 +104,60 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "Move To Third Piece"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side 3rd Piece"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side Shoot 3rd Piece"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Trigger Shot"
+                      }
+                    }
+                  ]
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "Shoot Side"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Amp Side 4th Piece"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
                 }
               }
             ]

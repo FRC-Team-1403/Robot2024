@@ -184,6 +184,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Arm IsAtSetpoint", isAtSetpoint());
     Logger.recordOutput("Pivot Angle", getPivotAngle());
     Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());
+    Logger.recordOutput("Pivot Voltage", m_leftMotor.getBusVoltage());
+    Logger.recordOutput("Pivot Speed", m_leftMotor.get());
     Logger.recordOutput("Arm Current Trip", m_currentLimitTripped);
   }
 

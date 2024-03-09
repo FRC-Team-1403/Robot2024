@@ -122,6 +122,9 @@ public class Wrist extends SubsystemBase {
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
    SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
    SmartDashboard.putNumber("Wrist Speed", m_wristMotor.get());
+   Logger.recordOutput("Wrist Voltage", m_wristMotor.getBusVoltage());
+   Logger.recordOutput("wrist rpm", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
+  
 
    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());

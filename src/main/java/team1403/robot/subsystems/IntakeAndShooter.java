@@ -56,8 +56,8 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
     m_shooterMotorTop.setIdleMode(CougarIdleMode.BRAKE);
     m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
-    m_bottomShooter = new PIDController(0.00001, 0.0 , 0.0);
-    m_topShooter = new PIDController(0.00001, 0.0, 0.0);
+    m_bottomShooter = new PIDController(0.000011, 0.0 , 0.0);
+    m_topShooter = new PIDController(0.000011, 0.0, 0.0);
 
     m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
     m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
@@ -146,6 +146,8 @@ public class IntakeAndShooter extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Sensor", isIntakePhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Sensor", isShooterPhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Ready", isReady());
+    Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
+    Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.geTalonFxApi().getMotorVoltage().getValueAsDouble());
     Logger.recordOutput("Shooter gate", !isShooterPhotogateTriggered());
     Logger.recordOutput("Intake gate", isIntakePhotogateTriggered());
     Logger.recordOutput("Shooter top Motor RPM", -m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue());

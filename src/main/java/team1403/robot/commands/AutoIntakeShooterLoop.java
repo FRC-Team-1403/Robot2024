@@ -32,6 +32,7 @@ public class AutoIntakeShooterLoop extends Command {
     private BooleanSupplier m_closeSideShoot;
     private boolean m_side;
     private Timer time;
+    private boolean m_secondSourceShoot;
     private enum State
     {
         RESET,
@@ -48,7 +49,8 @@ public class AutoIntakeShooterLoop extends Command {
     private State m_state;
 
     public AutoIntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, 
-            BooleanSupplier stageLine, BooleanSupplier centerLine, boolean side, BooleanSupplier closeSideShoot) {
+            BooleanSupplier stageLine, BooleanSupplier centerLine, boolean side, BooleanSupplier closeSideShoot,
+            boolean secondSourceShoot) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = () -> Blackbox.getTrigger();
@@ -62,6 +64,7 @@ public class AutoIntakeShooterLoop extends Command {
         m_resetToReset =  () -> false;
         m_side = side;
         m_closeSideShoot = closeSideShoot;
+        m_secondSourceShoot = secondSourceShoot;
     }
 
     @Override
@@ -72,6 +75,15 @@ public class AutoIntakeShooterLoop extends Command {
         // else
         m_state = State.RESET;
         Constants.Auto.kFinished = false;
+
+        if(m_intakeAndShooter.isIntakePhotogateTriggered())
+        {
+            m_arm.moveArm(118);
+            m_wrist.setWristAngle(129);
+            if(!m_intakeAndShooter.isShooterPhotogateTriggered())
+                m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
+            m_state = State.RAISE;
+        }
         // time.reset();
         // time.start();
     }
@@ -100,7 +112,7 @@ public class AutoIntakeShooterLoop extends Command {
                 if(m_arm.isAtSetpoint())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kIntakeSetpoint);
-                        m_intakeAndShooter.setIntakeSpeed(1);
+                    m_intakeAndShooter.setIntakeSpeed(1);
                     m_state = State.INTAKE;
                 }
                 break;
@@ -150,6 +162,42 @@ public class AutoIntakeShooterLoop extends Command {
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+
+                    if(m_amp.getAsBoolean())
+                    {
+                        m_arm.moveArm(Constants.Arm.kAmpSetpoint);
+                        m_wrist.setWristAngle(Constants.Wrist.kAmpSetpoint);
+                        m_intakeAndShooter.setShooterRPM(2400);
+
+                    }
+                    else if(m_reset.getAsBoolean())
+                    {
+                        m_arm.moveArm(Constants.Arm.kDriveSetpoint);
+                        m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
+                        m_intakeAndShooter.setShooterRPM(4800);
+                    } 
+                    else if(m_stageLine.getAsBoolean())
+                    {
+                        m_arm.moveArm(124);
+                        if (m_side) m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint + 4);
+                        else if (m_secondSourceShoot) m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint + 2);
+                        else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint + 2);
+                        m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
+                    }
+                    else if(m_centerLine.getAsBoolean())
+                    {
+                        m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
+                        m_arm.moveArm(200);
+                        m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
+                    }
+                    else if(m_resetToReset.getAsBoolean()) {
+                        m_state = State.RESET;
+                    }
+                    else if(m_closeSideShoot.getAsBoolean()) {
+                        m_wrist.setWristAngle(Constants.Wrist.kDefaultClose + 20);
+                    }
+
+
                     m_intakeAndShooter.setIntakeSpeed(-0.4);
                     m_state = State.LOAD;
                 }
@@ -171,50 +219,17 @@ public class AutoIntakeShooterLoop extends Command {
             }
             case LOADED:
             {
-                if(m_amp.getAsBoolean())
-                {
-                    m_arm.moveArm(Constants.Arm.kAmpSetpoint);
-                    m_wrist.setWristAngle(Constants.Wrist.kAmpSetpoint);
-                    m_intakeAndShooter.setShooterRPM(2400);
-
-                }
-                else if(m_reset.getAsBoolean())
-                {
-                    m_arm.moveArm(Constants.Arm.kDriveSetpoint);
-                    m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
-                    m_intakeAndShooter.setShooterRPM(4800);
-                } 
-                else if(m_stageLine.getAsBoolean())
-                {
-                    m_arm.moveArm(124);
-                    if (m_side) m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint);
-                    else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
-                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
-                }
-                else if(m_centerLine.getAsBoolean())
-                {
-                    m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);
-                    m_arm.moveArm(200);
-                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCenterLineRPM);
-                }
-                else if(m_resetToReset.getAsBoolean()) {
-                    m_state = State.RESET;
-                }
-                else if(m_closeSideShoot.getAsBoolean()) {
-                    m_wrist.setWristAngle(Constants.Wrist.kDefaultClose + 8);
-                    m_intakeAndShooter.setShooterRPM(6000);
-                }
-
-                if(Constants.Auto.kInAuto && !m_trigger.getAsBoolean()) {
-                    m_state = State.AUTOOVER;
-                }
+                
+                // if(Constants.Auto.kInAuto && !m_trigger.getAsBoolean()) {
+                //     m_state = State.AUTOOVER;
+                // }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isReady()) {                     
                     m_intakeAndShooter.setIntakeSpeed(0.5);
                     m_fpga = Timer.getFPGATimestamp(); 
                     m_state = State.SHOOT;
-                }
+                }   
                 
                 // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                 //     m_led.setLedMode(LEDState.YELLOW);
@@ -231,6 +246,7 @@ public class AutoIntakeShooterLoop extends Command {
                         if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
                         else m_state = State.RESET;
                         Blackbox.setTrigger(false);
+                        m_intakeAndShooter.setIntakeSpeed(1.0);
                     }
                 }
                 break;
