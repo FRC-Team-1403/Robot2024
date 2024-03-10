@@ -56,7 +56,6 @@ public class SwerveSubsystem extends SubsystemBase {
   private LinearFilter m_navxFilter;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] m_states = new SwerveModuleState[4];
-  private SwerveDriveKinematics m_kinematics;
   private final SwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
 
@@ -152,8 +151,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // addDevice(m_navx2.getName(), m_navx2);
     if (m_navx2.isConnected())
-      while (m_navx2.isCalibrating())
-        ;
+      while (m_navx2.isCalibrating());
 
     zeroGyroscope();
 
@@ -477,6 +475,7 @@ public class SwerveSubsystem extends SubsystemBase {
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
     Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()));
+
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
     // Logger.recordOutput("Back Left Absolute Encoder Angle", m_modules[2].getAbsoluteAngle());
