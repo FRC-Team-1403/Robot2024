@@ -143,9 +143,9 @@ public class Limelight extends SubsystemBase {
   @Override
   public void periodic() {
     // result = limeLight.getLatestResult();
-    
-    // Logger.recordOutput("Target Visible?", hasTarget());
-    
+
+    Logger.recordOutput("Target Visible", hasTarget());
+
     // if(hasTarget())
     // {
     //   SmartDashboard.putString("pos", getDistance().toString());
