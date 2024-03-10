@@ -133,7 +133,7 @@ public class DefaultSwerveCommand extends Command {
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
-    SmartDashboard.putNumber("Target Angle",given_target_angle);
+    SmartDashboard.putNumber("Target Angle", given_target_angle);
     
     if(m_aimbotSupplier.getAsBoolean() && Math.abs(given_target_angle) > 0)
       angular = m_controller.calculate(given_current_angle, given_target_angle);
