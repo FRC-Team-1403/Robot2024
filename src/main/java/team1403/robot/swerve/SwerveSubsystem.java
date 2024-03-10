@@ -474,7 +474,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());
     // Logging Output
-    Logger.recordOutput("Amount of Roll", getGyroRoll());
+    Logger.recordOutput("Gyro Roll", getGyroRoll());
 
     Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()));
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
