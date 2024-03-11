@@ -21,6 +21,7 @@ import team1403.robot.Constants.Auto;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.IntakeCommand;
 import team1403.robot.commands.IntakeShooterLoop;
+import team1403.robot.commands.RunHanger;
 import team1403.robot.commands.RunIntakeShooterAuto;
 import team1403.robot.commands.ShootCommand;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -125,7 +126,11 @@ public class RobotContainer {
     // m_operatorController.povLeft().onTrue(
     //   new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
     //   .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
-      
+    m_driverController.povRight().onTrue(new RunHanger(m_hanger));
+
+    m_driverController.povLeft().onTrue(new InstantCommand(() -> m_hanger.lockHanger()));
+    m_driverController.povDown().onTrue(new InstantCommand(() -> m_hanger.unlockHanger()));
+
     // m_operatorController.povRight().onTrue(
     //   new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
     //   .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants;
+import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
 import team1403.robot.subsystems.LED.LEDState;
@@ -32,6 +33,10 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_launchpad;
     private DoubleSupplier m_expel;
     private BooleanSupplier m_ampShooting;
+    private HangerSubsystem m_hanger;
+    private BooleanSupplier m_trapSetpoint;
+
+
     private enum State
     {
         RESET,
@@ -42,15 +47,16 @@ public class IntakeShooterLoop extends Command {
         LOADED,
         SHOOT,
         LOADING_STATION,
-        AUTOOVER
+        AUTOOVER,
+        TRAP
     }
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, HangerSubsystem hanger,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
-            DoubleSupplier expel,BooleanSupplier ampShooting) {
+            DoubleSupplier expel,BooleanSupplier ampShooting, BooleanSupplier trapSetpoint) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -65,6 +71,8 @@ public class IntakeShooterLoop extends Command {
         m_launchpad = launchpad;
         m_expel = expel;
         m_ampShooting = ampShooting;
+        m_hanger = hanger;
+        m_trapSetpoint = trapSetpoint;
     }
 
     @Override
@@ -125,6 +133,13 @@ public class IntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
+                // if(m_hanger.isAtTop())
+                // {
+                //     m_arm.moveArm(179);
+                //     m_intakeAndShooter.intakeStop();
+                //     m_wrist.setWristAngle(117);
+                //     m_state = State.LOADED;
+                // }
                 break;
             }
             case LOADING_STATION:
@@ -207,7 +222,14 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
-                
+                else if(m_trapSetpoint.getAsBoolean())
+                {
+                    m_arm.moveArm(198);
+                    // m_intakeAndShooter.intakeStop();
+                    m_wrist.setWristAngle(113);
+                    m_intakeAndShooter.shooterStop();
+                    m_state = State.TRAP;
+                }
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
                     if(Timer.getFPGATimestamp() - m_fpga > 1){
@@ -224,6 +246,12 @@ public class IntakeShooterLoop extends Command {
                 //     m_led.setLedMode(LEDState.OFF);
                 // }
 
+                break;
+            }
+            case TRAP:
+            {
+                m_arm.moveArm(198);
+                m_wrist.setWristAngle(113);
                 break;
             }
             case SHOOT:       
@@ -245,8 +273,9 @@ public class IntakeShooterLoop extends Command {
             }
         }    
         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
-            m_intakeAndShooter.setIntakeSpeed(-0.7);
-            m_intakeAndShooter.setShooterRPM(-1500);
+            m_intakeAndShooter.setIntakeSpeed(-1);
+            if(m_state != State.TRAP)
+                m_intakeAndShooter.setShooterRPM(-1500);
             // get approval 
             // m_state = State.RESET;
         }
