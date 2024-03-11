@@ -222,7 +222,7 @@ public class SwerveModule implements Device {
      */
     private double convertSteerAngle(double steerAngle) {
       steerAngle = normalizeAngle(steerAngle);
-      double difference = normalizeAngleError(steerAngle);        
+      double difference = normalizeAngleError(steerAngle);
   
       // If the difference is greater than 90 deg or less than -90 deg the drive can
       // be inverted so the total
@@ -319,12 +319,7 @@ public class SwerveModule implements Device {
      * @return The current angle in radians. Range: [0, 2pi)
      */
     public double getAbsoluteAngle() {
-      double angle = m_absoluteEncoder.getPositionValue();
-      angle %= 2.0 * Math.PI;
-      if (angle < 0.0) {
-        angle += 2.0 * Math.PI;
-      }
-      return angle;
+      return normalizeAngle(m_absoluteEncoder.getPositionValue());
     }
   
     /**
@@ -398,13 +393,13 @@ public class SwerveModule implements Device {
     }
   
     /**
-     * Returns the current position of the swerve module as defined by 
+     * Returns the current position of the swerve module as defined by
      * the relative encoders of the drive and steer motors.
      *
      * @return the current position of the swerve module
      */
     public SwerveModulePosition getPosition() {
-      return new SwerveModulePosition(m_driveMotor.getEncoder().getPosition(), 
+      return new SwerveModulePosition(m_driveRelativeEncoder.getPositionValue(),
           new Rotation2d(getSteerAngle()));
     }
   }
