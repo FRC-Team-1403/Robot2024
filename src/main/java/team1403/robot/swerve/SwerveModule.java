@@ -159,7 +159,7 @@ public class SwerveModule implements Device {
      * @return The motor angles in radians.
      */
     public double getSteerAngle() {
-      return normalizeAngle(m_steerMotor.getEncoder().getPosition());
+      return normalizeAngle(m_steerRelativeEncoder.getPosition());
     }
   
     /**
@@ -239,19 +239,19 @@ public class SwerveModule implements Device {
       // Angle to be changed is now in radians
       double referenceAngleRadians = steerAngle;
   
-      double currentAngleRadians = m_steerMotor.getEncoder().getPosition();
+      double currentAngleRadians = m_steerRelativeEncoder.getPosition();
   
       // Reset the NEO's encoder periodically when the module is not rotating.
       // Sometimes (~5% of the time) when we initialize, the absolute encoder isn't
       // fully set up, and we don't
       // end up getting a good reading. If we reset periodically this won't matter
       // anymore.
-      if (m_steerMotor.getEncoder().getVelocity() 
+      if (m_steerRelativeEncoder.getVelocity() 
               < Swerve.kEncoderResetMaxAngularVelocity) {
         if (++m_absoluteEncoderResetIterations >= Swerve.kEncoderResetIterations) {
           m_absoluteEncoderResetIterations = 0;
-          double absoluteAngle = getAbsoluteAngle();    
-          m_steerMotor.getEncoder().setPosition(getAbsoluteAngle());
+          double absoluteAngle = getAbsoluteAngle();
+          m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
           currentAngleRadians = absoluteAngle;
         }
       } else {

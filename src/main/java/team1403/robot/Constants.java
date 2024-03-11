@@ -42,7 +42,8 @@ public class Constants {
    * 
    */
   public static class Swerve {
-    public static final int kEncoderResetIterations = 500;
+    // around 1 second
+    public static final int kEncoderResetIterations = 50;
     public static final double kEncoderResetMaxAngularVelocity = Math.toRadians(0.5);
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
