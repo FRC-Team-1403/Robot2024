@@ -27,7 +27,7 @@ import team1403.robot.Constants.Swerve;
  * Also consists of a absolute encoder to track steer angle.
  */
 public class SwerveModule implements Device {
-    public double m_absoluteEncoderResetIterations = 0;
+    private double m_absoluteEncoderResetIterations = 0;
   
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
