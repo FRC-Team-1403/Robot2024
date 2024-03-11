@@ -35,19 +35,20 @@ public class HangerSubsystem extends SubsystemBase {
     m_rightMotor.setIdleMode(IdleMode.kBrake);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
     m_rightMotor.setInverted(true);
-
     // m_hangerLimtiSwitchLeftBottom = new DigitalInput(Constants.RioPorts.kHangerLimitRightBottomID);
     // m_hangerLimitSwitchRightBottom = new DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
 
-    m_leftMotor.follow(m_rightMotor, true);
     
     m_leftMotor.getEncoder().setPosition(0);
     m_rightMotor.getEncoder().setPosition(0);
 
     unlockHanger();
+    // TODO: try to get this to work
+    m_speed = -.1;
   }
 
   private void setHangerSpeed(double speed) {
+    m_leftMotor.set(MathUtil.clamp(speed, -1, 1));
     m_rightMotor.set(MathUtil.clamp(speed, -1, 1));
   }
 
@@ -69,6 +70,14 @@ public class HangerSubsystem extends SubsystemBase {
     m_rightServo.setAngle(Constants.Hanger.kRightLockAngle);
   }
 
+  public boolean isTopLeft() {
+   return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
+  } 
+
+  public boolean isTopRight() {
+   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
+  } 
+
   public boolean isAtTop() {
    return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
   }
@@ -76,21 +85,39 @@ public class HangerSubsystem extends SubsystemBase {
   public boolean isAtBottom() {
     return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
-
+ public boolean isAtBottomLeft() {
+    return m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+  }
+   public boolean isAtBottomRight() {
+    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+  }
   public void periodic() {
     SmartDashboard.putNumber("Right Hanger Speed", m_rightMotor.get());
     SmartDashboard.putNumber("Right Hanger Encoder", m_rightMotor.getEncoder().getPosition());
     SmartDashboard.putBoolean("Is at Top", isAtTop());
     SmartDashboard.putBoolean("Is at Bottom", isAtBottom());
   
-
-    if (isAtTop()) {
-      setHangerSpeed(MathUtil.clamp(m_speed, -1, 0));
-    } else if (isAtBottom()) {
-      setHangerSpeed(MathUtil.clamp(m_speed, 0, 1));
-    } else {
-      setHangerSpeed(m_speed);
+    if (m_speed == 0) {
+      m_speed = 0.1;
     }
+    if (isTopLeft()) {
+      m_leftMotor.set(MathUtil.clamp(m_speed, -1, 0));
+    }
+    else if (isAtBottomLeft()) {
+      m_leftMotor.set(MathUtil.clamp(m_speed, -0.01, 1));
+    } else {
+      m_leftMotor.set(m_speed);
+    }
+    if (isTopRight()) {
+      m_rightMotor.set(MathUtil.clamp(m_speed, -1, 0));
+    }  
+    else if (isAtBottomRight()) {
+      m_rightMotor.set(MathUtil.clamp(m_speed, -0.01, 1));
+    }  else {
+      m_rightMotor.set(m_speed);
+    }
+    SmartDashboard.putNumber("Left Motor Encoder", m_leftMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
 
     // SmartDashboard.putNumber("Left Servo Angle", m_leftServo.getAngle());
     // SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());
