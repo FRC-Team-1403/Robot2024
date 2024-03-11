@@ -318,6 +318,7 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
+      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getSteerAngle()));
       m_modules[i].set((states[i].speedMetersPerSecond / Swerve.kMaxSpeed),
           states[i].angle.getRadians());
     }
