@@ -85,7 +85,7 @@ public class Robot extends LoggedRobot {
       () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
       () -> m_robotContainer.getOps().getLeftY(), // expel
       () -> m_robotContainer.getOps().rightBumper().getAsBoolean(), // amp shooting
-      () -> m_robotContainer.getOps().povRight().getAsBoolean()
+      () -> m_robotContainer.getOps().povRight().getAsBoolean() //trap scoring
       );
     // intake out joystick left up
     // AutoSelector.initAutoChooser();
