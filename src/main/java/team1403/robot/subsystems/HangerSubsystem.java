@@ -29,9 +29,10 @@ public class HangerSubsystem extends SubsystemBase {
   public HangerSubsystem() {
     m_leftServo = new Servo(Constants.RioPorts.kleftServoID);
     m_rightServo = new Servo(Constants.RioPorts.krightServoID);
-    
     m_leftMotor = new CANSparkMax(Constants.CanBus.leftHangerMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.CanBus.rightHangerMotorID, MotorType.kBrushless);
+    m_leftMotor.restoreFactoryDefaults();
+    m_rightMotor.restoreFactoryDefaults();
     m_rightMotor.setIdleMode(IdleMode.kBrake);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
     m_rightMotor.setInverted(true);
@@ -43,8 +44,6 @@ public class HangerSubsystem extends SubsystemBase {
     m_rightMotor.getEncoder().setPosition(0);
 
     unlockHanger();
-    // TODO: try to get this to work
-    m_speed = -.1;
   }
 
   private void setHangerSpeed(double speed) {
@@ -70,37 +69,37 @@ public class HangerSubsystem extends SubsystemBase {
     m_rightServo.setAngle(Constants.Hanger.kRightLockAngle);
   }
 
-  public boolean isTopLeft() {
-   return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
-  } 
+  public boolean isAtTopLeft() {
+   return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLeftLimit; 
+  }
 
-  public boolean isTopRight() {
-   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
+  public boolean isAtTopRight() {
+   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopRightLimit; 
   } 
 
   public boolean isAtTop() {
-   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
+   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLeftLimit || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopRightLimit; 
   }
 
   public boolean isAtBottom() {
-    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLeftLimit || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomRightLimit;
   }
- public boolean isAtBottomLeft() {
-    return m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+
+  public boolean isAtBottomLeft() {
+    return m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLeftLimit;
   }
-   public boolean isAtBottomRight() {
-    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+
+  public boolean isAtBottomRight() {
+    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomRightLimit;
   }
+
   public void periodic() {
     SmartDashboard.putNumber("Right Hanger Speed", m_rightMotor.get());
     SmartDashboard.putNumber("Right Hanger Encoder", m_rightMotor.getEncoder().getPosition());
     SmartDashboard.putBoolean("Is at Top", isAtTop());
     SmartDashboard.putBoolean("Is at Bottom", isAtBottom());
   
-    if (m_speed == 0) {
-      m_speed = 0.1;
-    }
-    if (isTopLeft()) {
+    if (isAtTopLeft()) {
       m_leftMotor.set(MathUtil.clamp(m_speed, -1, 0));
     }
     else if (isAtBottomLeft()) {
@@ -108,7 +107,7 @@ public class HangerSubsystem extends SubsystemBase {
     } else {
       m_leftMotor.set(m_speed);
     }
-    if (isTopRight()) {
+    if (isAtTopRight()) {
       m_rightMotor.set(MathUtil.clamp(m_speed, -1, 0));
     }  
     else if (isAtBottomRight()) {
@@ -117,7 +116,7 @@ public class HangerSubsystem extends SubsystemBase {
       m_rightMotor.set(m_speed);
     }
     SmartDashboard.putNumber("Left Motor Encoder", m_leftMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
 
     // SmartDashboard.putNumber("Left Servo Angle", m_leftServo.getAngle());
     // SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());
