@@ -79,17 +79,15 @@ public class HangerSubsystem extends SubsystemBase {
   public boolean isTopRight() {
     return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
   }
-  // TODO Check if this is okay
 
   public boolean isAtTop() {
-    return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit
-        || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
+    return isTopRight()
+        || isTopLeft();
   }
-  // TODO Check if this is okay
 
   public boolean isAtBottom() {
-    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit
-        || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+    return isAtBottomLeft()
+        || isAtBottomRight();
   }
 
   // TODO Check if this is okay
