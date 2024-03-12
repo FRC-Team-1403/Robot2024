@@ -4,13 +4,13 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 
 /**
  * Creates the arm set point class.
  */
-public class SetpointArmCommand extends CommandBase {
+public class SetpointArmCommand extends Command {
   private ArmState m_state;
   private TrapezoidProfile m_pivotProfile;
   private final ArmSubsystem m_arm;

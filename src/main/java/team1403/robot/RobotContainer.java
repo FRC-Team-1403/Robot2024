@@ -4,22 +4,32 @@
 
 package team1403.robot;
 
+import javax.swing.plaf.TreeUI;
+
 import com.google.flatbuffers.Table;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.Constants.Operator;
 import team1403.robot.Datables.Tables;
+import team1403.robot.StateManager.GamePiece;
+import team1403.robot.subsystems.arm.ArmStateGroup;
 import team1403.robot.subsystems.arm.ArmSubsystem;
+import team1403.robot.subsystems.arm.SetpointArmCommand;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
 import team1403.robot.swerve.PhotonVisionCommand;
 import team1403.robot.swerve.SwerveSubsystem;
+import team1403.robot.StateManager;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -122,5 +132,89 @@ public class RobotContainer {
     return m_dataTable;
   }
 
+  public void configureOperatorInterface() {
+
+    // Intake tipped towards cone
+    // new Trigger(() -> xboxOperator.getAButton()).onFalse(
+    // new SequentialCommandGroup(
+    // new UpdateArmState(GamePiece.CONE_TOWARDS),
+    // new InstantCommand(() ->
+    // System.out.println(StateManager.getInstance().getCurrentArmGroup().getFloorIntakeState())),
+    // new SetpointArmCommand(m_arm,
+    // StateManager.getInstance().getCurrentArmGroup().getFloorIntakeState(),
+    // true)));
+
+    m_operatorController.a().onTrue(
+      new InstantCommand(() -> StateManager.getInstance().updateArmState(GamePiece.CONE_TOWARDS))
+        .andThen(
+          new SetpointArmCommand(m_arm,
+            () -> StateManager.getInstance().getCurrentArmGroup().getFloorIntakeState(),
+                 false)
+        ));
+    
+    //Intake Upright COne 
+    m_operatorController.b().onTrue(
+      new InstantCommand(() -> StateManager.getInstance().updateArmState(GamePiece.CONE_UPRIGHT))
+        .andThen(
+          new SetpointArmCommand(m_arm,
+            () -> StateManager.getInstance().getCurrentArmGroup().getFloorIntakeState(),
+                true)));
+
+   // Intake cube
+   m_operatorController.x().onTrue(
+      new InstantCommand(() -> StateManager.getInstance().updateArmState(GamePiece.CUBE))
+        .andThen(
+          new SetpointArmCommand(m_arm,
+            () -> StateManager.getInstance().getCurrentArmGroup().getFloorIntakeState(),
+                true)));
+
+    // // Shelf Intake
+    m_operatorController.y().onTrue(
+      new InstantCommand(() -> StateManager.getInstance().updateArmState(GamePiece.CONE_TOWARDS))
+        .andThen(
+          new SetpointArmCommand(m_arm,
+            () -> StateManager.getInstance().getCurrentArmGroup().getSingleShelfIntakeState(),
+                false)));
+
+    // new Trigger(() -> xboxOperator.getPOV() == 180).onFalse(
+    //     new SetpointArmCommand(m_arm, () -> ArmStateGroup.getTuck(), false));
+    // new Trigger(() -> xboxOperator.getPOV() == 0).onFalse(
+    //     new SetpointArmCommand(m_arm, () -> StateManager.getInstance().getCurrentArmGroup().getHighNodeState(), true));
+    // new Trigger(() -> xboxOperator.getPOV() == 90).onFalse(
+    //     new SetpointArmCommand(m_arm, () -> StateManager.getInstance().getCurrentArmGroup().getMiddleNodeState(),
+    //         true));
+    // new Trigger(() -> xboxOperator.getPOV() == 270).onFalse(
+    //     new SetpointArmCommand(m_arm, () -> StateManager.getInstance().getCurrentArmGroup().getLowNodeState(), false));
+
+  }
+
+  // public void configureArmSetpoints() {
+
+  //   XboxController xboxOperator = new XboxController(0);
+    
+  //   new Trigger(() -> xboxOperator.getAButton()).onTrue(
+  //     new SequentialCommandGroup( 
+  //       new InstantCommand( () -> m_arm.setAbsolutePivotAngle(89)), 
+  //       new WaitCommand(1), 
+  //       new InstantCommand( () -> m_arm.moveWrist(13)))); // high
+  // new Trigger(() -> xboxOperator.getBButton()).onTrue(
+  //   new SequentialCommandGroup( 
+  //     new InstantCommand( () -> m_arm.setAbsolutePivotAngle(44)), 
+  //     new WaitCommand(1), 
+  //     new InstantCommand( () -> m_arm.moveWrist(10)))); // mid
+  // new Trigger(() -> xboxOperator.getXButton()).onTrue(
+  //   new SequentialCommandGroup( 
+  //     new InstantCommand( () -> m_arm.setAbsolutePivotAngle()), 
+  //     new WaitCommand(1), 
+  //     new InstantCommand( () -> m_arm.moveWrist(5)))); // low
+
+  // new Trigger(() -> xboxOperator.getYButton()).onTrue(
+  //   new SequentialCommandGroup( 
+  //     new InstantCommand( () -> m_arm.setAbsolutePivotAngle(0)), 
+  //     new WaitCommand(1), 
+  //     new InstantCommand( () -> m_arm.moveWrist(0)))); // tuck
+
+
+  // }
 
 }

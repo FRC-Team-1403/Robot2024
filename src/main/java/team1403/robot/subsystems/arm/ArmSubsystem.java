@@ -1,10 +1,12 @@
 package team1403.robot.subsystems.arm;
 
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.MotorFeedbackSensor;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.SparkRelativeEncoder;
+import com.revrobotics.SparkRelativeEncoder.Type;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -14,8 +16,11 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.WpiLimitSwitch;
+import team1403.robot.Constants;
 import team1403.robot.RobotContainer;
+import team1403.robot.Constants.Arm;
 import team1403.robot.Constants.CanBus;
 
 /**
@@ -26,7 +31,7 @@ import team1403.robot.Constants.CanBus;
  */
 public class ArmSubsystem extends SubsystemBase {
   // Wrist
-  private final CANSparkMax m_wristMotor;
+  private final CougarSparkMax m_wristMotor;
   private final DutyCycleEncoder m_wristAbsoluteEncoder;
   private final PIDController m_wristController;
 
@@ -62,32 +67,32 @@ public class ArmSubsystem extends SubsystemBase {
    * @param injectedParameters Cougar injected parameters.
    */
   public ArmSubsystem() {
-    m_wristMotor = new CANSparkMax(1, MotorType.kBrushless);
+    m_wristMotor = CougarSparkMax.makeBrushless("wrist Motor",Constants.CanBus.wristMotor, SparkRelativeEncoder.Type.kHallSensor);
     m_wristAbsoluteEncoder = new DutyCycleEncoder(1);
 
-    m_leftPivotMotor = new CANSparkMax(.CanBus.leftPivotMotor, MotorType.kBrushless);
-    m_rightPivotMotor = new CANSparkMax(RobotConfig.CanBus.rightPivotMotor, MotorType.kBrushless);
-    m_armAbsoluteEncoder = new AnalogEncoder(RobotConfig.RioPorts.kArmAbsoluteEncoder);
+    m_leftPivotMotor = new CANSparkMax(Constants.CanBus.leftPivotMotorID, MotorType.kBrushless);
+    m_rightPivotMotor = new CANSparkMax(Constants.CanBus.rightPivotMotorID, MotorType.kBrushless);
+    m_armAbsoluteEncoder = new AnalogEncoder(Constants.RioPorts.kArmAbsoluteEncoder);
 
-    m_intakeMotor = new CANSparkMax(RobotConfig.CanBus.wheelIntakeMotor, MotorType.kBrushed);
+    m_intakeMotor = new CANSparkMax(Constants.CanBus.intakeAndShooterMotorTop, MotorType.kBrushed);
 
-    m_extensionMotor = new CANSparkMax(RobotConfig.CanBus.telescopicArmMotor, MotorType.kBrushless);
+    m_extensionMotor = new CANSparkMax(Constants.CanBus.telescopicArmMotor, MotorType.kBrushless);
 
     m_maxArmLimitSwitch = new WpiLimitSwitch("maxArmLimitSwitch",
-        RobotConfig.RioPorts.kArmLimitSwitch);
+        Constants.RioPorts.kArmLimitSwitch);
 
     configWristMotor();
     configEncoders();
 
     m_wristController = new PIDController(0.05, 0, 0);
 
-    m_pivotPid = new PIDController(RobotConfig.Arm.kPArmPivot, RobotConfig.Arm.kIArmPivot, RobotConfig.Arm.kDArmPivot);
-    m_minMagneticSwitch = new DigitalInput(RobotConfig.RioPorts.kExtensionMinMagneticSwitch);
-    m_maxMagneticSwitch = new DigitalInput(RobotConfig.RioPorts.kExtensionMaxMagneticSwitch);
+    m_pivotPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
+    m_minMagneticSwitch = new DigitalInput(Constants.RioPorts.kExtensionMinMagneticSwitch);
+    m_maxMagneticSwitch = new DigitalInput(Constants.RioPorts.kExtensionMaxMagneticSwitch);
 
-    RobotConfig.Arm.kAbsolutePivotOffset = 0;
-    double difference = RobotConfig.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
-    RobotConfig.Arm.kAbsolutePivotOffset = difference;
+    Constants.Arm.kAbsolutePivotOffset = 0;
+    double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
+    Constants.Arm.kAbsolutePivotOffset = difference;
 
     this.m_pivotAngleSetpoint = getAbsolutePivotAngle();
     this.m_wristAngleSetpoint = getAbsoluteWristAngle();
@@ -103,7 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void configEncoders() {
     // Wrist encoders
-    m_wristMotor.getEncoder().setPositionConversionFactor(RobotConfig.Arm.kWristConversionFactor);
+    m_wristMotor.getEncoder().setPositionConversionFactor(Constants.Wrist.kWristConversionFactor);
     new Thread(() -> {
       try {
         Thread.sleep(2000);
@@ -117,7 +122,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Telescopic encoders
     m_extensionMotor.getEncoder().setPositionConversionFactor(
-        RobotConfig.Arm.kExtensionConversionFactor);
+        Constants.Arm.kExtensionConversionFactor);
 
     // Arm encoders
     m_leftPivotMotor.getEncoder().setPositionConversionFactor(1.53285964552);
@@ -129,7 +134,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void configWristMotor() {
     // Wrist
-    final SparkMaxPIDController wristController = m_wristMotor.getPIDController();
+    final SparkPIDController wristController = m_wristMotor.getPIDController();
     m_wristMotor.setIdleMode(IdleMode.kBrake);
     m_wristMotor.setInverted(false);
     m_wristMotor.enableVoltageCompensation(12);
@@ -137,7 +142,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_wristMotor.setRampRate(0.25);
 
     wristController.setP(0.05);
-    wristController.setI(Arm.kIWristMotor);
+    wristController.setI(Constants.Wrist.KIWrist);
     wristController.setD(0);
     wristController.setFeedbackDevice((MotorFeedbackSensor) m_wristMotor.getEncoder());
     wristController.setPositionPIDWrappingEnabled(false);
@@ -149,27 +154,27 @@ public class ArmSubsystem extends SubsystemBase {
     m_rightPivotMotor.follow(m_leftPivotMotor, true);
 
     // intake
-    final SparkMaxPIDController intakeMotorController = m_intakeMotor.getPIDController();
+    final SparkPIDController intakeMotorController = m_intakeMotor.getPIDController();
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
     m_intakeMotor.enableVoltageCompensation(12);
     m_intakeMotor.setSmartCurrentLimit(20);
 
-    intakeMotorController.setP(RobotConfig.Arm.kPIntake);
-    intakeMotorController.setI(RobotConfig.Arm.kIIntake);
-    intakeMotorController.setD(RobotConfig.Arm.kDIntake);
+    intakeMotorController.setP(Constants.Intake.kPIntake);
+    intakeMotorController.setI(Constants.Intake.kIIntake);
+    intakeMotorController.setD(Constants.Intake.kDIntake);
     intakeMotorController.setFeedbackDevice(m_intakeMotor.getAlternateEncoder(1024));
     intakeMotorController.setPositionPIDWrappingEnabled(false);
 
     // Extension
-    final SparkMaxPIDController extensionController = m_extensionMotor.getPIDController();
+    final SparkPIDController extensionController = m_extensionMotor.getPIDController();
     m_extensionMotor.setIdleMode(IdleMode.kBrake);
     m_extensionMotor.enableVoltageCompensation(12);
     m_extensionMotor.setSmartCurrentLimit(20);
     m_extensionMotor.setOpenLoopRampRate(0.25);
 
-    extensionController.setP(RobotConfig.Arm.kPArmExtension);
-    extensionController.setI(RobotConfig.Arm.kIArmExtension);
-    extensionController.setD(RobotConfig.Arm.kDArmExtension);
+    extensionController.setP(Constants.Arm.kPArmExtension);
+    extensionController.setI(Constants.Arm.kIArmExtension);
+    extensionController.setD(Constants.Arm.kDArmExtension);
     extensionController.setFeedbackDevice(m_extensionMotor.getEncoder());
     extensionController.setPositionPIDWrappingEnabled(false);
   }
@@ -182,7 +187,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The absolute encoder value of the wrist.
    */
   public double getAbsoluteWristAngle() {
-    double value = (m_wristAbsoluteEncoder.getAbsolutePosition() * 360) + RobotConfig.Arm.kAbsoluteWristOffset;
+    double value = (m_wristAbsoluteEncoder.getAbsolutePosition() * 360) + Constants.Wrist.kAbsoluteWristOffset;
     if (value < 0) {
       value += 360;
     }
@@ -205,13 +210,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * Limits the wrist angle between the min and max wrist angles as defined in
-   * RobotConfig.Arm.
+   * Constants.Arm.
    * 
    * @param angle the given angle to limit.
    * @return the limited angle.
    */
   public double limitWristAngle(double angle) {
-    return MathUtil.clamp(angle, Arm.kMinWristAngle, Arm.kMaxWristAngle);
+    return MathUtil.clamp(angle, Constants.Wrist.kBottomLimit, Constants.Wrist.kTopLimit);
   }
 
   /**
@@ -221,7 +226,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the given angle is in the bounds of the wrist.
    */
   private boolean isInWristBounds(double angle) {
-    return (angle > Arm.kMinWristAngle && angle < Arm.kMaxWristAngle);
+    return (angle > Constants.Wrist.kBottomLimit && angle < Constants.Wrist.kTopLimit);
   }
 
   // --------------------------- Pivot Methods ---------------------------
@@ -240,9 +245,9 @@ public class ArmSubsystem extends SubsystemBase {
    * Accounts for any belt skipping.
    */
   private void rezeroPivot() {
-    RobotConfig.Arm.kAbsolutePivotOffset = 0;
-    double difference = RobotConfig.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
-    RobotConfig.Arm.kAbsolutePivotOffset += difference;
+    Constants.Arm.kAbsolutePivotOffset = 0;
+    double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle();
+    Constants.Arm.kAbsolutePivotOffset += difference;
   }
 
   /**
@@ -252,7 +257,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return The angle of the pivot in degrees.
    */
   public double getAbsolutePivotAngle() {
-    double value = (m_armAbsoluteEncoder.getAbsolutePosition() * 360) + RobotConfig.Arm.kAbsolutePivotOffset;
+    double value = (m_armAbsoluteEncoder.getAbsolutePosition() * 360) + Constants.Arm.kAbsolutePivotOffset;
 
     if (value < 0) {
       value += 360;
@@ -268,7 +273,7 @@ public class ArmSubsystem extends SubsystemBase {
    * 
    * @param desiredAngle the angle to move the pivot to in degrees.
    */
-  private void setAbsolutePivotAngle(double desiredAngle) {
+  public void setAbsolutePivotAngle(double desiredAngle) {
     // Feedforward
     double currentAngle = getAbsolutePivotAngle();
     double normalizedCurrentAngle = currentAngle;
@@ -276,7 +281,7 @@ public class ArmSubsystem extends SubsystemBase {
       normalizedCurrentAngle -= 90;
     }
     double gravityCompensationFactor = ((.0004/23.128) * getExtensionLength() + .0009)
-     * RobotConfig.Arm.kBaseArmLength; //0.0009
+     * Constants.Arm.kBaseArmLength; //0.0009
     double feedforward = gravityCompensationFactor;
         // * Math.cos(Math.toRadians(normalizedCurrentAngle));
     if ((currentAngle < 90 && currentAngle > 0) || (currentAngle > 270 && currentAngle < 360)) {
@@ -308,7 +313,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * Limits the given angle in between the min and max pivot angles as defined in
-   * the RobotConfig.Arm.
+   * the Constants.Arm.
    * 
    * @param angle the angle to limit.
    * @return the limited angle.
@@ -378,7 +383,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   /**
    * Limits the given length within bounds of the min and max extension specified
-   * in RobotConfig.Arm.
+   * in Constants.Arm.
    * 
    * @param length the given length to limit.
    * @return the limited length.
@@ -394,7 +399,7 @@ public class ArmSubsystem extends SubsystemBase {
    * @return true if the given angle is in the bounds of the wrist.
    */
   private boolean isInExtensionBounds(double length) {
-    return (length >= Arm.kMinArmExtension && length <= Arm.kMaxArmExtension);
+    return (length >= Constants.Arm.kMinArmExtension && length <= Constants.Arm.kMaxArmExtension);
   }
 
   /**
@@ -405,7 +410,7 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double theoreticalExtensionLength(double absoluteArmAngle, double height) {
     return (height / Math.cos(Math.toRadians(270 - absoluteArmAngle)))
-        - RobotConfig.Arm.kExtensionOffset - RobotConfig.Arm.kBaseArmLength;
+        - Constants.Arm.kExtensionOffset - Constants.Arm.kBaseArmLength;
   }
 
   /**
@@ -419,15 +424,15 @@ public class ArmSubsystem extends SubsystemBase {
       return extensionLength;
     }
 
-    if (getAbsolutePivotAngle() >= RobotConfig.Arm.kFrameClearanceAngle) {
+    if (getAbsolutePivotAngle() >= Constants.Arm.kFrameClearanceAngle) {
       return 0;
-    } else if (getAbsolutePivotAngle() > RobotConfig.Arm.kHorizonAngle
-        && getAbsolutePivotAngle() <= RobotConfig.Arm.kFrameClearanceAngle) {
+    } else if (getAbsolutePivotAngle() > Constants.Arm.kHorizonAngle
+        && getAbsolutePivotAngle() <= Constants.Arm.kFrameClearanceAngle) {
       double maxLength = theoreticalExtensionLength(
-          getAbsolutePivotAngle(), RobotConfig.kHeightFromGround);
+          getAbsolutePivotAngle(), Constants.kHeightFromGround);
       return MathUtil.clamp(extensionLength, 0, maxLength);
-    } else if (getAbsolutePivotAngle() > RobotConfig.Arm.kFrameClearanceAngle
-        && getAbsolutePivotAngle() <= RobotConfig.Arm.kFrameAngle) {
+    } else if (getAbsolutePivotAngle() > Constants.Arm.kFrameClearanceAngle
+        && getAbsolutePivotAngle() <= Constants.Arm.kFrameAngle) {
       double maxLength = -(8.355 / 4) * (getAbsolutePivotAngle() - 229);
       return MathUtil.clamp(extensionLength, 0, maxLength);
     }
@@ -507,7 +512,7 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
 
     // Wrist
-    if (getAbsolutePivotAngle() < RobotConfig.Arm.kFrameAngle) {
+    if (getAbsolutePivotAngle() < Constants.Arm.kFrameAngle) {
       if (isInWristBounds(m_wristMotor.getEncoder().getPosition())
           || isInWristBounds(this.m_wristAngleSetpoint)) {
         setAbsoluteWristAngle(this.m_wristAngleSetpoint);
@@ -523,9 +528,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Pivot
     if(!isArmSwitchActive() && previousLimitSwitchTrigger) {
-      RobotConfig.Arm.kAbsolutePivotOffset = 0;
-      double difference = RobotConfig.Arm.kMaxPivotAngle - getAbsolutePivotAngle() - 10;
-      RobotConfig.Arm.kAbsolutePivotOffset = difference;
+      Constants.Arm.kAbsolutePivotOffset = 0;
+      double difference = Constants.Arm.kMaxPivotAngle - getAbsolutePivotAngle() - 10;
+      Constants.Arm.kAbsolutePivotOffset = difference;
     }
 
     previousLimitSwitchTrigger = isArmSwitchActive();
@@ -533,7 +538,7 @@ public class ArmSubsystem extends SubsystemBase {
     if ((isInPivotBounds(getAbsolutePivotAngle()) && !isArmSwitchActive())
         || isInPivotBounds(this.m_pivotAngleSetpoint)) {
       setAbsolutePivotAngle(this.m_pivotAngleSetpoint);
-    } else if (m_leftPivotMotor.getOutputCurrent() > RobotConfig.Arm.kPivotAngleMaxAmperage) {
+    } else if (m_leftPivotMotor.getOutputCurrent() > Constants.Arm.kPivotAngleMaxAmperage) {
       m_leftPivotMotor.stopMotor();
     } else {
       setAbsolutePivotAngle(getAbsolutePivotAngle());

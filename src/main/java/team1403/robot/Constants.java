@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import team1403.lib.util.Dimension;
+import team1403.robot.subsystems.arm.ArmState;
 
 /**
  * This class holds attributes for the robot configuration.
@@ -126,7 +127,8 @@ public class Constants {
     public static final int backRightEncoderId = 4;
 
     public static final int intakeAndShooterMotorTop = 0;
-    public static final int intakeAndShooterMotorBottom = 0;
+    //public static final int intakeAndShooterMotorBottom = 0;
+    public static final int telescopicArmMotor = 0;
    //other
     public static final int intakeMotor = 0;
     // other
@@ -219,6 +221,26 @@ public class Constants {
 
   }
 
+  public static class ArmStates {
+    public static final ArmState coneTowardsFloorIntake = new ArmState(0, 144.5086341127158, 247.40214774876398, 0); //0.039682067930698, 140.0363630009091, 240.55448872511047
+    public static final ArmState coneTowardsAngledHighConeNode = new ArmState(22.887735748, 246.18045277951128, 155.03904620700123, 0);
+    public static final ArmState coneTowardsAngledMiddleNode = new ArmState(8.345230102539062, 264, 156.45086251051157, 0);
+    public static final ArmState coneTowardsLowNode = new ArmState(0, 80.18787350469682, 245.42271036546947, 0);
+
+    public static final ArmState coneTowardsHighConeNode = new ArmState(14.337, 191.3, 167.368595, 0);
+    public static final ArmState coneTowardsMiddleNode = new ArmState(0, 179.6, 183.235, 0);
+
+    public static final ArmState coneUprightIntake = new ArmState(0, 216.432458051, 205.82528059, 0);
+
+    public static final ArmState coneHighNodeAuton = new ArmState(11.58,207.24, 161.839, 0);
+
+    public static final ArmState cubeFloorIntake = new ArmState(0.099, 105.2220170305504, 244.565611599405615, 0);
+    public static final ArmState cubeHighNode = new ArmState(19.6710987091, 182.465261949, 168.356773014, 0);
+    public static final ArmState cubeMiddleNode = new ArmState(0.05158682167, 177.61028394, 181.482400676, 0);
+
+    public static final ArmState singleSubstationIntake = new ArmState(0, 51.3175107829, 241.777313195, 0);
+  }
+
   public static class Vision {
     public static final double rotationCutoff = 5;
     public static boolean isRotated = false;
@@ -270,11 +292,30 @@ public class Constants {
     public static final double KPArmPivot = 0;
     public static final double KIArmPivot = 0;
     public static final double KDArmPivot = 0;
-    public static int kAbsolutePivotOffset;
+    public static double kAbsolutePivotOffset;
     public static double kMaxPivotAngle;
     public static double kMinPivotAngle;
     public static double kPivotAngleMaxAmperage;
     public static double kDecreaseIntakeSpeed;
+
+    public static final double kBaseArmLength = 0;
+
+    // telescopic
+
+    public static final double kPArmExtension = 0;
+    public static final double kIArmExtension = 0;
+    public static final double kDArmExtension = 0;
+    public static final double kExtensionConversionFactor = 0;
+    public static final double kMinArmExtension = 0; 
+    public static final double kMaxArmExtension = 0;
+    public static final double kExtensionOffset = 0;
+
+    //Angles 
+    public static final double kFrameClearanceAngle = 0;
+    public static final double kHorizonAngle = 0;
+    public static final double kFrameAngle = 0;
+
+
   }
 
   public static class Intake {
@@ -288,6 +329,10 @@ public class Constants {
     public static final double kHorizonAngle = 210;
     public static final double kPivotLimitSwitchOffset = -6;
     public static final double kBaseArmLength = 0;
+
+    public static final double kPIntake = 0;
+    public static final double kIIntake = 0;
+    public static final double kDIntake = 0;
 
     public static final double kArmConversionFactor = 1;
   }
@@ -314,5 +359,6 @@ public class Constants {
     public static final double kGWrist = 0;
     public static final double feedforwardVelocity = 0;
     public static final double feedforwardAcc = 0;
+
   }
 }
