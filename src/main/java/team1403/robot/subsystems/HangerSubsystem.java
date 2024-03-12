@@ -69,28 +69,34 @@ public class HangerSubsystem extends SubsystemBase {
     m_leftServo.setAngle(Constants.Hanger.kLeftLockAngle);
     m_rightServo.setAngle(Constants.Hanger.kRightLockAngle);
   }
+  // TODO Check if this is okay
 
   public boolean isTopLeft() {
     return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
   }
+  // TODO Check if this is okay
 
   public boolean isTopRight() {
     return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
   }
+  // TODO Check if this is okay
 
   public boolean isAtTop() {
     return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit
         || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
   }
+  // TODO Check if this is okay
 
   public boolean isAtBottom() {
     return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit
         || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
 
+  // TODO Check if this is okay
   public boolean isAtBottomLeft() {
     return m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
+  // TODO Check if this is okay
 
   public boolean isAtBottomRight() {
     return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
