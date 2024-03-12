@@ -25,20 +25,20 @@ public class HangerSubsystem extends SubsystemBase {
 
   private double m_speed;
 
-
   public HangerSubsystem() {
     m_leftServo = new Servo(Constants.RioPorts.kleftServoID);
     m_rightServo = new Servo(Constants.RioPorts.krightServoID);
-    
+
     m_leftMotor = new CANSparkMax(Constants.CanBus.leftHangerMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.CanBus.rightHangerMotorID, MotorType.kBrushless);
     m_rightMotor.setIdleMode(IdleMode.kBrake);
     m_leftMotor.setIdleMode(IdleMode.kBrake);
     m_rightMotor.setInverted(true);
-    // m_hangerLimtiSwitchLeftBottom = new DigitalInput(Constants.RioPorts.kHangerLimitRightBottomID);
-    // m_hangerLimitSwitchRightBottom = new DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
+    // m_hangerLimtiSwitchLeftBottom = new
+    // DigitalInput(Constants.RioPorts.kHangerLimitRightBottomID);
+    // m_hangerLimitSwitchRightBottom = new
+    // DigitalInput(Constants.RioPorts.kHangerLimitLeftBottomID);
 
-    
     m_leftMotor.getEncoder().setPosition(0);
     m_rightMotor.getEncoder().setPosition(0);
 
@@ -71,53 +71,56 @@ public class HangerSubsystem extends SubsystemBase {
   }
 
   public boolean isTopLeft() {
-   return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
-  } 
+    return m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
+  }
 
   public boolean isTopRight() {
-   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
-  } 
+    return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
+  }
 
   public boolean isAtTop() {
-   return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit; 
+    return m_rightMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit
+        || m_leftMotor.getEncoder().getPosition() >= Constants.Hanger.kTopLimit;
   }
 
   public boolean isAtBottom() {
-    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
+    return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit
+        || m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
- public boolean isAtBottomLeft() {
+
+  public boolean isAtBottomLeft() {
     return m_leftMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
-   public boolean isAtBottomRight() {
+
+  public boolean isAtBottomRight() {
     return m_rightMotor.getEncoder().getPosition() <= Constants.Hanger.kBottomLimit;
   }
+
   public void periodic() {
     SmartDashboard.putNumber("Right Hanger Speed", m_rightMotor.get());
     SmartDashboard.putNumber("Right Hanger Encoder", m_rightMotor.getEncoder().getPosition());
     SmartDashboard.putBoolean("Is at Top", isAtTop());
     SmartDashboard.putBoolean("Is at Bottom", isAtBottom());
-  
+
     if (m_speed == 0) {
-      m_speed = 0.1;
+      m_speed = -0.1;
     }
     if (isTopLeft()) {
       m_leftMotor.set(MathUtil.clamp(m_speed, -1, 0));
-    }
-    else if (isAtBottomLeft()) {
+    } else if (isAtBottomLeft()) {
       m_leftMotor.set(MathUtil.clamp(m_speed, -0.01, 1));
     } else {
       m_leftMotor.set(m_speed);
     }
     if (isTopRight()) {
       m_rightMotor.set(MathUtil.clamp(m_speed, -1, 0));
-    }  
-    else if (isAtBottomRight()) {
+    } else if (isAtBottomRight()) {
       m_rightMotor.set(MathUtil.clamp(m_speed, -0.01, 1));
-    }  else {
+    } else {
       m_rightMotor.set(m_speed);
     }
     SmartDashboard.putNumber("Left Motor Encoder", m_leftMotor.getEncoder().getPosition());
-        SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
 
     // SmartDashboard.putNumber("Left Servo Angle", m_leftServo.getAngle());
     // SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());
