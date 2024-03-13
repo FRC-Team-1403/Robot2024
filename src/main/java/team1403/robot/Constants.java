@@ -67,9 +67,9 @@ public class Constants {
         // Front left
         new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
         // Front right
-
+     
         new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
-        // Back left
+        // Back left  
         new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
         // Back right
         new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
@@ -334,6 +334,7 @@ public class Constants {
     public static  double kDefaultClose = 136;
     public static double kStageLineSetpoint = 138;//To test
     public static double kStageLineSideSetpoint = 135;//136 version 2
+    public static double kSideLineSourceSetpoint = 130; 
     public static double kLaunchpadSetpoint = 140;
     public static double kCenterLineSetpoint = 133;//115
     public static  double kShootingAngle = 147;//147 for teleop working

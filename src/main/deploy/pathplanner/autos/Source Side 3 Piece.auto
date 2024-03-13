@@ -55,7 +55,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot Side"
+                  "name": "Second Source Shoot"
                 }
               }
             ]
@@ -93,7 +93,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "Second Source Shoot"
                 }
               }
             ]

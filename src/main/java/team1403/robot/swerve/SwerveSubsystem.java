@@ -121,7 +121,7 @@ public class SwerveSubsystem extends SubsystemBase {
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-        () -> Constants.Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        () -> Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             new PIDConstants(Swerve.kPTranslation, Swerve.kITranslation, Swerve.kDTranslation), // Translation PID
@@ -348,7 +348,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   /**
    * Puts the drivetrain into xMode where all the wheel put towards the center of
-   * the robot,
+   * the robot, 
    * making it harder for the robot to be pushed around.
    */
   private void xMode() {
@@ -389,9 +389,9 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("translationVelocity", translationalVelocity);
     SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
     SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-    if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.4) {
+    if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.35) {
       m_desiredHeading = getGyroscopeRotation().getDegrees();
-    } else if (translationalVelocity > 0.2 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
+    } else if (translationalVelocity > 0.1 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
       double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
       if (Math.abs(calc) >= 0.35) {
         chassisSpeeds.omegaRadiansPerSecond += calc;
@@ -465,10 +465,10 @@ public class SwerveSubsystem extends SubsystemBase {
       setModuleStates(m_states);
     }
 
-    SmartDashboard.putNumber("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
-    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
-    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
-    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
+    // SmartDashboard.putNumber("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
+    // SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
+    // SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
+    // SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
     //force advantage kit to log during teleop
     SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());
