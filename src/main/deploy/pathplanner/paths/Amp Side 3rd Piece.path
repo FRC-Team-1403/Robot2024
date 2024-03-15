@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.199619469809175,
-        "y": 5.581284425725234
+        "x": 3.2,
+        "y": 5.59
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1,
-        "y": 4.280060525933018
+        "x": 3.15,
+        "y": 4.2
       },
       "prevControl": {
-        "x": 2.2645436204262723,
-        "y": 4.295203515193356
+        "x": 2.314543620426272,
+        "y": 4.215142989260339
       },
       "nextControl": null,
       "isLocked": false,
@@ -51,7 +51,7 @@
   "reversed": false,
   "folder": "Amp Side Paths",
   "previewStartingState": {
-    "rotation": -5.0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -127,7 +127,7 @@ public class AutoIntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(140);
                     m_state = State.LOADING_STATION;
                 }
-                if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
+                if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_intakeAndShooter.isIntakePhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_intakeAndShooter.intakeStop();
                     // m_wrist.setWristAngle(115);

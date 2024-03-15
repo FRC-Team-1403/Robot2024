@@ -7,8 +7,10 @@ import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
@@ -32,6 +34,10 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_launchpad;
     private DoubleSupplier m_expel;
     private BooleanSupplier m_ampShooting;
+    private CommandXboxController m_ops;
+    private int m_counter;
+
+
     private enum State
     {
         RESET,
@@ -47,7 +53,7 @@ public class IntakeShooterLoop extends Command {
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led,
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, CommandXboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
             DoubleSupplier expel,BooleanSupplier ampShooting) {
@@ -65,6 +71,7 @@ public class IntakeShooterLoop extends Command {
         m_launchpad = launchpad;
         m_expel = expel;
         m_ampShooting = ampShooting;
+        m_ops = ops;
     }
 
     @Override
@@ -80,6 +87,12 @@ public class IntakeShooterLoop extends Command {
         
     }
 
+    private double deadband(double input)
+    {
+        if(Math.abs(input) <= 0.05)
+            return 0;
+        return input;
+    }
 
     @Override
     public void execute()
@@ -119,12 +132,13 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(140);
                     m_state = State.LOADING_STATION;
                 }
-                if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
+                if(m_intakeAndShooter.isShooterPhotogateTriggered() && m_intakeAndShooter.isIntakePhotogateTriggered() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_intakeAndShooter.intakeStop();
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
+                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
                 break;
             }
             case LOADING_STATION:
@@ -154,6 +168,13 @@ public class IntakeShooterLoop extends Command {
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+
+                    if(m_stageLine.getAsBoolean()){
+                        m_arm.moveArm(124);
+                        m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint);
+                        m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
+                    }
+
                     m_intakeAndShooter.setIntakeSpeed(-0.4);
                     m_state = State.LOAD;
                 }
@@ -165,10 +186,8 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.intakeStop();
                     if(m_wrist.isAtSetpoint()) {
                         m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
-                        if(m_intakeAndShooter.isReady()){
                             m_fpga = Timer.getFPGATimestamp(); 
                             m_state = State.LOADED;
-                        }
                     }
                 }
                 break;
@@ -184,7 +203,7 @@ public class IntakeShooterLoop extends Command {
                 else if(m_resetToNeutral.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
-                    m_wrist.setWristAngle(Constants.Wrist.kDriveSetpoint);
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
                 } 
                 else if(m_launchpad.getAsBoolean())
@@ -210,13 +229,22 @@ public class IntakeShooterLoop extends Command {
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
-                    if(Timer.getFPGATimestamp() - m_fpga > 1){
-                             
+                    if(m_intakeAndShooter.teleopIsReady()){
                         m_intakeAndShooter.setIntakeSpeed(0.5);
                         m_fpga = Timer.getFPGATimestamp(); 
                         m_state = State.SHOOT;
                     }
                 }
+
+                if(!m_intakeAndShooter.isIntakePhotogateTriggered())
+                {
+                    if(m_counter >= 5) {
+                        m_state = State.RESET;
+                        m_counter = 0;
+                    }
+                    else m_counter++;
+                }
+                
                 
                 // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                 //     m_led.setLedMode(LEDState.YELLOW);

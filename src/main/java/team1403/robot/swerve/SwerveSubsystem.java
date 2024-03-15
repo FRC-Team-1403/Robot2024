@@ -159,6 +159,8 @@ public class SwerveSubsystem extends SubsystemBase {
         getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
     m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
+    m_driftCorrectionPid.enableContinuousInput(-180, 180);
+
     m_desiredHeading = getGyroscopeRotation().getDegrees();
 
     setRobotRampRate(0.0);
@@ -389,6 +391,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("translationVelocity", translationalVelocity);
     SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
     SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
+    SmartDashboard.putNumber("omega rads", chassisSpeeds.omegaRadiansPerSecond);
+    SmartDashboard.putNumber("real rads", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
     if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.35) {
       m_desiredHeading = getGyroscopeRotation().getDegrees();
     } else if (translationalVelocity > 0.1 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {

@@ -2,11 +2,14 @@ package team1403.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,6 +36,9 @@ public class IntakeAndShooter extends SubsystemBase {
   private PIDController m_bottomShooter;
   private PIDController m_topShooter;
 
+  private Debouncer m_shooterDebouncer;
+  private Debouncer m_intakeDebouncer;
+
 
   /**
    * creating shooter devices.
@@ -58,6 +64,8 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
     m_bottomShooter = new PIDController(0.000011, 0.0 , 0.0);
     m_topShooter = new PIDController(0.000011, 0.0, 0.0);
+    m_shooterDebouncer = new Debouncer(0.03, DebounceType.kBoth);
+    m_intakeDebouncer = new Debouncer(0.04, DebounceType.kBoth);
 
     m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
     m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
@@ -69,7 +77,7 @@ public class IntakeAndShooter extends SubsystemBase {
    * @return true or false depending on if it is trigered.
    */
   public boolean isIntakePhotogateTriggered() {
-    return !m_intakePhotogate.get();
+    return m_intakeDebouncer.calculate(!m_intakePhotogate.get());
   }
 
   /**
@@ -101,7 +109,7 @@ public class IntakeAndShooter extends SubsystemBase {
    * @return state of the shooter photogate.
    */
   public boolean isShooterPhotogateTriggered() {
-    return !m_shooterPhotogate.get();
+    return m_shooterDebouncer.calculate(!m_shooterPhotogate.get());
   }
 
   public void setShooterRPM(double rpm) {
@@ -136,6 +144,10 @@ public class IntakeAndShooter extends SubsystemBase {
 
   public boolean isReady(){
     return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 300;
+  }
+
+  public boolean teleopIsReady() {
+    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 1000;
   }
   
   public void periodic() {

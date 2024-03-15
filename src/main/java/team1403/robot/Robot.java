@@ -10,18 +10,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
@@ -73,7 +62,7 @@ public class Robot extends LoggedRobot {
     m_VisionCommand = m_robotContainer.getVisionCommand();
     m_combinedCommand =  new IntakeShooterLoop(
       m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
-      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), 
+      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getOps(),
       () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(), // shoot
       () -> m_robotContainer.getOps().b().getAsBoolean(), // amp
       () -> m_robotContainer.getOps().x().getAsBoolean(), // loading station
@@ -89,6 +78,7 @@ public class Robot extends LoggedRobot {
     // AutoSelector.initAutoChooser();
 
     // SmartDashboard.putNumber("Servo Angle", 180);
+    CameraServer.startAutomaticCapture();
   }
 
   /**
