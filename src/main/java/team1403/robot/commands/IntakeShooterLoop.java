@@ -139,6 +139,7 @@ public class IntakeShooterLoop extends Command {
                     m_state = State.RAISE;
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
+                m_led.setLedMode(LEDState.OFF);
                 break;
             }
             case LOADING_STATION:
@@ -246,11 +247,11 @@ public class IntakeShooterLoop extends Command {
                 }
                 
                 
-                // if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
-                //     m_led.setLedMode(LEDState.YELLOW);
-                // } else{
-                //     m_led.setLedMode(LEDState.OFF);
-                // }
+                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
+                    m_led.setLedMode(LEDState.YELLOW);
+                } else{
+                    m_led.setLedMode(LEDState.OFF);
+                }
 
                 break;
             }
