@@ -31,8 +31,8 @@ public class AutoIntakeShooterLoop extends Command {
     private BooleanSupplier m_resetToReset;
     private BooleanSupplier m_closeSideShoot;
     private boolean m_side;
-    private Timer time;
     private boolean m_secondSourceShoot;
+    private int m_count;
     private enum State
     {
         RESET,
@@ -84,6 +84,8 @@ public class AutoIntakeShooterLoop extends Command {
                 m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
             m_state = State.RAISE;
         }
+
+        m_count = 0;
         // time.reset();
         // time.start();
     }
@@ -132,7 +134,17 @@ public class AutoIntakeShooterLoop extends Command {
                     m_intakeAndShooter.intakeStop();
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
-                } 
+                }
+                if(m_trigger.getAsBoolean())
+                {
+                    m_count++;
+                    if(m_count > 10)
+                    {
+                        Constants.Auto.kFinished = true;
+                        Blackbox.setTrigger(false);
+                        System.out.println("Skipped gamepiece");
+                    }
+                }
                 break;
             }
             case LOADING_STATION:
