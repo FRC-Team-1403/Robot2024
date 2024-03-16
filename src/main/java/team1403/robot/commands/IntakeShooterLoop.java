@@ -102,6 +102,7 @@ public class IntakeShooterLoop extends Command {
         {
             case RESET:
             {
+                m_led.setLedMode(LEDState.OFF);
                 m_wrist.setWristAngle(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
@@ -123,9 +124,12 @@ public class IntakeShooterLoop extends Command {
                 break;
             }
             case INTAKE:
-            {
+            {  
                 if(m_intakeAndShooter.isIntakePhotogateTriggered() && !Constants.Auto.kisIntaked)
+                {
                     m_intakeAndShooter.setIntakeSpeed(0.7);
+                    m_led.setLedMode(LEDState.YELLOW);
+                }
                 if(m_loading.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kLoadingSetpoint);
@@ -137,9 +141,9 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.intakeStop();
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
+                    m_led.setLedMode(LEDState.YELLOW);
                 }
-                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
-                m_led.setLedMode(LEDState.OFF);
+                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));        
                 break;
             }
             case LOADING_STATION:
@@ -247,10 +251,10 @@ public class IntakeShooterLoop extends Command {
                 }
                 
                 
-                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
+                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isReady()){
                     m_led.setLedMode(LEDState.GREEN);
-                } else{
-                    m_led.setLedMode(LEDState.YELLOW_FLASH);
+                } else {
+                    m_led.setLedMode(LEDState.YELLOW);
                 }
 
                 break;
