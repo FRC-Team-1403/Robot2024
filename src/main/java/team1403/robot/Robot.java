@@ -69,7 +69,7 @@ public class Robot extends LoggedRobot {
     m_VisionCommand = m_robotContainer.getVisionCommand();
     m_combinedCommand =  new IntakeShooterLoop(
       m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
-      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getOps(),
+      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getHangerSubsystem(), m_robotContainer.getOps(),
       () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(), // shoot
       () -> m_robotContainer.getOps().b().getAsBoolean(), // amp
       () -> m_robotContainer.getOps().x().getAsBoolean(), // loading station
@@ -79,14 +79,15 @@ public class Robot extends LoggedRobot {
       () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
       () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
       () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean(), // amp shooting
+      () -> m_robotContainer.getOps().povRight().getAsBoolean() // trap shot
       );
     // intake out joystick left up
     // AutoSelector.initAutoChooser();
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
-    m_robotContainer.getLEDSubsystem().setLedColor(-0.57);
+    // m_robotContainer.getLEDSubsystem().setLedColor(-0.57);
   }
 
   /**

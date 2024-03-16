@@ -103,6 +103,7 @@ public class AutoIntakeShooterLoop extends Command {
                 if(m_wrist.isAtSetpoint())
                 {
                     m_arm.moveArm(Constants.Arm.kIntakeSetpoint);
+                    m_intakeAndShooter.setIntakeSpeed(1);
                     m_state = State.LOWER;
                 }
                 break;
@@ -112,7 +113,6 @@ public class AutoIntakeShooterLoop extends Command {
                 if(m_arm.isAtSetpoint())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kIntakeSetpoint);
-                    m_intakeAndShooter.setIntakeSpeed(1);
                     m_state = State.INTAKE;
                 }
                 break;
@@ -132,7 +132,7 @@ public class AutoIntakeShooterLoop extends Command {
                     m_intakeAndShooter.intakeStop();
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
-                }
+                } 
                 break;
             }
             case LOADING_STATION:

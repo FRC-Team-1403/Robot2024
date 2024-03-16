@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import team1403.robot.Constants;
+import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
 import team1403.robot.subsystems.LED.LEDState;
@@ -22,6 +23,7 @@ public class IntakeShooterLoop extends Command {
     private IntakeAndShooter m_intakeAndShooter;
     private ArmSubsystem m_arm;
     private Wrist m_wrist;
+    private HangerSubsystem m_hanger;
     private BooleanSupplier m_trigger;
     private BooleanSupplier m_amp;
     private BooleanSupplier m_loading;
@@ -36,6 +38,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_ampShooting;
     private CommandXboxController m_ops;
     private int m_counter;
+    private BooleanSupplier m_trapSetpoint;
 
 
     private enum State
@@ -48,15 +51,16 @@ public class IntakeShooterLoop extends Command {
         LOADED,
         SHOOT,
         LOADING_STATION,
-        AUTOOVER
+        AUTOOVER,
+        TRAP
     }
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, CommandXboxController ops,
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, HangerSubsystem hanger, CommandXboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
-            DoubleSupplier expel,BooleanSupplier ampShooting) {
+            DoubleSupplier expel,BooleanSupplier ampShooting, BooleanSupplier trapSetpoint) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -72,6 +76,8 @@ public class IntakeShooterLoop extends Command {
         m_expel = expel;
         m_ampShooting = ampShooting;
         m_ops = ops;
+        m_trapSetpoint = trapSetpoint;
+        m_hanger = hanger;
     }
 
     @Override
@@ -142,6 +148,12 @@ public class IntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                     m_led.setLedMode(LEDState.YELLOW);
+                }
+                if(m_hanger.isAtTopRight() && m_hanger.isAtTopLeft())
+                {
+                    m_arm.moveArm(Constants.Arm.kDriveSetpoint);
+                    m_intakeAndShooter.intakeStop();
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));        
                 break;
@@ -230,6 +242,13 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kAmpShoootingSetpoint);
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
+                } else if(m_trapSetpoint.getAsBoolean())
+                {
+                    m_arm.moveArm(198);
+                    // m_intakeAndShooter.intakeStop();
+                    m_wrist.setWristAngle(113);
+                    m_intakeAndShooter.shooterStop();
+                    m_state = State.TRAP;
                 }
                 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
@@ -259,6 +278,12 @@ public class IntakeShooterLoop extends Command {
 
                 break;
             }
+            case TRAP:
+            {
+                m_arm.moveArm(198);
+                m_wrist.setWristAngle(113);
+                break;
+            }
             case SHOOT:       
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
@@ -278,8 +303,9 @@ public class IntakeShooterLoop extends Command {
             }
         }    
         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
-            m_intakeAndShooter.setIntakeSpeed(-0.7);
-            m_intakeAndShooter.setShooterRPM(-1500);
+            m_intakeAndShooter.setIntakeSpeed(-1);
+            if(m_state != State.TRAP)
+                m_intakeAndShooter.setShooterRPM(-1500);
             // get approval 
             // m_state = State.RESET;
         }
