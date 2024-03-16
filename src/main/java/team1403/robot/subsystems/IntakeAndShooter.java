@@ -166,6 +166,7 @@ public class IntakeAndShooter extends SubsystemBase {
     Logger.recordOutput("Intake RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
     Logger.recordOutput("Intake Speed Setpoint", m_intakeMotor.get());
     Logger.recordOutput("Shooter RPM setpoint",  m_topShooter.getSetpoint());
+    Logger.recordOutput("Shooter Bottom Motor RPM", -m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue());
 
     m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
     m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));

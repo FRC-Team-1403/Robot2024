@@ -4,6 +4,10 @@
 
 package team1403.robot;
 
+import java.util.Optional;
+
+import javax.lang.model.util.ElementScanner14;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -11,9 +15,12 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
+import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
@@ -79,6 +86,7 @@ public class Robot extends LoggedRobot {
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
+    m_robotContainer.getLEDSubsystem().setLedColor(-0.57);
   }
 
   /**

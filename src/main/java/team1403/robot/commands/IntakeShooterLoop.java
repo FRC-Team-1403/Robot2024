@@ -248,9 +248,9 @@ public class IntakeShooterLoop extends Command {
                 
                 
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
-                    m_led.setLedMode(LEDState.YELLOW);
+                    m_led.setLedMode(LEDState.GREEN);
                 } else{
-                    m_led.setLedMode(LEDState.OFF);
+                    m_led.setLedMode(LEDState.YELLOW_FLASH);
                 }
 
                 break;

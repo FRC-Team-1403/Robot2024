@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Trigger Shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "First Piece"
           }
         },

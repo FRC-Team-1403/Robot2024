@@ -108,7 +108,7 @@ public class Constants {
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
     //top-to-bottom disp = 17.82426 inches
-    public static final Transform3d kCameraOffset = new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,Units.degreesToRadians(35), Math.PI));
+    public static final Transform3d kCameraOffset = new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,Units.degreesToRadians(25), Math.PI));
   }
 
   /**
@@ -309,10 +309,14 @@ public class Constants {
   }
 
   public static class Hanger {
-    public static final double kTopLimit = 36;
-    public static final double kBottomLimit = 3;
-    public static final double kLockAngle = 170;
-    public static final double kUnlockAngle = 180;
+    public static final double kTopRightLimit = 38;
+    public static final double kTopLeftLimit = 38;
+    public static final double kBottomLeftLimit = 1;
+    public static final double kBottomRightLimit = 2;
+    public static final double kLeftLockAngle = 70;
+    public static final double kLeftUnlockAngle = 100;
+    public static final double kRightLockAngle = 90;
+    public static final double kRightUnlockAngle = 85;
   }
   
   public static class Wrist {
