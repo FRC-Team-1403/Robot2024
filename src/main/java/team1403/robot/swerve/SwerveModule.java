@@ -274,29 +274,7 @@ public class SwerveModule implements Device {
       // when taking into account the ticks of the motor
       return adjustedReferenceAngleRadians;
     }
-  
-    /**
-     * Converts the drive votlage to be inverted or not.
-     *
-     * @param steerAngle          the current steer angle.
-     * @param driveMetersPerSecond the current drive voltage
-     */
-    private double convertDriveMetersPerSecond(double driveMetersPerSecond, double steerAngle) {
-  
-      double difference = normalizeAngleError(steerAngle);
-  
-      // If the difference is greater than 90 deg or less than -90 deg the drive can
-      // be inverted so the total
-      // movement of the module is less than 90 deg
-      if (difference > Math.PI / 2.0 || difference < -Math.PI / 2.0) {
-        // Only need to add 180 deg here because the target angle will be put back into
-        // the range [0, 2pi)
-        driveMetersPerSecond *= -1.0;
-      }
-  
-      return driveMetersPerSecond;
-    }
-  
+
     /**
      * Method for setting the drive voltage and steering angle.
      *
@@ -306,7 +284,7 @@ public class SwerveModule implements Device {
      */
     public void set(double driveMetersPerSecond, double steerAngle) {
       // Set driveMotor according to percentage output
-      this.m_driveMotor.set(convertDriveMetersPerSecond(driveMetersPerSecond, steerAngle));
+      this.m_driveMotor.set(driveMetersPerSecond);
   
       // Set steerMotor according to position of encoder
       this.m_steerMotor.getPIDController()
