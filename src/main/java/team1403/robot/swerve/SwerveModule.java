@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkPIDController.AccelStrategy;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,7 +35,7 @@ public class SwerveModule implements Device {
 
     private final CanCoder m_absoluteEncoder;
     private final double m_absoluteEncoderOffset;
-    private final Encoder m_driveRelativeEncoder;
+    private final RelativeEncoder m_driveRelativeEncoder;
     private final PIDController m_steerPidController;
     private final SparkPIDController m_drivePIDController;
     private final String m_name;
@@ -72,7 +73,7 @@ public class SwerveModule implements Device {
       m_steerMotor = CougarSparkMax.makeBrushless("SteerMotor", steerMotorPort,
           SparkRelativeEncoder.Type.kHallSensor);
       m_absoluteEncoder = new CanCoder("CanCoder", canCoderPort);
-      m_driveRelativeEncoder = m_driveMotor.getEmbeddedEncoder();
+      m_driveRelativeEncoder = m_driveMotor.getEncoder();
       m_absoluteEncoderOffset = offset;
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
@@ -234,7 +235,7 @@ public class SwerveModule implements Device {
      * @return relative encoder value from drive motor.
      *
      */
-    public Encoder getDriveRelativeEncoder() {
+    public RelativeEncoder getDriveRelativeEncoder() {
       return m_driveRelativeEncoder;
     }
   
@@ -245,7 +246,7 @@ public class SwerveModule implements Device {
      *         travelled and the angle of the module.
      */
     public SwerveModulePosition getModulePosition() {
-      return new SwerveModulePosition(m_driveRelativeEncoder.getPositionValue(),
+      return new SwerveModulePosition(m_driveRelativeEncoder.getPosition(),
             new Rotation2d(getAbsoluteAngle()));
     }
     
@@ -255,7 +256,7 @@ public class SwerveModule implements Device {
      * @return the current velocity of the drive motor
      */
     public double getDriveVelocity() {
-      return m_driveRelativeEncoder.getVelocityValue();
+      return m_driveRelativeEncoder.getVelocity();
     }
   
     /**
