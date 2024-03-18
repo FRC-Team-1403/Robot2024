@@ -443,6 +443,11 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
+    for(SwerveModule module : m_modules) {
+      //find out if this is nessessary
+      module.periodic();
+    }
+
     if (m_Limelight.hasTarget()) {
       Pose2d pose = m_Limelight.getDistance2D();
       if (pose != null && !m_disableVision && tagCount > 0) {

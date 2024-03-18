@@ -253,7 +253,6 @@ public class SwerveModule implements Device {
       return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteAngle()));
     }
 
-    //figure out if this periodic function is actually running
     public void periodic() {
       m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
     }
