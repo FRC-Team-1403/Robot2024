@@ -64,8 +64,8 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
     m_bottomShooter = new PIDController(0.000011, 0.0 , 0.0);
     m_topShooter = new PIDController(0.000011, 0.0, 0.0);
-    m_shooterDebouncer = new Debouncer(0.03, DebounceType.kBoth);
-    m_intakeDebouncer = new Debouncer(0.04, DebounceType.kBoth);
+    m_shooterDebouncer = new Debouncer(0.02, DebounceType.kBoth);
+    m_intakeDebouncer = new Debouncer(0.02, DebounceType.kBoth);
 
     m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
     m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
