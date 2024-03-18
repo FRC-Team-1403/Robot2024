@@ -96,7 +96,8 @@ public class Constants {
 
 
     public static final double kVoltageSaturation = 12.0;
-    public static final int kCurrentLimit = 40;
+    public static final int kDriveCurrentLimit = 50;
+    public static final int kSteerCurrentLimit = 25;
 
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;

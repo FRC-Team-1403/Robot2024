@@ -181,10 +181,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveModulePosition[] getModulePositions() {
     return new SwerveModulePosition[] {
-        m_modules[0].getPosition(),
-        m_modules[1].getPosition(),
-        m_modules[2].getPosition(),
-        m_modules[3].getPosition()
+        m_modules[0].getModulePosition(),
+        m_modules[1].getModulePosition(),
+        m_modules[2].getModulePosition(),
+        m_modules[3].getModulePosition()
     };
   }
 
@@ -320,8 +320,8 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getSteerAngle()));
-      m_modules[i].set((states[i].speedMetersPerSecond / Swerve.kMaxSpeed),
+      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
+      m_modules[i].set(states[i].speedMetersPerSecond,
           states[i].angle.getRadians());
     }
   }
