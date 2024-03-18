@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -376,6 +377,21 @@ public class SwerveSubsystem extends SubsystemBase {
     this.m_isXModeEnabled = enabled;
   }
 
+  private double normalizeAngle(double input) {
+    while(input > 180)
+    {
+      input -= 360;
+    }
+
+    while(input < -180)
+    {
+      input += 360;
+    }
+
+    return input;
+  }
+
+
   /**
    * Adds rotational velocity to the chassis speed to compensate for
    * unwanted changes in gyroscope heading.
@@ -385,22 +401,13 @@ public class SwerveSubsystem extends SubsystemBase {
    * 
    */
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    if (!m_navx2.isConnected())
-      return chassisSpeeds;
-    double translationalVelocity = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-    SmartDashboard.putNumber("translationVelocity", translationalVelocity);
-    SmartDashboard.putNumber("Desired Heading", m_desiredHeading);
-    SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
-    SmartDashboard.putNumber("omega rads", chassisSpeeds.omegaRadiansPerSecond);
-    SmartDashboard.putNumber("real rads", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
-    if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.35) {
-      m_desiredHeading = getGyroscopeRotation().getDegrees();
-    } else if (translationalVelocity > 0.1 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
-      double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
-      if (Math.abs(calc) >= 0.35) {
-        chassisSpeeds.omegaRadiansPerSecond += calc;
-      }
-    }
+    final double deltaTime = 0.02;
+    double currentHeading = normalizeAngle(getGyroscopeRotation().getDegrees());
+    m_desiredHeading += Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond) * deltaTime;
+    m_desiredHeading = normalizeAngle(m_desiredHeading);
+
+    chassisSpeeds.omegaRadiansPerSecond += m_driftCorrectionPid.calculate(currentHeading, m_desiredHeading);
+
     return chassisSpeeds;
   }
 
@@ -423,10 +430,6 @@ public class SwerveSubsystem extends SubsystemBase {
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     // Assuming the control loop runs in 20ms
     final double deltaTime = 0.02;
-
-    if (!m_navx2.isConnected()) {
-      return chassisSpeeds;
-    }
 
     // The position of the bot one control loop in the future given the chassisspeed
     Pose2d robotPoseVel = new Pose2d(chassisSpeeds.vxMetersPerSecond * deltaTime,
@@ -468,7 +471,7 @@ public class SwerveSubsystem extends SubsystemBase {
       xMode();
     } else {
       m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
-      // m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       setModuleStates(m_states);
@@ -492,5 +495,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
 
     Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
+    Logger.recordOutput("Desired Heading", m_desiredHeading);
   }
 }
