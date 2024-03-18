@@ -69,6 +69,8 @@ public class IntakeAndShooter extends SubsystemBase {
 
     m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
     m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
+
+    m_intakeMotor.setSmartCurrentLimit(Constants.IntakeAndShooter.kIntakeCurrentLimit);
   }
 
   /**

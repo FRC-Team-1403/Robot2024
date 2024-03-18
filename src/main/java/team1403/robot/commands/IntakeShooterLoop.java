@@ -124,8 +124,8 @@ public class IntakeShooterLoop extends Command {
             }
             case INTAKE:
             {
-                if(m_intakeAndShooter.isIntakePhotogateTriggered() && !Constants.Auto.kisIntaked)
-                    m_intakeAndShooter.setIntakeSpeed(0.7);
+                // if(m_intakeAndShooter.isIntakePhotogateTriggered() && !Constants.Auto.kisIntaked) // no need to reduce the speed most likely
+                //     m_intakeAndShooter.setIntakeSpeed(0.7);
                 if(m_loading.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kLoadingSetpoint);
@@ -143,7 +143,7 @@ public class IntakeShooterLoop extends Command {
                 break;
             }
             case LOADING_STATION:
-            {         
+            {
                 if(m_arm.isAtSetpoint())
                 {
                     m_wrist.setWristAngle(Constants.Wrist.kLoadingSetpoint);
