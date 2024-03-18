@@ -4,28 +4,18 @@
 
 package team1403.robot;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import team1403.robot.Constants.Auto;
 import team1403.robot.commands.AutoIntakeShooterLoop;
-import team1403.robot.commands.IntakeCommand;
-import team1403.robot.commands.IntakeShooterLoop;
-import team1403.robot.commands.RunIntakeShooterAuto;
-import team1403.robot.commands.ShootCommand;
 import team1403.robot.commands.TriggerShotCommand;
-import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
