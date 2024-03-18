@@ -465,7 +465,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
-    SmartDashboard.putNumber("Roll Degrees", getGyroscopeRotation().getDegrees());
 
     if (this.m_isXModeEnabled) {
       xMode();
