@@ -42,9 +42,6 @@ public class Constants {
    * 
    */
   public static class Swerve {
-    // around 1 second
-    public static final int kEncoderResetIterations = 50;
-    public static final double kEncoderResetMaxAngularVelocity = Math.toRadians(0.5);
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
@@ -90,10 +87,9 @@ public class Constants {
     public static final double kSteerRelativeEncoderVelocityConversionFactor = 2.0 * Math.PI
         * Swerve.kSteerReduction / 60.0;
 
-    public static final double kMaxSpeed = 6;
+    public static final double kMaxSpeed = 5.05968; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
-
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 50;
