@@ -108,7 +108,7 @@ public class Constants {
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
     //top-to-bottom disp = 17.82426 inches
-    public static final Transform3d kCameraOffset = new Transform3d(0.0,0.0,0.0, new Rotation3d(0.0,Units.degreesToRadians(35), Math.PI));
+    public static final Transform3d kCameraOffset = new Transform3d(0.0,0.0,Units.inchesToMeters(17.82426), new Rotation3d(0.0,Units.degreesToRadians(25), Math.PI));
   }
 
   /**
