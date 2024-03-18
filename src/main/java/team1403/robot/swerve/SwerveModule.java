@@ -6,7 +6,11 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.SparkRelativeEncoder;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.SparkPIDController.AccelStrategy;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.MotorFeedbackSensor;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,11 +31,12 @@ import team1403.robot.Constants.Swerve;
 public class SwerveModule implements Device {
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
-  
+
     private final CanCoder m_absoluteEncoder;
     private final double m_absoluteEncoderOffset;
     private final Encoder m_driveRelativeEncoder;
     private final PIDController m_steerPidController;
+    private final SparkPIDController m_drivePIDController;
     private final String m_name;
     private final boolean m_inverted;
 
@@ -40,11 +45,11 @@ public class SwerveModule implements Device {
     /**
      * Swerve Module represents a singular swerve module for a
      * swerve drive train.
-     * 
+     *
      * <p>Each swerve module consists of a drive motor,
      * changing the velocity of the wheel, and a steer motor, changing
      * the angle of the actual wheel inside of the module.
-     * 
+     *
      * <p>The swerve module also features
      * an absolute encoder to ensure the angle of
      * the module is always known, regardless if the bot is turned off
@@ -61,7 +66,7 @@ public class SwerveModule implements Device {
     {
       m_inverted = inverted;
       m_name = name;
-  
+
       m_driveMotor = CougarSparkMax.makeBrushless("DriveMotor", driveMotorPort,
           SparkRelativeEncoder.Type.kHallSensor);
       m_steerMotor = CougarSparkMax.makeBrushless("SteerMotor", steerMotorPort,
@@ -70,19 +75,20 @@ public class SwerveModule implements Device {
       m_driveRelativeEncoder = m_driveMotor.getEmbeddedEncoder();
       m_absoluteEncoderOffset = offset;
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
+      m_drivePIDController = m_driveMotor.getPIDController();
       m_steerPidController.enableContinuousInput(0, 2*Math.PI);
       m_targetSteerAngle = 0;
-  
+
       initEncoders();
       initSteerMotor();
       initDriveMotor();
     }
-  
+
     @Override
     public String getName() {
       return m_name;
     }
-  
+
     public void initEncoders() {
       // Config absolute encoder
       if (m_absoluteEncoder.getMagnetHealth().getValue() != MagnetHealthValue.Magnet_Green) {
@@ -109,24 +115,33 @@ public class SwerveModule implements Device {
       m_driveRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kDrivePositionConversionFactor);
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
-  
+
       m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
       m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
     }
-  
+
     private void initSteerMotor() {
       m_steerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
       m_steerMotor.setInverted(false);
       m_steerMotor.enableVoltageCompensation(Swerve.kVoltageSaturation);
       m_steerMotor.setSmartCurrentLimit(Swerve.kSteerCurrentLimit);
     }
-  
+
     public void initDriveMotor() {
       m_driveMotor.setInverted(m_inverted);
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
+
+      m_drivePIDController.setP(Constants.Swerve.kPDrive);
+      m_drivePIDController.setI(Constants.Swerve.kIDrive);
+      m_drivePIDController.setD(Constants.Swerve.kDDrive);
+      m_drivePIDController.setFeedbackDevice((MotorFeedbackSensor)m_driveRelativeEncoder);
+      //slot 0 is used by default
+      m_drivePIDController.setSmartMotionMaxVelocity(Constants.Swerve.kMaxSpeed, 0);
+      m_drivePIDController.setSmartMotionMinOutputVelocity(0, 0);
+      m_drivePIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
     }
-  
+
     /**
      * Sets the contoller mode.
      *
@@ -144,7 +159,7 @@ public class SwerveModule implements Device {
     public void setRampRate(double rate) {
       m_driveMotor.setOpenLoopRampRate(rate);
     }
-  
+
     /**
      * Normalizes angle value to be inbetween values 0 to 2pi.
      *
@@ -167,8 +182,8 @@ public class SwerveModule implements Device {
      *
      */
     public void set(double driveMetersPerSecond, double steerAngle) {
-      // Set driveMotor according to percentage output
-      this.m_driveMotor.set(driveMetersPerSecond / Swerve.kMaxSpeed);
+      // Set driveMotor according to velocity input
+      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kSmartMotion);
 
       // Set steerMotor according to position of encoder
       m_targetSteerAngle = normalizeAngle(steerAngle);

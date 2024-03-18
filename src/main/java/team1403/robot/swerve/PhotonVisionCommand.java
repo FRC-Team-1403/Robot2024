@@ -16,7 +16,6 @@ public class PhotonVisionCommand extends Command {
     public PhotonVisionCommand(Limelight limelight, SwerveSubsystem swerve) {
         m_Limelight = limelight;
         m_swerve = swerve;
-        
     }
 
 

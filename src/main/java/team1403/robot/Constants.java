@@ -57,6 +57,10 @@ public class Constants {
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.0;
 
+    public static final double kPDrive = 0.3;
+    public static final double kIDrive = 0.0;
+    public static final double kDDrive = 0.0;
+
     public static final double kTrackWidth = Units.inchesToMeters(23);
     public static final double kWheelBase = Units.inchesToMeters(24);
 
