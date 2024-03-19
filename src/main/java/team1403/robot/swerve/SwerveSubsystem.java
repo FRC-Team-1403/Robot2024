@@ -403,6 +403,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
     final double deltaTime = 0.02;
     double currentHeading = normalizeAngle(getGyroscopeRotation().getDegrees());
+    //integral(omega(t)dt) = theta
     m_desiredHeading += Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond) * deltaTime;
     m_desiredHeading = normalizeAngle(m_desiredHeading);
 
