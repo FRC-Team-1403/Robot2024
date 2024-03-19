@@ -273,7 +273,7 @@ public class Constants {
     public static final double kMinPivotAngle = 75;
     public static final double kPivotMotorMaxAmperage = 40;
 
-    public static final int kPivotMotorCurrentLimit = 25;
+    public static final int kPivotMotorCurrentLimit = 30;
     public static final double kPivotMotorVoltageLimit = 12;
     public static final ArmState KStageLineSetPoint = null;
 

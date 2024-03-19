@@ -62,6 +62,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_leftMotor.setIdleMode(IdleMode.kBrake);
     m_leftMotor.enableVoltageCompensation(Constants.Arm.kPivotMotorVoltageLimit);
     m_leftMotor.setSmartCurrentLimit(Constants.Arm.kPivotMotorCurrentLimit);
+    m_rightMotor.setSmartCurrentLimit(Constants.Arm.kPivotMotorCurrentLimit);
     m_rightMotor.follow(m_leftMotor, true);
   }
 
