@@ -45,7 +45,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.4;
+    public static final double kPTurning = 0.45;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -53,11 +53,11 @@ public class Constants {
     public static final double kIAutoTurning = 0.0;
     public static final double kDAutoTurning = 0.0;
 
-    public static final double kPTranslation = 0.1;
+    public static final double kPTranslation = 15;
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.0;
 
-    public static final double kPDrive = 0.3;
+    public static final double kPDrive = 0.25;
     public static final double kIDrive = 0.0;
     public static final double kDDrive = 0.0;
 
@@ -75,21 +75,14 @@ public class Constants {
         // Back right
         new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -Math.PI;
-    public static final double frontRightEncoderOffset = -0.55;
-    public static final double backLeftEncoderOffset = 0; //4.743068596142402
-    public static final double backRightEncoderOffset = 1.25;//-0.2966
+    public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;
+    public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;
+    public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402
+    public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966
 
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
 
-    public static final double kDrivePositionConversionFactor = 0.05215454470665408; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
-    public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
-
-    public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
-        * Swerve.kSteerReduction;
-
-    public static final double kSteerRelativeEncoderVelocityConversionFactor = 2.0 * Math.PI
-        * Swerve.kSteerReduction / 60.0;
+    public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI / 6.21; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
     public static final double kMaxSpeed = 5.05968; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
 

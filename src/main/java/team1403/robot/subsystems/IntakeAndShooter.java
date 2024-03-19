@@ -2,18 +2,15 @@ package team1403.robot.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
-import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.AdvancedMotorController.CougarIdleMode;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.device.wpi.CougarTalonFx;
@@ -160,6 +157,9 @@ public class IntakeAndShooter extends SubsystemBase {
     SmartDashboard.putBoolean("Intake Sensor", isIntakePhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Sensor", !isShooterPhotogateTriggered()); //shooter is flipped for some reason
     SmartDashboard.putBoolean("Shooter Ready", isReady());
+    SmartDashboard.putNumber("Intake current", m_intakeMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter bottom current", m_shooterMotorBottom.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
     Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
     Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.geTalonFxApi().getMotorVoltage().getValueAsDouble());
     Logger.recordOutput("Shooter gate", !isShooterPhotogateTriggered());
@@ -168,6 +168,9 @@ public class IntakeAndShooter extends SubsystemBase {
     Logger.recordOutput("Intake RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
     Logger.recordOutput("Intake Speed Setpoint", m_intakeMotor.get());
     Logger.recordOutput("Shooter RPM setpoint",  m_topShooter.getSetpoint());
+    Logger.recordOutput("Intake current", m_intakeMotor.getOutputCurrent());
+    Logger.recordOutput("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
+    Logger.recordOutput("Shooter bottom current", m_shooterMotorBottom.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
 
     m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
     m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));

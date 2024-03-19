@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.SparkPIDController.AccelStrategy;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
@@ -136,10 +137,12 @@ public class SwerveModule implements Device {
       m_drivePIDController.setI(Constants.Swerve.kIDrive);
       m_drivePIDController.setD(Constants.Swerve.kDDrive);
       m_drivePIDController.setFeedbackDevice((MotorFeedbackSensor)m_driveRelativeEncoder);
-      //slot 0 is used by default
-      m_drivePIDController.setSmartMotionMaxVelocity(Constants.Swerve.kMaxSpeed, 0);
-      m_drivePIDController.setSmartMotionMinOutputVelocity(0, 0);
-      m_drivePIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+      // //slot 0 is used by default
+      // m_drivePIDController.setSmartMotionMaxVelocity(6000, 0);
+      // m_drivePIDController.setSmartMotionMinOutputVelocity(0, 0);
+      // m_drivePIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+
+      // m_driveMotor.setIdleMode(IdleMode.kCoast);
     }
 
     /**
@@ -183,7 +186,7 @@ public class SwerveModule implements Device {
      */
     public void set(double driveMetersPerSecond, double steerAngle) {
       // Set driveMotor according to velocity input
-      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kSmartMotion);
+      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
       // Set steerMotor according to position of encoder
       m_targetSteerAngle = normalizeAngle(steerAngle);
