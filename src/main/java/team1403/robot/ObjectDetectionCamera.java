@@ -4,10 +4,14 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import team1403.PathUtils;
 
 /** Wrapper for PhotonCamera class */
 public class ObjectDetectionCamera extends PhotonCamera {
@@ -73,5 +77,14 @@ public class ObjectDetectionCamera extends PhotonCamera {
      public Transform3d transformToNote(int x) {
         Transform3d pose = getLatestResult().getBestTarget().getBestCameraToTarget();
         return pose;
+    }
+    //this will work
+    public Pose2d getNotePose2d(Pose2d currentPose) {
+        Pose2d notePose = new Pose2d(TargetUtils.getNoteTranslation(this, currentPose,this.getDistanceToTarget() + Units.inchesToMeters(4.0)), TargetUtils.getTargetHeadingToClosestNote(this, currentPose));
+        return  notePose;
+    }
+    public Trajectory getPathToNote(Pose2d currentPose) {
+        PathPlannerPath pathToNote = PathUtils.generatePath(currentPose, this.getNotePose2d(currentPose));
+        return PathUtils.TrajectoryFromPath(pathToNote);
     }
 }
