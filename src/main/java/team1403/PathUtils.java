@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
+import team1403.robot.Constants;
 
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -20,10 +21,10 @@ public class PathUtils {
      * 
      */
     public static final PathConstraints pathConstraints = new PathConstraints(
-        SWERVE.MAX_SPEED_METERS_PER_SECOND * 0.85,
-        SWERVE.MAX_ACCELERATION * 0.50,
-        SWERVE.MAX_ROTATIONAL_SPEED,
-        SWERVE.MAX_ANGULAR_SPEED
+        Constants.Swerve.kMaxSpeed * 0.2,
+        .5,
+        .5,
+        Constants.Swerve.kMaxAngularSpeed * .1
     );
 
     /**
