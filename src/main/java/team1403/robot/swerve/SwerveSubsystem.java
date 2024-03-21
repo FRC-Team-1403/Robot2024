@@ -488,7 +488,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
-    Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()));
+    Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).toString());
 
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());

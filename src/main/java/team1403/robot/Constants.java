@@ -57,7 +57,7 @@ public class Constants {
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.0;
 
-    public static final double kPDrive = 0.25;
+    public static final double kPDrive = 0.04;
     public static final double kIDrive = 0.0;
     public static final double kDDrive = 0.0;
 
@@ -79,12 +79,12 @@ public class Constants {
     public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;
     public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402
     public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966
-
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-
+    
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.85);
+    
     public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI / 6.21; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
-    public static final double kMaxSpeed = 5.05968; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
+    public static final double kMaxSpeed = 5.1; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
 

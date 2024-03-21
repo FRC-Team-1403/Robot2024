@@ -136,7 +136,9 @@ public class SwerveModule implements Device {
       m_drivePIDController.setP(Constants.Swerve.kPDrive);
       m_drivePIDController.setI(Constants.Swerve.kIDrive);
       m_drivePIDController.setD(Constants.Swerve.kDDrive);
+      m_drivePIDController.setFF(1.0/Swerve.kMaxSpeed);
       m_drivePIDController.setFeedbackDevice((MotorFeedbackSensor)m_driveRelativeEncoder);
+      m_drivePIDController.setOutputRange(-1,1);
       // //slot 0 is used by default
       // m_drivePIDController.setSmartMotionMaxVelocity(6000, 0);
       // m_drivePIDController.setSmartMotionMinOutputVelocity(0, 0);
@@ -186,6 +188,7 @@ public class SwerveModule implements Device {
      */
     public void set(double driveMetersPerSecond, double steerAngle) {
       // Set driveMotor according to velocity input
+      // System.out.println("drive input speed: " + driveMetersPerSecond);
       this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
       // Set steerMotor according to position of encoder
