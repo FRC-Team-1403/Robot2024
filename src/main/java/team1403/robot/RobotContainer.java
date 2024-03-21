@@ -26,8 +26,6 @@ import team1403.robot.subsystems.arm.ArmStateGroup;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.SetpointArmCommand;
 import team1403.robot.swerve.DefaultSwerveCommand;
-import team1403.robot.swerve.Limelight;
-import team1403.robot.swerve.PhotonVisionCommand;
 import team1403.robot.swerve.SwerveSubsystem;
 import team1403.robot.StateManager;
 
@@ -40,13 +38,11 @@ import team1403.robot.StateManager;
 public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
-  private Limelight m_limelight;
   //private AimbotCommand m_aimbot;
   private ArmSubsystem m_arm;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
-  private final PhotonVisionCommand m_PhotonVisionCommand; 
   private final Tables m_dataTable;
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
@@ -56,13 +52,12 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    m_limelight = new Limelight();
-    m_swerve = new SwerveSubsystem(m_limelight);
+    m_swerve = new SwerveSubsystem();
     // m_arm = new ArmSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     m_dataTable = new Tables();
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
+    // m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     configureBindings();
   }
@@ -120,9 +115,9 @@ public class RobotContainer {
     return AutoSelector.getSelectedAuto().andThen(new InstantCommand(() -> m_swerve.stop()));
   }
 
-  public Limelight getLimelight(){
-    return m_limelight;
-  }
+  // public Limelight getLimelight(){
+  //   return m_limelight;
+  // }
 
   public SwerveSubsystem getSwerveSubsystem() {
     return m_swerve;

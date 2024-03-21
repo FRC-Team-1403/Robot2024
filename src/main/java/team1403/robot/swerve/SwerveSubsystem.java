@@ -82,7 +82,6 @@ public class SwerveSubsystem extends SubsystemBase  {
  private double m_rollOffset;
 
  private boolean m_isXModeEnabled = false;
- private Limelight m_Limelight;
  private boolean m_disableVision = false;
 
  /**
@@ -95,11 +94,10 @@ public class SwerveSubsystem extends SubsystemBase  {
   * @param parameters the {@link CougarLibInjectedParameters}
   *                   used to construct this subsystem
   */
- public SwerveSubsystem(Limelight limelight) {
+ public SwerveSubsystem() {
   SmartDashboard.putData("Field", m_field);
   //  super("Swerve Subsystem", parameters);
    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
-   m_Limelight = limelight;
    m_modules = new SwerveModule[] {
        new SwerveModule("Front Left Module",
            CanBus.frontLeftDriveId, CanBus.frontLeftSteerId,
@@ -496,25 +494,26 @@ public class SwerveSubsystem extends SubsystemBase  {
  public void periodic() {
   SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-  if (m_Limelight.hasTarget()) {
-    Pose2d pose = m_Limelight.getDistance2D();
-    var x = m_Limelight.getPosStdv();
-    if(pose != null && !m_disableVision && tagCount > 0)
-    {
-      // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-      // m_desiredHeading = pose.getRotation().getDegrees();
-      m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
-    }
-    else if(pose != null && !m_disableVision && tagCount == 0)
-    {
-      m_odometer.setPose(pose);
-      // // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
-      // m_desiredHeading = pose.getRotation().getDegrees();
-      tagCount++;
-    }
-  } else {
+  // if (m_Limelight.hasTarget()) {
+  //   Pose2d pose = m_Limelight.getDistance2D();
+  //   var x = m_Limelight.getPosStdv();
+  //   if(pose != null && !m_disableVision && tagCount > 0)
+  //   {
+  //     // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
+  //     // m_desiredHeading = pose.getRotation().getDegrees();
+  //     m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp(), x);
+  //   }
+  //   else if(pose != null && !m_disableVision && tagCount == 0)
+  //   {
+  //     m_odometer.setPose(pose);
+  //     // // m_navx2.setAngleOffset(pose.getRotation().getDegrees());
+  //     // m_desiredHeading = pose.getRotation().getDegrees();
+  //     tagCount++;
+  //   }
+  // } else {
+
     m_odometer.update(getGyroscopeRotation(),getModulePositions());
-  }
+  // }
 
    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
    //SmartDashboard.putNumber("Speed", m_speedLimiter);

@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.Datables.ShooterValues;
-import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,7 +29,6 @@ import team1403.robot.swerve.PhotonVisionCommand;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
-  private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
   //postpones out of memory error on roborio 1.0
   private final boolean enableadvantagekit = false;
@@ -69,7 +67,6 @@ public class Robot extends LoggedRobot {
     }
 
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = new PhotonVisionCommand(m_robotContainer.getLimelight(),m_robotContainer.getSwerveSubsystem());
 
     AutoSelector.initAutoChooser();
   }
@@ -143,7 +140,6 @@ public class Robot extends LoggedRobot {
    // int yPos = (int)m_robotContainer.getSwerveSubsystem().getOdometer().getEstimatedPosition().getY();
   //  ShooterValues vals =  m_robotContainer.getDataTables().compute(xPos,yPos);
   //   SmartDashboard.putString("Data Tables", vals.toString());
-    m_VisionCommand.execute();
   }
 
   @Override

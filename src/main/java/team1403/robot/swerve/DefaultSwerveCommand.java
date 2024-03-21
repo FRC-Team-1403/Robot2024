@@ -140,7 +140,7 @@ public class DefaultSwerveCommand extends Command {
       final_target_angle = (given_target_angle - constraint_current_angle);
 
     
-    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
+    m_drivetrainSubsystem.setDisableVision(true);
     SmartDashboard.putNumber("Target Angle",final_target_angle);
     
 
