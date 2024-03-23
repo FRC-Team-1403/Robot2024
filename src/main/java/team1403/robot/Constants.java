@@ -292,17 +292,6 @@ public class Constants {
     public static final int kIntakeCurrentLimit = 40;
   }
 
-  public static class Auto {
-    public static boolean kAmp = false;
-    public static boolean kCenterLine = false;
-    public static boolean kStageLine = false;
-    public static boolean kDriveSetpoint = false;
-    public static boolean kFinished = false;
-    public static boolean kInAuto = false;
-    public static boolean kisIntaked = false;
-    public static boolean kSide = false;
-  }
-
   public static class Hanger {
     public static final double kTopLimit = 36;
     public static final double kBottomLimit = 3;

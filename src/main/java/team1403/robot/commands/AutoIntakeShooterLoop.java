@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,7 +75,7 @@ public class AutoIntakeShooterLoop extends Command {
         //     m_state = State.RAISE;
         // else
         m_state = State.RESET;
-        Constants.Auto.kFinished = false;
+        Blackbox.setAutoFinished(false);
 
         if(m_intakeAndShooter.isIntakePhotogateTriggered())
         {
@@ -121,8 +122,8 @@ public class AutoIntakeShooterLoop extends Command {
             }
             case INTAKE:
             {
-                if(m_intakeAndShooter.isIntakePhotogateTriggered() && !Constants.Auto.kisIntaked)
-                    m_intakeAndShooter.setIntakeSpeed(0.7);
+                // if(m_intakeAndShooter.isIntakePhotogateTriggered())
+                //     m_intakeAndShooter.setIntakeSpeed(0.7);
                 if(m_loading.getAsBoolean())
                 {
                     m_arm.moveArm(Constants.Arm.kLoadingSetpoint);
@@ -245,7 +246,7 @@ public class AutoIntakeShooterLoop extends Command {
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
                     if(Timer.getFPGATimestamp() - m_fpga > 0.1) {
-                        if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
+                        if (DriverStation.isAutonomous()) m_state = State.AUTOOVER;
                         else m_state = State.RESET;
                         Blackbox.setTrigger(false);
                         m_intakeAndShooter.setIntakeSpeed(1.0);
@@ -255,10 +256,7 @@ public class AutoIntakeShooterLoop extends Command {
 
             case AUTOOVER:
             {
-                Constants.Auto.kisIntaked = false;
-                Constants.Auto.kFinished = true;
-                Constants.Auto.kStageLine = false;
-                Constants.Auto.kDriveSetpoint = false;
+                Blackbox.setAutoFinished(true);
                 break;
             }
         }  
@@ -268,6 +266,6 @@ public class AutoIntakeShooterLoop extends Command {
     @Override
     public boolean isFinished()
     {
-        return Constants.Auto.kFinished;
+        return Blackbox.getAutoFinished();
     }
 }

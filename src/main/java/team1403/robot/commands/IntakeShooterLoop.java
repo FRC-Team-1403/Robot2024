@@ -47,8 +47,7 @@ public class IntakeShooterLoop extends Command {
         LOAD, 
         LOADED,
         SHOOT,
-        LOADING_STATION,
-        AUTOOVER
+        LOADING_STATION
     }
 
     private State m_state;
@@ -81,7 +80,6 @@ public class IntakeShooterLoop extends Command {
         //     m_state = State.RAISE;
         // else
         m_state = State.RESET;
-        Constants.Auto.kFinished = false;
         // time.reset();
         // time.start();   
         
@@ -227,12 +225,12 @@ public class IntakeShooterLoop extends Command {
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                 }
-                
+
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
-                if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {        
+                if(m_trigger.getAsBoolean() && m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     if(m_intakeAndShooter.teleopIsReady()){
                         m_intakeAndShooter.setIntakeSpeed(0.5);
-                        m_fpga = Timer.getFPGATimestamp(); 
+                        m_fpga = Timer.getFPGATimestamp();
                         m_state = State.SHOOT;
                     }
                 }
@@ -245,8 +243,6 @@ public class IntakeShooterLoop extends Command {
                     }
                     else m_counter++;
                 }
-                
-                
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
                     m_led.setLedMode(LEDState.YELLOW);
                 } else{
@@ -255,7 +251,8 @@ public class IntakeShooterLoop extends Command {
 
                 break;
             }
-            case SHOOT:       
+            case SHOOT:
+            {
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered())
                 {
                     //if (Constants.Auto.kInAuto) m_state = State.AUTOOVER;
@@ -263,20 +260,12 @@ public class IntakeShooterLoop extends Command {
                         m_state = State.RESET;
                 }
                 break;
-
-            case AUTOOVER:
-            {
-                Constants.Auto.kisIntaked = false;
-                Constants.Auto.kFinished = true;
-                Constants.Auto.kStageLine = false;
-                Constants.Auto.kDriveSetpoint = false;
-                break;
             }
-        }    
+        }
         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
             m_intakeAndShooter.setIntakeSpeed(-0.7);
             m_intakeAndShooter.setShooterRPM(-1500);
-            // get approval 
+            // get approval
             // m_state = State.RESET;
         }
         if(m_resetToIntake.getAsBoolean()) {
@@ -288,6 +277,6 @@ public class IntakeShooterLoop extends Command {
     @Override
     public boolean isFinished()
     {
-        return Constants.Auto.kFinished;
+        return false;
     }
 }

@@ -120,8 +120,6 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_robotContainer.getSwerveSubsystem().setDisableVision(true);
-    Constants.Auto.kInAuto = true;
-    Constants.Auto.kisIntaked = true;
     // schedule the autonomous command (example)
     m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
@@ -139,7 +137,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    Constants.Auto.kInAuto = false;
     m_robotContainer.getSwerveSubsystem().setDisableVision(false);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
