@@ -148,7 +148,7 @@ public class IntakeAndShooter extends SubsystemBase {
   public boolean teleopIsReady() {
     return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 1000;
   }
-  
+
   public void periodic() {
     Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
     SmartDashboard.putNumber("Intake Motor RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
@@ -172,7 +172,14 @@ public class IntakeAndShooter extends SubsystemBase {
     Logger.recordOutput("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
     Logger.recordOutput("Shooter bottom current", m_shooterMotorBottom.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
 
-    m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
-    m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));
+    if(m_bottomShooter.getSetpoint() != 0)
+      m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
+    else
+      m_shooterMotorBottom.setSpeed(0);
+
+    if(m_topShooter.getSetpoint() != 0)
+      m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));
+    else
+      m_shooterMotorTop.setSpeed(0);
   }
 }
