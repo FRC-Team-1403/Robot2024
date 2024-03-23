@@ -391,28 +391,6 @@ public class SwerveSubsystem extends SubsystemBase {
     return input;
   }
 
-
-  /**
-   * Adds rotational velocity to the chassis speed to compensate for
-   * unwanted changes in gyroscope heading.
-   * 
-   * @param chassisSpeeds the given chassisspeeds
-   * @return the corrected chassisspeeds
-   * 
-   */
-  private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    final double deltaTime = 0.02;
-    double currentHeading = normalizeAngle(getGyroscopeRotation().getDegrees());
-
-    //integral(omega(t)dt) = theta
-    m_desiredHeading += Units.radiansToDegrees(chassisSpeeds.omegaRadiansPerSecond) * deltaTime;
-    m_desiredHeading = normalizeAngle(m_desiredHeading);
-
-    chassisSpeeds.omegaRadiansPerSecond += m_driftCorrectionPid.calculate(currentHeading, m_desiredHeading);
-
-    return chassisSpeeds;
-  }
-
   /**
    * Accounts for the drift caused by the first order kinematics
    * while doing both translational and rotational movement.
@@ -451,9 +429,19 @@ public class SwerveSubsystem extends SubsystemBase {
     return new Twist2d(translation_part.getX(), translation_part.getY(), dtheta);
   }
 
+  private double prevTimeStep = 0;
+
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    // Assuming the control loop runs in 20ms
-    final double deltaTime = 0.02;
+    double curTimeStep = Timer.getFPGATimestamp();
+    if(prevTimeStep == 0)
+    {
+      prevTimeStep = curTimeStep;
+      return chassisSpeeds;
+    }
+    
+    final double deltaTime = curTimeStep - prevTimeStep;
+    prevTimeStep = curTimeStep;
+    
 
     // The position of the bot one control loop in the future given the chassisspeed
     Pose2d robotPoseVel = new Pose2d(chassisSpeeds.vxMetersPerSecond * deltaTime,
