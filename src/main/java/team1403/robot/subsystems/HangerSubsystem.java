@@ -63,6 +63,7 @@ public class HangerSubsystem extends SubsystemBase {
 
   public void setServoAngle(double angle) {
     m_leftServo.setAngle(angle);
+
     m_rightServo.setAngle(angle);
   }
 

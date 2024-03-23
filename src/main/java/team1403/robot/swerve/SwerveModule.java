@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -276,5 +277,6 @@ public class SwerveModule implements Device {
 
     public void periodic() {
       m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
+      SmartDashboard.putNumber(getName() + " desired angle", m_targetSteerAngle);
     }
   }

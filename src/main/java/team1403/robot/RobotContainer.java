@@ -6,6 +6,11 @@ package team1403.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -100,7 +105,10 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
     // Setting default command of swerve subPsystem
-
+    // red
+    Pose2d ampLocationPose2d = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(303.0)),
+                Rotation2d.fromDegrees(90.0));
+    
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
         () -> -deadband(m_driverController.getLeftX(), 0),
@@ -109,21 +117,24 @@ public class RobotContainer {
         () -> m_driverController.y().getAsBoolean(),
         () -> m_driverController.x().getAsBoolean(),
         () -> m_driverController.a().getAsBoolean(),
-        () -> 12.70, //3 significant digits
-        () -> 5.36,
+        () -> -0, // AMP Location 
+        () -> 0,
+        // blue 
+        // () -> 0.42,
+        // () -> 5.53,
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis() > .5));
 
 
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-    // m_operatorController.povLeft().onTrue(
-    //   new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
-    //   .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
+    m_driverController.povLeft().onTrue(
+      new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
+      .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
       
-    // m_operatorController.povRight().onTrue(
-    //   new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
-    //   .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
+    m_driverController.povRight().onTrue(
+      new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
+      .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
   }
   
   private double deadband(double value, double deadband) {

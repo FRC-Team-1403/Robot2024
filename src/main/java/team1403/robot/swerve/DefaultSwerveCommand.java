@@ -3,6 +3,8 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import org.ejml.ops.FConvertArrays;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -90,7 +92,7 @@ public class DefaultSwerveCommand extends Command {
     m_verticalTranslationLimiter = new SlewRateLimiter(5, -5, 0);
     m_horizontalTranslationLimiter = new SlewRateLimiter(5, -5, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
-    m_controller = new PIDController(1.25, 0, 0);
+    m_controller = new PIDController(.15, 0, 0);
 
     m_controller.enableContinuousInput(-180, 180);
 
@@ -102,14 +104,11 @@ public class DefaultSwerveCommand extends Command {
 
   @Override
   public void execute() {
-    tempKP = SmartDashboard.getNumber("P Value", tempKP);
-    tempKI = SmartDashboard.getNumber("I Value", tempKI);
-    m_controller.setP(tempKP);
-    m_controller.setI(tempKI);
 
-    m_speedLimiter = 0.2 + (m_speedSupplier.getAsDouble() * 0.8);
+
+    m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.7);
     if (m_snipingMode.getAsBoolean()) {
-      m_speedLimiter = 0.10;
+      m_speedLimiter = 0.15;
     }
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
@@ -136,11 +135,14 @@ public class DefaultSwerveCommand extends Command {
     
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Target Angle", given_target_angle);
+    SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());
+    SmartDashboard.putNumber("Current Angle", given_current_angle);
     
-    if(m_aimbotSupplier.getAsBoolean() && Math.abs(given_target_angle) > 0)
+    if(m_aimbotSupplier.getAsBoolean())
       angular = m_controller.calculate(given_current_angle, given_target_angle);
+    SmartDashboard.putNumber("Aimbot Movement", angular);
     
-      if (m_isFieldRelative) {
+    if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,
           angular, m_drivetrainSubsystem.getGyroscopeRotation());
     } else {
