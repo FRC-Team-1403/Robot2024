@@ -81,8 +81,10 @@ public class AutoIntakeShooterLoop extends Command {
             m_arm.moveArm(118);
             m_wrist.setWristAngle(129);
             if(!m_intakeAndShooter.isShooterPhotogateTriggered())
+            {
                 m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
-            m_state = State.RAISE;
+                m_state = State.RAISE;
+            }
         }
         // time.reset();
         // time.start();
