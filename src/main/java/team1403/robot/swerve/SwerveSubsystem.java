@@ -4,20 +4,13 @@ import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.opencv.features2d.FlannBasedMatcher;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,10 +22,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -54,27 +43,10 @@ public class SwerveSubsystem extends SubsystemBase {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
   private int tagCount = 0;
-  private LinearFilter m_navxFilter;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] m_states = new SwerveModuleState[4];
   private final SwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
-
-  private Translation2d frontRight = new Translation2d(
-      Constants.Swerve.kTrackWidth / 2.0,
-      -Constants.Swerve.kWheelBase / 2.0);
-
-  private Translation2d frontLeft = new Translation2d(
-      Constants.Swerve.kTrackWidth / 2.0,
-      Constants.Swerve.kWheelBase / 2.0);
-
-  private Translation2d backRight = new Translation2d(
-      -Constants.Swerve.kTrackWidth / 2.0,
-      -Constants.Swerve.kWheelBase / 2.0);
-
-  private Translation2d backLeft = new Translation2d(
-      -Constants.Swerve.kTrackWidth / 2.0,
-      Constants.Swerve.kWheelBase / 2.0);
 
   private final PIDController m_driftCorrectionPid = new PIDController(0.05, 0, 0);
   private double m_desiredHeading = 0;
@@ -101,7 +73,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveSubsystem(Limelight limelight) {
     SmartDashboard.putData("Field", m_field);
     // super("Swerve Subsystem", parameters);
-    m_navxFilter = LinearFilter.movingAverage(5);
     m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
     m_Limelight = limelight;
     m_modules = new SwerveModule[] {
