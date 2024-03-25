@@ -3,8 +3,11 @@
   "robotLength": 0.92,
   "holonomicMode": true,
   "pathFolders": [
+    "Amp Side New",
     "Amp Side Paths",
+    "Center 2 Piece",
     "Center Side",
+    "Amp Side 2 Piece",
     "Source Side"
   ],
   "autoFolders": [],

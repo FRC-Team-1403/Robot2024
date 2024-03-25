@@ -461,11 +461,6 @@ public class SwerveSubsystem extends SubsystemBase {
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       setModuleStates(m_states);
     }
-
-    SmartDashboard.putNumber("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
-    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
-    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
-    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
     //force advantage kit to log during teleop
     SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());

@@ -41,6 +41,7 @@ public class SwerveModule implements Device {
     private final SparkPIDController m_drivePIDController;
     private final String m_name;
     private final boolean m_inverted;
+    private double m_targetVelocity;
 
     private double m_targetSteerAngle;
 
@@ -191,6 +192,7 @@ public class SwerveModule implements Device {
       // Set driveMotor according to velocity input
       // System.out.println("drive input speed: " + driveMetersPerSecond);
       this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
+      m_targetVelocity = driveMetersPerSecond;
 
       // Set steerMotor according to position of encoder
       m_targetSteerAngle = normalizeAngle(steerAngle);
@@ -277,6 +279,9 @@ public class SwerveModule implements Device {
 
     public void periodic() {
       m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
+      SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
       SmartDashboard.putNumber(getName() + " desired angle", m_targetSteerAngle);
+      SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
     }
   }

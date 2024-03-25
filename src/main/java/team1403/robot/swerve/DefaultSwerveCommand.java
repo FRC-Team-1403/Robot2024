@@ -89,8 +89,8 @@ public class DefaultSwerveCommand extends Command {
     this.m_ysupplier = ytarget;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    m_verticalTranslationLimiter = new SlewRateLimiter(5, -5, 0);
-    m_horizontalTranslationLimiter = new SlewRateLimiter(5, -5, 0);
+    m_verticalTranslationLimiter = new SlewRateLimiter(4, -4, 0);
+    m_horizontalTranslationLimiter = new SlewRateLimiter(4, -4, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
     m_controller = new PIDController(.15, 0, 0);
 
@@ -122,9 +122,9 @@ public class DefaultSwerveCommand extends Command {
         return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    double vertical = m_verticalTranslationLimiter.calculate(m_verticalTranslationSupplier.getAsDouble())
+    double vertical = m_verticalTranslationLimiter.calculate(squareNum(m_verticalTranslationSupplier.getAsDouble()))
         * Swerve.kMaxSpeed * m_speedLimiter;
-    double horizontal = m_horizontalTranslationLimiter.calculate(m_horizontalTranslationSupplier.getAsDouble())
+    double horizontal = m_horizontalTranslationLimiter.calculate(squareNum(m_horizontalTranslationSupplier.getAsDouble()))
         * Swerve.kMaxSpeed * m_speedLimiter;
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
     Translation2d offset = new Translation2d();
@@ -174,7 +174,7 @@ public class DefaultSwerveCommand extends Command {
     }
 
 
-  private double squareNum(double num) {
+  private static double squareNum(double num) {
     double sign = Math.signum(num);
     return sign * Math.pow(num, 2);
   }

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 0.7531929553170285,
+        "y": 6.67858437854643
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.09999999999999964,
-        "y": 0.0
+        "x": 1.3479282065452507,
+        "y": 7.3220684208589315
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.05,
-        "y": 0.0
+        "x": 2.888390004808514,
+        "y": 7.000326399702681
       },
       "prevControl": {
-        "x": 3.0072993852654135,
-        "y": 0.0
+        "x": 2.3131542700140044,
+        "y": 6.990576641485824
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,9 +43,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Amp Side 2 Piece",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 58.240519915187214,
     "velocity": 0
   },
   "useDefaultConstraints": true

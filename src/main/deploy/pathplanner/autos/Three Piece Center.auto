@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.37,
+      "x": 1.3674277229789629,
       "y": 5.5768617000416905
     },
     "rotation": 0
@@ -12,70 +12,88 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "named",
+          "data": {
+            "name": "Trigger Shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "First Piece"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "1stPieceCenter"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "1stPieceCenterShoot"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Trigger Shot"
+                      }
+                    }
+                  ]
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "First Piece"
                 }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
               {
-                "type": "parallel",
+                "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Move To First Piece"
+                        "pathName": "2ndPieceCenter"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "2ndPieceCenterShoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot Side"
+                        "name": "Trigger Shot"
                       }
                     }
                   ]
                 }
               },
               {
-                "type": "parallel",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Intake First Piece Amp"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Move To Piece"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    }
-                  ]
+                  "name": "First Piece"
                 }
               }
             ]

@@ -53,7 +53,7 @@ public class Constants {
     public static final double kIAutoTurning = 0.0;
     public static final double kDAutoTurning = 0.0;
 
-    public static final double kPTranslation = 1.8;
+    public static final double kPTranslation = 1.78;
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.0;
 
@@ -75,10 +75,10 @@ public class Constants {
         // Back right
         new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
 
-    public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;
-    public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;
-    public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402
-    public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966
+    public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;//-Math.PI + 0.082834967179
+    public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;//-0.55 - 3.219825673771961 - Math.PI
+    public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402, -0.026077673394056
+    public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966 , 1.25 - 6.17273869045182 - 2 * Math.PI
     
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.85);
     
@@ -270,7 +270,7 @@ public class Constants {
     public static final double kPivotMotorVoltageLimit = 12;
     public static final ArmState KStageLineSetPoint = null;
 
-    public static  double kIntakeSetpoint = 90;
+    public static  double kIntakeSetpoint = 92;
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;

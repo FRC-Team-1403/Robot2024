@@ -34,6 +34,7 @@ public class AutoIntakeShooterLoop extends Command {
     private boolean m_side;
     private Timer time;
     private boolean m_secondSourceShoot;
+    private int m_count;
     private enum State
     {
         RESET,
@@ -66,6 +67,7 @@ public class AutoIntakeShooterLoop extends Command {
         m_side = side;
         m_closeSideShoot = closeSideShoot;
         m_secondSourceShoot = secondSourceShoot;
+        Blackbox.setAutoFinished(false);
     }
 
     @Override
@@ -75,6 +77,7 @@ public class AutoIntakeShooterLoop extends Command {
         //     m_state = State.RAISE;
         // else
         m_state = State.RESET;
+        m_count =0;
         Blackbox.setAutoFinished(false);
 
         if(m_intakeAndShooter.isIntakePhotogateTriggered())
@@ -84,6 +87,7 @@ public class AutoIntakeShooterLoop extends Command {
             if(!m_intakeAndShooter.isShooterPhotogateTriggered())
             {
                 m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kCloseRPM);
+                m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                 m_state = State.RAISE;
             }
         }
@@ -101,7 +105,7 @@ public class AutoIntakeShooterLoop extends Command {
             case RESET:
             {
                 m_wrist.setWristAngle(140);
-                m_intakeAndShooter.setIntakeSpeed(0.0);
+                m_intakeAndShooter.setIntakeSpeed(1.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
                 if(m_wrist.isAtSetpoint())
                 {
@@ -136,6 +140,16 @@ public class AutoIntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
+                // if(m_trigger.getAsBoolean())
+                // {
+                //     m_count++;
+                //     if(m_count > 10)
+                //     {
+                //         Constants.Auto.kFinished = true;
+                //         Blackbox.setTrigger(false);
+                //         System.out.println("Skipped gamepiece");
+                //     }
+                // }
                 break;
             }
             case LOADING_STATION:
@@ -164,7 +178,8 @@ public class AutoIntakeShooterLoop extends Command {
             case RAISE:
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
-                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 2);
+                
 
                     if(m_amp.getAsBoolean())
                     {

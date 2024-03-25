@@ -2,22 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 6.096,
-      "y": 0.0
+      "x": 2,
+      "y": 2
     },
     "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
-      "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "2.261 Meter"
-          }
-        }
-      ]
+      "commands": []
     }
   },
   "folder": null,
