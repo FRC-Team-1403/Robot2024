@@ -11,6 +11,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,8 +30,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.core.CougarLibInjectedParameters;
 import team1403.lib.device.wpi.NavxAhrs;
-import team1403.lib.util.SwerveDriveOdometry;
-import team1403.lib.util.SwerveDrivePoseEstimator;
 import team1403.robot.Constants;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
@@ -205,16 +204,6 @@ public class SwerveSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     return m_odometer.getEstimatedPosition();
-  }
-
-  /**
-   * Set the position o
-   * f thte odometry.
-   *
-   * @param pose the new position of the odometry.
-   */
-  public void setPose(Pose2d pose) {
-    m_odometer.setPose(pose);
   }
 
   /**
@@ -401,11 +390,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if (m_Limelight.hasTarget()) {
       Pose2d pose = m_Limelight.getDistance2D();
-      if (pose != null && !m_disableVision && tagCount > 0) {
+      if (pose != null && !m_disableVision) {
         m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
-      } else if (pose != null && !m_disableVision && tagCount == 0) {
-        m_odometer.setPose(pose);
-        tagCount++;
       }
     } else {
       m_odometer.update(getGyroscopeRotation(), getModulePositions());
