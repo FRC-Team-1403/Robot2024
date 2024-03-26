@@ -89,7 +89,7 @@ public class Constants {
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 39.795095397
 
     public static final double kVoltageSaturation = 12.0;
-    public static final int kDriveCurrentLimit = 50;
+    public static final int kDriveCurrentLimit = 40;
     public static final int kSteerCurrentLimit = 25;
 
     public static final double kMaxAccelerationMetersPerSecondSquared = 3;

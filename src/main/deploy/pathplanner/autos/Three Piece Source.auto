@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.75,
-      "y": 6.7
+      "x": 0.74,
+      "y": 4.43
     },
-    "rotation": 60.95090147674095
+    "rotation": -59.22000000000003
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "First Piece Side"
+            "name": "First Piece"
           }
         },
         {
@@ -34,13 +34,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Amp Side 1st Piece"
+                        "pathName": "1stPieceSource"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Amp Side Shoot 1st Piece"
+                        "pathName": "1stPieceSourceShoot"
                       }
                     },
                     {
@@ -72,51 +72,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Amp Side 2nd Piece"
+                        "pathName": "2ndPieceSource"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Amp Side Shoot 2nd Piece"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Trigger Shot"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp Side 3rd Piece"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp Side Shoot 3rd Piece"
+                        "pathName": "2ndPieceSourceShoot"
                       }
                     },
                     {
@@ -132,32 +94,6 @@
                 "type": "named",
                 "data": {
                   "name": "Shoot Side"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Amp Side 4th Piece"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
                 }
               }
             ]

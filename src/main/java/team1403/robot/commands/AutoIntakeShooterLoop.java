@@ -77,9 +77,8 @@ public class AutoIntakeShooterLoop extends Command {
         //     m_state = State.RAISE;
         // else
         m_state = State.RESET;
-        m_count =0;
+        m_count = 0;
         Blackbox.setAutoFinished(false);
-
         if(m_intakeAndShooter.isIntakePhotogateTriggered())
         {
             m_arm.moveArm(118);
@@ -140,16 +139,16 @@ public class AutoIntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
-                // if(m_trigger.getAsBoolean())
-                // {
-                //     m_count++;
-                //     if(m_count > 10)
-                //     {
-                //         Constants.Auto.kFinished = true;
-                //         Blackbox.setTrigger(false);
-                //         System.out.println("Skipped gamepiece");
-                //     }
-                // }
+                if(m_trigger.getAsBoolean())
+                {
+                    m_count++;
+                    if(m_count > 10)
+                    {
+                        Blackbox.setAutoFinished(true);
+                        Blackbox.setTrigger(false);
+                        System.out.println("Skipped gamepiece");
+                    }
+                }
                 break;
             }
             case LOADING_STATION:

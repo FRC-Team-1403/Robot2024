@@ -5,7 +5,7 @@
       "x": 0.74,
       "y": 4.43
     },
-    "rotation": -60.24000000000001
+    "rotation": -59.22000000000003
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "First Piece Side"
+            "name": "First Piece"
           }
         },
         {
@@ -34,13 +34,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Source Side 1st Piece"
+                        "pathName": "1stPieceSource"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Source Side 1st Piece Shoot"
+                        "pathName": "1stPieceSourceShoot"
                       }
                     },
                     {
@@ -55,45 +55,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Second Source Shoot"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Source Side 2nd Piece"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Source Side 2nd Piece Shoot"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Trigger Shot"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Second Source Shoot"
+                  "name": "Shoot Side"
                 }
               }
             ]

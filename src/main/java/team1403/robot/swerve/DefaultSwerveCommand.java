@@ -106,7 +106,7 @@ public class DefaultSwerveCommand extends Command {
   public void execute() {
 
 
-    m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.7);
+    m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.5);
     if (m_snipingMode.getAsBoolean()) {
       m_speedLimiter = 0.15;
     }
@@ -122,9 +122,9 @@ public class DefaultSwerveCommand extends Command {
         return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    double vertical = m_verticalTranslationLimiter.calculate(squareNum(m_verticalTranslationSupplier.getAsDouble()))
+    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()))
         * Swerve.kMaxSpeed * m_speedLimiter;
-    double horizontal = m_horizontalTranslationLimiter.calculate(squareNum(m_horizontalTranslationSupplier.getAsDouble()))
+    double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()))
         * Swerve.kMaxSpeed * m_speedLimiter;
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
     Translation2d offset = new Translation2d();

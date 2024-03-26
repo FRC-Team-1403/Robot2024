@@ -55,7 +55,7 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
   }
 
   public Rotation2d getConstraintedRotation(){
-    double angle = super.getFusedHeading();
+    double angle = super.getRotation2d().getDegrees();
     while(angle > 180)
       angle -= 360;
     while(angle < -180)
@@ -64,7 +64,7 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
   }
 
   public Rotation2d get180to180Rotation2d(){
-    double a = super.getFusedHeading();
+    double a = super.getRotation2d().getDegrees();
     while(a > 180)
     {
       a -= 360;
@@ -73,11 +73,6 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
     {
       a += 360;
     }
-    return new Rotation2d(Units.degreesToRadians(a));
-  }
-
-  public Rotation2d get0to360Rotation2d(){
-    double a = super.getFusedHeading();
     return new Rotation2d(Units.degreesToRadians(a));
   }
 
