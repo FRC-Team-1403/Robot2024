@@ -376,6 +376,11 @@ public class SwerveSubsystem extends SubsystemBase {
     this.m_isXModeEnabled = enabled;
   }
 
+  @AutoLogOutput(key="Filtered Angular Velocity")
+  private double getFilteredAngularVelocity() {
+    return m_navxFilter.calculate(m_navx2.getAngularVelocity());
+  }
+
   /**
    * Adds rotational velocity to the chassis speed to compensate for
    * unwanted changes in gyroscope heading.
@@ -393,7 +398,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Anuglar vel", m_navx2.getAngularVelocity());
     SmartDashboard.putNumber("omega rads", chassisSpeeds.omegaRadiansPerSecond);
     SmartDashboard.putNumber("real rads", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).omegaRadiansPerSecond);
-    if (Math.abs(m_navxFilter.calculate(m_navx2.getAngularVelocity())) >= 0.35) {
+    if (Math.abs(getFilteredAngularVelocity()) >= 0.40) {
       m_desiredHeading = getGyroscopeRotation().getDegrees();
     } else if (translationalVelocity > 0.1 && Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= 0.1) {
       double calc = m_driftCorrectionPid.calculate(getGyroscopeRotation().getDegrees(), m_desiredHeading);
@@ -469,10 +474,10 @@ public class SwerveSubsystem extends SubsystemBase {
       setModuleStates(m_states);
     }
 
-    // SmartDashboard.putNumber("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
-    // SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
-    // SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
-    // SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
+    SmartDashboard.putNumber("Front Left Absolute Encoder", m_modules[0].getAbsoluteAngle());
+    SmartDashboard.putNumber("Front Right Absolute Encoder", m_modules[1].getAbsoluteAngle());
+    SmartDashboard.putNumber("Back Left Absolute Encoder", m_modules[2].getAbsoluteAngle());
+    SmartDashboard.putNumber("Back Right Absolute Encoder", m_modules[3].getAbsoluteAngle());
     //force advantage kit to log during teleop
     SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());
