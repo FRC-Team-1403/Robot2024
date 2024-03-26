@@ -151,28 +151,6 @@ public class DefaultSwerveCommand extends Command {
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }
-       
-  public static double GetConstraintAngle(double angle) {
-      while(angle > 180)
-        angle -= 360;
-      while(angle < -180)
-       angle += 360;
-      return angle;
-  }
-   
-    public static double GetFinalTargetAngleForNegativeCurrentAngle(double constraint_current_angle,
-    double given_current_angle, double given_target_angle) {
-      double calculated_current_angle = constraint_current_angle;
-        
-      if(constraint_current_angle*-1 + given_target_angle > 180)
-        calculated_current_angle = 360 + constraint_current_angle;
-           
-      double calculated_target_angle = calculated_current_angle - given_target_angle;
-       
-      double final_target_angle = -calculated_target_angle;
-      return final_target_angle;
-    }
-
 
   private static double squareNum(double num) {
     double sign = Math.signum(num);
