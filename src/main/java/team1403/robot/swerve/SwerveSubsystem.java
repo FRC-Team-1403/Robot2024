@@ -348,20 +348,6 @@ public class SwerveSubsystem extends SubsystemBase {
     this.m_isXModeEnabled = enabled;
   }
 
-  private double normalizeAngle(double input) {
-    while(input > 180)
-    {
-      input -= 360;
-    }
-
-    while(input < -180)
-    {
-      input += 360;
-    }
-
-    return input;
-  }
-
   /**
    * Accounts for the drift caused by the first order kinematics
    * while doing both translational and rotational movement.
