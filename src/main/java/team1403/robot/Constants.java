@@ -277,7 +277,16 @@ public class Constants {
     public static  double kDefaultClose = 114;
   }
 
-
+  public static class Hanger {
+    public static final double kTopRightLimit = 38;
+    public static final double kTopLeftLimit = 38;
+    public static final double kBottomLeftLimit = 1;
+    public static final double kBottomRightLimit = 2;
+    public static final double kLeftLockAngle = 70;
+    public static final double kLeftUnlockAngle = 100;
+    public static final double kRightLockAngle = 90;
+    public static final double kRightUnlockAngle = 85;
+  }
 
   public static class IntakeAndShooter {
     public static final double kFrameAngle = 250.24629;
@@ -290,13 +299,6 @@ public class Constants {
     public static final double kCloseRPM = 4800;
     public static final double kExpelDeadzone = 0.15;
     public static final int kIntakeCurrentLimit = 40;
-  }
-
-  public static class Hanger {
-    public static final double kTopLimit = 36;
-    public static final double kBottomLimit = 3;
-    public static final double kLockAngle = 170;
-    public static final double kUnlockAngle = 180;
   }
   
   public static class Wrist {
