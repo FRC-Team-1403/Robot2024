@@ -106,7 +106,7 @@ public class DefaultSwerveCommand extends Command {
   public void execute() {
 
 
-    m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.5);
+    m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.7);
     if (m_snipingMode.getAsBoolean()) {
       m_speedLimiter = 0.15;
     }
