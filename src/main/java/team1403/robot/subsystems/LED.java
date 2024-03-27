@@ -15,7 +15,6 @@ public class LED extends SubsystemBase {
   public LED() {
     this.blinkin = new Spark(Constants.RioPorts.LEDPort);
     gamePieceState = LEDState.OFF;
-
   }
 
   /* set by the buttons
@@ -26,33 +25,26 @@ public class LED extends SubsystemBase {
   public void setLedMode(LEDState ledState) {
    this.gamePieceState = ledState;
 
-   blinkin.set(gamePieceState.colorValue);
+   setLedColor(gamePieceState.colorValue);
   }
 
-  public GamePiece getGameState() {
-    return this.gamePieceState.gamePiece;
+  public void setLedColor(double color) {
+    blinkin.set(color);
   }
 
   public enum LEDState {
-    OFF(0.99, GamePiece.UNLOADED), YELLOW(0.69, GamePiece.LOADED);
+    OFF(0.99), YELLOW(0.69), GREEN(0.75), YELLOW_FLASH(-0.07), RED_FLASH(-0.17);
 
     public final double colorValue;
-    public final GamePiece gamePiece;
 
-    LEDState(double colorValue, GamePiece gamePiece)  {
-        this.colorValue = colorValue;
-        this.gamePiece = gamePiece;
+    LEDState(double colorValue) {
+      this.colorValue = colorValue;
     }
-  }
-
-  public enum GamePiece {
-    LOADED,
-    UNLOADED,
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putString("LED Color", gamePieceState.toString());
-    Logger.recordOutput("LED State", getGameState());
+    Logger.recordOutput("LED State", gamePieceState.toString());
   }
 }

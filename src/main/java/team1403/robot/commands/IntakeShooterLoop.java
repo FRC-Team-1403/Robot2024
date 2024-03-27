@@ -103,6 +103,7 @@ public class IntakeShooterLoop extends Command {
                 m_wrist.setWristAngle(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
+                m_led.setLedMode(LEDState.OFF);
                 if(m_wrist.isAtSetpoint())
                 {
                     m_arm.moveArm(Constants.Arm.kIntakeSetpoint);
@@ -137,7 +138,11 @@ public class IntakeShooterLoop extends Command {
                     m_state = State.RAISE;
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
-                m_led.setLedMode(LEDState.OFF);
+                if(m_intakeAndShooter.isIntakePhotogateTriggered())
+                    m_led.setLedMode(LEDState.YELLOW);
+                else
+                    m_led.setLedMode(LEDState.OFF);
+
                 break;
             }
             case LOADING_STATION:
@@ -244,9 +249,9 @@ public class IntakeShooterLoop extends Command {
                     else m_counter++;
                 }
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
+                    m_led.setLedMode(LEDState.GREEN);
+                } else {
                     m_led.setLedMode(LEDState.YELLOW);
-                } else{
-                    m_led.setLedMode(LEDState.OFF);
                 }
 
                 break;
@@ -265,6 +270,7 @@ public class IntakeShooterLoop extends Command {
         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
             m_intakeAndShooter.setIntakeSpeed(-0.7);
             m_intakeAndShooter.setShooterRPM(-1500);
+            m_led.setLedMode(LEDState.RED_FLASH);
             // get approval
             // m_state = State.RESET;
         }
