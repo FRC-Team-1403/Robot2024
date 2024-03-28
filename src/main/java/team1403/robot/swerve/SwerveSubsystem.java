@@ -385,10 +385,13 @@ public class SwerveSubsystem extends SubsystemBase {
 
     updateSwerveModules();
 
-    if (m_Limelight.hasTarget()) {
+    if (m_Limelight.hasTarget() && !m_disableVision) {
       Pose2d pose = m_Limelight.getDistance2D();
-      if (pose != null && !m_disableVision) {
+      if (pose != null) {
         m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+      }
+      else {
+        m_odometer.update(getGyroscopeRotation(), getModulePositions());
       }
     } else {
       m_odometer.update(getGyroscopeRotation(), getModulePositions());
