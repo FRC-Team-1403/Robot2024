@@ -316,9 +316,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private void xMode() {
     SwerveModuleState[] states = {
         // Front Left
-        new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-135)),
         // Front Right
-        new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
         // Back left
         new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
         // Back Right
