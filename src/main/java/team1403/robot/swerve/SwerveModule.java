@@ -43,8 +43,6 @@ public class SwerveModule implements Device {
     private final boolean m_inverted;
     private double m_targetVelocity;
 
-    private double m_targetSteerAngle;
-
     /**
      * Swerve Module represents a singular swerve module for a
      * swerve drive train.
@@ -80,7 +78,7 @@ public class SwerveModule implements Device {
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
       m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
-      m_targetSteerAngle = 0;
+      m_steerPidController.setSetpoint(0);
 
       initEncoders();
       initSteerMotor();
@@ -196,7 +194,7 @@ public class SwerveModule implements Device {
       m_targetVelocity = state.speedMetersPerSecond;
 
       // Set steerMotor according to position of encoder
-      m_targetSteerAngle = normalizeAngle(state.angle.getRadians());
+      m_steerPidController.setSetpoint(normalizeAngle(state.angle.getRadians()));
     }
 
     /**
@@ -279,9 +277,9 @@ public class SwerveModule implements Device {
     }
 
     public void periodic() {
-      m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
+      m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle()));
       SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
-      SmartDashboard.putNumber(getName() + " desired angle", m_targetSteerAngle);
+      SmartDashboard.putNumber(getName() + " desired angle", m_steerPidController.getSetpoint());
       SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
       SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
     }
