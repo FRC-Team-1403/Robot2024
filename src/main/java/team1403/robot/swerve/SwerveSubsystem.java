@@ -10,6 +10,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -278,9 +279,10 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
-      m_modules[i].set(states[i].speedMetersPerSecond,
-          states[i].angle.getRadians());
+      //convert 0,2PI to -PI,PI
+      Rotation2d rot = new Rotation2d(MathUtil.angleModulus(m_modules[i].getAbsoluteAngle()));
+      states[i] = SwerveModuleState.optimize(states[i], rot);
+      m_modules[i].set(states[i]);
     }
   }
 

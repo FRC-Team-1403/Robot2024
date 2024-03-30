@@ -188,14 +188,14 @@ public class SwerveModule implements Device {
      * @param steerAngle           steering angle.
      *
      */
-    public void set(double driveMetersPerSecond, double steerAngle) {
+    public void set(SwerveModuleState state) {
       // Set driveMotor according to velocity input
       // System.out.println("drive input speed: " + driveMetersPerSecond);
-      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
-      m_targetVelocity = driveMetersPerSecond;
+      this.m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      m_targetVelocity = state.speedMetersPerSecond;
 
       // Set steerMotor according to position of encoder
-      m_targetSteerAngle = normalizeAngle(steerAngle);
+      m_targetSteerAngle = normalizeAngle(state.angle.getRadians());
     }
 
     /**
