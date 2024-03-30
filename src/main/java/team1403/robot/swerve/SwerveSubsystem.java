@@ -398,7 +398,7 @@ public class SwerveSubsystem extends SubsystemBase {
       m_odometer.update(getGyroscopeRotation(), getModulePositions());
     }
 
-    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
+    SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
 
     if (this.m_isXModeEnabled) {
@@ -412,7 +412,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     //force advantage kit to log during teleop
     SmartDashboard.putString("Module States", getModuleStates().toString());
-    m_field.setRobotPose(m_odometer.getEstimatedPosition());
+    m_field.setRobotPose(getPose());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
