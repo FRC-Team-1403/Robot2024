@@ -279,8 +279,7 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      //convert 0,2PI to -PI,PI
-      Rotation2d rot = new Rotation2d(MathUtil.angleModulus(m_modules[i].getAbsoluteAngle()));
+      Rotation2d rot = new Rotation2d(m_modules[i].getAbsoluteAngle());
       states[i] = SwerveModuleState.optimize(states[i], rot);
       m_modules[i].set(states[i]);
     }

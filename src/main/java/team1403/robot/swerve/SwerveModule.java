@@ -79,7 +79,7 @@ public class SwerveModule implements Device {
       m_absoluteEncoderOffset = offset;
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
-      m_steerPidController.enableContinuousInput(0, 2*Math.PI);
+      m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
       m_targetSteerAngle = 0;
 
       initEncoders();
@@ -168,17 +168,18 @@ public class SwerveModule implements Device {
     }
 
     /**
-     * Normalizes angle value to be inbetween values 0 to 2pi.
+     * Normalizes angle value to be inbetween values -pi to pi.
      *
      * @param angle angle to be normalized
-     * @return angle value between 0 to 2pi
+     * @return angle value between -pi to pi
      */
     private double normalizeAngle(double angle) {
       angle %= (2.0 * Math.PI);
       if (angle < 0.0) {
         angle += 2.0 * Math.PI;
       }
-      return angle;
+      //convert to -pi to pi
+      return angle - Math.PI;
     }
 
     /**
