@@ -410,8 +410,6 @@ public class SwerveSubsystem extends SubsystemBase {
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       setModuleStates(m_states);
     }
-    //force advantage kit to log during teleop
-    SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(getPose());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
