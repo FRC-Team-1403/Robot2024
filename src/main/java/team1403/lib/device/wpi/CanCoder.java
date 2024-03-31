@@ -31,12 +31,12 @@ public class CanCoder extends CANcoder implements Encoder {
 
   @Override
   public double getPositionValue() {
-    return super.getPosition().getValueAsDouble() * m_positionConversionFactor;
+    return super.getPosition().refresh().getValueAsDouble() * m_positionConversionFactor;
   }
 
   @Override
   public double getVelocityValue() {
-    return super.getVelocity().getValueAsDouble() * m_velocityConversionFactor;
+    return super.getVelocity().refresh().getValueAsDouble() * m_velocityConversionFactor;
   }
 
   @Override
