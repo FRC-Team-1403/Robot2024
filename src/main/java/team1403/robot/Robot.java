@@ -14,6 +14,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
+import team1403.robot.subsystems.Blackbox;
 import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
@@ -51,6 +52,8 @@ public class Robot extends LoggedRobot {
     else {
       Logger.addDataReceiver(new NT4Publisher());
     }
+
+    Blackbox.setSimulation(!isReal());
 
     Logger.start();
 

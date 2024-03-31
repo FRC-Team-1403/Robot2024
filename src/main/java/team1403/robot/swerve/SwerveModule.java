@@ -24,6 +24,7 @@ import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
+import team1403.robot.subsystems.Blackbox;
 
 /**
  * Represents a swerve module. Consists of a drive motor, steer motor, 
@@ -97,7 +98,10 @@ public class SwerveModule implements Device {
       }
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
       //in units of rotations
-      magnetSensor.MagnetOffset = (m_absoluteEncoderOffset)/(2*Math.PI);
+      if(Blackbox.isSimulation())
+        magnetSensor.MagnetOffset = 0.25;
+      else
+        magnetSensor.MagnetOffset = (m_absoluteEncoderOffset)/(2*Math.PI);
       magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
