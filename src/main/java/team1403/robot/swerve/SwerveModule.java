@@ -82,8 +82,8 @@ public class SwerveModule implements Device {
       m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
       m_steerPidController.setSetpoint(0);
       
-      //m_driveMotor.setCANTimeout(0);
-      //m_steerMotor.setCANTimeout(0);
+      m_driveMotor.setCANTimeout(0);
+      m_steerMotor.setCANTimeout(0);
 
       initEncoders();
       initSteerMotor();
@@ -111,7 +111,7 @@ public class SwerveModule implements Device {
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
 
       //avoid overrun, and get more up to date values for PID
-      //m_absoluteEncoder.getPosition().setUpdateFrequency(500);
+      m_absoluteEncoder.getPosition().setUpdateFrequency(500, 0.002);
 
       //m_absoluteEncoder.setPositionToAbsolute();
       //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
