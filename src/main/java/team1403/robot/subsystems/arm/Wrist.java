@@ -130,6 +130,7 @@ public class Wrist extends SubsystemBase {
    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
    Logger.recordOutput("Wrist Speed", m_wristMotor.get());
    Logger.recordOutput("Wrist Angle", getWristAngle());
+   Logger.recordOutput("Wrist Setpoint", m_wristAngleSetpoint);
   
   }
 }
