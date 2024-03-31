@@ -400,6 +400,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (m_Limelight.hasTarget() && !m_disableVision) {
       Pose2d pose = m_Limelight.getDistance2D();
       if (pose != null) {
+        Logger.recordOutput("Odometery/Vision Measurement", pose);
         m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
       }
       else {
