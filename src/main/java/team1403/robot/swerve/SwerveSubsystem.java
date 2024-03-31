@@ -294,6 +294,8 @@ public class SwerveSubsystem extends SubsystemBase {
       states[i] = SwerveModuleState.optimize(states[i], rot);
       m_modules[i].set(states[i]);
     }
+
+    Logger.recordOutput("SwerveStates/Target", m_states);
   }
 
   @AutoLogOutput(key = "SwerveStates/Measured")
@@ -420,7 +422,7 @@ public class SwerveSubsystem extends SubsystemBase {
       if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
-      Logger.recordOutput("SwerveStates/Target", m_states);
+      
       setModuleStates(m_states);
     }
     m_field.setRobotPose(getPose());
