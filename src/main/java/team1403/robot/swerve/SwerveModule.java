@@ -14,6 +14,7 @@ import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -172,12 +173,7 @@ public class SwerveModule implements Device {
      * @return angle value between -pi to pi
      */
     private double normalizeAngle(double angle) {
-      angle %= (2.0 * Math.PI);
-      if (angle < 0.0) {
-        angle += 2.0 * Math.PI;
-      }
-      //convert to -pi to pi
-      return angle - Math.PI;
+      return MathUtil.angleModulus(angle);
     }
 
     /**
