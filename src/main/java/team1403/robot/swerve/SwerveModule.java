@@ -2,6 +2,7 @@ package team1403.robot.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -80,6 +81,9 @@ public class SwerveModule implements Device {
       m_drivePIDController = m_driveMotor.getPIDController();
       m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
       m_steerPidController.setSetpoint(0);
+      
+      //m_driveMotor.setCANTimeout(0);
+      //m_steerMotor.setCANTimeout(0);
 
       initEncoders();
       initSteerMotor();
@@ -105,6 +109,9 @@ public class SwerveModule implements Device {
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
+
+      //avoid overrun, and get more up to date values for PID
+      //m_absoluteEncoder.getPosition().setUpdateFrequency(500);
 
       //m_absoluteEncoder.setPositionToAbsolute();
       //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
@@ -196,7 +203,7 @@ public class SwerveModule implements Device {
     /**
      * Gets the current angle reading of the encoder in radians.
      *
-     * @return The current angle in radians. Range: [0, 2pi)
+     * @return The current angle in radians. Range: [-pi, pi)
      */
     public double getAbsoluteAngle() {
       return normalizeAngle(m_absoluteEncoder.getPositionValue());
