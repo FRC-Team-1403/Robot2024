@@ -142,7 +142,8 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public boolean isReady(){
-    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 300;
+    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 300 && 
+           Math.abs(m_topShooter.getSetpoint() + m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()) < 300;
   }
 
   public boolean teleopIsReady() {
