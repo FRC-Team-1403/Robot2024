@@ -45,7 +45,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.45;
+    public static final double kPTurning = 0.4;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -102,14 +102,14 @@ public class Constants {
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
     //top-to-bottom disp = 17.82426 inches
-    public static final Transform3d kCameraOffset = new Transform3d(0.0,Units.inchesToMeters(-8.568),Units.inchesToMeters(17.82426), new Rotation3d(0.0,Units.degreesToRadians(25), Math.PI));
+    public static final Transform3d kCameraOffset = new Transform3d(0.0,Units.inchesToMeters(-8.568),Units.inchesToMeters(17.82426), new Rotation3d(Math.PI, Units.degreesToRadians(25), Math.PI));
   }
 
   /**
    * Configures the CAN bus. These are grouped together
    * rather than by subsystem to more easily detect conflict
    * and understand overall wiring.
-   */
+   */  
   public static class CanBus {
 
     private static final int kTBD = 0;
@@ -270,7 +270,7 @@ public class Constants {
     public static final double kPivotMotorVoltageLimit = 12;
     public static final ArmState KStageLineSetPoint = null;
 
-    public static  double kIntakeSetpoint = 92;
+    public static  double kIntakeSetpoint = 9; //92
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;
@@ -305,7 +305,7 @@ public class Constants {
     public static final double kWristConversionFactor = 0;
     public static final double kAbsoluteWristOffset = 0;
 
-    public static double KPWrist = 0.0097; //original value 0.0092 changed - 0.0097
+    public static double KPWrist = 0.0096; //original value 0.0092 changed - 0.0097
     public static final double KIWrist = 0.0;
     public static final double KDWrist = 0;
 

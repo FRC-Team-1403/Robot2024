@@ -177,9 +177,9 @@ public class AutoIntakeShooterLoop extends Command {
             case RAISE:
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
-                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 2);
-                
-
+                    if (m_side && !m_stageLine.getAsBoolean()) m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 5);
+                    else if (!m_side && !m_stageLine.getAsBoolean()) m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+                    
                     if(m_amp.getAsBoolean())
                     {
                         m_arm.moveArm(Constants.Arm.kAmpSetpoint);
@@ -197,7 +197,7 @@ public class AutoIntakeShooterLoop extends Command {
                     {
                         m_arm.moveArm(124);
                         if (m_side) m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint + 4);
-                        else if (m_secondSourceShoot) m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint -2);
+                        else if (m_secondSourceShoot) m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint - 3);
                         else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint + 2);
                         m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
                     }

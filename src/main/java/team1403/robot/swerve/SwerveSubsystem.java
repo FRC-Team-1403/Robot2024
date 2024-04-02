@@ -251,7 +251,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param offset        the swerve module to pivot around
    */
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
-    m_chassisSpeeds = chassisSpeeds;
+    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
     m_offset = offset;
     SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
@@ -273,6 +273,7 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @param states an array of states for each module.
    */
+  
   public void setModuleStates(SwerveModuleState[] states) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         states, Swerve.kMaxSpeed);
@@ -350,19 +351,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_navx2;
   }
 
-  private double prevTimeStep = 0;
-
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    double curTimeStep = Timer.getFPGATimestamp();
-    if(prevTimeStep == 0)
-    {
-      prevTimeStep = curTimeStep;
-      return chassisSpeeds;
-    }
-    
-    final double deltaTime = curTimeStep - prevTimeStep;
-    prevTimeStep = curTimeStep;
-    
+    final double deltaTime = 0.02;
     return ChassisSpeeds.discretize(chassisSpeeds, deltaTime);
   }
 
@@ -403,7 +393,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
+      //m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
       if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
