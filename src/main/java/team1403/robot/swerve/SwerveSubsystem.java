@@ -5,8 +5,12 @@ import java.util.Optional;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinder;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -17,6 +21,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -116,6 +121,13 @@ public class SwerveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
     );
+    Pathfinding.setPathfinder(new LocalADStar());
+    PathPlannerLogging.setLogActivePathCallback((activePath) -> {
+      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+    });
+    PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
+        Logger.recordOutput("Odometery/TrajectorySetpoint", targetPose);
+    });
 
     // addDevice(m_navx2.getName(), m_navx2);
     if (m_navx2.isConnected())
@@ -279,10 +291,12 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
-      m_modules[i].set(states[i].speedMetersPerSecond,
-          states[i].angle.getRadians());
+      Rotation2d rot = new Rotation2d(m_modules[i].getAbsoluteAngle());
+      states[i] = SwerveModuleState.optimize(states[i], rot);
+      m_modules[i].set(states[i]);
     }
+
+    Logger.recordOutput("SwerveStates/Target", m_states);
   }
 
   @AutoLogOutput(key = "SwerveStates/Measured")
@@ -315,9 +329,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private void xMode() {
     SwerveModuleState[] states = {
         // Front Left
-        new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-135)),
         // Front Right
-        new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
         // Back left
         new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
         // Back Right
@@ -378,6 +392,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (m_Limelight.hasTarget() && !m_disableVision) {
       Pose2d pose = m_Limelight.getDistance2D();
       if (pose != null) {
+        Logger.recordOutput("Odometery/Vision Measurement", pose);
         m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
       }
       else {
@@ -387,7 +402,7 @@ public class SwerveSubsystem extends SubsystemBase {
       m_odometer.update(getGyroscopeRotation(), getModulePositions());
     }
 
-    SmartDashboard.putString("Odometry", m_odometer.getEstimatedPosition().toString());
+    SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
 
     if (this.m_isXModeEnabled) {
@@ -397,11 +412,10 @@ public class SwerveSubsystem extends SubsystemBase {
       if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
+      
       setModuleStates(m_states);
     }
-    //force advantage kit to log during teleop
-    SmartDashboard.putString("Module States", getModuleStates().toString());
-    m_field.setRobotPose(m_odometer.getEstimatedPosition());
+    m_field.setRobotPose(getPose());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 

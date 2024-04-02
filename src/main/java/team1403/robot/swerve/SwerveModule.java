@@ -2,6 +2,7 @@ package team1403.robot.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -14,6 +15,7 @@ import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -42,8 +44,6 @@ public class SwerveModule implements Device {
     private final String m_name;
     private final boolean m_inverted;
     private double m_targetVelocity;
-
-    private double m_targetSteerAngle;
 
     /**
      * Swerve Module represents a singular swerve module for a
@@ -79,8 +79,11 @@ public class SwerveModule implements Device {
       m_absoluteEncoderOffset = offset;
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
-      m_steerPidController.enableContinuousInput(0, 2*Math.PI);
-      m_targetSteerAngle = 0;
+      m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
+      m_steerPidController.setSetpoint(0);
+      
+      m_driveMotor.setCANTimeout(0);
+      m_steerMotor.setCANTimeout(0);
 
       initEncoders();
       initSteerMotor();
@@ -106,6 +109,9 @@ public class SwerveModule implements Device {
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
+
+      //avoid overrun, and get more up to date values for PID
+      m_absoluteEncoder.getPosition().setUpdateFrequency(500, 0.002);
 
       //m_absoluteEncoder.setPositionToAbsolute();
       //m_absoluteEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 250);
@@ -168,17 +174,13 @@ public class SwerveModule implements Device {
     }
 
     /**
-     * Normalizes angle value to be inbetween values 0 to 2pi.
+     * Normalizes angle value to be inbetween values -pi to pi.
      *
      * @param angle angle to be normalized
-     * @return angle value between 0 to 2pi
+     * @return angle value between -pi to pi
      */
     private double normalizeAngle(double angle) {
-      angle %= (2.0 * Math.PI);
-      if (angle < 0.0) {
-        angle += 2.0 * Math.PI;
-      }
-      return angle;
+      return MathUtil.angleModulus(angle);
     }
 
     /**
@@ -188,20 +190,20 @@ public class SwerveModule implements Device {
      * @param steerAngle           steering angle.
      *
      */
-    public void set(double driveMetersPerSecond, double steerAngle) {
+    public void set(SwerveModuleState state) {
       // Set driveMotor according to velocity input
       // System.out.println("drive input speed: " + driveMetersPerSecond);
-      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
-      m_targetVelocity = driveMetersPerSecond;
+      this.m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      m_targetVelocity = state.speedMetersPerSecond;
 
       // Set steerMotor according to position of encoder
-      m_targetSteerAngle = normalizeAngle(steerAngle);
+      m_steerPidController.setSetpoint(normalizeAngle(state.angle.getRadians()));
     }
 
     /**
      * Gets the current angle reading of the encoder in radians.
      *
-     * @return The current angle in radians. Range: [0, 2pi)
+     * @return The current angle in radians. Range: [-pi, pi)
      */
     public double getAbsoluteAngle() {
       return normalizeAngle(m_absoluteEncoder.getPositionValue());
@@ -278,9 +280,9 @@ public class SwerveModule implements Device {
     }
 
     public void periodic() {
-      m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
+      m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle()));
       SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
-      SmartDashboard.putNumber(getName() + " desired angle", m_targetSteerAngle);
+      SmartDashboard.putNumber(getName() + " desired angle", m_steerPidController.getSetpoint());
       SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
       SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
     }
