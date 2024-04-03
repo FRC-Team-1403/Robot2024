@@ -45,7 +45,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.4;
+    public static final double kPTurning = 0.45;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -270,7 +270,7 @@ public class Constants {
     public static final double kPivotMotorVoltageLimit = 12;
     public static final ArmState KStageLineSetPoint = null;
 
-    public static  double kIntakeSetpoint = 9; //92
+    public static double kIntakeSetpoint = 92; // 92
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;
@@ -286,6 +286,7 @@ public class Constants {
     public static final double kLeftUnlockAngle = 100;
     public static final double kRightLockAngle = 90;
     public static final double kRightUnlockAngle = 85;
+
   }
 
   public static class IntakeAndShooter {
