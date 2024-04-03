@@ -80,7 +80,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402, -0.026077673394056
     public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966 , 1.25 - 6.17273869045182 - 2 * Math.PI
     
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.85);
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4); //3.85, 
     
     public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI / 6.21; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
