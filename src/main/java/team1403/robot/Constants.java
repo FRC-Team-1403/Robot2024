@@ -45,7 +45,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.4;
+    public static final double kPTurning = 0.45;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -80,7 +80,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402, -0.026077673394056
     public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966 , 1.25 - 6.17273869045182 - 2 * Math.PI
     
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.85);
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(4); //3.85, 
     
     public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI / 6.21; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
@@ -270,7 +270,7 @@ public class Constants {
     public static final double kPivotMotorVoltageLimit = 12;
     public static final ArmState KStageLineSetPoint = null;
 
-    public static  double kIntakeSetpoint = 9; //92
+    public static double kIntakeSetpoint = 92; // 92
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;
@@ -286,6 +286,7 @@ public class Constants {
     public static final double kLeftUnlockAngle = 100;
     public static final double kRightLockAngle = 90;
     public static final double kRightUnlockAngle = 85;
+
   }
 
   public static class IntakeAndShooter {

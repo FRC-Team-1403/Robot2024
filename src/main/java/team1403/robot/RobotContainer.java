@@ -128,12 +128,11 @@ public class RobotContainer {
 
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
-    m_driverController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.unlockHanger(), m_hanger)
-      .andThen(new InstantCommand(() -> m_hanger.runHanger(0.1), m_hanger)));
+    m_operatorController.povLeft().onTrue(
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
       
-    m_driverController.povRight().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-0.2), m_hanger)
+    m_operatorController.povDown().onTrue(
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger)
       .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
   }
   

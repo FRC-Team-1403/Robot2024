@@ -263,7 +263,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param offset        the swerve module to pivot around
    */
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
-    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
+    m_chassisSpeeds = chassisSpeeds;
     m_offset = offset;
     SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
@@ -291,9 +291,9 @@ public class SwerveSubsystem extends SubsystemBase {
         states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      Rotation2d rot = new Rotation2d(m_modules[i].getAbsoluteAngle());
-      states[i] = SwerveModuleState.optimize(states[i], rot);
-      m_modules[i].set(states[i]);
+      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
+      m_modules[i].set(states[i].speedMetersPerSecond,
+          states[i].angle.getRadians());
     }
 
     Logger.recordOutput("SwerveStates/Target", m_states);
@@ -329,9 +329,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private void xMode() {
     SwerveModuleState[] states = {
         // Front Left
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-135)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
         // Front Right
-        new SwerveModuleState(0, Rotation2d.fromDegrees(-45)),
+        new SwerveModuleState(0, Rotation2d.fromDegrees(225)),
         // Back left
         new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
         // Back Right
@@ -365,8 +365,18 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_navx2;
   }
 
+  private double prevTimeStep = 0;
+
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    final double deltaTime = 0.02;
+      double curTimeStep = Timer.getFPGATimestamp();
+      if(prevTimeStep == 0)
+      {
+        prevTimeStep = curTimeStep;
+        return chassisSpeeds;
+      }
+      
+      final double deltaTime = curTimeStep - prevTimeStep;
+      prevTimeStep = curTimeStep;
     return ChassisSpeeds.discretize(chassisSpeeds, deltaTime);
   }
 
@@ -408,14 +418,15 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      //m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
       if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       
       setModuleStates(m_states);
     }
-    m_field.setRobotPose(getPose());
+    SmartDashboard.putString("Module States", getModuleStates().toString());
+    m_field.setRobotPose(m_odometer.getEstimatedPosition());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 

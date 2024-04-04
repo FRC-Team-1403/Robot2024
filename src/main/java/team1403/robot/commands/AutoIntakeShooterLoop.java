@@ -197,10 +197,10 @@ public class AutoIntakeShooterLoop extends Command {
                     {
                         m_arm.moveArm(124);
                         if (m_side) m_wrist.setWristAngle(Constants.Wrist.kStageLineSideSetpoint + 4);
-                        else if (m_secondSourceShoot) m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint - 3);
+                        else if (m_secondSourceShoot) m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint - 2);
                         else m_wrist.setWristAngle(Constants.Wrist.kStageLineSetpoint + 2);
                         m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
-                    }
+                    } 
                     else if(m_centerLine.getAsBoolean())
                     {
                         m_wrist.setWristAngle(Constants.Wrist.kCenterLineSetpoint);

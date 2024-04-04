@@ -122,11 +122,11 @@ public class DefaultSwerveCommand extends Command {
         return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()) * m_speedLimiter)
-        * Swerve.kMaxSpeed;
-    double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()) * m_speedLimiter)
-        * Swerve.kMaxSpeed;
-    double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
+    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()))
+    * Swerve.kMaxSpeed * m_speedLimiter;
+double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()))
+    * Swerve.kMaxSpeed * m_speedLimiter;
+double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
     Translation2d offset = new Translation2d();
 
     double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getConstraintedRotation().getDegrees();
