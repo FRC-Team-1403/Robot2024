@@ -162,11 +162,6 @@ public class Constants {
     public static final int kArmAbsoluteEncoder = 0;
     //Wrist 
     public static final int kwristAbsoluteEncoder = 1; // DIO
-    //Hanger
-    public static final int kleftServoID = 8;
-    public static final int krightServoID = 9;
-    public static final int kHangerLimitRightBottomID = 0;
-    public static final int kHangerLimitLeftBottomID = 0;
   }
 
   /**
