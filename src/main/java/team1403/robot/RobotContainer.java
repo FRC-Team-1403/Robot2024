@@ -132,7 +132,7 @@ public class RobotContainer {
       new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
       
     m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger)
+      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger)
       .andThen(new InstantCommand(() -> m_hanger.lockHanger(), m_hanger)));
   }
   

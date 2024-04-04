@@ -88,6 +88,8 @@ public class HangerSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Is at Bottom Left", isAtBottomLeft());
     SmartDashboard.putBoolean("Is at Top Left", isAtTopLeft());
     SmartDashboard.putBoolean("Is at Bottom Right", isAtBottomRight());
+    SmartDashboard.putNumber("Right Hanger Actual Speed", m_rightMotor.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Left Hanger Actual Speed", m_leftMotor.getEncoder().getVelocity());
     
   
     if (isAtTopLeft()) {
