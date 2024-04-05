@@ -34,13 +34,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "1stPieceDirectSource"
+                        "pathName": "1stPieceSource"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "1stPieceDirectSourceShoot"
+                        "pathName": "1stPieceSourceShoot"
                       }
                     },
                     {

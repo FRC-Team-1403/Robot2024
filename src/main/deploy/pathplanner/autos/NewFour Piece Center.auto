@@ -40,7 +40,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "1stPieceCenterShoot"
+                        "pathName": "New1stPieceCenterShoot"
                       }
                     },
                     {
@@ -72,13 +72,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "2ndPieceCenter"
+                        "pathName": "New3rdPieceCenter"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "2ndPieceCenterShoot"
+                        "pathName": "New3rdPieceCenterShoot"
                       }
                     },
                     {
@@ -110,13 +110,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "3rdPieceCenter"
+                        "pathName": "New2ndPieceCenter"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "3rdPieceCenterShoot"
+                        "pathName": "New2ndPieceCenterShoot"
                       }
                     },
                     {

@@ -1,13 +1,16 @@
 
 package team1403.robot.commands;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -105,10 +108,10 @@ public class IntakeShooterLoop extends Command {
         {
             case RESET:
             {
+                m_led.setLedColor(0.41);
                 m_wrist.setWristAngle(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
-                m_led.setLedMode(LEDState.OFF);
                 if(m_wrist.isAtSetpoint())
                 {
                     m_arm.moveArm(Constants.Arm.kIntakeSetpoint);
@@ -144,9 +147,8 @@ public class IntakeShooterLoop extends Command {
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
-                    m_led.setLedMode(LEDState.YELLOW);
-                else
-                    m_led.setLedMode(LEDState.OFF);
+                    if(Constants.team.equals("RED"))m_led.setLedColor(0.85);
+                    else m_led.setLedColor(0.59);
 
                 break;
             }
@@ -176,7 +178,7 @@ public class IntakeShooterLoop extends Command {
             case RAISE:
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
-                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle );
 
                     if(m_stageLine.getAsBoolean()){
                         m_arm.moveArm(124);
@@ -263,11 +265,6 @@ public class IntakeShooterLoop extends Command {
                     }
                     else m_counter++;
                 }
-                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()){
-                    m_led.setLedMode(LEDState.GREEN);
-                } else {
-                    m_led.setLedMode(LEDState.YELLOW);
-                }
 
                 break;
             }
@@ -292,7 +289,6 @@ public class IntakeShooterLoop extends Command {
             m_intakeAndShooter.setIntakeSpeed(-1);
             if(m_state != State.TRAP)
                 m_intakeAndShooter.setShooterRPM(-1500);
-            m_led.setLedMode(LEDState.RED_FLASH);
             // get approval
             // m_state = State.RESET;
         }

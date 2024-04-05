@@ -36,6 +36,7 @@ public class Constants {
   public static double kHeightFromGround = 33.465;
   public static double kGroundToTopOfFrame = 1.465;
   public static double kFrameHeight = 2;
+  public static String team = " ";
 
   /**
    * Swerve Constants.

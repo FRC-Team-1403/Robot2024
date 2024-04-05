@@ -129,10 +129,10 @@ public class RobotContainer {
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
 
     m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedColor(-0.95)));
       
     m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger));
+      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedColor(-.99)));
   }
   
   private double deadband(double value, double deadband) {

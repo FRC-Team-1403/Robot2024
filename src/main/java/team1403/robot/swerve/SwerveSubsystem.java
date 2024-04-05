@@ -115,6 +115,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
           Optional<Alliance> alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
+            if(alliance.get() == DriverStation.Alliance.Red)Constants.team = "RED";
             return alliance.get() == DriverStation.Alliance.Red;
           }
           return true;

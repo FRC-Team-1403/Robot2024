@@ -32,7 +32,9 @@ public class LED extends SubsystemBase {
     blinkin.set(color);
   }
 
-  public enum LEDState {
+
+
+  public static enum LEDState {
     OFF(0.99), YELLOW(0.69), GREEN(0.75), YELLOW_FLASH(-0.07), RED_FLASH(-0.17);
 
     public final double colorValue;
@@ -40,6 +42,7 @@ public class LED extends SubsystemBase {
     LEDState(double colorValue) {
       this.colorValue = colorValue;
     }
+
   }
 
   @Override
