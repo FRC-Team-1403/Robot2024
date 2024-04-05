@@ -178,7 +178,7 @@ public class AutoIntakeShooterLoop extends Command {
             {
                 if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint()) {
                     if (m_side && !m_stageLine.getAsBoolean()) m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 5);
-                    else if (!m_side && !m_stageLine.getAsBoolean()) m_wrist.setWristAngle(Constants.Wrist.kShootingAngle);
+                    else if (!m_side && !m_stageLine.getAsBoolean()) m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 3.5);
                     
                     if(m_amp.getAsBoolean())
                     {
