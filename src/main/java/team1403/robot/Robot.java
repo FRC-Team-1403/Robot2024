@@ -4,6 +4,8 @@
 
 package team1403.robot;
 
+import java.util.Optional;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -11,6 +13,8 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -45,6 +49,10 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("Team 1403", "2024 Robot"); // Set a metadata value
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            if(alliance.get() == DriverStation.Alliance.Red)Constants.team = "RED";
+          }
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
