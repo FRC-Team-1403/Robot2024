@@ -279,8 +279,8 @@ public class Constants {
   }
 
   public static class Hanger {
-    public static final double kTopRightLimit = 38;
-    public static final double kTopLeftLimit = 38;
+    public static final double kTopRightLimit = 70;
+    public static final double kTopLeftLimit = 70;
     public static final double kBottomLeftLimit = 1;
     public static final double kBottomRightLimit = 2;
     public static final double kLeftLockAngle = 70;
