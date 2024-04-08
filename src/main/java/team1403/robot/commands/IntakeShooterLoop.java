@@ -266,8 +266,7 @@ public class IntakeShooterLoop extends Command {
         }
         if(m_expel.getAsDouble() >= Constants.IntakeAndShooter.kExpelDeadzone){
             m_intakeAndShooter.setIntakeSpeed(-1);
-            if(m_state != State.TRAP)
-                m_intakeAndShooter.setShooterRPM(-1500);
+            m_intakeAndShooter.setShooterRPM(-1500);
             // get approval
             // m_state = State.RESET;
         }
