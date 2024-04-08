@@ -39,8 +39,6 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_ampShooting;
     private CommandXboxController m_ops;
     private int m_counter;
-    private BooleanSupplier m_trapSetpoint;
-    private BooleanSupplier m_feed;
 
 
     private enum State
@@ -52,8 +50,7 @@ public class IntakeShooterLoop extends Command {
         LOAD, 
         LOADED,
         SHOOT,
-        LOADING_STATION,
-        TRAP
+        LOADING_STATION
     }
 
     private State m_state;
@@ -61,7 +58,7 @@ public class IntakeShooterLoop extends Command {
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, CommandXboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
-            DoubleSupplier expel,BooleanSupplier ampShooting, BooleanSupplier trapSetpoint, BooleanSupplier feed) {
+            DoubleSupplier expel,BooleanSupplier ampShooting) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -77,8 +74,6 @@ public class IntakeShooterLoop extends Command {
         m_expel = expel;
         m_ampShooting = ampShooting;
         m_ops = ops;
-        m_trapSetpoint = trapSetpoint;
-        m_feed = feed;
     }
 
     @Override
@@ -236,16 +231,6 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kAmpShoootingSetpoint);
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
-                } else if(m_trapSetpoint.getAsBoolean()) {
-                    m_arm.moveArm(173);
-                    // m_intakeAndShooter.intakeStop();
-                    m_wrist.setWristAngle(100);
-                    m_intakeAndShooter.shooterStop();
-                    m_state = State.TRAP;
-                } else if(m_feed.getAsBoolean()) {
-                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 2); //218
-                    m_arm.moveArm(Constants.Arm.kDriveSetpoint); //117
-                    m_intakeAndShooter.setShooterRPM(4000);
                 }
 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
@@ -259,19 +244,13 @@ public class IntakeShooterLoop extends Command {
 
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered())
                 {
-                    if(m_counter >= 3) {
+                    if(m_counter >= 5) {
                         m_state = State.RESET;
                         m_counter = 0;
                     }
                     else m_counter++;
                 }
 
-                break;
-            }
-            case TRAP:
-            {
-                m_arm.moveArm(173);
-                m_wrist.setWristAngle(175);
                 break;
             }
             case SHOOT:

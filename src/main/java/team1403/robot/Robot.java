@@ -78,13 +78,12 @@ public class Robot extends LoggedRobot {
       () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
       () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
       () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().rightBumper().getAsBoolean(), // amp shooting
-      () -> false, //trap
-      () -> m_robotContainer.getOps().povRight().getAsBoolean() //feed
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
       );
     // intake out joystick left up
     // AutoSelector.initAutoChooser();
 
+    // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
   }
 
@@ -168,6 +167,8 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // m_robotContainer.getHangerSubsystem().runHanger(0.1);
+    // m_robotContainer.getHangerSubsystem().setServoAngle(SmartDashboard.getNumber("Servo Angle", 180));
   }
 
   @Override

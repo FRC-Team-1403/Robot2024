@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUsageId;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
@@ -17,12 +18,16 @@ import team1403.robot.Constants;
 public class HangerSubsystem extends SubsystemBase {
   private CANSparkMax m_leftMotor;
   private CANSparkMax m_rightMotor;
+  private Servo m_leftServo;
+  private Servo m_rightServo;
   
   private double m_speed;
 
   public HangerSubsystem() {
     m_leftMotor = new CANSparkMax(Constants.CanBus.leftHangerMotorID, MotorType.kBrushless);
     m_rightMotor = new CANSparkMax(Constants.CanBus.rightHangerMotorID, MotorType.kBrushless);
+    m_leftServo = new Servo(Constants.RioPorts.kleftServoID);
+    m_rightServo = new Servo(Constants.RioPorts.krightServoID);
     m_leftMotor.restoreFactoryDefaults();
     m_rightMotor.restoreFactoryDefaults();
     m_rightMotor.setIdleMode(IdleMode.kBrake);
@@ -33,6 +38,8 @@ public class HangerSubsystem extends SubsystemBase {
     m_leftMotor.getEncoder().setPosition(0);
     m_rightMotor.getEncoder().setPosition(0);
 
+    unlockHanger();
+    // m_speed = -0.5;
   }
   private void setHangerSpeed(double speed) {
     m_leftMotor.set(MathUtil.clamp(speed, -1, 1));
@@ -45,6 +52,16 @@ public class HangerSubsystem extends SubsystemBase {
 
   public void stopHanger() {
     setHangerSpeed(0);
+  }
+
+  public void unlockHanger() {
+     //RightServo.set(Constants.Hanger.kRightUnlockAngle);
+     //LeftServo.set(Constants.Hanger.kLeftUnlockAngle);
+  }
+
+  public void lockHanger() {
+     m_leftServo.set(Constants.Hanger.kLeftLockAngle);
+     m_rightServo.set(Constants.Hanger.kRightLockAngle);
   }
 
   public boolean isAtTopLeft() {
@@ -71,8 +88,6 @@ public class HangerSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Is at Bottom Left", isAtBottomLeft());
     SmartDashboard.putBoolean("Is at Top Left", isAtTopLeft());
     SmartDashboard.putBoolean("Is at Bottom Right", isAtBottomRight());
-    SmartDashboard.putNumber("Right Hanger Actual Speed", m_rightMotor.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Left Hanger Actual Speed", m_leftMotor.getEncoder().getVelocity());
     
   
     if (isAtTopLeft()) {
@@ -91,5 +106,8 @@ public class HangerSubsystem extends SubsystemBase {
     }
     SmartDashboard.putNumber("Left Motor Encoder", m_leftMotor.getEncoder().getPosition());
     SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
+
+    SmartDashboard.putNumber("Left Servo Angle", m_leftServo.getAngle());
+    SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());
   }
 }
