@@ -124,12 +124,12 @@ public class DefaultSwerveCommand extends Command {
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()))
     * Swerve.kMaxSpeed * m_speedLimiter;
-double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()))
-    * Swerve.kMaxSpeed * m_speedLimiter;
-double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
+    double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()))
+        * Swerve.kMaxSpeed * m_speedLimiter;
+    double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
     Translation2d offset = new Translation2d();
 
-    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getConstraintedRotation().getDegrees();
+    double given_current_angle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
     double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX()));
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     

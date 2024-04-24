@@ -1,5 +1,8 @@
 package team1403.robot.swerve;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -25,12 +28,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import swervelib.SwerveDrive;
+import swervelib.parser.SwerveDriveConfiguration;
+import swervelib.parser.SwerveParser;
+import swervelib.simulation.SwerveModuleSimulation;
+import swervelib.telemetry.SwerveDriveTelemetry;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.robot.Constants;
 import team1403.robot.Constants.CanBus;
@@ -41,25 +50,13 @@ import team1403.robot.Constants.Swerve;
  * gyroscope.
  */
 public class SwerveSubsystem extends SubsystemBase {
-  private final NavxAhrs m_navx2;
-  private final SwerveModule[] m_modules;
-  private int tagCount = 0;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
-  private SwerveModuleState[] m_states = new SwerveModuleState[4];
-  private final SwerveDrivePoseEstimator m_odometer;
-  private Field2d m_field = new Field2d();
-
-  private final PIDController m_driftCorrectionPid = new PIDController(0.05, 0, 0);
-  private double m_desiredHeading = 0;
-  // private double m_speedLimiter = 0.6;
-
-  private Translation2d m_offset;
-
-  private double m_rollOffset;
 
   private boolean m_isXModeEnabled = false;
   private Limelight m_Limelight;
   private boolean m_disableVision = false;
+
+  private SwerveDrive m_swerve;
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -72,25 +69,15 @@ public class SwerveSubsystem extends SubsystemBase {
    *                   used to construct this subsystem
    */
   public SwerveSubsystem(Limelight limelight) {
-    SmartDashboard.putData("Field", m_field);
     // super("Swerve Subsystem", parameters);
-    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
     m_Limelight = limelight;
-    m_modules = new SwerveModule[] {
-        new SwerveModule("Front Left Module",
-            CanBus.frontLeftDriveID, CanBus.frontLeftSteerID,
-            CanBus.frontLeftEncoderID, Swerve.frontLeftEncoderOffset),
-        new SwerveModule("Front Right Module",
-            CanBus.frontRightDriveID, CanBus.frontRightSteerID,
-            CanBus.frontRightEncoderID, Swerve.frontRightEncoderOffset),
-        new SwerveModule("Back Left Module",
-            CanBus.backLeftDriveID, CanBus.backLeftSteerID,
-            CanBus.backLeftEncoderID, Swerve.backLeftEncoderOffset),
-        new SwerveModule("Back Right Module",
-            CanBus.backRightDriveID, CanBus.backRightSteerID,
-            CanBus.backRightEncoderID, Swerve.backRightEncoderOffset),
-    };
 
+    try {
+      m_swerve = new SwerveParser(new File(Filesystem.getDeployDirectory(), "swerve/neo")).createSwerveDrive(Constants.Swerve.kMaxSpeed);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -129,25 +116,12 @@ public class SwerveSubsystem extends SubsystemBase {
         Logger.recordOutput("Odometery/TrajectorySetpoint", targetPose);
     });
 
-    // addDevice(m_navx2.getName(), m_navx2);
-    if (m_navx2.isConnected())
-      while (m_navx2.isCalibrating());
-
     zeroGyroscope();
-
-    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
-
-    m_driftCorrectionPid.enableContinuousInput(-180, 180);
-
-    m_desiredHeading = getGyroscopeRotation().getDegrees();
-
-    setRobotRampRate(0.0);
-    setRobotIdleMode(IdleMode.kBrake);
-
-    m_offset = new Translation2d();
-    m_rollOffset = -m_navx2.getRoll();
+    m_swerve.setMotorIdleMode(true);
+    //update very often to be accurate
+    m_swerve.setOdometryPeriod(0.005);
+    m_swerve.setHeadingCorrection(false);
+    m_swerve.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
   }
 
   public void setDisableVision(boolean disable) {
@@ -160,40 +134,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return an array of swerve module positions
    */
   public SwerveModulePosition[] getModulePositions() {
-    return new SwerveModulePosition[] {
-        m_modules[0].getModulePosition(),
-        m_modules[1].getModulePosition(),
-        m_modules[2].getModulePosition(),
-        m_modules[3].getModulePosition()
-    };
+    return m_swerve.getModulePositions();
   }
-
-  /**
-   * Sets the ramp rate of the drive motors.
-   *
-   * @param rate the ramp rate
-   */
-  public void setRobotRampRate(double rate) {
-    for (SwerveModule module : m_modules) {
-      module.setRampRate(rate);
-    }
-  }
-
-  public SwerveDrivePoseEstimator getOdometer() {
-    return m_odometer;
-  }
-
-  /**
-   * Sets the idle mode for the drivetrain.
-   *
-   * @param mode the IdleMode of the robot
-   */
-  public void setRobotIdleMode(IdleMode mode) {
-    for (SwerveModule module : m_modules) {
-      module.setControllerMode(mode);
-    }
-  }
-
   /**
    * Sets the gyroscope angle to zero. This can be used to set the direction the
    * robot is currently facing to the
@@ -201,8 +143,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
-    m_navx2.reset();
-    m_desiredHeading = 0;
+    m_swerve.zeroGyro();
   }
 
   /**
@@ -212,7 +153,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return m_odometer.getEstimatedPosition();
+    return m_swerve.getPose();
   }
 
   /**
@@ -226,7 +167,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * Reset the position of the drivetrain odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+    m_swerve.resetOdometry(pose);
   }
 
   /**
@@ -235,7 +176,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return a Rotation2d object that contains the gyroscope's heading
    */
   public Rotation2d getGyroscopeRotation() {
-    return m_navx2.get180to180Rotation2d();
+    return m_swerve.getOdometryHeading();
   }
 
   /**
@@ -244,7 +185,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return a double representing the roll of robot in degrees
    */
   public double getGyroRoll() {
-    return m_navx2.getRoll() + m_rollOffset;
+    return m_swerve.getRoll().getDegrees();
   }
 
   /**
@@ -253,7 +194,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return a double representing the pitch of robot in degrees
    */
   public double getGyroPitch() {
-    return m_navx2.getPitch();
+    return m_swerve.getPitch().getDegrees();
   }
 
   /**
@@ -264,7 +205,6 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
     m_chassisSpeeds = chassisSpeeds;
-    m_offset = offset;
     SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
 
@@ -287,38 +227,16 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   
   public void setModuleStates(SwerveModuleState[] states) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        states, Swerve.kMaxSpeed);
-
-    for (int i = 0; i < m_modules.length; i++) {
-      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
-      m_modules[i].set(states[i].speedMetersPerSecond,
-          states[i].angle.getRadians());
-    }
-
-    Logger.recordOutput("SwerveStates/Target", m_states);
+    m_swerve.setModuleStates(states, false);
   }
 
   @AutoLogOutput(key = "SwerveStates/Measured")
   public SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = {
-      m_modules[0].getState(),
-      m_modules[1].getState(),
-      m_modules[2].getState(),
-      m_modules[3].getState()
-    };
-    return states;
+    return m_swerve.getStates();
   }
 
   public ChassisSpeeds getChassisSpeed() {
     return m_chassisSpeeds;
-  }
-
-  /**
-   * Resets the robot to no longer pivot around one wheel.
-   */
-  public void setMiddlePivot() {
-    m_offset = new Translation2d();
   }
 
   /**
@@ -349,88 +267,28 @@ public class SwerveSubsystem extends SubsystemBase {
     this.m_isXModeEnabled = enabled;
   }
 
-  /**
-   * Accounts for the drift caused by the first order kinematics
-   * while doing both translational and rotational movement.
-   * 
-   * <p>
-   * Looks forward one control loop to figure out where the robot
-   * should be given the chassisspeed and backs out a twist command from that.
-   * 
-   * @param chassisSpeeds the given chassisspeeds
-   * @return the corrected chassisspeeds
-   */
-
-  public NavxAhrs getNavxAhrs() {
-    return m_navx2;
-  }
-
-  private double prevTimeStep = 0;
-
-  private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-      double curTimeStep = Timer.getFPGATimestamp();
-      if(prevTimeStep == 0)
-      {
-        prevTimeStep = curTimeStep;
-        return chassisSpeeds;
-      }
-      
-      final double deltaTime = curTimeStep - prevTimeStep;
-      prevTimeStep = curTimeStep;
-    return ChassisSpeeds.discretize(chassisSpeeds, deltaTime);
-  }
-
-  private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
-
-    //implement another algorithm for this later
-
-    return speeds;
-  }
-
-  private void updateSwerveModules() {
-    for(SwerveModule module : m_modules) {
-      module.periodic();
-    }
-  }
-
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
-
-    updateSwerveModules();
 
     if (m_Limelight.hasTarget() && !m_disableVision) {
       Pose2d pose = m_Limelight.getDistance2D();
       if (pose != null) {
         Logger.recordOutput("Odometery/Vision Measurement", pose);
-        m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+        m_swerve.addVisionMeasurement(pose, Timer.getFPGATimestamp());
       }
-      else {
-        m_odometer.update(getGyroscopeRotation(), getModulePositions());
-      }
-    } else {
-      m_odometer.update(getGyroscopeRotation(), getModulePositions());
     }
 
-    SmartDashboard.putString("Odometry", getPose().toString());
+    SwerveDriveTelemetry.updateData();
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
 
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
-      if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
-
-      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
-      
-      setModuleStates(m_states);
+      m_swerve.drive(m_chassisSpeeds);
     }
     SmartDashboard.putString("Module States", getModuleStates().toString());
-    m_field.setRobotPose(m_odometer.getEstimatedPosition());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
-
-    Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).toString());
 
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
@@ -438,6 +296,5 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
 
     Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
-    Logger.recordOutput("Desired Heading", m_desiredHeading);
   }
 }

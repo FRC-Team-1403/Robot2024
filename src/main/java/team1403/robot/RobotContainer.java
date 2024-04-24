@@ -126,9 +126,9 @@ public class RobotContainer {
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -deadband(m_driverController.getLeftX(), 0),
-        () -> -deadband(m_driverController.getLeftY(), 0),
-        () -> -deadband(m_driverController.getRightX(), 0),
+        () -> -deadband(m_driverController.getLeftX(), 0.01),
+        () -> -deadband(m_driverController.getLeftY(), 0.01),
+        () -> -deadband(m_driverController.getRightX(), 0.01),
         () -> m_driverController.getHID().getYButton(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
