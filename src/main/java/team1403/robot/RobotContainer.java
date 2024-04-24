@@ -114,9 +114,9 @@ public class RobotContainer {
         () -> -deadband(m_driverController.getLeftX(), 0),
         () -> -deadband(m_driverController.getLeftY(), 0),
         () -> -deadband(m_driverController.getRightX(), 0),
-        () -> m_driverController.y().getAsBoolean(),
-        () -> m_driverController.x().getAsBoolean(),
-        () -> m_driverController.a().getAsBoolean(),
+        () -> m_driverController.getHID().getYButton(),
+        () -> m_driverController.getHID().getXButton(),
+        () -> m_driverController.getHID().getAButton(),
         () -> -0, // AMP Location 
         () -> 0,
         // blue 

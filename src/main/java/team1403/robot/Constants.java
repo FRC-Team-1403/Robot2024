@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team1403.lib.util.Dimension;
 import team1403.robot.subsystems.arm.ArmState;
 
@@ -36,7 +37,7 @@ public class Constants {
   public static double kHeightFromGround = 33.465;
   public static double kGroundToTopOfFrame = 1.465;
   public static double kFrameHeight = 2;
-  public static String team = " ";
+  public static Alliance team = Alliance.Blue;
 
   /**
    * Swerve Constants.

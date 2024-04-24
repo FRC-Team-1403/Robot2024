@@ -50,9 +50,9 @@ public class Robot extends LoggedRobot {
 
     Logger.recordMetadata("Team 1403", "2024 Robot"); // Set a metadata value
     Optional<Alliance> alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            if(alliance.get() == DriverStation.Alliance.Red)Constants.team = "RED";
-          }
+    if (alliance.isPresent()) {
+      Constants.team = alliance.get();
+    }
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
@@ -69,16 +69,16 @@ public class Robot extends LoggedRobot {
     m_combinedCommand =  new IntakeShooterLoop(
       m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
       m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getOps(),
-      () -> m_robotContainer.getOps().rightTrigger().getAsBoolean(), // shoot
-      () -> m_robotContainer.getOps().b().getAsBoolean(), // amp
-      () -> m_robotContainer.getOps().x().getAsBoolean(), // loading station
-      () -> m_robotContainer.getOps().a().getAsBoolean(), // reset to intake
-      () -> m_robotContainer.getOps().leftTrigger().getAsBoolean(), // stage line shot
+      () -> m_robotContainer.getOps().getRightTriggerAxis() > 0.4, // shoot
+      () -> m_robotContainer.getOps().getHID().getBButton(), // amp
+      () -> m_robotContainer.getOps().getHID().getXButton(), // loading station
+      () -> m_robotContainer.getOps().getHID().getAButton(), // reset to intake
+      () -> m_robotContainer.getOps().getLeftTriggerAxis() > 0.4, // stage line shot
       () -> m_robotContainer.getOps().povUp().getAsBoolean(), // center line shot
-      () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
-      () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
+      () -> m_robotContainer.getOps().getHID().getYButton(), // reset to netural
+      () -> m_robotContainer.getOps().getHID().getLeftBumper(), // launchpad
       () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
+      () -> m_robotContainer.getOps().getHID().getRightBumper() // amp shooting
       );
     // intake out joystick left up
     // AutoSelector.initAutoChooser();
