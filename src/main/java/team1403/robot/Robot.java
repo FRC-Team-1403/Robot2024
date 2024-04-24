@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
-import team1403.robot.swerve.PhotonVisionCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,7 +32,6 @@ import team1403.robot.swerve.PhotonVisionCommand;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
-  private PhotonVisionCommand m_VisionCommand;
   private RobotContainer m_robotContainer;
   private IntakeShooterLoop m_combinedCommand;
 
@@ -65,21 +63,7 @@ public class Robot extends LoggedRobot {
     Logger.start();
 
     m_robotContainer = new RobotContainer();
-    m_VisionCommand = m_robotContainer.getVisionCommand();
-    m_combinedCommand =  new IntakeShooterLoop(
-      m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
-      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getOps(),
-      () -> m_robotContainer.getOps().getRightTriggerAxis() > 0.4, // shoot
-      () -> m_robotContainer.getOps().getHID().getBButton(), // amp
-      () -> m_robotContainer.getOps().getHID().getXButton(), // loading station
-      () -> m_robotContainer.getOps().getHID().getAButton(), // reset to intake
-      () -> m_robotContainer.getOps().getLeftTriggerAxis() > 0.4, // stage line shot
-      () -> m_robotContainer.getOps().povUp().getAsBoolean(), // center line shot
-      () -> m_robotContainer.getOps().getHID().getYButton(), // reset to netural
-      () -> m_robotContainer.getOps().getHID().getLeftBumper(), // launchpad
-      () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().getHID().getRightBumper() // amp shooting
-      );
+    m_combinedCommand =  m_robotContainer.getCombinedCommand();
     // intake out joystick left up
     // AutoSelector.initAutoChooser();
 
@@ -134,7 +118,7 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_robotContainer.getSwerveSubsystem().setDisableVision(true);
-    SmartDashboard.putString("Auto Name", m_autonomousCommand.getName());
+    System.out.println("Auto Name: " +  m_autonomousCommand.getName());
     // schedule the autonomous command (example)
     m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {

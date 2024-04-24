@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.robot.commands.AutoIntakeShooterLoop;
+import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
@@ -28,7 +29,6 @@ import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
-import team1403.robot.swerve.PhotonVisionCommand;
 import team1403.robot.swerve.SwerveSubsystem;
 
 /**
@@ -50,11 +50,12 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
-  private final PhotonVisionCommand m_PhotonVisionCommand; 
 
   private final PowerDistribution m_powerDistribution;
 
   private SendableChooser<Command> autoChooser;
+
+  private IntakeShooterLoop m_combinedCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -68,9 +69,23 @@ public class RobotContainer {
     m_hanger = new HangerSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
+
+    m_combinedCommand = new IntakeShooterLoop(
+      getIntakeShooterSubsystem(), getArmSubsystem(), 
+      getWristSubsystem(), getLEDSubsystem(), getOps(),
+      () -> getOps().getRightTriggerAxis() > 0.4, // shoot
+      () -> getOps().getHID().getBButton(), // amp
+      () -> getOps().getHID().getXButton(), // loading station
+      () -> getOps().getHID().getAButton(), // reset to intake
+      () -> getOps().getLeftTriggerAxis() > 0.4, // stage line shot
+      () -> getOps().povUp().getAsBoolean(), // center line shot
+      () -> getOps().getHID().getYButton(), // reset to netural
+      () -> getOps().getHID().getLeftBumper(), // launchpad
+      () -> getOps().getLeftY(), // expel
+      () -> getOps().getHID().getRightBumper() // amp shooting
+      );
 
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
@@ -193,7 +208,7 @@ public class RobotContainer {
     return m_led;
   }
 
-  public PhotonVisionCommand getVisionCommand() {
-    return m_PhotonVisionCommand;
+  public IntakeShooterLoop getCombinedCommand() {
+    return m_combinedCommand;
   }
 }
