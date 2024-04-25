@@ -4,14 +4,24 @@
 
 package team1403.robot;
 
+import java.util.Optional;
+
+import org.littletonrobotics.junction.Logger;
+
+import com.choreo.lib.Choreo;
+import com.choreo.lib.ChoreoTrajectory;
+import com.choreo.lib.ChoreoTrajectoryState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,7 +64,7 @@ public class RobotContainer {
 
   private final PowerDistribution m_powerDistribution;
 
-  private SendableChooser<Command> autoChooser;
+  private SendableChooser<String> autoChooser;
 
   private IntakeShooterLoop m_combinedCommand;
 
@@ -88,18 +98,21 @@ public class RobotContainer {
       () -> getOps().getHID().getRightBumper() // amp shooting
       );
 
-    NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, true, () -> false, false));
-    NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, true, () -> true, false));
-    NamedCommands.registerCommand("Second Source Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, true));
-    // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
-    // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
-    NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
+    // NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
+    // NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, true, () -> false, false));
+    // NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, true, () -> true, false));
+    // NamedCommands.registerCommand("Second Source Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, true));
+    // // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
+    // // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
+    // NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = new SendableChooser<>();
+
+    autoChooser.addOption("Example Auto", "NewPath");
+    autoChooser.setDefaultOption("None", "NoAuto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -163,6 +176,9 @@ public class RobotContainer {
       return 0.0;
     }
   }
+
+  private ChoreoTrajectory traj;
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -170,7 +186,46 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Commands.sequence(autoChooser.getSelected(), new InstantCommand(() -> m_swerve.stop()));
+
+    traj = Choreo.getTrajectory(autoChooser.getSelected());
+
+    if(traj == null)
+    {
+      return Commands.none();
+    }
+
+    PIDController heading = new PIDController(Constants.Swerve.kPCAutoTurning, Constants.Swerve.kICAutoTurning, Constants.Swerve.kDCAutoTurning);
+    heading.enableContinuousInput(-Math.PI, Math.PI);
+
+    Command auto = Choreo.choreoSwerveCommand(traj, () -> m_swerve.getPose(), 
+    new PIDController(Constants.Swerve.kPCTranslation, Constants.Swerve.kICTranslation, Constants.Swerve.kDCTranslation), 
+    new PIDController(Constants.Swerve.kPCTranslation, Constants.Swerve.kICTranslation, Constants.Swerve.kDCTranslation), 
+    heading, 
+    (speed) -> m_swerve.driveNoOffset(speed), 
+    () -> {
+      // Boolean supplier that controls when the path will be mirrored for the red
+      // alliance
+      // This will flip the path being followed to the red side of the field.
+      // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+      Optional<Alliance> alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        return alliance.get() == Alliance.Red;
+      }
+      return true;
+    }, m_swerve);
+
+    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red)
+    {
+      traj = traj.flipped();
+    }
+
+    Logger.recordOutput("Odometery/ChoreoTrajectory", traj.getPoses());
+
+    return Commands.sequence(
+      Commands.runOnce(() -> m_swerve.resetOdometry(traj.getInitialPose()), m_swerve), 
+      auto, 
+      new InstantCommand(() -> m_swerve.stop(), m_swerve));
   }
 
   public Limelight getLimelight(){

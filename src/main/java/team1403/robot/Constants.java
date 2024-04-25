@@ -59,6 +59,15 @@ public class Constants {
     public static final double kITranslation = 0.0;
     public static final double kDTranslation = 0.0;
 
+    //for choreo
+    public static final double kPCTranslation = 1;
+    public static final double kICTranslation = 0.0;
+    public static final double kDCTranslation = 0.0;
+
+    public static final double kPCAutoTurning = 1;
+    public static final double kICAutoTurning = 0.0;
+    public static final double kDCAutoTurning = 0.0;
+
     public static final double kPDrive = 0.04;
     public static final double kIDrive = 0.0;
     public static final double kDDrive = 0.0;

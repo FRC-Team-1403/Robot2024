@@ -78,6 +78,7 @@ public class SwerveSubsystem extends SubsystemBase {
       e.printStackTrace();
     }
     
+    //although we use choreo, path planner is still useful for things like pathfinding
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -228,6 +229,8 @@ public class SwerveSubsystem extends SubsystemBase {
   
   public void setModuleStates(SwerveModuleState[] states) {
     m_swerve.setModuleStates(states, false);
+
+    Logger.recordOutput("SwerveStates/Target", states);
   }
 
   @AutoLogOutput(key = "SwerveStates/Measured")
@@ -285,6 +288,8 @@ public class SwerveSubsystem extends SubsystemBase {
       xMode();
     } else {
       m_swerve.drive(m_chassisSpeeds);
+      //estimate of target
+      Logger.recordOutput("SwerveStates/Target", m_swerve.kinematics.toSwerveModuleStates(ChassisSpeeds.discretize(m_chassisSpeeds, 0.02)));
     }
     SmartDashboard.putString("Module States", getModuleStates().toString());
     // Logging Output
