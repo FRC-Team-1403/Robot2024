@@ -142,8 +142,10 @@ public class IntakeShooterLoop extends Command {
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
+                {
                     if(Constants.team == Alliance.Red)m_led.setLedColor(0.85);
                     else m_led.setLedColor(0.59);
+                }
 
                 break;
             }
