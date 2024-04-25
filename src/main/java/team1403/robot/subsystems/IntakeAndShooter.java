@@ -116,7 +116,7 @@ public class IntakeAndShooter extends SubsystemBase {
     m_topShooter.setSetpoint(rpm);
   }
 
-  public double getShooterRPM(){
+  public double getShooterRPMSetpoint(){
     return m_bottomShooter.getSetpoint();
   }
 
