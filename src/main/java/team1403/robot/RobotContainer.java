@@ -5,6 +5,7 @@
 package team1403.robot;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -194,36 +195,28 @@ public class RobotContainer {
       return Commands.none();
     }
 
-    PIDController heading = new PIDController(Constants.Swerve.kPCAutoTurning, Constants.Swerve.kICAutoTurning, Constants.Swerve.kDCAutoTurning);
-    heading.enableContinuousInput(-Math.PI, Math.PI);
+    BooleanSupplier redSupplier = () -> DriverStation.getAlliance().isPresent() && 
+    DriverStation.getAlliance().get() == Alliance.Red;
 
     Command auto = Choreo.choreoSwerveCommand(traj, () -> m_swerve.getPose(), 
     new PIDController(Constants.Swerve.kPCTranslation, Constants.Swerve.kICTranslation, Constants.Swerve.kDCTranslation), 
     new PIDController(Constants.Swerve.kPCTranslation, Constants.Swerve.kICTranslation, Constants.Swerve.kDCTranslation), 
-    heading, 
+    new PIDController(Constants.Swerve.kPCAutoTurning, Constants.Swerve.kICAutoTurning, Constants.Swerve.kDCAutoTurning), 
     (speed) -> m_swerve.driveNoOffset(speed), 
-    () -> {
-      // Boolean supplier that controls when the path will be mirrored for the red
-      // alliance
-      // This will flip the path being followed to the red side of the field.
-      // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    redSupplier, m_swerve);
 
-      Optional<Alliance> alliance = DriverStation.getAlliance();
-      if (alliance.isPresent()) {
-        return alliance.get() == Alliance.Red;
-      }
-      return true;
-    }, m_swerve);
+    Pose2d initialPose = redSupplier.getAsBoolean() ? 
+    traj.getFlippedInitialPose() : traj.getInitialPose();
 
-    if(DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red)
-    {
-      traj = traj.flipped();
-    }
+    if(redSupplier.getAsBoolean())
+      Logger.recordOutput("Odometery/ChoreoTrajectory", traj.flipped().getPoses());
+    else
+      Logger.recordOutput("Odometery/ChoreoTrajectory", traj.getPoses());
 
-    Logger.recordOutput("Odometery/ChoreoTrajectory", traj.getPoses());
+    
 
     return Commands.sequence(
-      Commands.runOnce(() -> m_swerve.resetOdometry(traj.getInitialPose()), m_swerve), 
+      Commands.runOnce(() -> m_swerve.resetOdometry(initialPose), m_swerve), 
       auto, 
       new InstantCommand(() -> m_swerve.stop(), m_swerve));
   }
