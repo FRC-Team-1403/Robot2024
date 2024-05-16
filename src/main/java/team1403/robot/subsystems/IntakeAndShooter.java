@@ -156,7 +156,7 @@ public class IntakeAndShooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Top Motor RPM", -m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue());
     SmartDashboard.putNumber("RPM setpoint",  m_topShooter.getSetpoint());
     SmartDashboard.putBoolean("Intake Sensor", isIntakePhotogateTriggered());
-    SmartDashboard.putBoolean("Shooter Sensor", isShooterPhotogateTriggered()); //shooter is flipped for some reason
+    SmartDashboard.putBoolean("Shooter Sensor", isShooterPhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Ready", isReady());
     SmartDashboard.putNumber("Intake current", m_intakeMotor.getOutputCurrent());
     SmartDashboard.putNumber("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
