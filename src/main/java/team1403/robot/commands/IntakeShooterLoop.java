@@ -39,6 +39,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_ampShooting;
     private CommandXboxController m_ops;
     private int m_counter;
+    private BooleanSupplier m_feedShot;
 
 
     private enum State
@@ -58,7 +59,7 @@ public class IntakeShooterLoop extends Command {
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, CommandXboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
-            DoubleSupplier expel,BooleanSupplier ampShooting) {
+            DoubleSupplier expel,BooleanSupplier ampShooting, BooleanSupplier feedShot) {
         m_intakeAndShooter = intakeAndShooter;
         m_arm = arm;
         m_trigger = trigger;
@@ -74,6 +75,7 @@ public class IntakeShooterLoop extends Command {
         m_expel = expel;
         m_ampShooting = ampShooting;
         m_ops = ops;
+        m_feedShot = feedShot;
     }
 
     @Override
@@ -231,6 +233,10 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kAmpShoootingSetpoint);
                     m_arm.moveArm(124);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kStageLineRPM);
+                } else if(m_feedShot.getAsBoolean()) {
+                    m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 5);
+                    m_arm.moveArm(Constants.Arm.kDriveSetpoint);
+                    m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kFeedShotRPM);
                 }
 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot

@@ -215,7 +215,7 @@ public class AutoIntakeShooterLoop extends Command {
                     }
 
 
-                    m_intakeAndShooter.setIntakeSpeed(-0.4);
+                    m_intakeAndShooter.setIntakeSpeed(-0.2);
                     m_state = State.LOAD;
                 }
                 break;

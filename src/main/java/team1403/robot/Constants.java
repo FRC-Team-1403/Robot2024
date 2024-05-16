@@ -298,6 +298,7 @@ public class Constants {
     public static double kStageLineRPM = 5000; //To test
     public static double kCenterLineRPM = 6000;
     public static double kLaunchpadRPM = 5000;
+    public static double kFeedShotRPM = 4000;
     public static final double kCloseRPM = 4800;
     public static final double kExpelDeadzone = 0.15;
     public static final int kIntakeCurrentLimit = 40;

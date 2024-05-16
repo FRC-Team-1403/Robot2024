@@ -87,6 +87,9 @@ public class SwerveModule implements Device {
       initEncoders();
       initSteerMotor();
       initDriveMotor();
+
+      m_driveMotor.burnFlash();
+      m_steerMotor.burnFlash();
     }
 
     @Override

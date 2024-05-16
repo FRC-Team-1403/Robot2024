@@ -78,9 +78,9 @@ public class Robot extends LoggedRobot {
       () -> m_robotContainer.getOps().y().getAsBoolean(), // reset to netural
       () -> m_robotContainer.getOps().leftBumper().getAsBoolean(), // launchpad
       () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().rightBumper().getAsBoolean() // amp shooting
-      );
-    // intake out joystick left up
+      () -> m_robotContainer.getOps().rightBumper().getAsBoolean(), // amp shooting
+      () -> m_robotContainer.getOps().povRight().getAsBoolean()); // feeding
+    // intake out joystick left up  v 
     // AutoSelector.initAutoChooser();
 
     // SmartDashboard.putNumber("Servo Angle", 180);

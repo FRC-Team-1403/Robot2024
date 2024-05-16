@@ -108,7 +108,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.7);
     if (m_snipingMode.getAsBoolean()) {
-      m_speedLimiter = 0.15;
+      m_speedLimiter /= 2.0;
     }
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
@@ -122,11 +122,11 @@ public class DefaultSwerveCommand extends Command {
         return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()))
-    * Swerve.kMaxSpeed * m_speedLimiter;
-double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()))
-    * Swerve.kMaxSpeed * m_speedLimiter;
-double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble())) * Swerve.kMaxAngularSpeed * m_speedLimiter;
+    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()) * m_speedLimiter)
+    * Swerve.kMaxSpeed;
+double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()) * m_speedLimiter)
+    * Swerve.kMaxSpeed;
+double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
 
     double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getConstraintedRotation().getDegrees();

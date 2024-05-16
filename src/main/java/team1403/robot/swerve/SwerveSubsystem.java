@@ -263,7 +263,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param offset        the swerve module to pivot around
    */
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
-    m_chassisSpeeds = chassisSpeeds;
+    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
     m_offset = offset;
     SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
@@ -364,20 +364,9 @@ public class SwerveSubsystem extends SubsystemBase {
   public NavxAhrs getNavxAhrs() {
     return m_navx2;
   }
-
-  private double prevTimeStep = 0;
-
+  
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-      double curTimeStep = Timer.getFPGATimestamp();
-      if(prevTimeStep == 0)
-      {
-        prevTimeStep = curTimeStep;
-        return chassisSpeeds;
-      }
-      
-      final double deltaTime = curTimeStep - prevTimeStep;
-      prevTimeStep = curTimeStep;
-    return ChassisSpeeds.discretize(chassisSpeeds, deltaTime);
+    return ChassisSpeeds.discretize(chassisSpeeds, 0.02);
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
@@ -405,12 +394,9 @@ public class SwerveSubsystem extends SubsystemBase {
         Logger.recordOutput("Odometery/Vision Measurement", pose);
         m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
       }
-      else {
-        m_odometer.update(getGyroscopeRotation(), getModulePositions());
-      }
-    } else {
-      m_odometer.update(getGyroscopeRotation(), getModulePositions());
     }
+
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
 
     SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
@@ -418,7 +404,6 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      m_chassisSpeeds = translationalDriftCorrection(m_chassisSpeeds);
       if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
