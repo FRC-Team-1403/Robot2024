@@ -196,7 +196,7 @@ public class Constants {
   public static class Driver {
 
     /**
-     * The joystick port for the operator's controller.
+     * The joystick port for the driver's controller.
      */
     public static final int pilotPort = 1;
 
