@@ -37,7 +37,7 @@ public class IntakeShooterLoop extends Command {
     private BooleanSupplier m_launchpad;
     private DoubleSupplier m_expel;
     private BooleanSupplier m_ampShooting;
-    private CommandXboxController m_ops;
+    private XboxController m_ops;
     private int m_counter;
     private BooleanSupplier m_feedShot;
 
@@ -56,7 +56,7 @@ public class IntakeShooterLoop extends Command {
 
     private State m_state;
 
-    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, CommandXboxController ops,
+    public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, XboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
             BooleanSupplier stageLine, BooleanSupplier centerLine, BooleanSupplier resetToNeutral, BooleanSupplier launchpad,
             DoubleSupplier expel,BooleanSupplier ampShooting, BooleanSupplier feedShot) {

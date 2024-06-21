@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -114,9 +115,9 @@ public class RobotContainer {
         () -> -deadband(m_driverController.getLeftX(), 0),
         () -> -deadband(m_driverController.getLeftY(), 0),
         () -> -deadband(m_driverController.getRightX(), 0),
-        () -> m_driverController.y().getAsBoolean(),
-        () -> m_driverController.x().getAsBoolean(),
-        () -> m_driverController.a().getAsBoolean(),
+        () -> m_driverController.getHID().getYButton(),
+        () -> m_driverController.getHID().getXButton(),
+        () -> m_driverController.getHID().getAButton(),
         () -> -0, // AMP Location 
         () -> 0,
         // blue 
@@ -165,8 +166,8 @@ public class RobotContainer {
     return m_swerve;
   }
 
-  public CommandXboxController getOps() {
-    return m_operatorController;
+  public XboxController getOps() {
+    return m_operatorController.getHID();
   }
 
   public CommandXboxController getDriverController() {
