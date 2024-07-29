@@ -3,22 +3,15 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
-import org.ejml.ops.FConvertArrays;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
-import team1403.robot.Constants.Vision;
 
 /**
  * The default command for the swerve drivetrain subsystem.
@@ -40,8 +33,7 @@ public class DefaultSwerveCommand extends Command {
   private double tempKP = 0;
   private double tempKI = 0;
 
-  private SlewRateLimiter m_verticalTranslationLimiter;
-  private SlewRateLimiter m_horizontalTranslationLimiter;
+  private SlewRateLimiter m_translationLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
 
   private PIDController m_controller;
@@ -89,8 +81,7 @@ public class DefaultSwerveCommand extends Command {
     this.m_ysupplier = ytarget;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    m_verticalTranslationLimiter = new SlewRateLimiter(4, -4, 0);
-    m_horizontalTranslationLimiter = new SlewRateLimiter(4, -4, 0);
+    m_translationLimiter = new SlewRateLimiter(4, -4, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
     m_controller = new PIDController(.15, 0, 0);
 
@@ -122,17 +113,26 @@ public class DefaultSwerveCommand extends Command {
         return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
-    double vertical = m_verticalTranslationLimiter.calculate((m_verticalTranslationSupplier.getAsDouble()) * m_speedLimiter)
-    * Swerve.kMaxSpeed ;
-    double horizontal = m_horizontalTranslationLimiter.calculate((m_horizontalTranslationSupplier.getAsDouble()) * m_speedLimiter)
-        * Swerve.kMaxSpeed;
+
+    double horizontal = m_horizontalTranslationSupplier.getAsDouble() * m_speedLimiter;
+    double vertical = m_verticalTranslationSupplier.getAsDouble() * m_speedLimiter;
+    {
+      //normalize using polar coordinates
+      double velocity = MathUtil.clamp(Math.hypot(horizontal, vertical), 0, 1);
+      double angle = Math.atan2(vertical, horizontal);
+
+      velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
+
+      horizontal = velocity * Math.cos(angle);
+      vertical = velocity * Math.sin(angle);
+    }
+
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
 
     double given_current_angle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
     double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX()));
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
-    
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Target Angle", given_target_angle);
     SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());

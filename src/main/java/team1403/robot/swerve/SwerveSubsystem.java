@@ -122,7 +122,7 @@ public class SwerveSubsystem extends SubsystemBase {
     //update very often to be accurate
     m_swerve.setOdometryPeriod(0.005);
     m_swerve.setHeadingCorrection(false);
-    m_swerve.setCosineCompensator(!SwerveDriveTelemetry.isSimulation);
+    m_swerve.setCosineCompensator(false);
   }
 
   public void setDisableVision(boolean disable) {
