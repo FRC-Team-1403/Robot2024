@@ -27,7 +27,7 @@ public class SwerveHeadingCorrector {
         }
 
 
-        if(is_translating)
+        if(is_translating && target.omegaRadiansPerSecond < 0.03)
         {
             m_controller.enableContinuousInput(-Math.PI, Math.PI);
             
