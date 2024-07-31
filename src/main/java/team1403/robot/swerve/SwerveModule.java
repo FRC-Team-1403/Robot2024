@@ -176,20 +176,6 @@ public class SwerveModule implements Device {
     }
 
     /**
-     * Normalizes angle value to be inbetween values -pi to pi.
-     *
-     * @param angle angle to be normalized
-     * @return angle value between -pi to pi
-     */
-    private double normalizeAngle(double angle) {
-      angle %= (2.0 * Math.PI);
-      if (angle < 0.0) {
-        angle += 2.0 * Math.PI;
-      }
-      return angle;
-    }
-
-    /**
      * Method for setting the drive voltage and steering angle.
      *
      * @param driveMetersPerSecond driving meters per second.
@@ -203,7 +189,7 @@ public class SwerveModule implements Device {
       m_targetVelocity = driveMetersPerSecond;
 
       // Set steerMotor according to position of encoder
-      m_targetSteerAngle = normalizeAngle(steerAngle);
+      m_targetSteerAngle = MathUtil.angleModulus(steerAngle);
     }
 
     /**
@@ -212,7 +198,7 @@ public class SwerveModule implements Device {
      * @return The current angle in radians. Range: [-pi, pi)
      */
     public double getAbsoluteAngle() {
-      return normalizeAngle(m_absoluteEncoder.getPositionValue());
+      return MathUtil.angleModulus(m_absoluteEncoder.getPositionValue());
     }
   
     /**
