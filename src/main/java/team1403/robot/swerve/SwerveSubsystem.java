@@ -2,47 +2,35 @@ package team1403.robot.swerve;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.util.Optional;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.LocalADStar;
-import com.pathplanner.lib.pathfinding.Pathfinder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
-import com.revrobotics.CANSparkBase.IdleMode;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
-import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
-import swervelib.simulation.SwerveModuleSimulation;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.robot.Constants;
-import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -57,6 +45,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_disableVision = false;
 
   private SwerveDrive m_swerve;
+  private SwerveHeadingCorrector m_corrector;
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -123,6 +112,8 @@ public class SwerveSubsystem extends SubsystemBase {
     m_swerve.setOdometryPeriod(0.005);
     m_swerve.setHeadingCorrection(false);
     m_swerve.setCosineCompensator(false);
+
+    m_corrector = new SwerveHeadingCorrector();
   }
 
   public void setDisableVision(boolean disable) {
@@ -287,6 +278,8 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
+      ChassisSpeeds speeds = m_chassisSpeeds;
+      if(DriverStation.isTeleopEnabled()) speeds = m_corrector.update(Timer.getFPGATimestamp(), speeds, m_swerve.getRobotVelocity(), getGyroscopeRotation());
       m_swerve.drive(m_chassisSpeeds);
       //estimate of target
       Logger.recordOutput("SwerveStates/Target", m_swerve.kinematics.toSwerveModuleStates(ChassisSpeeds.discretize(m_chassisSpeeds, 0.02)));
