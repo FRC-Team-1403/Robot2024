@@ -131,7 +131,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void setArmSpeed(double speed) {
-    double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), 0);
+    double ff = m_feedforward.calculate(Units.degreesToRadians(getPivotAngle() - 106.4), m_leftMotor.getEncoder().getVelocity());
     if (isOverUpperBound()) m_leftMotor.set(-0.1);
     else if (isUnderLowerBound()) m_leftMotor.set(0.1);
     else m_leftMotor.set(MathUtil.clamp(speed + ff, -0.7, 0.8));

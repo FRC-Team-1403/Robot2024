@@ -4,11 +4,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants.Swerve;
@@ -36,7 +36,7 @@ public class DefaultSwerveCommand extends Command {
   private SlewRateLimiter m_translationLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
 
-  private PIDController m_controller;
+  private ProfiledPIDController m_controller;
 
   private double m_speedLimiter = 0.2;
 
@@ -83,9 +83,9 @@ public class DefaultSwerveCommand extends Command {
     m_isFieldRelative = true;
     m_translationLimiter = new SlewRateLimiter(4, -4, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
-    m_controller = new PIDController(.15, 0, 0);
+    m_controller = new ProfiledPIDController(7.5, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed / 4, 30));
 
-    m_controller.enableContinuousInput(-180, 180);
+    m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(m_drivetrainSubsystem);
 
@@ -99,7 +99,7 @@ public class DefaultSwerveCommand extends Command {
 
     m_speedLimiter = 0.3 + (m_speedSupplier.getAsDouble() * 0.7);
     if (m_snipingMode.getAsBoolean()) {
-      m_speedLimiter = 0.15;
+      m_speedLimiter = (m_speedSupplier.getAsDouble() * 0.15);
     }
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
@@ -130,8 +130,8 @@ public class DefaultSwerveCommand extends Command {
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
 
-    double given_current_angle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees();
-    double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX()));
+    double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getGyroscopeRotation().getRadians());
+    double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Target Angle", given_target_angle);
@@ -153,7 +153,6 @@ public class DefaultSwerveCommand extends Command {
   }
 
   private static double squareNum(double num) {
-    double sign = Math.signum(num);
-    return sign * Math.pow(num, 2);
+    return Math.signum(num) * Math.pow(num, 2);
   }
 }

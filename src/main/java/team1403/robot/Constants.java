@@ -271,7 +271,7 @@ public class Constants {
     public static final double KDArmPivot = 0;
     public static final double kAbsolutePivotOffset = 0;
     public static final double kFeedforwardG = 0.03;
-    public static final double kFeedforwardV = 0.0001;
+    public static final double kFeedforwardV = 0.0;
 
     public static final double kMaxPivotAngle = 230;//180
     public static final double kMinPivotAngle = 75;
