@@ -15,6 +15,12 @@ public class SwerveHeadingCorrector {
     private double yaw_setpoint = 0;
     private PIDController m_controller = new PIDController(4, 0, 0);
 
+
+    public SwerveHeadingCorrector()
+    {
+        m_controller.enableContinuousInput(-Math.PI, Math.PI);
+    }
+
     public ChassisSpeeds update(double timestamp, ChassisSpeeds target, ChassisSpeeds cur_vel, Rotation2d gyro)
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
@@ -29,8 +35,6 @@ public class SwerveHeadingCorrector {
 
         if(is_translating && target.omegaRadiansPerSecond < 0.03)
         {
-            m_controller.enableContinuousInput(-Math.PI, Math.PI);
-            
             double new_yaw = m_controller.calculate(current_rotation, yaw_setpoint);
 
             return new ChassisSpeeds(target.vxMetersPerSecond, target.vyMetersPerSecond, new_yaw);
