@@ -33,7 +33,7 @@ public class SwerveHeadingCorrector {
         }
 
 
-        if(is_translating && target.omegaRadiansPerSecond < 0.03)
+        if(is_translating && Math.abs(target.omegaRadiansPerSecond) < 0.03)
         {
             double new_yaw = m_controller.calculate(current_rotation, yaw_setpoint);
 
@@ -44,5 +44,4 @@ public class SwerveHeadingCorrector {
 
         return target;
     }
-    
 }

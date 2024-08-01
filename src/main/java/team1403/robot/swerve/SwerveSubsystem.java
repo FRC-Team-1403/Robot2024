@@ -280,7 +280,7 @@ public class SwerveSubsystem extends SubsystemBase {
     } else {
       ChassisSpeeds speeds = m_chassisSpeeds;
       if(DriverStation.isTeleopEnabled()) speeds = m_corrector.update(Timer.getFPGATimestamp(), speeds, m_swerve.getRobotVelocity(), getGyroscopeRotation());
-      m_swerve.drive(m_chassisSpeeds);
+      m_swerve.drive(speeds);
       //estimate of target
       Logger.recordOutput("SwerveStates/Target", m_swerve.kinematics.toSwerveModuleStates(ChassisSpeeds.discretize(m_chassisSpeeds, 0.02)));
     }
