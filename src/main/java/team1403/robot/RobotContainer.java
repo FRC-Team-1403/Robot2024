@@ -15,6 +15,7 @@ import com.choreo.lib.ChoreoTrajectoryState;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -141,9 +142,9 @@ public class RobotContainer {
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -deadband(m_driverController.getLeftX(), 0.01),
-        () -> -deadband(m_driverController.getLeftY(), 0.01),
-        () -> -deadband(m_driverController.getRightX(), 0.01),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.05),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.05),
+        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.05),
         () -> m_driverController.getHID().getYButton(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
@@ -163,19 +164,6 @@ public class RobotContainer {
       
     m_operatorController.povDown().onTrue(
       new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedColor(-.99)));
-  }
-  
-
-  private double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
   }
 
   private ChoreoTrajectory traj;

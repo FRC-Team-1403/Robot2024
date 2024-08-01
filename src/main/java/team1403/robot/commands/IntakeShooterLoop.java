@@ -1,15 +1,13 @@
 
 package team1403.robot.commands;
 
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
-import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 
@@ -88,13 +85,6 @@ public class IntakeShooterLoop extends Command {
         
     }
 
-    private double deadband(double input)
-    {
-        if(Math.abs(input) <= 0.05)
-            return 0;
-        return input;
-    }
-
     @Override
     public void execute()
     {
@@ -140,7 +130,7 @@ public class IntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
-                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
+                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
                 {
                     if(Constants.team == Alliance.Red)m_led.setLedColor(0.85);
