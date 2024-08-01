@@ -21,19 +21,21 @@ public class SwerveHeadingCorrector {
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
     }
 
+    private final double OMEGA_THRESH = 0.03;
+
     public ChassisSpeeds update(double timestamp, ChassisSpeeds target, ChassisSpeeds cur_vel, Rotation2d gyro)
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
-        boolean near_zero_ang_z = zero_yaw_detector.update(Math.abs(cur_vel.omegaRadiansPerSecond) < 0.03, 0.15);
+        boolean near_zero_ang_z = zero_yaw_detector.update(Math.abs(cur_vel.omegaRadiansPerSecond) < OMEGA_THRESH, 0.15);
         boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
         
-        if(near_zero_ang_z || Math.abs(target.omegaRadiansPerSecond) > 0.03)
+        if(near_zero_ang_z || Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH)
         {
             yaw_setpoint = current_rotation;
         }
 
 
-        if(is_translating && Math.abs(target.omegaRadiansPerSecond) < 0.03)
+        if(is_translating && Math.abs(target.omegaRadiansPerSecond) < OMEGA_THRESH)
         {
             double new_yaw = m_controller.calculate(current_rotation, yaw_setpoint);
 
