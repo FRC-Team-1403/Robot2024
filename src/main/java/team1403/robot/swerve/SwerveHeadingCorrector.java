@@ -34,15 +34,12 @@ public class SwerveHeadingCorrector {
             yaw_setpoint = current_rotation;
         }
 
-
         if(is_translating && Math.abs(target.omegaRadiansPerSecond) < OMEGA_THRESH)
         {
             double new_yaw = m_controller.calculate(current_rotation, yaw_setpoint);
 
             return new ChassisSpeeds(target.vxMetersPerSecond, target.vyMetersPerSecond, new_yaw);
         }
-
-
 
         return target;
     }
