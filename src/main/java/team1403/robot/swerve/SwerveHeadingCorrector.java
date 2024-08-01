@@ -27,7 +27,7 @@ public class SwerveHeadingCorrector {
         boolean near_zero_ang_z = zero_yaw_detector.update(Math.abs(cur_vel.omegaRadiansPerSecond) < 0.03, 0.15);
         boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
         
-        if(near_zero_ang_z)
+        if(near_zero_ang_z || Math.abs(target.omegaRadiansPerSecond) > 0.03)
         {
             yaw_setpoint = current_rotation;
         }
