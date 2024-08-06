@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import team1403.lib.util.ContinuousSlewRateLimiter;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -34,6 +35,7 @@ public class DefaultSwerveCommand extends Command {
   private double tempKI = 0;
 
   private SlewRateLimiter m_translationLimiter;
+  private ContinuousSlewRateLimiter m_directionLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
 
   private ProfiledPIDController m_controller;
@@ -81,8 +83,9 @@ public class DefaultSwerveCommand extends Command {
     this.m_ysupplier = ytarget;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    m_translationLimiter = new SlewRateLimiter(4, -4, 0);
-    m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
+    m_translationLimiter = new SlewRateLimiter(3);
+    m_rotationRateLimiter = new SlewRateLimiter(4);
+    m_directionLimiter = new ContinuousSlewRateLimiter(15, -Math.PI, Math.PI);
     m_controller = new ProfiledPIDController(7.5, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed / 4, 30));
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
@@ -116,6 +119,7 @@ public class DefaultSwerveCommand extends Command {
 
     double horizontal = m_horizontalTranslationSupplier.getAsDouble() * m_speedLimiter;
     double vertical = m_verticalTranslationSupplier.getAsDouble() * m_speedLimiter;
+    double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     {
       //normalize using polar coordinates
       double velocity = MathUtil.clamp(Math.hypot(horizontal, vertical), 0, 1);
@@ -123,17 +127,20 @@ public class DefaultSwerveCommand extends Command {
 
       velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
 
+      // if(velocity > 0.1)
+      //   angle = m_directionLimiter.calculate(angle);
+      // else
+      //   m_directionLimiter.reset(angle);
+
       horizontal = velocity * Math.cos(angle);
       vertical = velocity * Math.sin(angle);
     }
 
-    double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
 
     double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getGyroscopeRotation().getRadians());
     double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
-    m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Target Angle", given_target_angle);
     SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Current Angle", given_current_angle);
