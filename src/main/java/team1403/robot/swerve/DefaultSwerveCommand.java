@@ -35,7 +35,6 @@ public class DefaultSwerveCommand extends Command {
   private double tempKI = 0;
 
   private SlewRateLimiter m_translationLimiter;
-  private ContinuousSlewRateLimiter m_directionLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
 
   private ProfiledPIDController m_controller;
@@ -85,7 +84,6 @@ public class DefaultSwerveCommand extends Command {
     m_isFieldRelative = true;
     m_translationLimiter = new SlewRateLimiter(3);
     m_rotationRateLimiter = new SlewRateLimiter(4);
-    m_directionLimiter = new ContinuousSlewRateLimiter(15, -Math.PI, Math.PI);
     m_controller = new ProfiledPIDController(7.5, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed / 4, 30));
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
@@ -126,11 +124,6 @@ public class DefaultSwerveCommand extends Command {
       double angle = Math.atan2(vertical, horizontal);
 
       velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
-
-      // if(velocity > 0.1)
-      //   angle = m_directionLimiter.calculate(angle);
-      // else
-      //   m_directionLimiter.reset(angle);
 
       horizontal = velocity * Math.cos(angle);
       vertical = velocity * Math.sin(angle);
