@@ -366,7 +366,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
   
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    return ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+    if(DriverStation.isTeleopEnabled())
+      return ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+    
+    return chassisSpeeds;
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
@@ -404,7 +407,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      if (DriverStation.isTeleop()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+      if (DriverStation.isTeleopEnabled()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       
