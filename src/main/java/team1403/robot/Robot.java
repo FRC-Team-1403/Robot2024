@@ -47,10 +47,6 @@ public class Robot extends LoggedRobot {
     // autonomous chooser on the dashboard.
 
     Logger.recordMetadata("Team 1403", "2024 Robot"); // Set a metadata value
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            if(alliance.get() == DriverStation.Alliance.Red)Constants.team = "RED";
-          }
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
