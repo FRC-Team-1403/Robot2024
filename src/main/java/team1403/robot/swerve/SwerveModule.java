@@ -81,7 +81,7 @@ public class SwerveModule implements Device {
       m_absoluteEncoderOffset = offset;
       m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
-      m_steerPidController.enableContinuousInput(0, 2*Math.PI);
+      m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
       m_targetSteerAngle = 0;
 
       initEncoders();
