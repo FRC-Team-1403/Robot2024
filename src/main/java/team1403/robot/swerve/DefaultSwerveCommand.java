@@ -121,6 +121,7 @@ public class DefaultSwerveCommand extends Command {
 
     double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians());
     double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
+    given_target_angle = MathUtil.angleModulus(given_target_angle + Math.PI);
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     
     SmartDashboard.putNumber("Target Angle", given_target_angle);
