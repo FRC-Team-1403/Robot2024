@@ -29,7 +29,6 @@ import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.Limelight;
-import team1403.robot.swerve.PhotonVisionCommand;
 import team1403.robot.swerve.SwerveSubsystem;
 
 /**
@@ -51,7 +50,6 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController;
   private final CommandXboxController m_operatorController;
-  private final PhotonVisionCommand m_PhotonVisionCommand; 
 
   private final PowerDistribution m_powerDistribution;
 
@@ -69,7 +67,6 @@ public class RobotContainer {
     m_hanger = new HangerSubsystem();
     m_driverController = new CommandXboxController(Constants.Driver.pilotPort);
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
-    m_PhotonVisionCommand = new PhotonVisionCommand(m_limelight,m_swerve);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
 
@@ -192,9 +189,5 @@ public class RobotContainer {
 
   public LED getLEDSubsystem() {
     return m_led;
-  }
-
-  public PhotonVisionCommand getVisionCommand() {
-    return m_PhotonVisionCommand;
   }
 }
