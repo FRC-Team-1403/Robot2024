@@ -114,8 +114,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     // Setting default command of swerve subPsystem
     // red
-    Pose2d ampLocationPose2d = new Pose2d(new Translation2d(Units.inchesToMeters(72.5), Units.inchesToMeters(303.0)),
-                Rotation2d.fromDegrees(90.0));
+
+    Translation2d pos_blue = new Translation2d(-0.038099999999999995,  5.547867999999999);
+    Translation2d pos_red = new Translation2d(16.579342,  5.547867999999999);
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
@@ -125,8 +126,8 @@ public class RobotContainer {
         () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
-        () -> -0, // AMP Location 
-        () -> 0,
+        () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getX() : pos_red.getX(), // speaker Location 
+        () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getY() : pos_red.getY(),
         // blue 
         // () -> 0.42,
         // () -> 5.53,
