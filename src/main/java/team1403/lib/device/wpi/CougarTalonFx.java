@@ -1,9 +1,13 @@
 package team1403.lib.device.wpi;
 
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import team1403.lib.device.AdvancedMotorController;
 import team1403.lib.device.CurrentSensor;
 import team1403.lib.device.Encoder;
@@ -43,8 +47,16 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void follow(AdvancedMotorController source) {
-    //m_motor.follow((IMotorController)source);
-    System.err.println("[follow] not yet supported on TalonFx!");
+    if(source instanceof CougarTalonFx)
+    {
+      CougarTalonFx other = (CougarTalonFx)source;
+      m_motor.setControl(new Follower(other.geTalonFxApi().getDeviceID(), false));
+    }
+    System.err.println("Cannot follow something other than TalonFx!");
+  }
+
+  public void followInverted(CougarTalonFx source) {
+    m_motor.setControl(new Follower(source.geTalonFxApi().getDeviceID(), true));
   }
 
   @Override
@@ -58,7 +70,7 @@ public class CougarTalonFx implements AdvancedMotorController {
     m_motor.set(speed);
   }
 
-  //TODO: units are unkown
+  //units are in rotations
   @Override
   public void setPosition(double position) {
     StatusCode code = m_motor.setPosition(position);
@@ -87,7 +99,12 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setRampRate(double rate) {
-    System.err.println("[setRampRate] not yet supported on TalonFx!");
+    rate = MathUtil.clamp(rate, 0, 1);
+    ClosedLoopRampsConfigs config = new ClosedLoopRampsConfigs();
+    config.DutyCycleClosedLoopRampPeriod = rate;
+    config.VoltageClosedLoopRampPeriod = rate;
+    config.TorqueClosedLoopRampPeriod = rate;
+    m_motor.getConfigurator().apply(config);
   }
 
   @Override
@@ -101,7 +118,11 @@ public class CougarTalonFx implements AdvancedMotorController {
 
   @Override
   public void setAmpLimit(double amps) {
-    System.err.println("[setAmpLimit] not yet supported on TalonFx!");
+    amps = MathUtil.clamp(amps, 0, 800);
+    CurrentLimitsConfigs config = new CurrentLimitsConfigs();
+    config.SupplyCurrentLimit = amps;
+    config.SupplyCurrentLimitEnable = true;
+    m_motor.getConfigurator().apply(config);
   }
 
   @Override
@@ -200,7 +221,7 @@ public class CougarTalonFx implements AdvancedMotorController {
 
     @Override
     public final double getAmps() {
-      return m_motor.getStatorCurrent().getValueAsDouble();
+      return m_motor.getSupplyCurrent().getValueAsDouble();
     }
 
     private final String m_sensorName;
