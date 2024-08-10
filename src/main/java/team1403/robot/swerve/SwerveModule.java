@@ -2,14 +2,11 @@ package team1403.robot.swerve;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.SparkPIDController.AccelStrategy;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.RelativeEncoder;
@@ -20,7 +17,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -105,7 +101,7 @@ public class SwerveModule implements Device {
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
       //in units of rotations
       magnetSensor.MagnetOffset = (m_absoluteEncoderOffset)/(2*Math.PI);
-      magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+      magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
@@ -273,9 +269,9 @@ public class SwerveModule implements Device {
 
     public void periodic() {
       m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
-      SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
-      SmartDashboard.putNumber(getName() + " desired angle", m_steerPidController.getSetpoint());
-      SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
+      // SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
+      // SmartDashboard.putNumber(getName() + " desired angle", m_steerPidController.getSetpoint());
+      // SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
+      // SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
     }
   }
