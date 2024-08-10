@@ -7,6 +7,7 @@ package team1403.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -109,9 +110,9 @@ public class RobotContainer {
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -deadband(m_driverController.getLeftX(), 0),
-        () -> -deadband(m_driverController.getLeftY(), 0),
-        () -> -deadband(m_driverController.getRightX(), 0),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.01),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.01),
+        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.01),
         () -> m_driverController.getHID().getYButton(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
@@ -133,18 +134,6 @@ public class RobotContainer {
       new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedColor(-.99)));
   }
   
-
-  private double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
-    } else {
-      return 0.0;
-    }
-  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

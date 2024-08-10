@@ -380,11 +380,15 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+  // synchronized additional safety
+  public synchronized void highFreqUpdate() {
+    updateSwerveModules();
+    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
-
-    updateSwerveModules();
 
     if (m_Limelight.hasTarget() && !m_disableVision) {
       Pose2d pose = m_Limelight.getDistance2D();
@@ -394,7 +398,7 @@ public class SwerveSubsystem extends SubsystemBase {
       }
     }
 
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    highFreqUpdate();
 
     SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);

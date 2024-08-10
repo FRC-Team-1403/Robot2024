@@ -4,7 +4,7 @@
 
 package team1403.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.CougarLoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
@@ -24,7 +24,7 @@ import team1403.robot.commands.IntakeShooterLoop;
  * build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends CougarLoggedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private IntakeShooterLoop m_combinedCommand;
@@ -76,6 +76,8 @@ public class Robot extends LoggedRobot {
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
+
+    addPeriodic(() -> m_robotContainer.getSwerveSubsystem().highFreqUpdate(), 0.002);
   }
 
   /**
