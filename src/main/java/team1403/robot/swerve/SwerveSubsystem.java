@@ -393,6 +393,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
+    highFreqUpdate();
+
     if(!m_disableVision)
     {
       ArrayList<Pose2d> poses = new ArrayList<>();
@@ -409,8 +411,6 @@ public class SwerveSubsystem extends SubsystemBase {
       }
       Logger.recordOutput("Odometery/Vision Measurements", poses.toArray(new Pose2d[poses.size()]));
     }
-
-    highFreqUpdate();
 
     SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
