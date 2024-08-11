@@ -126,8 +126,7 @@ public class Robot extends CougarLoggedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.getSwerveSubsystem().setDisableVision(true);
-    SmartDashboard.putString("Auto Name", m_autonomousCommand.getName());
+    System.out.println("auto name: " + m_autonomousCommand.getName());
     // schedule the autonomous command (example)
     m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
@@ -145,7 +144,6 @@ public class Robot extends CougarLoggedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.getSwerveSubsystem().setDisableVision(false);
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

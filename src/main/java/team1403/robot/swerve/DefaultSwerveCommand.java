@@ -3,23 +3,15 @@ package team1403.robot.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
-import org.ejml.ops.FConvertArrays;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
-import team1403.robot.Constants.Vision;
 
 /**
  * The default command for the swerve drivetrain subsystem.
@@ -38,8 +30,6 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_ysupplier;
   private final DoubleSupplier m_snipingMode;
   private boolean m_isFieldRelative;
-  private double tempKP = 0;
-  private double tempKI = 0;
 
   private SlewRateLimiter m_translationLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
@@ -96,9 +86,6 @@ public class DefaultSwerveCommand extends Command {
     m_controller.enableContinuousInput(-180, 180);
 
     addRequirements(m_drivetrainSubsystem);
-
-    SmartDashboard.putNumber("P Value", tempKP);
-    SmartDashboard.putNumber("I Value", tempKI);
   }
 
   @Override
@@ -139,11 +126,12 @@ public class DefaultSwerveCommand extends Command {
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
     SmartDashboard.putNumber("Target Angle", given_target_angle);
     SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());
-    SmartDashboard.putNumber("Current Angle", given_current_angle);
     
     if(m_aimbotSupplier.getAsBoolean())
+    {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
-    SmartDashboard.putNumber("Aimbot Movement", angular);
+      SmartDashboard.putNumber("Aimbot Movement", angular);
+    }
     
     if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,
@@ -156,7 +144,6 @@ public class DefaultSwerveCommand extends Command {
   }
 
   private static double squareNum(double num) {
-    double sign = Math.signum(num);
-    return sign * Math.pow(num, 2);
+    return Math.signum(num) * Math.pow(num, 2);
   }
 }

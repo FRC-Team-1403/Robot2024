@@ -7,6 +7,8 @@ package team1403.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +31,7 @@ import team1403.robot.subsystems.LED;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
-import team1403.robot.swerve.Limelight;
+import team1403.robot.swerve.AprilTagCamera;
 import team1403.robot.swerve.SwerveSubsystem;
 
 /**
@@ -41,7 +43,6 @@ import team1403.robot.swerve.SwerveSubsystem;
 public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
-  private Limelight m_limelight;
   //private AimbotCommand m_aimbot;
   private ArmSubsystem m_arm;
   private Wrist m_wrist;
@@ -59,8 +60,16 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    m_limelight = new Limelight();
-    m_swerve = new SwerveSubsystem(m_limelight);
+    try
+    {
+      Constants.Vision.kFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+    }
+    catch(Exception e)
+    {
+      System.err.println(e.getMessage());
+    }
+    
+    m_swerve = new SwerveSubsystem();
     m_arm = new ArmSubsystem();
     m_wrist = new Wrist(m_arm);
     m_endeff = new IntakeAndShooter();
@@ -142,10 +151,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected().andThen(new InstantCommand(() -> m_swerve.stop()));
-  }
-
-  public Limelight getLimelight(){
-    return m_limelight;
   }
 
   public SwerveSubsystem getSwerveSubsystem() {

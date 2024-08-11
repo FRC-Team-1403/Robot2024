@@ -1,5 +1,7 @@
 package team1403.robot.swerve;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -39,7 +41,6 @@ import team1403.robot.Constants.Swerve;
 public class SwerveSubsystem extends SubsystemBase {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
-  private int tagCount = 0;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] m_states = new SwerveModuleState[4];
   private final SwerveDrivePoseEstimator m_odometer;
@@ -54,7 +55,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private double m_rollOffset;
 
   private boolean m_isXModeEnabled = false;
-  private Limelight m_Limelight;
+  private ArrayList<AprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
 
   /**
@@ -67,11 +68,10 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param parameters the {@link CougarLibInjectedParameters}
    *                   used to construct this subsystem
    */
-  public SwerveSubsystem(Limelight limelight) {
+  public SwerveSubsystem() {
     SmartDashboard.putData("Field", m_field);
     // super("Swerve Subsystem", parameters);
     m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
-    m_Limelight = limelight;
     m_modules = new SwerveModule[] {
         new SwerveModule("Front Left Module",
             CanBus.frontLeftDriveID, CanBus.frontLeftSteerID,
@@ -90,7 +90,7 @@ public class SwerveSubsystem extends SubsystemBase {
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-        () -> Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::getCurrentChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             new PIDConstants(Swerve.kPTranslation, Swerve.kITranslation, Swerve.kDTranslation), // Translation PID
@@ -139,6 +139,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_offset = new Translation2d();
     m_rollOffset = -m_navx2.getRoll();
+
+    m_cameras = new ArrayList<>();
+    m_cameras.add(new AprilTagCamera("PhotonCamera", Swerve.kCameraOffset));
   }
 
   public void setDisableVision(boolean disable) {
@@ -301,8 +304,12 @@ public class SwerveSubsystem extends SubsystemBase {
     return states;
   }
 
-  public ChassisSpeeds getChassisSpeed() {
+  public ChassisSpeeds getTargetChassisSpeed() {
     return m_chassisSpeeds;
+  }
+
+  public ChassisSpeeds getCurrentChassisSpeed() {
+    return Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
 
   /**
@@ -386,12 +393,21 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-    if (m_Limelight.hasTarget() && !m_disableVision) {
-      Pose2d pose = m_Limelight.getDistance2D();
-      if (pose != null) {
-        Logger.recordOutput("Odometery/Vision Measurement", pose);
-        m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+    if(!m_disableVision)
+    {
+      ArrayList<Pose2d> poses = new ArrayList<>();
+      for(AprilTagCamera cam : m_cameras)
+      {
+        if (cam.hasTarget()) {
+          Pose2d pose = cam.getPose2D();
+          if (pose != null) {
+            //FIXME: filter out cameras with high ambiguity
+            m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+            poses.add(pose);
+          }
+        }
       }
+      Logger.recordOutput("Odometery/Vision Measurements", poses.toArray(new Pose2d[poses.size()]));
     }
 
     highFreqUpdate();
@@ -413,7 +429,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
-    Logger.recordOutput("Chassis Speeds", Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates()).toString());
+    Logger.recordOutput("Chassis Speeds", getCurrentChassisSpeed().toString());
 
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
