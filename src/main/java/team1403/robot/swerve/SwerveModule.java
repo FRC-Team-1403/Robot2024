@@ -100,7 +100,7 @@ public class SwerveModule implements Device {
       }
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
       //in units of rotations
-      magnetSensor.MagnetOffset = (m_absoluteEncoderOffset)/(2*Math.PI);
+      magnetSensor.MagnetOffset = MathUtil.angleModulus(m_absoluteEncoderOffset)/(2*Math.PI);
       magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
