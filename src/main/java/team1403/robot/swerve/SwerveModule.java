@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -100,7 +101,7 @@ public class SwerveModule implements Device {
       }
       MagnetSensorConfigs magnetSensor = new MagnetSensorConfigs();
       //in units of rotations
-      magnetSensor.MagnetOffset = MathUtil.angleModulus(m_absoluteEncoderOffset)/Math.PI;
+      magnetSensor.MagnetOffset = Units.radiansToRotations(MathUtil.angleModulus(m_absoluteEncoderOffset));
       magnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
       magnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
 
