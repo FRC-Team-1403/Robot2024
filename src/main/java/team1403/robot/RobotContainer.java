@@ -68,7 +68,7 @@ public class RobotContainer {
     {
       System.err.println(e.getMessage());
     }
-    
+
     m_swerve = new SwerveSubsystem();
     m_arm = new ArmSubsystem();
     m_wrist = new Wrist(m_arm);
@@ -134,7 +134,7 @@ public class RobotContainer {
         () -> m_driverController.getLeftTriggerAxis()));
 
 
-    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroGyroscope(), m_swerve));
+    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
 
     m_operatorController.povLeft().onTrue(
       new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedColor(-0.91)));

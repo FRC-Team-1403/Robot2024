@@ -81,9 +81,9 @@ public class DefaultSwerveCommand extends Command {
     m_isFieldRelative = true;
     m_translationLimiter = new SlewRateLimiter(4, -4, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
-    m_controller = new PIDController(.15, 0, 0);
+    m_controller = new PIDController(4, 0, 0);
 
-    m_controller.enableContinuousInput(-180, 180);
+    m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -119,8 +119,8 @@ public class DefaultSwerveCommand extends Command {
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
     Translation2d offset = new Translation2d();
 
-    double given_current_angle = m_drivetrainSubsystem.getNavxAhrs().getConstraintedRotation().getDegrees();
-    double given_target_angle = Units.radiansToDegrees(Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX()));
+    double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians());
+    double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     
     m_drivetrainSubsystem.setDisableVision(m_aimbotSupplier.getAsBoolean());
@@ -135,7 +135,7 @@ public class DefaultSwerveCommand extends Command {
     
     if (m_isFieldRelative) {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,
-          angular, m_drivetrainSubsystem.getGyroscopeRotation());
+          angular, m_drivetrainSubsystem.getRotation());
     } else {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
