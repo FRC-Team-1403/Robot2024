@@ -7,6 +7,7 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -90,13 +91,6 @@ public class IntakeShooterLoop extends Command {
         
     }
 
-    private double deadband(double input)
-    {
-        if(Math.abs(input) <= 0.05)
-            return 0;
-        return input;
-    }
-
     @Override
     public void execute()
     {
@@ -142,7 +136,7 @@ public class IntakeShooterLoop extends Command {
                     // m_wrist.setWristAngle(115);
                     m_state = State.RAISE;
                 }
-                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - deadband(m_ops.getRightY()));
+                m_arm.moveArm(m_arm.getPivotAngleSetpoint() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
                     if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red) m_led.setLedColor(0.85);
                     else m_led.setLedColor(0.59);
