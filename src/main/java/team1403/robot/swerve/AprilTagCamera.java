@@ -68,6 +68,8 @@ public class AprilTagCamera extends SubsystemBase {
 
   public Pose2d getPose2D() {
     Pose3d pose = getPose();
+    if(pose == null)
+      return null;
     Rotation3d rot = pose.getRotation();
     return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getZ()));
   }
