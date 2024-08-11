@@ -111,10 +111,10 @@ public class DefaultSwerveCommand extends Command {
 
     SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
 
-      boolean x_mode = m_xModeSupplier.getAsBoolean();
-      m_drivetrainSubsystem.setXModeEnabled(x_mode);
-      if(x_mode)
-        return;
+    boolean x_mode = m_xModeSupplier.getAsBoolean();
+    m_drivetrainSubsystem.setXModeEnabled(x_mode);
+    if(x_mode)
+      return;
 
     ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
     double horizontal = m_horizontalTranslationSupplier.getAsDouble() * m_speedLimiter;

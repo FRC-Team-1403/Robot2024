@@ -113,7 +113,7 @@ public class RobotContainer {
         () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.01),
         () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.01),
         () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.01),
-        () -> m_driverController.getHID().getYButton(),
+        () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
         () -> -0, // AMP Location 
