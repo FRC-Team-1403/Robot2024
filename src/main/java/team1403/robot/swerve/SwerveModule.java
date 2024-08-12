@@ -108,6 +108,7 @@ public class SwerveModule implements Device {
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
+      m_absoluteEncoder.setUpdateFrequency(500);
 
       //avoid overrun, and get more up to date values for PID
       //m_absoluteEncoder.getPosition().setUpdateFrequency(500, 0.002);

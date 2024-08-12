@@ -1,5 +1,8 @@
 package team1403.lib.device.wpi;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 
 import team1403.lib.device.Encoder;
@@ -62,5 +65,15 @@ public class CanCoder extends CANcoder implements Encoder {
   @Override
   public void setPositionOffset(double position) {
     setPosition(position);
+  }
+
+  //only for position
+  public void setUpdateFrequency(double hertz) {
+    StatusCode code = BaseStatusSignal.setUpdateFrequencyForAll(hertz, super.getPosition());
+    if(!code.isOK())
+    {
+      System.err.println(getName() + " Could not update frequency!!");
+      System.err.println(code.getDescription());
+    }
   }
 }
