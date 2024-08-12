@@ -262,7 +262,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param offset        the swerve module to pivot around
    */
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
-    m_chassisSpeeds = chassisSpeeds;
+    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
     m_offset = offset;
     SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
@@ -349,6 +349,24 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void setXModeEnabled(boolean enabled) {
     this.m_isXModeEnabled = enabled;
+  }
+
+  /**
+   * Accounts for the drift caused by the first order kinematics
+   * while doing both translational and rotational movement.
+   * 
+   * <p>
+   * Looks forward one control loop to figure out where the robot
+   * should be given the chassisspeed and backs out a twist command from that.
+   * 
+   * @param chassisSpeeds the given chassisspeeds
+   * @return the corrected chassisspeeds
+   */
+  private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+    if(DriverStation.isTeleopEnabled())
+      return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
+    
+    return chassisSpeeds;
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
