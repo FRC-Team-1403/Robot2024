@@ -135,7 +135,7 @@ public class SwerveModule implements Device {
       m_steerMotor.setInverted(false);
       m_steerMotor.enableVoltageCompensation(Swerve.kVoltageSaturation);
       m_steerMotor.setSmartCurrentLimit(Swerve.kSteerCurrentLimit);
-      //set speed every 2 ms
+      //set speed every 5 ms
       m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, Constants.kSwerveModuleUpdateRateMs);
     }
 
@@ -143,7 +143,7 @@ public class SwerveModule implements Device {
       m_driveMotor.setInverted(m_inverted);
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
-      //update drive motor position every 2 ms
+      //update drive motor position every 5 ms
       m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.kSwerveModuleUpdateRateMs);
       //update velocities a little bit more frequently
       m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);

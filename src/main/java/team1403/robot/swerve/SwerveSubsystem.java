@@ -363,10 +363,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return the corrected chassisspeeds
    */
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
-    if(DriverStation.isTeleopEnabled())
-      return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
-    
-    return chassisSpeeds;
+    return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
