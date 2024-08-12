@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
@@ -76,7 +77,7 @@ public class Robot extends CougarLoggedRobot {
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
 
-    addPeriodic(() -> m_robotContainer.getSwerveSubsystem().highFreqUpdate(), 0.002);
+    addPeriodic(() -> m_robotContainer.getSwerveSubsystem().highFreqUpdate(), Units.millisecondsToSeconds(Constants.kSwerveModuleUpdateRateMs));
   }
 
   /**

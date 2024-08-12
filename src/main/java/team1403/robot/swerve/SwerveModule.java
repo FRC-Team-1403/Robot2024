@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.RelativeEncoder;
@@ -108,7 +109,7 @@ public class SwerveModule implements Device {
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
-      m_absoluteEncoder.setUpdateFrequency(500);
+      m_absoluteEncoder.setUpdateFrequency(Constants.kSwerveModuleUpdateRateHz);
 
       //avoid overrun, and get more up to date values for PID
       //m_absoluteEncoder.getPosition().setUpdateFrequency(500, 0.002);
@@ -134,12 +135,18 @@ public class SwerveModule implements Device {
       m_steerMotor.setInverted(false);
       m_steerMotor.enableVoltageCompensation(Swerve.kVoltageSaturation);
       m_steerMotor.setSmartCurrentLimit(Swerve.kSteerCurrentLimit);
+      //set speed every 2 ms
+      m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, Constants.kSwerveModuleUpdateRateMs);
     }
 
     public void initDriveMotor() {
       m_driveMotor.setInverted(m_inverted);
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
+      //update drive motor position every 2 ms
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.kSwerveModuleUpdateRateMs);
+      //update velocities a little bit more frequently
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
 
       m_drivePIDController.setP(Constants.Swerve.kPDrive);
       m_drivePIDController.setI(Constants.Swerve.kIDrive);
