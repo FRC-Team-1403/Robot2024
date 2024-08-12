@@ -8,9 +8,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -138,6 +138,9 @@ public class DefaultSwerveCommand extends Command {
     } else {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
+
+    //fixes rotating while turning drift
+    chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
 
     m_drivetrainSubsystem.drive(chassisSpeeds, offset);
   }
