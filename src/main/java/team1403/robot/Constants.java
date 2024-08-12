@@ -1,16 +1,12 @@
 package team1403.robot;
 
-import java.util.Arrays;
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import team1403.lib.util.Dimension;
 import team1403.robot.subsystems.arm.ArmState;
 
 /**
@@ -29,13 +25,6 @@ import team1403.robot.subsystems.arm.ArmState;
 public class Constants {
 
   // Variables to used by all subsystems.
-  public static final Dimension robotDimensions = new Dimension(0, 0, 0);
-  public static final Dimension wristDimensions = new Dimension(0, 0, 0); // TODO
-
-  public static double kRobotHeight = 32;
-  public static double kHeightFromGround = 33.465;
-  public static double kGroundToTopOfFrame = 1.465;
-  public static double kFrameHeight = 2;
   public static final double kLoopTime = 0.02;
 
   /**
