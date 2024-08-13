@@ -97,7 +97,7 @@ public class SwerveModule implements Device {
       return m_name;
     }
 
-    public void initEncoders() {
+    private void initEncoders() {
       // Config absolute encoder
       if (m_absoluteEncoder.getMagnetHealth().getValue() != MagnetHealthValue.Magnet_Green) {
         System.err.println("CANCoder magnetic field strength is unacceptable.");
@@ -148,7 +148,7 @@ public class SwerveModule implements Device {
       m_steerPIDController.setOutputRange(-1, 1);
     }
 
-    public void initDriveMotor() {
+    private void initDriveMotor() {
       m_driveMotor.setInverted(m_inverted);
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
@@ -201,7 +201,7 @@ public class SwerveModule implements Device {
       // System.out.println("drive input speed: " + driveMetersPerSecond);
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      double relativeToAbsOffset = m_steerRelativeEncoder.getPosition() - m_absoluteEncoder.getPositionValue();
+      double relativeToAbsOffset = MathUtil.angleModulus(m_steerRelativeEncoder.getPosition()) - getAbsoluteAngle();
       // Set steerMotor according to position of encoder
       m_steerPIDController.setReference(MathUtil.angleModulus(steerAngle - relativeToAbsOffset), ControlType.kPosition);
 
@@ -213,7 +213,7 @@ public class SwerveModule implements Device {
      *
      * @return The current angle in radians. Range: [-pi, pi)
      */
-    public double getAbsoluteAngle() {
+    public synchronized double getAbsoluteAngle() {
       return MathUtil.angleModulus(m_absoluteEncoder.getPositionValue());
     }
 
@@ -221,7 +221,7 @@ public class SwerveModule implements Device {
      * Gets current drive encoder position
      * @return The current positon of the drive encoder
      */
-    public double getDrivePosition() {
+    private double getDrivePosition() {
       return m_driveRelativeEncoder.getPosition();
     }
   

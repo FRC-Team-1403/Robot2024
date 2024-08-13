@@ -15,6 +15,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -314,7 +315,7 @@ public class SwerveSubsystem extends SubsystemBase {
     for (int i = 0; i < m_modules.length; i++) {
       states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
       m_modules[i].set(states[i].speedMetersPerSecond,
-          states[i].angle.getRadians());
+          MathUtil.angleModulus(states[i].angle.getRadians()));
     }
 
     Logger.recordOutput("SwerveStates/Target", states);
