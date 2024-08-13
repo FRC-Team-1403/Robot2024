@@ -1,5 +1,9 @@
 package team1403.robot.swerve;
 
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -37,12 +41,11 @@ public class SwerveModule implements Device {
     private final CanCoder m_absoluteEncoder;
     private final double m_absoluteEncoderOffset;
     private final RelativeEncoder m_driveRelativeEncoder;
-    private final PIDController m_steerPidController;
+    private final RelativeEncoder m_steerRelativeEncoder;
     private final SparkPIDController m_drivePIDController;
+    private final SparkPIDController m_steerPIDController;
     private final String m_name;
     private final boolean m_inverted;
-    private double m_targetVelocity;
-    private double m_targetSteerAngle;
 
 
     /**
@@ -76,11 +79,10 @@ public class SwerveModule implements Device {
           SparkRelativeEncoder.Type.kHallSensor);
       m_absoluteEncoder = new CanCoder("CanCoder", canCoderPort);
       m_driveRelativeEncoder = m_driveMotor.getEncoder();
+      m_steerRelativeEncoder = m_steerMotor.getEncoder();
       m_absoluteEncoderOffset = offset;
-      m_steerPidController = new PIDController(Swerve.kPTurning, Swerve.kITurning, Swerve.kDTurning);
       m_drivePIDController = m_driveMotor.getPIDController();
-      m_steerPidController.enableContinuousInput(-Math.PI, Math.PI);
-      m_targetSteerAngle = 0;
+      m_steerPIDController = m_steerMotor.getPIDController();
 
       initEncoders();
       initSteerMotor();
@@ -135,8 +137,15 @@ public class SwerveModule implements Device {
       m_steerMotor.setInverted(false);
       m_steerMotor.enableVoltageCompensation(Swerve.kVoltageSaturation);
       m_steerMotor.setSmartCurrentLimit(Swerve.kSteerCurrentLimit);
-      //set speed every 5 ms
-      m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, Constants.kSwerveModuleUpdateRateMs);
+
+      m_steerPIDController.setPositionPIDWrappingEnabled(true);
+      m_steerPIDController.setPositionPIDWrappingMaxInput(Math.PI);
+      m_steerPIDController.setPositionPIDWrappingMinInput(-Math.PI);
+      m_steerPIDController.setP(Swerve.kPTurning);
+      m_steerPIDController.setI(Swerve.kITurning);
+      m_steerPIDController.setD(Swerve.kDTurning);
+      m_steerPIDController.setFeedbackDevice((MotorFeedbackSensor)m_steerRelativeEncoder);
+      m_steerPIDController.setOutputRange(-1, 1);
     }
 
     public void initDriveMotor() {
@@ -190,11 +199,13 @@ public class SwerveModule implements Device {
     public void set(double driveMetersPerSecond, double steerAngle) {
       // Set driveMotor according to velocity input
       // System.out.println("drive input speed: " + driveMetersPerSecond);
-      this.m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
-      m_targetVelocity = driveMetersPerSecond;
+      m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
+      double relativeToAbsOffset = m_steerRelativeEncoder.getPosition() - m_absoluteEncoder.getPositionValue();
       // Set steerMotor according to position of encoder
-      m_targetSteerAngle = MathUtil.angleModulus(steerAngle);
+      m_steerPIDController.setReference(MathUtil.angleModulus(steerAngle - relativeToAbsOffset), ControlType.kPosition);
+
+      Logger.recordOutput(getName() + " relativeAbsOffset", relativeToAbsOffset);
     }
 
     /**
@@ -205,45 +216,13 @@ public class SwerveModule implements Device {
     public double getAbsoluteAngle() {
       return MathUtil.angleModulus(m_absoluteEncoder.getPositionValue());
     }
-  
+
     /**
-     * Returns the drive motor object associated with the module.
-     *
-     * @return the drive motor object.
-     * 
+     * Gets current drive encoder position
+     * @return The current positon of the drive encoder
      */
-    public CANSparkMax getDriveMotor() {
-      return m_driveMotor;
-    }
-  
-    /**
-     * Returns the steer motor object associated with the module.
-     *
-     * @return the steer motor object.
-     * 
-     */
-    public CANSparkMax getSteerMotor() {
-      return m_steerMotor;
-    }
-  
-    /**
-     * Returns the CANCoder object associated with the module.
-     *
-     * @return the CANCoder object.
-     * 
-     */
-    public CanCoder getAbsoluteEncoder() {
-      return m_absoluteEncoder;
-    }
-  
-    /**
-     * Returns the relative encoder for the drive motor.
-     *
-     * @return relative encoder value from drive motor.
-     *
-     */
-    public RelativeEncoder getDriveRelativeEncoder() {
-      return m_driveRelativeEncoder;
+    public double getDrivePosition() {
+      return m_driveRelativeEncoder.getPosition();
     }
   
     /**
@@ -252,8 +231,8 @@ public class SwerveModule implements Device {
      * @return the SwerveModulePosition, which represents the distance 
      *         travelled and the angle of the module.
      */
-    public SwerveModulePosition getModulePosition() {
-      return new SwerveModulePosition(m_driveRelativeEncoder.getPosition(),
+    public synchronized SwerveModulePosition getModulePosition() {
+      return new SwerveModulePosition(getDrivePosition(),
             new Rotation2d(getAbsoluteAngle()));
     }
     
@@ -274,13 +253,5 @@ public class SwerveModule implements Device {
      */
     public SwerveModuleState getState() {
       return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteAngle()));
-    }
-
-    public void periodic() {
-      m_steerMotor.set(m_steerPidController.calculate(getAbsoluteAngle(), m_targetSteerAngle));
-      // SmartDashboard.putNumber(getName() + " current angle", getAbsoluteAngle());
-      // SmartDashboard.putNumber(getName() + " desired angle", m_steerPidController.getSetpoint());
-      // SmartDashboard.putNumber(getName() + " current velocity", m_driveMotor.getEncoder().getVelocity());
-      // SmartDashboard.putNumber(getName() + " desired velocity", m_targetVelocity);
     }
   }

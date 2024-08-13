@@ -4,13 +4,12 @@
 
 package team1403.robot;
 
-import org.littletonrobotics.junction.CougarLoggedRobot;
+import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import team1403.robot.commands.IntakeShooterLoop;
@@ -24,7 +23,7 @@ import team1403.robot.commands.IntakeShooterLoop;
  * build.gradle file in the
  * project.
  */
-public class Robot extends CougarLoggedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private IntakeShooterLoop m_combinedCommand;

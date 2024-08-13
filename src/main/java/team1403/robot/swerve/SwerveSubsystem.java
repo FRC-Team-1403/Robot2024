@@ -1,6 +1,8 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -22,7 +24,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -53,6 +57,17 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_isXModeEnabled = false;
   private ArrayList<AprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
+
+  private final Notifier m_odometeryNotifier;
+
+  private class OdometeryData {
+    SwerveModulePosition[] m_positions;
+    Rotation2d m_gyroRotation;
+    double m_timeStamp;
+  }
+
+  private ArrayList<OdometeryData> m_odoSamples;
+  private final Lock m_odometeryLock = new ReentrantLock();
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -120,6 +135,8 @@ public class SwerveSubsystem extends SubsystemBase {
     if (m_navx2.isConnected())
       while (m_navx2.isCalibrating());
 
+    m_odoSamples = new ArrayList<>();
+
     zeroGyroscope();
 
     m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
@@ -134,6 +151,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_cameras = new ArrayList<>();
     m_cameras.add(new AprilTagCamera("PhotonCamera", Swerve.kCameraOffset));
+
+    m_odometeryNotifier = new Notifier(this::highFreqUpdate);
+    m_odometeryNotifier.setName("SwerveOdoNotifer");
+    m_odometeryNotifier.startPeriodic(Units.millisecondsToSeconds(Constants.kSwerveModuleUpdateRateMs));
   }
 
   public void setDisableVision(boolean disable) {
@@ -165,10 +186,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
-  public SwerveDrivePoseEstimator getOdometer() {
-    return m_odometer;
-  }
-
   /**
    * Sets the idle mode for the drivetrain.
    *
@@ -187,7 +204,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
+    m_odometeryLock.lock();
+    m_odoSamples.clear();
     m_navx2.reset();
+    m_odometeryLock.unlock();
   }
 
   public void zeroHeading() {
@@ -216,7 +236,10 @@ public class SwerveSubsystem extends SubsystemBase {
    * Reset the position of the drivetrain odometry.
    */
   public void resetOdometry(Pose2d pose) {
+    m_odometeryLock.lock();
+    m_odoSamples.clear();
     m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+    m_odometeryLock.unlock();
   }
 
   /**
@@ -224,7 +247,7 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return a Rotation2d object that contains the gyroscope's heading
    */
-  private Rotation2d getGyroscopeRotation() {
+  private synchronized Rotation2d getGyroscopeRotation() {
     return m_navx2.getRotation2d();
   }
 
@@ -268,7 +291,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
-    drive(chassisSpeeds, new Translation2d());
+    drive(chassisSpeeds, Constants.zeroTranslation);
   }
 
   /**
@@ -373,23 +396,29 @@ public class SwerveSubsystem extends SubsystemBase {
     return speeds;
   }
 
-  private void updateSwerveModules() {
-    for(SwerveModule module : m_modules) {
-      module.periodic();
-    }
-  }
+  private void highFreqUpdate() {
+    OdometeryData m_data = new OdometeryData();
 
-  // synchronized additional safety
-  public synchronized void highFreqUpdate() {
-    updateSwerveModules();
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    m_odometeryLock.lock();
+    m_data.m_gyroRotation = getGyroscopeRotation();
+    m_data.m_positions = getModulePositions();
+    m_data.m_timeStamp = Timer.getFPGATimestamp();
+
+    m_odoSamples.add(m_data);
+    m_odometeryLock.unlock();
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
 
-    highFreqUpdate();
+    m_odometeryLock.lock();
+    for(OdometeryData sample : m_odoSamples)
+    {
+      m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
+    }
+    m_odoSamples.clear();
+    m_odometeryLock.unlock();
 
     if(!m_disableVision)
     {
@@ -399,7 +428,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (cam.hasTarget()) {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
-            //FIXME: filter out cameras with high ambiguity
+            //TODO: filter out cameras with high ambiguity
             m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
             poses.add(pose);
           }

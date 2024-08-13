@@ -28,6 +28,7 @@ public class Constants {
   public static final double kLoopTime = 0.02;
   public static final int kSwerveModuleUpdateRateMs = 5;
   public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
+  public static final Translation2d zeroTranslation = new Translation2d();
 
   /**
    * Swerve Constants.
@@ -37,7 +38,7 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final double kPTurning = 0.45;
+    public static final double kPTurning = 0.4;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 

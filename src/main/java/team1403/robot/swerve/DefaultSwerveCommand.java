@@ -8,9 +8,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -103,7 +103,7 @@ public class DefaultSwerveCommand extends Command {
     if(x_mode)
       return;
 
-    ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
+    ChassisSpeeds chassisSpeeds;
     double horizontal = m_horizontalTranslationSupplier.getAsDouble() * m_speedLimiter;
     double vertical = m_verticalTranslationSupplier.getAsDouble() * m_speedLimiter;
     {
@@ -117,7 +117,7 @@ public class DefaultSwerveCommand extends Command {
       vertical = velocity * Math.sin(angle);
     }
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
-    Translation2d offset = new Translation2d();
+    Translation2d offset = Constants.zeroTranslation;
 
     double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians());
     double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
