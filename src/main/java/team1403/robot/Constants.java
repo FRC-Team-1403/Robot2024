@@ -26,8 +26,6 @@ public class Constants {
 
   // Variables to used by all subsystems.
   public static final double kLoopTime = 0.02;
-  public static final int kSwerveModuleUpdateRateMs = 5;
-  public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
 
   /**
    * Swerve Constants.
