@@ -76,8 +76,6 @@ public class Robot extends CougarLoggedRobot {
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
-
-    addPeriodic(() -> m_robotContainer.getSwerveSubsystem().highFreqUpdate(), Units.millisecondsToSeconds(Constants.kSwerveModuleUpdateRateMs));
   }
 
   /**
