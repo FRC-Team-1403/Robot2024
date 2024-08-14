@@ -248,7 +248,7 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @return a Rotation2d object that contains the gyroscope's heading
    */
-  private synchronized Rotation2d getGyroscopeRotation() {
+  private Rotation2d getGyroscopeRotation() {
     return m_navx2.getRotation2d();
   }
 
