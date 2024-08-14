@@ -221,7 +221,7 @@ public class SwerveModule implements Device {
      * Gets current drive encoder position
      * @return The current positon of the drive encoder
      */
-    private double getDrivePosition() {
+    private synchronized double getDrivePosition() {
       return m_driveRelativeEncoder.getPosition();
     }
   
@@ -231,7 +231,7 @@ public class SwerveModule implements Device {
      * @return the SwerveModulePosition, which represents the distance 
      *         travelled and the angle of the module.
      */
-    public synchronized SwerveModulePosition getModulePosition() {
+    public SwerveModulePosition getModulePosition() {
       return new SwerveModulePosition(getDrivePosition(),
             new Rotation2d(getAbsoluteAngle()));
     }
