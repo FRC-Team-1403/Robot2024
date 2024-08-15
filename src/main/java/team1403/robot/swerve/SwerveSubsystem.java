@@ -58,6 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_isXModeEnabled = false;
   private ArrayList<AprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
+  private boolean m_rotDriftCorrect = true;
 
   private final Notifier m_odometeryNotifier;
 
@@ -390,8 +391,12 @@ public class SwerveSubsystem extends SubsystemBase {
     return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
   }
 
+  public void setEnableRotDriftCorrect(boolean state) {
+    m_rotDriftCorrect = state;
+  }
+
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
-    if (DriverStation.isTeleopEnabled())
+    if (DriverStation.isTeleopEnabled() && m_rotDriftCorrect)
     {
       //implement another algorithm for this later
       return speeds;
@@ -433,7 +438,7 @@ public class SwerveSubsystem extends SubsystemBase {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
             //TODO: filter out cameras with high ambiguity
-            m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+            m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
             poses.add(pose);
           }
         }
