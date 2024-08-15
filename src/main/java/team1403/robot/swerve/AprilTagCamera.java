@@ -74,6 +74,11 @@ public class AprilTagCamera extends SubsystemBase {
     return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getZ()));
   }
 
+  //gets the timestamp of the latest result
+  public double getTimestamp() {
+    return m_result.getTimestampSeconds();
+  }
+
   @Override
   public void periodic() {
     m_result = m_camera.getLatestResult();
