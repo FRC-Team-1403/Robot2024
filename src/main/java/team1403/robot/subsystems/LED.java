@@ -35,7 +35,8 @@ public class LED extends SubsystemBase {
 
 
   public static enum LEDState {
-    OFF(0.99), YELLOW(0.69), GREEN(0.75), YELLOW_FLASH(-0.07), RED_FLASH(-0.17);
+    OFF(0.99), YELLOW(0.69), GREEN(0.75), YELLOW_FLASH(-0.07), RED_FLASH(-0.17), DARK_RED(0.59), DARK_BLUE(0.85), 
+    RAINBOW_FOREST(-0.91), RAINBOW(-0.99);
 
     public final double colorValue;
 

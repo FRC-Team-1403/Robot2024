@@ -138,8 +138,8 @@ public class IntakeShooterLoop extends Command {
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
                 if(m_intakeAndShooter.isIntakePhotogateTriggered())
-                    if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red) m_led.setLedColor(0.85);
-                    else m_led.setLedColor(0.59);
+                    if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red) m_led.setLedMode(LEDState.DARK_BLUE);
+                    else m_led.setLedMode(LEDState.DARK_RED);
 
                 break;
             }

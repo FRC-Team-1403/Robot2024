@@ -30,6 +30,7 @@ import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
+import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
@@ -140,10 +141,10 @@ public class RobotContainer {
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
 
     m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedColor(-0.91)));
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW_FOREST)));
       
     m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedColor(-.99)));
+      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW)));
   }
   
   /**
