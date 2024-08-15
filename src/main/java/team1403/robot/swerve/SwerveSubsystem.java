@@ -391,8 +391,11 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
-
-    //implement another algorithm for this later
+    if (DriverStation.isTeleopEnabled())
+    {
+      //implement another algorithm for this later
+      return speeds;
+    }
 
     return speeds;
   }
@@ -444,7 +447,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      if (DriverStation.isTeleopEnabled()) m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+      m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
 
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       

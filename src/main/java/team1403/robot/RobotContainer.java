@@ -141,10 +141,10 @@ public class RobotContainer {
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
 
     m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW_FOREST)));
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW_FOREST), m_led));
       
     m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW)));
+      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW), m_led));
   }
   
   /**
@@ -154,7 +154,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected().andThen(new InstantCommand(() -> m_swerve.stop()));
+    return autoChooser.getSelected().andThen(new InstantCommand(() -> m_swerve.stop(), m_swerve));
   }
 
   public SwerveSubsystem getSwerveSubsystem() {

@@ -77,6 +77,8 @@ public class IntakeShooterLoop extends Command {
         m_ampShooting = ampShooting;
         m_ops = ops;
         m_feedShot = feedShot;
+
+        addRequirements(m_arm, m_wrist, m_led, m_intakeAndShooter);
     }
 
     @Override

@@ -68,6 +68,8 @@ public class AutoIntakeShooterLoop extends Command {
         m_closeSideShoot = closeSideShoot;
         m_secondSourceShoot = secondSourceShoot;
         Blackbox.setAutoFinished(false);
+
+        addRequirements(m_arm, m_wrist, m_led, m_intakeAndShooter);
     }
 
     @Override
