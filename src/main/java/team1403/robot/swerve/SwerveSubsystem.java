@@ -400,7 +400,7 @@ public class SwerveSubsystem extends SubsystemBase {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
             //FIXME: filter out cameras with high ambiguity
-            m_odometer.addVisionMeasurement(pose, Timer.getFPGATimestamp());
+            m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
             poses.add(pose);
           }
         }
