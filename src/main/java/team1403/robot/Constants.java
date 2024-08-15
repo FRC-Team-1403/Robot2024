@@ -1,6 +1,7 @@
 package team1403.robot;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -200,7 +201,7 @@ public class Constants {
   }
 
   public static class Vision {
-    public static AprilTagFieldLayout kFieldLayout;
+    public static final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
   }
 
   public static class Arm {

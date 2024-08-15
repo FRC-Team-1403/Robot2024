@@ -63,14 +63,6 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    try
-    {
-      Constants.Vision.kFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-    }
-    catch(Exception e)
-    {
-      System.err.println(e.getMessage());
-    }
 
     m_swerve = new SwerveSubsystem();
     m_arm = new ArmSubsystem();
