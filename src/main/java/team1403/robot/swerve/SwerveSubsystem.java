@@ -152,7 +152,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_rollOffset = -m_navx2.getRoll();
 
     m_cameras = new ArrayList<>();
-    m_cameras.add(new AprilTagCamera("PhotonCamera", Swerve.kCameraOffset));
+    m_cameras.add(new AprilTagCamera("PhotonCamera", Swerve.kCameraOffset, this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
@@ -438,15 +438,8 @@ public class SwerveSubsystem extends SubsystemBase {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
             //TODO: filter out cameras with high ambiguity
-            if(cam.getTimestamp() > 0)
-            {
-              m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
-              poses.add(pose);
-            }
-            else
-            {
-              System.err.println("Camera timestamp was < 0!!!");
-            }
+            m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
+            poses.add(pose);
           }
         }
       }
