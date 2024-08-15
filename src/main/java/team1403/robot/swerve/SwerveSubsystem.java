@@ -438,8 +438,15 @@ public class SwerveSubsystem extends SubsystemBase {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
             //TODO: filter out cameras with high ambiguity
-            m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
-            poses.add(pose);
+            if(cam.getTimestamp() > 0)
+            {
+              m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
+              poses.add(pose);
+            }
+            else
+            {
+              System.err.println("Camera timestamp was < 0!!!");
+            }
           }
         }
       }
