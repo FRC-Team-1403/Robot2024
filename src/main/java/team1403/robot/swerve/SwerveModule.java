@@ -128,6 +128,9 @@ public class SwerveModule implements Device {
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
 
+      m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
+      m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderVelocityConversionFactor);
+
       m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
       m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
     }
