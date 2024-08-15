@@ -2,10 +2,14 @@
 package team1403.robot.swerve;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -20,9 +24,11 @@ import team1403.robot.Constants;
 public class AprilTagCamera extends SubsystemBase {
   private final PhotonCamera m_camera;
   private PhotonPipelineResult m_result;
-  private final Transform3d m_cameraTransform;
+  private PhotonPoseEstimator m_poseEstimator;
+  private Optional<EstimatedRobotPose> m_estPos;
+  private Supplier<Pose2d> m_referencePose;
 
-  public AprilTagCamera(String cameraName, Transform3d cameraTransform) {
+  public AprilTagCamera(String cameraName, Transform3d cameraTransform, Supplier<Pose2d> referenceSupplier) {
     // Photonvision
     // PortForwarder.add(5800, 
     // "photonvision.local", 5800);
@@ -36,7 +42,9 @@ public class AprilTagCamera extends SubsystemBase {
     
     m_result = new PhotonPipelineResult();
 
-    m_cameraTransform = cameraTransform;
+    m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, m_camera, cameraTransform);
+    m_estPos = Optional.empty();
+    m_referencePose = referenceSupplier;
     //Cone detection
   }
 
@@ -50,38 +58,36 @@ public class AprilTagCamera extends SubsystemBase {
   }
 
   public Pose3d getPose() {
-    if(hasTarget())
+    if(m_estPos.isPresent())
     {
-      PhotonTrackedTarget target = m_result.getBestTarget();
-      Optional<Pose3d> pose = Constants.Vision.kFieldLayout.getTagPose(target.getFiducialId());
-      if(pose.isEmpty())
-      {
-        System.err.println("RIP code");
-        return null;
-      }
-      return PhotonUtils.estimateFieldToRobotAprilTag(target.getBestCameraToTarget(), 
-      pose.get(), m_cameraTransform);
+      return m_estPos.get().estimatedPose;
     }
-    else
-        return null;
+    return null;
   }
 
   public Pose2d getPose2D() {
     Pose3d pose = getPose();
     if(pose == null)
       return null;
-    Rotation3d rot = pose.getRotation();
-    return new Pose2d(pose.getX(), pose.getY(), new Rotation2d(rot.getZ()));
+    return pose.toPose2d();
   }
 
-  //gets the timestamp of the latest result
+  //gets the timestamp of the latest pose
   public double getTimestamp() {
-    return m_result.getTimestampSeconds();
+    if(m_estPos.isPresent())
+    {
+      return m_estPos.get().timestampSeconds;
+    }
+    return -1;
   }
 
   @Override
   public void periodic() {
     m_result = m_camera.getLatestResult();
+
+    m_poseEstimator.setReferencePose(m_referencePose.get());
+    m_estPos = m_poseEstimator.update(m_result);
+
     Logger.recordOutput("Target Visible", hasTarget());
 
     // if(hasTarget())
