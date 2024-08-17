@@ -128,11 +128,12 @@ public class SwerveModule implements Device {
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
 
-      m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
-      m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderVelocityConversionFactor);
-
       m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
       m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
+
+      m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
+      m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderVelocityConversionFactor);
+      m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
     }
 
     private void initSteerMotor() {
@@ -204,11 +205,18 @@ public class SwerveModule implements Device {
       // System.out.println("drive input speed: " + driveMetersPerSecond);
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      double relativeToAbsOffset = MathUtil.angleModulus(m_steerRelativeEncoder.getPosition()) - getAbsoluteAngle();
-      // Set steerMotor according to position of encoder
-      m_steerPIDController.setReference(MathUtil.angleModulus(steerAngle - relativeToAbsOffset), ControlType.kPosition);
+      double relativeErr = Math.abs(MathUtil.angleModulus(m_steerRelativeEncoder.getPosition()) - getAbsoluteAngle());
 
-      Logger.recordOutput(getName() + " relativeAbsOffset", relativeToAbsOffset);
+      //2 degrees
+      if(relativeErr > 0.035)
+      {
+        m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
+      }
+
+      // Set steerMotor according to position of encoder
+      m_steerPIDController.setReference(steerAngle, ControlType.kPosition);
+
+      Logger.recordOutput(getName() + " EncError", relativeErr);
     }
 
     /**
