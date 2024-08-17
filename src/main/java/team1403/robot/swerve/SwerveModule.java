@@ -205,7 +205,7 @@ public class SwerveModule implements Device {
       // System.out.println("drive input speed: " + driveMetersPerSecond);
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      double relativeErr = Math.abs(MathUtil.angleModulus(m_steerRelativeEncoder.getPosition()) - getAbsoluteAngle());
+      double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - getAbsoluteAngle()));
 
       //2 degrees
       if(relativeErr > 0.035)
@@ -234,6 +234,14 @@ public class SwerveModule implements Device {
      */
     private synchronized double getDrivePosition() {
       return m_driveRelativeEncoder.getPosition();
+    }
+
+    /**
+     * Gets the current steer encoder angle
+     * @return the current angle of the steer relative encoder. Range: [-pi, pi]
+     */
+    private double getSteerRotation() {
+      return MathUtil.angleModulus(m_steerRelativeEncoder.getPosition());
     }
   
     /**
