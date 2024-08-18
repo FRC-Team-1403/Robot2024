@@ -191,6 +191,7 @@ public class SwerveModule implements Device {
      */
     public void setRampRate(double rate) {
       m_driveMotor.setOpenLoopRampRate(rate);
+      m_driveMotor.setClosedLoopRampRate(rate);
     }
 
     /**
