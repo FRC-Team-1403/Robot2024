@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
 
@@ -456,6 +457,12 @@ public class SwerveSubsystem extends SubsystemBase {
       m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       
       setModuleStates(m_states);
+
+      if(Robot.isSimulation())
+      {
+        m_navx2.setAngleAdjustment(MathUtil.inputModulus(m_navx2.getAngleAdjustment() + 
+        Units.radiansToDegrees(-getCurrentChassisSpeed().omegaRadiansPerSecond * Constants.kLoopTime), -360, 360));
+      }
     }
     SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());

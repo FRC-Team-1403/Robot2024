@@ -23,10 +23,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -216,6 +218,12 @@ public class SwerveModule implements Device {
 
       // Set steerMotor according to position of encoder
       m_steerPIDController.setReference(steerAngle, ControlType.kPosition);
+
+      if(Robot.isSimulation())
+      {
+        m_absoluteEncoder.setPosition(Units.radiansToRotations(steerAngle));
+        m_driveRelativeEncoder.setPosition(m_driveRelativeEncoder.getPosition() + m_driveRelativeEncoder.getVelocity() * Constants.kLoopTime);
+      }
 
       Logger.recordOutput(getName() + " EncError", relativeErr);
     }
