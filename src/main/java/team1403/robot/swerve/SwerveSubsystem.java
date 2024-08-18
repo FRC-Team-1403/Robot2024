@@ -72,6 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private ArrayList<OdometeryData> m_odoSamples;
   private final Lock m_odometeryLock = new ReentrantLock();
 
+  private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
+
   /**
    * Creates a new {@link SwerveSubsystem}.
    * Instantiates the 4 {@link SwerveModule}s,
@@ -397,10 +399,10 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
+    ChassisSpeeds corrected = m_headingCorrector.update(Timer.getFPGATimestamp(), speeds, getCurrentChassisSpeed(), getGyroscopeRotation());
     if (DriverStation.isTeleopEnabled() && m_rotDriftCorrect)
     {
-      //implement another algorithm for this later
-      return speeds;
+      return corrected;
     }
 
     return speeds;
@@ -460,8 +462,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
       if(Robot.isSimulation())
       {
+        double injected_noise = Math.random() * Math.hypot(m_chassisSpeeds.vxMetersPerSecond, m_chassisSpeeds.vyMetersPerSecond) / 3.0;
+        Logger.recordOutput("injected omega noise", injected_noise);
         m_navx2.setAngleAdjustment(MathUtil.inputModulus(m_navx2.getAngleAdjustment() + 
-        Units.radiansToDegrees(-getCurrentChassisSpeed().omegaRadiansPerSecond * Constants.kLoopTime), -360, 360));
+        Units.radiansToDegrees((-getCurrentChassisSpeed().omegaRadiansPerSecond + injected_noise) * Constants.kLoopTime), -360, 360));
       }
     }
     SmartDashboard.putString("Module States", getModuleStates().toString());
