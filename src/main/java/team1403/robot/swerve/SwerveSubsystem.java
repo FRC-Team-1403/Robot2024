@@ -399,7 +399,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
-    ChassisSpeeds corrected = m_headingCorrector.update(Timer.getFPGATimestamp(), speeds, getCurrentChassisSpeed(), getGyroscopeRotation());
+    ChassisSpeeds corrected = m_headingCorrector.update(Timer.getFPGATimestamp(), speeds, getCurrentChassisSpeed(), getRotation());
     if (DriverStation.isTeleopEnabled() && m_rotDriftCorrect)
     {
       return corrected;
