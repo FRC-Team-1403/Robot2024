@@ -132,7 +132,7 @@ public class SwerveModule implements Device {
       m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
 
       m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
-      m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderVelocityConversionFactor);
+      m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor / 60.0);
       m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
     }
 

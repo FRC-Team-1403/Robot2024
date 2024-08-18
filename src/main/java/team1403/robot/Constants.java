@@ -83,8 +83,6 @@ public class Constants {
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
         * Swerve.kSteerReduction;
 
-    public static final double kSteerRelativeEncoderVelocityConversionFactor = kSteerRelativeEncoderPositionConversionFactor / 60.0;
-
     public static final double kMaxSpeed = 5.05; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 11.96207492071159 rad/s
