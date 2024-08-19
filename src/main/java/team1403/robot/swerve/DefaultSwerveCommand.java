@@ -81,7 +81,7 @@ public class DefaultSwerveCommand extends Command {
     m_isFieldRelative = true;
     m_translationLimiter = new SlewRateLimiter(4, -4, 0);
     m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
-    m_controller = new PIDController(4, 0, 0);
+    m_controller = new PIDController(5, 0, 0);
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
