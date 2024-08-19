@@ -463,7 +463,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
       if(Robot.isSimulation())
       {
-        double injected_noise = Math.random() * Math.hypot(m_chassisSpeeds.vxMetersPerSecond, m_chassisSpeeds.vyMetersPerSecond) / 3.0;
+        double injected_noise = 0;
         Logger.recordOutput("injected omega noise", injected_noise);
         m_navx2.setAngleAdjustment(MathUtil.inputModulus(m_navx2.getAngleAdjustment() + 
         Units.radiansToDegrees((-getCurrentChassisSpeed().omegaRadiansPerSecond + injected_noise) * Constants.kLoopTime), -360, 360));
