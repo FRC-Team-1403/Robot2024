@@ -58,7 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_isXModeEnabled = false;
   private ArrayList<AprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
-  private boolean m_rotDriftCorrect = true;
+  private boolean m_rotDriftCorrect = false;
   private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
 
   private final Notifier m_odometeryNotifier;
@@ -394,11 +394,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setEnableRotDriftCorrect(boolean state) {
     m_rotDriftCorrect = state;
+    m_headingCorrector.resetHeadingSetpoint();
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
     ChassisSpeeds corrected = m_headingCorrector.update(Timer.getFPGATimestamp(), speeds, getCurrentChassisSpeed(), getRotation());
-    if (DriverStation.isTeleopEnabled() && m_rotDriftCorrect)
+    if (m_rotDriftCorrect)
     {
       return corrected;
     }

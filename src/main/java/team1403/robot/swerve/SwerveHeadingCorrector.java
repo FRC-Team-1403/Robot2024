@@ -45,5 +45,9 @@ public class SwerveHeadingCorrector {
 
         return target;
     }
+
+    public void resetHeadingSetpoint() {
+        yaw_setpoint = Optional.empty();
+    }
 }
 
