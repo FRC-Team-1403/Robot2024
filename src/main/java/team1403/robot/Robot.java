@@ -149,6 +149,7 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
+    m_robotContainer.getSwerveSubsystem().setEnableRotDriftCorrect(true);
     m_combinedCommand.schedule();
   }
 
