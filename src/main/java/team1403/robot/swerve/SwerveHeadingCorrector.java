@@ -13,7 +13,7 @@ import team1403.lib.util.TimeDelayedBoolean;
 
 //adapted from team 254
 public class SwerveHeadingCorrector {
-    //initial rotation should be 0
+    //initial rotation is unknown
     private Optional<Double> yaw_setpoint = Optional.empty();
     private PIDController m_controller = new PIDController(5, 0, 0);
     private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
@@ -33,7 +33,7 @@ public class SwerveHeadingCorrector {
         boolean is_near_zero = m_yawZeroDetector.update(Math.abs(cur_vel.omegaRadiansPerSecond) < OMEGA_THRESH, 0.15);
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
-        
+
         if(!is_near_zero || Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || yaw_setpoint.isEmpty())
         {
             yaw_setpoint = Optional.of(current_rotation);
