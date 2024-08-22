@@ -62,7 +62,6 @@ public class Constants {
         // Front left
         new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
         // Front right
-     
         new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
         // Back left  
         new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
