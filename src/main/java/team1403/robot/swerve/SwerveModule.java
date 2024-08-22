@@ -211,7 +211,7 @@ public class SwerveModule implements Device {
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - getAbsoluteAngle()));
 
       //2 degrees
-      if(relativeErr > 0.035)
+      if(relativeErr > 0.035 && Robot.isReal())
       {
         m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
       }
