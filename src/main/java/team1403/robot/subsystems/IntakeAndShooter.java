@@ -152,15 +152,9 @@ public class IntakeAndShooter extends SubsystemBase {
 
   public void periodic() {
     Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
-    SmartDashboard.putNumber("Intake Motor RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
-    SmartDashboard.putNumber("Shooter Top Motor RPM", -m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue());
-    SmartDashboard.putNumber("RPM setpoint",  m_topShooter.getSetpoint());
     SmartDashboard.putBoolean("Intake Sensor", isIntakePhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Sensor", isShooterPhotogateTriggered());
     SmartDashboard.putBoolean("Shooter Ready", isReady());
-    SmartDashboard.putNumber("Intake current", m_intakeMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Shooter bottom current", m_shooterMotorBottom.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
     Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
     Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.geTalonFxApi().getMotorVoltage().getValueAsDouble());
     Logger.recordOutput("Shooter gate", isShooterPhotogateTriggered());

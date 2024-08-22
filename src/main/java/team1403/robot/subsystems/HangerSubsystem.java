@@ -76,7 +76,7 @@ public class HangerSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    SmartDashboard.putNumber("Right Hanger Speed", m_rightMotor.get());
+    /*SmartDashboard.putNumber("Right Hanger Speed", m_rightMotor.get());
     SmartDashboard.putNumber("Left Hanger Speed", m_leftMotor.get());
     SmartDashboard.putNumber("Right Hanger Encoder", m_rightMotor.getEncoder().getPosition());
     SmartDashboard.putBoolean("Is at Top Right", isAtTopRight());
@@ -103,6 +103,6 @@ public class HangerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Right Motor Encoder", m_rightMotor.getEncoder().getPosition());
 
     SmartDashboard.putNumber("Left Servo Angle", m_leftServo.getAngle());
-    SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());
+    SmartDashboard.putNumber("Right Servo Angle", m_rightServo.getAngle());*/
   }
 }

@@ -16,6 +16,7 @@ public class SwerveHeadingCorrector {
     //initial rotation should be 0
     private Optional<Double> yaw_setpoint = Optional.empty();
     private PIDController m_controller = new PIDController(5, 0, 0);
+    private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
 
 
     public SwerveHeadingCorrector()
@@ -29,10 +30,11 @@ public class SwerveHeadingCorrector {
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
         boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
+        boolean is_near_zero = m_yawZeroDetector.update(cur_vel.omegaRadiansPerSecond < OMEGA_THRESH, 0.15);
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
         
-        if(Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || yaw_setpoint.isEmpty())
+        if(!is_near_zero || Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || yaw_setpoint.isEmpty())
         {
             yaw_setpoint = Optional.of(current_rotation);
         }

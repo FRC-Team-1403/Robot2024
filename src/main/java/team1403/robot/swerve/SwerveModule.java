@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -34,7 +35,7 @@ import team1403.robot.Constants.Swerve;
  * and their respective relative encoders.
  * Also consists of a absolute encoder to track steer angle.
  */
-public class SwerveModule implements Device {
+public class SwerveModule extends SubsystemBase implements Device {
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
 
@@ -273,5 +274,11 @@ public class SwerveModule implements Device {
      */
     public SwerveModuleState getState() {
       return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteAngle()));
+    }
+
+    @Override
+    public void periodic() {
+      Logger.recordOutput(m_name + " Drive Current", m_driveMotor.getOutputCurrent());
+      Logger.recordOutput(m_name + " steer current", m_steerMotor.getOutputCurrent());
     }
   }

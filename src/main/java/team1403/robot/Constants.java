@@ -211,7 +211,7 @@ public class Constants {
 
   public static class Arm {
     // all angles are in degrees
-    public static final double KPArmPivot = 0.0125;
+    public static final double KPArmPivot = 0.0135;
     public static final double KIArmPivot = 0.0;
     public static final double KDArmPivot = 0;
     public static final double kAbsolutePivotOffset = 0;

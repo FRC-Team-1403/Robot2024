@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,7 +29,7 @@ public class ArmSubsystem extends SubsystemBase {
   // following motor
   private final CANSparkMax m_rightMotor;
   private final DutyCycleEncoder m_encoder;
-  private final PIDController m_armPid;
+  private final ProfiledPIDController m_armPid;
   private final ArmFeedforward m_feedforward;
 
   private double tempFF;
@@ -48,7 +50,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     configPivotMotors();
 
-    m_armPid = new PIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot);
+    m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(180, 360));
+    m_armPid.reset(getPivotAngle(), 0);
 
     this.m_angleSetpoint = getPivotAngle();
   }
@@ -83,10 +86,6 @@ public class ArmSubsystem extends SubsystemBase {
     return m_angleSetpoint;
   }
 
-  public PIDController getPidController() {
-    return m_armPid;
-  }
-
   /**
    * Moves the pivot to the desired angle.
    * 
@@ -96,7 +95,7 @@ public class ArmSubsystem extends SubsystemBase {
     //Feedback
     double feedback = m_armPid.calculate(getPivotAngle(), desiredAngle);
 
-    SmartDashboard.putNumber("Arm speed", feedback);
+    Logger.recordOutput("Arm speed", feedback);
     setArmSpeed(feedback);
   }
 
@@ -171,10 +170,6 @@ public class ArmSubsystem extends SubsystemBase {
       m_currentLimitTripped = true;
       m_leftMotor.stopMotor();
     }
-
-    m_armPid.setP(Constants.Arm.KPArmPivot);
-    m_armPid.setI(Constants.Arm.KIArmPivot);
-    m_armPid.setD(Constants.Arm.KDArmPivot);
     
 
     // Track Values
