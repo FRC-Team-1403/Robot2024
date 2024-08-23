@@ -161,10 +161,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_rollOffset = -m_navx2.getRoll();
 
     m_cameras = new ArrayList<>();
-    m_cameras.add(new AprilTagCamera("Unknown_Camera", 
-      () -> new Transform3d(
-      Swerve.kCameraOffset.rotateBy(new Rotation3d(0, 0, getRotation().getRadians())), 
-      Swerve.kCameraRotation), this::getPose));
+    m_cameras.add(new AprilTagCamera("Unknown_Camera", () -> Swerve.kCameraTransfrom, this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");

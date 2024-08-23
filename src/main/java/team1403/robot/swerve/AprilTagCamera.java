@@ -104,11 +104,9 @@ public class AprilTagCamera extends SubsystemBase {
 
     Logger.recordOutput(m_camera.getName() + " Target Visible", hasTarget());
 
-    Translation2d robot_pose = m_referencePose.get().getTranslation();
-    Translation3d robot_pose3d = new Translation3d(robot_pose.getX(), robot_pose.getY(), 0);
-    Transform3d camera_transform = m_poseEstimator.getRobotToCameraTransform();
+    Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
 
-    Logger.recordOutput(m_camera.getName() + " Camera Transform", new Pose3d(camera_transform.getTranslation().plus(robot_pose3d), camera_transform.getRotation().plus(new Rotation3d(0, 0, m_referencePose.get().getRotation().getRadians()))));
+    Logger.recordOutput(m_camera.getName() + " Camera Transform", robot_pose3d.transformBy(m_cameraTransform.get()));
 
     // if(hasTarget())
     // {
