@@ -24,7 +24,9 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -159,7 +161,10 @@ public class SwerveSubsystem extends SubsystemBase {
     m_rollOffset = -m_navx2.getRoll();
 
     m_cameras = new ArrayList<>();
-    m_cameras.add(new AprilTagCamera("Unknown_Camera", Swerve.kCameraOffset, this::getPose));
+    m_cameras.add(new AprilTagCamera("Unknown_Camera", 
+      () -> new Transform3d(
+      Swerve.kCameraOffset.rotateBy(new Rotation3d(0, 0, getRotation().getRadians())), 
+      Swerve.kCameraRotation), this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
@@ -427,6 +432,10 @@ public class SwerveSubsystem extends SubsystemBase {
     m_odometeryLock.unlock();
   }
 
+
+  private ArrayList<Pose2d> m_poses = new ArrayList<>();
+  private ArrayList<Pose3d> m_tags = new ArrayList<>();
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
@@ -441,32 +450,32 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if(!m_disableVision)
     {
-      ArrayList<Pose2d> poses = new ArrayList<>();
-      ArrayList<Pose3d> tags = new ArrayList<>();
+      m_poses.clear();
+      m_tags.clear();
       for(AprilTagCamera cam : m_cameras)
       {
         if (cam.hasTarget()) {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
             m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
-            poses.add(pose);
+            m_poses.add(pose);
             List<PhotonTrackedTarget> targets = cam.getTargets();
             for(PhotonTrackedTarget t : targets)
             {
               Optional<Pose3d> tagpose = Constants.Vision.kFieldLayout.getTagPose(t.getFiducialId());
               if(tagpose.isPresent()) {
-                tags.add(tagpose.get());
+                m_tags.add(tagpose.get());
               }
             }
           }
         }
       }
-      Logger.recordOutput("Odometery/Vision Measurements", poses.toArray(new Pose2d[poses.size()]));
-      Logger.recordOutput("Odometer/Tag Positions", tags.toArray(new Pose3d[tags.size()]));
+      Logger.recordOutput("Odometery/Vision Measurements", m_poses.toArray(new Pose2d[m_poses.size()]));
+      Logger.recordOutput("Odometer/Tag Positions", m_tags.toArray(new Pose3d[m_tags.size()]));
 
-      if(tags.size() == 1 && poses.size() == 1)
+      if(m_tags.size() == 1 && m_poses.size() == 1)
       {
-        Pose2d tag_pose_2d = tags.get(0).toPose2d();
+        Pose2d tag_pose_2d = m_tags.get(0).toPose2d();
         Transform2d diff = getPose().minus(tag_pose_2d);
         Logger.recordOutput("diff", diff);
       }

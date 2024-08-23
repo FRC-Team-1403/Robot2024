@@ -28,10 +28,11 @@ public class AprilTagCamera extends SubsystemBase {
   private final PhotonCamera m_camera;
   private PhotonPipelineResult m_result;
   private PhotonPoseEstimator m_poseEstimator;
+  private Supplier<Transform3d> m_cameraTransform;
   private Optional<EstimatedRobotPose> m_estPos;
   private Supplier<Pose2d> m_referencePose;
 
-  public AprilTagCamera(String cameraName, Transform3d cameraTransform, Supplier<Pose2d> referenceSupplier) {
+  public AprilTagCamera(String cameraName, Supplier<Transform3d> cameraTransform, Supplier<Pose2d> referenceSupplier) {
     // Photonvision
     // PortForwarder.add(5800, 
     // "photonvision.local", 5800);
@@ -45,9 +46,10 @@ public class AprilTagCamera extends SubsystemBase {
     
     m_result = new PhotonPipelineResult();
 
-    m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, m_camera, cameraTransform);
+    m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, m_camera, cameraTransform.get());
     m_estPos = Optional.empty();
     m_referencePose = referenceSupplier;
+    m_cameraTransform = cameraTransform;
     //Cone detection
   }
 
@@ -97,6 +99,7 @@ public class AprilTagCamera extends SubsystemBase {
     m_result = m_camera.getLatestResult();
 
     m_poseEstimator.setReferencePose(m_referencePose.get());
+    m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
     m_estPos = m_poseEstimator.update(m_result);
 
     Logger.recordOutput(m_camera.getName() + " Target Visible", hasTarget());

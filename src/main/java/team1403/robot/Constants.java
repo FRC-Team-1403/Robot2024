@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -100,7 +101,8 @@ public class Constants {
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
     //top-to-bottom disp = 17.82426 inches
-    public static final Transform3d kCameraOffset = new Transform3d(Units.inchesToMeters(8.568),0,Units.inchesToMeters(17.82426), new Rotation3d(Math.PI, Units.degreesToRadians(-65), Math.PI));
+    public static final Rotation3d kCameraRotation = new Rotation3d(Math.PI, Units.degreesToRadians(-25), Math.PI);
+    public static final Translation3d kCameraOffset = new Translation3d(Units.inchesToMeters(-8.568),0,Units.inchesToMeters(17.82426));
   }
 
   /**
