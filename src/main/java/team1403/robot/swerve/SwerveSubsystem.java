@@ -215,7 +215,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroHeading() {
     zeroGyroscope();
-    resetOdometry();
+    Pose2d pose = getPose();
+    resetOdometry(new Pose2d(pose.getTranslation(), new Rotation2d()));
+    m_headingCorrector.resetHeadingSetpoint();
   }
 
   /**
