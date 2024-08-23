@@ -1,11 +1,15 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -18,7 +22,9 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -153,7 +159,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_rollOffset = -m_navx2.getRoll();
 
     m_cameras = new ArrayList<>();
-    m_cameras.add(new AprilTagCamera("PhotonCamera", Swerve.kCameraOffset, this::getPose));
+    m_cameras.add(new AprilTagCamera("Unknown_Camera", Swerve.kCameraOffset, this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
@@ -436,6 +442,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if(!m_disableVision)
     {
       ArrayList<Pose2d> poses = new ArrayList<>();
+      ArrayList<Pose3d> tags = new ArrayList<>();
       for(AprilTagCamera cam : m_cameras)
       {
         if (cam.hasTarget()) {
@@ -443,10 +450,26 @@ public class SwerveSubsystem extends SubsystemBase {
           if (pose != null) {
             m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
             poses.add(pose);
+            List<PhotonTrackedTarget> targets = cam.getTargets();
+            for(PhotonTrackedTarget t : targets)
+            {
+              Optional<Pose3d> tagpose = Constants.Vision.kFieldLayout.getTagPose(t.getFiducialId());
+              if(tagpose.isPresent()) {
+                tags.add(tagpose.get());
+              }
+            }
           }
         }
       }
       Logger.recordOutput("Odometery/Vision Measurements", poses.toArray(new Pose2d[poses.size()]));
+      Logger.recordOutput("Odometer/Tag Positions", tags.toArray(new Pose3d[tags.size()]));
+
+      if(tags.size() == 1 && poses.size() == 1)
+      {
+        Pose2d tag_pose_2d = tags.get(0).toPose2d();
+        Transform2d diff = getPose().minus(tag_pose_2d);
+        Logger.recordOutput("diff", diff);
+      }
     }
 
     SmartDashboard.putString("Odometry", getPose().toString());

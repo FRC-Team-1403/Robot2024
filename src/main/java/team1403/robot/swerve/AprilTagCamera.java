@@ -1,6 +1,8 @@
 
 package team1403.robot.swerve;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -10,9 +12,15 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
 
@@ -76,6 +84,14 @@ public class AprilTagCamera extends SubsystemBase {
     return -1;
   }
 
+  public List<PhotonTrackedTarget> getTargets() {
+    if(m_estPos.isPresent())
+    {
+      return m_estPos.get().targetsUsed;
+    }
+    return new ArrayList<>();
+  }
+
   @Override
   public void periodic() {
     m_result = m_camera.getLatestResult();
@@ -83,7 +99,13 @@ public class AprilTagCamera extends SubsystemBase {
     m_poseEstimator.setReferencePose(m_referencePose.get());
     m_estPos = m_poseEstimator.update(m_result);
 
-    Logger.recordOutput("Target Visible", hasTarget());
+    Logger.recordOutput(m_camera.getName() + " Target Visible", hasTarget());
+
+    Translation2d robot_pose = m_referencePose.get().getTranslation();
+    Translation3d robot_pose3d = new Translation3d(robot_pose.getX(), robot_pose.getY(), 0);
+    Transform3d camera_transform = m_poseEstimator.getRobotToCameraTransform();
+
+    Logger.recordOutput(m_camera.getName() + " Camera Transform", new Pose3d(camera_transform.getTranslation().plus(robot_pose3d), camera_transform.getRotation().plus(new Rotation3d(0, 0, m_referencePose.get().getRotation().getRadians()))));
 
     // if(hasTarget())
     // {

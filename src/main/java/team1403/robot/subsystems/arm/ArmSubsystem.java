@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     configPivotMotors();
 
-    m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(220, 440));
+    m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(370, 570));
     m_armPid.reset(getPivotAngle(), 0);
 
     this.m_angleSetpoint = getPivotAngle();
