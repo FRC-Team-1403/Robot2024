@@ -489,7 +489,6 @@ public class SwerveSubsystem extends SubsystemBase {
       
       setModuleStates(m_states);
     }
-    SmartDashboard.putString("Module States", getModuleStates().toString());
     m_field.setRobotPose(m_odometer.getEstimatedPosition());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());

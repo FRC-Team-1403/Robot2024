@@ -8,7 +8,11 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -23,6 +27,11 @@ public class Wrist extends SubsystemBase {
     private double m_wristAngle;
     private ArmFeedforward m_feedforward;
     private ArmFeedforward m_feedforward2;
+
+    private Mechanism2d m_mechanism;
+    private MechanismRoot2d m_mechanismRoot;
+    private MechanismLigament2d m_armMech;
+    private MechanismLigament2d m_wristMech;
 
     private double m_wristAngleSetpoint;
     private double m_wristMotorSpeed;
@@ -42,6 +51,13 @@ public class Wrist extends SubsystemBase {
 
     m_wristAngleSetpoint = Constants.Wrist.kIntakeSetpoint;
     m_wristMotorSpeed = 0;
+
+    m_mechanism = new Mechanism2d(3, 3);
+    m_mechanismRoot = m_mechanism.getRoot("A-Frame", 1, 1);
+    m_armMech = m_mechanismRoot.append(new MechanismLigament2d("Arm", 1, m_arm.getPivotAngle() - 106.4));
+    m_wristMech = m_armMech.append(new MechanismLigament2d("Wrist", 0.3, getWristAngle()));
+
+    SmartDashboard.putData("Arm Mechanism", m_mechanism);
 
     // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
@@ -116,6 +132,9 @@ public class Wrist extends SubsystemBase {
 
     m_wristMotor.set(m_wristMotorSpeed);
     //m_wristPid.setP(Constants.Wrist.KPWrist);
+
+    m_armMech.setAngle(m_arm.getPivotAngle() - 106.4);
+    m_wristMech.setAngle(-getWristAngle() + 90);
 
    SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
    SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
