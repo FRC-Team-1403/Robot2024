@@ -434,8 +434,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Gyro Reading", getGyroscopeRotation().getDegrees());
-
     m_odometeryLock.lock();
     for(OdometeryData sample : m_odoSamples)
     {
@@ -476,8 +474,6 @@ public class SwerveSubsystem extends SubsystemBase {
         Logger.recordOutput("diff", diff);
       }
     }
-
-    SmartDashboard.putString("Odometry", getPose().toString());
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
 
     if (this.m_isXModeEnabled) {
