@@ -46,7 +46,9 @@ public class AprilTagCamera extends SubsystemBase {
     
     m_result = new PhotonPipelineResult();
 
-    m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.AVERAGE_BEST_TARGETS, m_camera, cameraTransform.get());
+    m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera, cameraTransform.get());
+    m_poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.AVERAGE_BEST_TARGETS);
+
     m_estPos = Optional.empty();
     m_referencePose = referenceSupplier;
     m_cameraTransform = cameraTransform;
