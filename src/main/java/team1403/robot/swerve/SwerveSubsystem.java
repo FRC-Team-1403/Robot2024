@@ -120,7 +120,7 @@ public class SwerveSubsystem extends SubsystemBase {
             new PIDConstants(Swerve.kPAutoTurning, Swerve.kIAutoTurning, Swerve.kDAutoTurning), // Rotation PID
                                                                                                 // constants
             Constants.Swerve.kMaxSpeed, // Max module speed, in m/s
-            Math.hypot(Swerve.kTrackWidth / 2.0, Swerve.kWheelBase / 2.0), // Drive base radius in meters. Distance from
+            Math.hypot(Swerve.kWheelWidth / 2.0, Swerve.kWheelLength / 2.0), // Drive base radius in meters. Distance from
                                                                            // robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),

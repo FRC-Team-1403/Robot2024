@@ -56,18 +56,18 @@ public class Constants {
     public static final double kIDrive = 0.0;
     public static final double kDDrive = 0.0;
 
-    public static final double kTrackWidth = Units.inchesToMeters(23);
-    public static final double kWheelBase = Units.inchesToMeters(24);
+    public static final double kWheelWidth = Units.inchesToMeters(23);
+    public static final double kWheelLength = Units.inchesToMeters(24);
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         // Front left
-        new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
+        new Translation2d(kWheelWidth / 2.0, kWheelLength / 2.0),
         // Front right
-        new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
+        new Translation2d(kWheelWidth / 2.0, -kWheelLength / 2.0),
         // Back left  
-        new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
+        new Translation2d(-kWheelWidth / 2.0, kWheelLength / 2.0),
         // Back right
-        new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
+        new Translation2d(-kWheelWidth / 2.0, -kWheelLength / 2.0));
 
     public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;//-Math.PI + 0.082834967179
     public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;//-0.55 - 3.219825673771961 - Math.PI
@@ -85,7 +85,7 @@ public class Constants {
 
     public static final double kMaxSpeed = 5.05; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
 
-    public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kTrackWidth / 2.0, kWheelBase / 2.0)); // 11.96207492071159 rad/s
+    public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kWheelWidth / 2.0, kWheelLength / 2.0)); // 11.96207492071159 rad/s
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 40;
