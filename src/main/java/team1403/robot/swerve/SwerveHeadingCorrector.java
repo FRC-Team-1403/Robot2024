@@ -30,6 +30,7 @@ public class SwerveHeadingCorrector {
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
         boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
+        //timeout can be lowered with a well tuned slew rate
         boolean is_near_zero = m_yawZeroDetector.update(Math.abs(target.omegaRadiansPerSecond) < OMEGA_THRESH, 0.2);
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
