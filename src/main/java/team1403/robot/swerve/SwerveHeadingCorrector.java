@@ -25,16 +25,20 @@ public class SwerveHeadingCorrector {
     }
 
     private final double OMEGA_THRESH = 0.03;
+    //robot still has momentum after target.dtheta = 0
+    private final double OMEGA_MOI_THRESH = 0.2;
 
     public ChassisSpeeds update(double timestamp, ChassisSpeeds target, ChassisSpeeds cur_vel, Rotation2d gyro)
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
         boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
+        boolean is_rotating = Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH;
+        boolean is_rotating_moi = Math.abs(cur_vel.omegaRadiansPerSecond) > OMEGA_MOI_THRESH;
         boolean is_near_zero = m_yawZeroDetector.update(Math.abs(cur_vel.omegaRadiansPerSecond) < OMEGA_THRESH, 0.15);
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
 
-        if(!is_near_zero || Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || yaw_setpoint.isEmpty())
+        if(is_near_zero || is_rotating || is_rotating_moi || yaw_setpoint.isEmpty())
         {
             yaw_setpoint = Optional.of(current_rotation);
         }

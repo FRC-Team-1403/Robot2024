@@ -173,10 +173,6 @@ public class ArmSubsystem extends SubsystemBase {
     
 
     // Track Values
-    
-    SmartDashboard.putNumber("Pivot Angle", getPivotAngle());
-    SmartDashboard.putNumber("Pivot Setpoint", getPivotAngleSetpoint());
-    SmartDashboard.putBoolean("Arm Current Trip", m_currentLimitTripped);
     SmartDashboard.putBoolean("Arm IsAtSetpoint", isAtSetpoint());
     Logger.recordOutput("Pivot Angle", getPivotAngle());
     Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());

@@ -14,15 +14,16 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
+import team1403.robot.Constants.Vision;
 
 public class AprilTagCamera extends SubsystemBase {
   private final PhotonCamera m_camera;
@@ -31,6 +32,7 @@ public class AprilTagCamera extends SubsystemBase {
   private Supplier<Transform3d> m_cameraTransform;
   private Optional<EstimatedRobotPose> m_estPos;
   private Supplier<Pose2d> m_referencePose;
+  private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 0.9);
 
   public AprilTagCamera(String cameraName, Supplier<Transform3d> cameraTransform, Supplier<Pose2d> referenceSupplier) {
     // Photonvision
@@ -59,9 +61,8 @@ public class AprilTagCamera extends SubsystemBase {
     return m_result.hasTargets();
   }
 
-  //must be called after checking if there is a target!
-  public double getTagAmbiguity() {
-    return m_result.getBestTarget().getPoseAmbiguity();
+  public boolean hasPose() {
+    return m_estPos.isPresent();
   }
 
   public Pose3d getPose() {
@@ -96,6 +97,11 @@ public class AprilTagCamera extends SubsystemBase {
     return new ArrayList<>();
   }
 
+  //default values, TODO: update later to compute the actual estimated standard deviation
+  public Matrix<N3, N1> getEstStdv() {
+    return kDefaultStdv;
+  }
+
   @Override
   public void periodic() {
     m_result = m_camera.getLatestResult();
@@ -109,6 +115,10 @@ public class AprilTagCamera extends SubsystemBase {
     Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
 
     Logger.recordOutput(m_camera.getName() + " Camera Transform", robot_pose3d.transformBy(m_cameraTransform.get()));
+    
+    if(hasPose()) {
+      Logger.recordOutput(m_camera.getName() + " Pose3d", getPose());
+    }
 
     // if(hasTarget())
     // {

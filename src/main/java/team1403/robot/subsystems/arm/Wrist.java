@@ -136,10 +136,7 @@ public class Wrist extends SubsystemBase {
     m_armMech.setAngle(m_arm.getPivotAngle() - 106.4);
     m_wristMech.setAngle(-getWristAngle() + 90);
 
-   SmartDashboard.putNumber("Wrist Angle", m_wristAngle);
-   SmartDashboard.putNumber("_Wrist Setpoint", m_wristAngleSetpoint);
    SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
-   SmartDashboard.putNumber("Wrist Speed", m_wristMotor.get());
    Logger.recordOutput("Wrist Voltage", m_wristMotor.getBusVoltage());
    Logger.recordOutput("Wrist Current", m_wristMotor.getOutputCurrent());
    Logger.recordOutput("wrist rpm", m_wristMotor.getEmbeddedEncoder().getVelocityValue());

@@ -428,10 +428,6 @@ public class SwerveSubsystem extends SubsystemBase {
     m_odometeryLock.unlock();
   }
 
-
-  private ArrayList<Pose2d> m_poses = new ArrayList<>();
-  private ArrayList<Pose3d> m_tags = new ArrayList<>();
-
   @Override
   public void periodic() {
     m_odometeryLock.lock();
@@ -444,34 +440,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     if(!m_disableVision)
     {
-      m_poses.clear();
-      m_tags.clear();
       for(AprilTagCamera cam : m_cameras)
       {
-        if (cam.hasTarget()) {
+        if (cam.hasTarget() && cam.hasPose()) {
           Pose2d pose = cam.getPose2D();
           if (pose != null) {
-            m_odometer.addVisionMeasurement(pose, cam.getTimestamp());
-            m_poses.add(pose);
-            List<PhotonTrackedTarget> targets = cam.getTargets();
-            for(PhotonTrackedTarget t : targets)
-            {
-              Optional<Pose3d> tagpose = Constants.Vision.kFieldLayout.getTagPose(t.getFiducialId());
-              if(tagpose.isPresent()) {
-                m_tags.add(tagpose.get());
-              }
-            }
+            m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
           }
         }
-      }
-      Logger.recordOutput("Odometery/Vision Measurements", m_poses.toArray(new Pose2d[m_poses.size()]));
-      Logger.recordOutput("Odometer/Tag Positions", m_tags.toArray(new Pose3d[m_tags.size()]));
-
-      if(m_tags.size() == 1 && m_poses.size() == 1)
-      {
-        Pose2d tag_pose_2d = m_tags.get(0).toPose2d();
-        Transform2d diff = getPose().minus(tag_pose_2d);
-        Logger.recordOutput("diff", diff);
       }
     }
     // SmartDashboard.putNumber("Speed", m_speedLimiter);

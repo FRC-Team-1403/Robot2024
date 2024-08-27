@@ -48,7 +48,6 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putString("LED Color", gamePieceState.toString());
     Logger.recordOutput("LED State", gamePieceState.toString());
   }
 }
