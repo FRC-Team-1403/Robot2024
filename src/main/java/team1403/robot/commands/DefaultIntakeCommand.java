@@ -59,7 +59,20 @@ public class DefaultIntakeCommand extends Command {
                 m_intakeSpeed = -0.4;
                 if(m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
                     m_intakeSpeed = 0;
+                    m_counter = 0;
                     m_state = IntakeState.LOADED;
+                }
+
+                if(!m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
+                    m_counter++;
+                    //check for persistence
+                    if(m_counter >= 3) {
+                        m_state = IntakeState.UNLOADED;
+                        m_counter = 0;
+                    }
+                }
+                else {
+                    m_counter = 0;
                 }
                 break;
             }
@@ -70,8 +83,10 @@ public class DefaultIntakeCommand extends Command {
                 if(!m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
                     m_counter++;
                     //check for persistence
-                    if(m_counter >= 3)
+                    if(m_counter >= 3) {
                         m_state = IntakeState.UNLOADED;
+                        m_counter = 0;
+                    }
                 }
                 else {
                     m_counter = 0;
