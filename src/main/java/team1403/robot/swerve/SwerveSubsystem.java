@@ -88,7 +88,8 @@ public class SwerveSubsystem extends SubsystemBase {
     double m_timeStamp;
   }
 
-  private ArrayList<OdometeryData> m_odoSamples;
+  private OdometeryData[] m_odoSamples = new OdometeryData[20];
+  private int m_odoSampleIndex = 0;
   private final Lock m_odometeryLock = new ReentrantLock();
 
   /**
@@ -156,8 +157,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // addDevice(m_navx2.getName(), m_navx2);
     if (m_navx2.isConnected())
       while (m_navx2.isCalibrating());
-
-    m_odoSamples = new ArrayList<>();
 
     zeroGyroscope();
 
@@ -228,7 +227,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
     m_odometeryLock.lock();
-    m_odoSamples.clear();
+    m_odoSampleIndex = 0;
     m_navx2.reset();
     m_odometeryLock.unlock();
   }
@@ -261,7 +260,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometeryLock.lock();
-    m_odoSamples.clear();
+    m_odoSampleIndex = 0;
     m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     m_odometeryLock.unlock();
   }
@@ -419,25 +418,25 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private void highFreqUpdate() {
-    OdometeryData m_data = new OdometeryData();
 
     m_odometeryLock.lock();
-    m_data.m_gyroRotation = getGyroscopeRotation();
-    m_data.m_positions = getModulePositions();
-    m_data.m_timeStamp = Timer.getFPGATimestamp();
-
-    m_odoSamples.add(m_data);
+    OdometeryData data = m_odoSamples[m_odoSampleIndex];
+    data.m_gyroRotation = getGyroscopeRotation();
+    data.m_positions = getModulePositions();
+    data.m_timeStamp = Timer.getFPGATimestamp();
+    m_odoSampleIndex++;
     m_odometeryLock.unlock();
   }
 
   @Override
   public void periodic() {
     m_odometeryLock.lock();
-    for(OdometeryData sample : m_odoSamples)
+    for(int i = 0; i <= m_odoSampleIndex; i++)
     {
+      OdometeryData sample = m_odoSamples[i];
       m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
     }
-    m_odoSamples.clear();
+    m_odoSampleIndex = 0;
     m_odometeryLock.unlock();
 
     if(!m_disableVision)
