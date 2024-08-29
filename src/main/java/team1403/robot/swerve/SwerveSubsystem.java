@@ -418,7 +418,8 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private void highFreqUpdate() {
-
+    if(m_odoSampleIndex >= m_odoSamples.length)
+      return;
     m_odometeryLock.lock();
     OdometeryData data = m_odoSamples[m_odoSampleIndex];
     data.m_gyroRotation = getGyroscopeRotation();
