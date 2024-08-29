@@ -210,8 +210,7 @@ public class SwerveModule extends SubsystemBase implements Device {
       double absAngle = getAbsoluteAngle();
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
 
-      //2 degrees
-      if(relativeErr > 0.035)
+      if(relativeErr >= Units.degreesToRadians(5))
       {
         m_steerRelativeEncoder.setPosition(absAngle);
       }
