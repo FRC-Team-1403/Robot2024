@@ -81,8 +81,8 @@ public class DefaultSwerveCommand extends Command {
     this.m_ysupplier = ytarget;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    m_translationLimiter = new SlewRateLimiter(4, -4, 0);
-    m_rotationRateLimiter = new SlewRateLimiter(5, -5, 0);
+    m_translationLimiter = new SlewRateLimiter(2, -2, 0);
+    m_rotationRateLimiter = new SlewRateLimiter(2, -2, 0);
     m_controller = new PIDController(5, 0, 0);
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
