@@ -48,6 +48,8 @@ public class SwerveModule extends SubsystemBase implements Device {
     private final String m_name;
     private final boolean m_inverted;
 
+    private SwerveModuleState m_curState = new SwerveModuleState();
+
 
     /**
      * Swerve Module represents a singular swerve module for a
@@ -273,7 +275,10 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return the current state of the swerve module
      */
     public SwerveModuleState getState() {
-      return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getAbsoluteAngle()));
+      m_curState.angle = Rotation2d.fromRadians(getAbsoluteAngle());
+      m_curState.speedMetersPerSecond = getDriveVelocity();
+
+      return m_curState;
     }
 
     @Override
