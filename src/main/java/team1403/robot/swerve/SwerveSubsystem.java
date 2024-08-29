@@ -420,7 +420,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private void highFreqUpdate() {
     if(m_odoSampleIndex.get() >= m_odoSamples.length)
+    {
+      System.err.println("Can't record anymore odo samples!");
       return;
+    }
     m_odometeryLock.lock();
     OdometeryData data = m_odoSamples[m_odoSampleIndex.get()];
     data.m_gyroRotation = getGyroscopeRotation();
