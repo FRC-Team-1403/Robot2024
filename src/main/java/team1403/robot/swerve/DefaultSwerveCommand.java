@@ -106,13 +106,14 @@ public class DefaultSwerveCommand extends Command {
       return;
 
     ChassisSpeeds chassisSpeeds;
-    double horizontal = m_horizontalTranslationSupplier.getAsDouble() * m_speedLimiter;
-    double vertical = m_verticalTranslationSupplier.getAsDouble() * m_speedLimiter;
+    double horizontal = m_horizontalTranslationSupplier.getAsDouble();
+    double vertical = m_verticalTranslationSupplier.getAsDouble();
     {
       //normalize using polar coordinates
       double velocity = MathUtil.clamp(Math.hypot(horizontal, vertical), 0, 1);
       double angle = Math.atan2(vertical, horizontal);
 
+      velocity *= m_speedLimiter;
       velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
 
       horizontal = velocity * Math.cos(angle);
