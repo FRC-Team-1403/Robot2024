@@ -89,7 +89,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private OdometeryData[] m_odoSamples = new OdometeryData[20];
-  private int m_odoSampleIndex = 0;
+  private int m_odoSampleIndex = -1;
   private final Lock m_odometeryLock = new ReentrantLock();
 
   /**
@@ -227,7 +227,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
     m_odometeryLock.lock();
-    m_odoSampleIndex = 0;
+    m_odoSampleIndex = -1;
     m_navx2.reset();
     m_odometeryLock.unlock();
   }
@@ -260,7 +260,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometeryLock.lock();
-    m_odoSampleIndex = 0;
+    m_odoSampleIndex = -1;
     m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
     m_odometeryLock.unlock();
   }
@@ -436,7 +436,7 @@ public class SwerveSubsystem extends SubsystemBase {
       OdometeryData sample = m_odoSamples[i];
       m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
     }
-    m_odoSampleIndex = 0;
+    m_odoSampleIndex = -1;
     m_odometeryLock.unlock();
 
     if(!m_disableVision)
