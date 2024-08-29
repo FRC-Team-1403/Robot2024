@@ -311,7 +311,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
     m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
     m_offset = offset;
-    SmartDashboard.putString("Chassis Speeds", m_chassisSpeeds.toString());
   }
 
   public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
