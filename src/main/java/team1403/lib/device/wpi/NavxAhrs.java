@@ -56,7 +56,7 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
   }
 
   private Rotation2d get180to180Rotation2d(){
-    double a = super.getRotation2d().getRadians();
+    double a = Units.degreesToRadians(-getAngle());
     return Rotation2d.fromRadians(MathUtil.angleModulus(a));
   }
 
