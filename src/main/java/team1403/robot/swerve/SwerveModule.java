@@ -48,7 +48,8 @@ public class SwerveModule extends SubsystemBase implements Device {
     private final String m_name;
     private final boolean m_inverted;
 
-    private SwerveModuleState m_curState = new SwerveModuleState();
+    private SwerveModuleState m_moduleState = new SwerveModuleState();
+    private SwerveModulePosition m_modulePosition = new SwerveModulePosition();
 
 
     /**
@@ -255,8 +256,10 @@ public class SwerveModule extends SubsystemBase implements Device {
      *         travelled and the angle of the module.
      */
     public SwerveModulePosition getModulePosition() {
-      return new SwerveModulePosition(getDrivePosition(),
-            new Rotation2d(getAbsoluteAngle()));
+      m_modulePosition.distanceMeters = getDrivePosition();
+      m_modulePosition.angle = Rotation2d.fromRadians(getAbsoluteAngle());
+
+      return m_modulePosition;
     }
     
     /**
@@ -275,10 +278,10 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return the current state of the swerve module
      */
     public SwerveModuleState getState() {
-      m_curState.angle = Rotation2d.fromRadians(getAbsoluteAngle());
-      m_curState.speedMetersPerSecond = getDriveVelocity();
+      m_moduleState.angle = Rotation2d.fromRadians(getAbsoluteAngle());
+      m_moduleState.speedMetersPerSecond = getDriveVelocity();
 
-      return m_curState;
+      return m_moduleState;
     }
 
     @Override
