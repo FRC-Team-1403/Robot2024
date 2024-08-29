@@ -69,6 +69,17 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_rotDriftCorrect = false;
   private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
 
+  private static final SwerveModuleState[] m_xModeState = {
+    // Front Left
+    new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
+    // Front Right
+    new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
+    // Back left
+    new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
+    // Back Right
+    new SwerveModuleState(0, Rotation2d.fromDegrees(45))
+  };
+
   private final Notifier m_odometeryNotifier;
 
   private class OdometeryData {
@@ -178,12 +189,13 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return an array of swerve module positions
    */
   public SwerveModulePosition[] getModulePositions() {
-    return new SwerveModulePosition[] {
+    SwerveModulePosition[] positions = {
         m_modules[0].getModulePosition(),
         m_modules[1].getModulePosition(),
         m_modules[2].getModulePosition(),
         m_modules[3].getModulePosition()
     };
+    return positions;
   }
 
   /**
@@ -364,17 +376,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * making it harder for the robot to be pushed around.
    */
   private void xMode() {
-    SwerveModuleState[] states = {
-        // Front Left
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45)),
-        // Front Right
-        new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
-        // Back left
-        new SwerveModuleState(0, Rotation2d.fromDegrees(135)),
-        // Back Right
-        new SwerveModuleState(0, Rotation2d.fromDegrees(45))
-    };
-    setModuleStates(states);
+    setModuleStates(m_xModeState);
   }
 
   /**
