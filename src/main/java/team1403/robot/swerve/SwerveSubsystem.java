@@ -86,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final Notifier m_odometeryNotifier;
 
   private class OdometeryData {
-    SwerveModulePosition[] m_positions;
+    SwerveDriveWheelPositions m_positions;
     Rotation2d m_gyroRotation;
     double m_timeStamp;
   }
@@ -434,9 +434,8 @@ public class SwerveSubsystem extends SubsystemBase {
         return;
       }
       OdometeryData data = m_odoSamples[++m_odoSampleIndex];
-      SwerveModulePosition[] positions = getModulePositions();
       data.m_gyroRotation = getGyroscopeRotation();
-      data.m_positions = Arrays.copyOf(positions, positions.length);
+      data.m_positions = new SwerveDriveWheelPositions(getModulePositions());
       data.m_timeStamp = Timer.getFPGATimestamp();
     }
     finally {
