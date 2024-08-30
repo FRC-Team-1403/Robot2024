@@ -109,6 +109,7 @@ public class AprilTagCamera extends SubsystemBase {
   }
 
   private ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
+  private static final Transform3d kZeroTransform = new Transform3d();
 
   @Override
   public void periodic() {
@@ -122,18 +123,17 @@ public class AprilTagCamera extends SubsystemBase {
 
     if(kExtraVisionDebugInfo) {
       Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
+      Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
 
-      Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose3d.transformBy(m_cameraTransform.get()));
+      Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
 
       m_visionTargets.clear();
 
       List<PhotonTrackedTarget> targets = getTargets();
       for(PhotonTrackedTarget t : targets) {
-        Optional<Pose3d> pose = Vision.kFieldLayout.getTagPose(t.getFiducialId());
-
-        if(pose.isPresent()) {
-          m_visionTargets.add(pose.get());
-        }
+        var trf = t.getBestCameraToTarget();
+        if(trf.equals(kZeroTransform)) continue;
+        m_visionTargets.add(robot_pose_transformed.transformBy(trf));
       }
 
       Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
