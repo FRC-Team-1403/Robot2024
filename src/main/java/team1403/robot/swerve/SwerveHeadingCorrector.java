@@ -29,7 +29,8 @@ public class SwerveHeadingCorrector {
     public ChassisSpeeds update(double timestamp, ChassisSpeeds target, ChassisSpeeds cur_vel, Rotation2d gyro)
     {
         double current_rotation = MathUtil.angleModulus(gyro.getRadians());
-        boolean is_translating = Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
+        boolean is_translating = Math.hypot(cur_vel.vxMetersPerSecond, cur_vel.vyMetersPerSecond) > 0.1;
+        is_translating |= Math.hypot(target.vxMetersPerSecond, target.vyMetersPerSecond) > 0.1;
         //timeout can be lowered with a well tuned slew rate
         boolean is_near_zero = m_yawZeroDetector.update(Math.abs(target.omegaRadiansPerSecond) < OMEGA_THRESH, 0.2);
 

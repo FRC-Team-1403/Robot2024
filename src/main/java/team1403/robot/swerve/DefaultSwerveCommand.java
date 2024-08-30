@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import team1403.lib.util.CircularSlewRateLimiter;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 
@@ -35,6 +36,9 @@ public class DefaultSwerveCommand extends Command {
 
   private SlewRateLimiter m_translationLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
+  private CircularSlewRateLimiter m_directionSlewRate;
+  private static final double kDirectionSlewRateLimit = 30;
+
 
   private PIDController m_controller;
 
@@ -81,8 +85,10 @@ public class DefaultSwerveCommand extends Command {
     this.m_ysupplier = ytarget;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    m_translationLimiter = new SlewRateLimiter(2, -2, 0);
+    //effectively no slew rate for slowing down
+    m_translationLimiter = new SlewRateLimiter(2, -100, 0);
     m_rotationRateLimiter = new SlewRateLimiter(2, -2, 0);
+    m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
     m_controller = new PIDController(5, 0, 0);
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
@@ -116,6 +122,15 @@ public class DefaultSwerveCommand extends Command {
       velocity *= m_speedLimiter;
       velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
 
+      if(velocity < 0.01) {
+        m_directionSlewRate.setLimits(500);
+      }
+      else {
+        m_directionSlewRate.setLimits(kDirectionSlewRateLimit / velocity);
+      }
+
+      angle = m_directionSlewRate.calculate(angle);
+
       horizontal = velocity * Math.cos(angle);
       vertical = velocity * Math.sin(angle);
     }
@@ -133,7 +148,7 @@ public class DefaultSwerveCommand extends Command {
     if(m_aimbotSupplier.getAsBoolean())
     {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
-      Logger.recordOutput("Aimbot Movement", angular);
+      Logger.recordOutput("Aimbot Angular", angular);
     }
     
     if (m_isFieldRelative) {
