@@ -1,17 +1,10 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -24,16 +17,11 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveDriveWheelPositions;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -57,7 +45,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private final NavxAhrs m_navx2;
   private final SwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
-  private SwerveModuleState[] m_states = new SwerveModuleState[4];
+  private SwerveModuleState[] m_currentStates = new SwerveModuleState[4];
+  private SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4]; 
   //DO NOT ACCESS DIRECTLY!
   private final SwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
@@ -183,13 +172,10 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return an array of swerve module positions
    */
   public SwerveModulePosition[] getModulePositions() {
-    SwerveModulePosition[] positions = {
-        m_modules[0].getModulePosition(),
-        m_modules[1].getModulePosition(),
-        m_modules[2].getModulePosition(),
-        m_modules[3].getModulePosition()
-    };
-    return positions;
+    for(int i = 0; i < m_modules.length; i++) {
+      m_currentPositions[i] = m_modules[i].getModulePosition();
+    }
+    return m_currentPositions;
   }
 
   /**
@@ -342,13 +328,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "SwerveStates/Measured")
   public SwerveModuleState[] getModuleStates() {
-    SwerveModuleState[] states = {
-      m_modules[0].getState(),
-      m_modules[1].getState(),
-      m_modules[2].getState(),
-      m_modules[3].getState()
-    };
-    return states;
+    for(int i = 0; i < m_modules.length; i++) {
+      m_currentStates[i] = m_modules[i].getState();
+    }
+    return m_currentStates;
   }
 
   public ChassisSpeeds getTargetChassisSpeed() {
@@ -449,10 +432,8 @@ public class SwerveSubsystem extends SubsystemBase {
       xMode();
     } else {
       m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
-
-      m_states = Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset);
       
-      setModuleStates(m_states);
+      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset));
     }
     m_field.setRobotPose(getPose());
     // Logging Output

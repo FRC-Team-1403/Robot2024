@@ -48,8 +48,8 @@ public class SwerveModule extends SubsystemBase implements Device {
     private final String m_name;
     private final boolean m_inverted;
 
-    private SwerveModuleState m_moduleState = new SwerveModuleState();
-    private SwerveModulePosition m_modulePosition = new SwerveModulePosition();
+    private final SwerveModuleState m_moduleState = new SwerveModuleState();
+    private final SwerveModulePosition m_modulePosition = new SwerveModulePosition();
 
 
     /**
