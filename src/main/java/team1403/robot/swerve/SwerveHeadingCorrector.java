@@ -35,7 +35,7 @@ public class SwerveHeadingCorrector {
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
 
-        if((!is_translating || Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH) && yaw_setpoint.isPresent()) {
+        if(Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH && yaw_setpoint.isPresent()) {
             resetHeadingSetpoint();
         }
 
