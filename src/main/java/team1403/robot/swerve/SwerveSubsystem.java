@@ -58,6 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] m_states = new SwerveModuleState[4];
+  //DO NOT ACCESS DIRECTLY!
   private final SwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
   // private double m_speedLimiter = 0.6;
@@ -84,15 +85,6 @@ public class SwerveSubsystem extends SubsystemBase {
   };
 
   private final Notifier m_odometeryNotifier;
-
-  private class OdometeryData {
-    SwerveDriveWheelPositions m_positions;
-    Rotation2d m_gyroRotation;
-    double m_timeStamp;
-  }
-
-  private OdometeryData[] m_odoSamples = new OdometeryData[20];
-  private int m_odoSampleIndex = -1;
   private final ReentrantLock m_odometeryLock = new ReentrantLock();
 
   /**
@@ -123,12 +115,6 @@ public class SwerveSubsystem extends SubsystemBase {
             CanBus.backRightDriveID, CanBus.backRightSteerID,
             CanBus.backRightEncoderID, Swerve.backRightEncoderOffset),
     };
-
-    //preinit everything to 0
-    for(int i = 0; i < m_odoSamples.length; i++)
-    {
-      m_odoSamples[i] = new OdometeryData();
-    }
 
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -235,10 +221,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
-    m_odometeryLock.lock();
-    m_odoSampleIndex = -1;
     m_navx2.reset();
-    m_odometeryLock.unlock();
   }
 
   public void zeroHeading() {
@@ -254,7 +237,10 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return m_odometer.getEstimatedPosition();
+    m_odometeryLock.lock();
+    Pose2d pose = m_odometer.getEstimatedPosition();
+    m_odometeryLock.unlock();
+    return pose;
   }
 
   /**
@@ -269,9 +255,12 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometeryLock.lock();
-    m_odoSampleIndex = -1;
-    m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
-    m_odometeryLock.unlock();
+    try {
+      m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
+    }
+    finally {
+      m_odometeryLock.unlock();
+    }
   }
 
   /**
@@ -428,15 +417,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private void highFreqUpdate() {
     m_odometeryLock.lock();
     try {
-      if(m_odoSampleIndex+1 >= m_odoSamples.length)
-      {
-        //System.err.println("No more array indicies left!");
-        return;
-      }
-      OdometeryData data = m_odoSamples[++m_odoSampleIndex];
-      data.m_gyroRotation = getGyroscopeRotation();
-      data.m_positions = new SwerveDriveWheelPositions(getModulePositions());
-      data.m_timeStamp = Timer.getFPGATimestamp();
+      m_odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
     }
     finally {
       m_odometeryLock.unlock();
@@ -445,29 +426,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_odometeryLock.lock();
-    try {
-      for(int i = 0; i <= m_odoSampleIndex; i++)
-      {
-        OdometeryData sample = m_odoSamples[i];
-        //does a copy of the module positions, so we are ok
-        m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
-      }
-      m_odoSampleIndex = -1;
-    } finally {
-      m_odometeryLock.unlock();
-    }
-
     if(!m_disableVision)
     {
-      for(AprilTagCamera cam : m_cameras)
-      {
-        if (cam.hasTarget() && cam.hasPose()) {
-          Pose2d pose = cam.getPose2D();
-          if (pose != null) {
-            m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
+      m_odometeryLock.lock();
+      try {
+        for(AprilTagCamera cam : m_cameras)
+        {
+          if (cam.hasTarget() && cam.hasPose()) {
+            Pose2d pose = cam.getPose2D();
+            if (pose != null) {
+              m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
+            }
           }
         }
+      } finally {
+        m_odometeryLock.unlock();
       }
     }
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
@@ -481,7 +454,7 @@ public class SwerveSubsystem extends SubsystemBase {
       
       setModuleStates(m_states);
     }
-    m_field.setRobotPose(m_odometer.getEstimatedPosition());
+    m_field.setRobotPose(getPose());
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
