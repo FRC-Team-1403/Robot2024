@@ -33,6 +33,7 @@ public class AprilTagCamera extends SubsystemBase {
   private Optional<EstimatedRobotPose> m_estPos;
   private Supplier<Pose2d> m_referencePose;
   private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 0.9);
+  private static final boolean kExtraVisionDebugInfo = true;
 
   public AprilTagCamera(String cameraName, Supplier<Transform3d> cameraTransform, Supplier<Pose2d> referenceSupplier) {
     // Photonvision
@@ -55,6 +56,11 @@ public class AprilTagCamera extends SubsystemBase {
     m_referencePose = referenceSupplier;
     m_cameraTransform = cameraTransform;
     //Cone detection
+  }
+
+  @Override
+  public String getName() {
+    return m_camera.getName();
   }
 
   public boolean hasTarget() {
@@ -102,6 +108,8 @@ public class AprilTagCamera extends SubsystemBase {
     return kDefaultStdv;
   }
 
+  private ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
+
   @Override
   public void periodic() {
     m_result = m_camera.getLatestResult();
@@ -110,14 +118,30 @@ public class AprilTagCamera extends SubsystemBase {
     m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
     m_estPos = m_poseEstimator.update(m_result);
 
-    Logger.recordOutput(m_camera.getName() + " Target Visible", hasTarget());
+    Logger.recordOutput(m_camera.getName() + "/Target Visible", hasTarget());
 
-    Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
+    if(kExtraVisionDebugInfo) {
+      Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
 
-    Logger.recordOutput(m_camera.getName() + " Camera Transform", robot_pose3d.transformBy(m_cameraTransform.get()));
+      Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose3d.transformBy(m_cameraTransform.get()));
+
+      m_visionTargets.clear();
+
+      List<PhotonTrackedTarget> targets = getTargets();
+      for(PhotonTrackedTarget t : targets) {
+        Optional<Pose3d> pose = Vision.kFieldLayout.getTagPose(t.getFiducialId());
+
+        if(pose.isPresent()) {
+          m_visionTargets.add(pose.get());
+        }
+      }
+
+      Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
+    }
     
     if(hasPose()) {
-      Logger.recordOutput(m_camera.getName() + " Pose3d", getPose());
+      Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
+      Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
     }
 
     // if(hasTarget())
