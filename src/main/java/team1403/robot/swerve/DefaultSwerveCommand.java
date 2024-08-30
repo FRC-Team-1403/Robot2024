@@ -37,7 +37,7 @@ public class DefaultSwerveCommand extends Command {
   private SlewRateLimiter m_translationLimiter;
   private SlewRateLimiter m_rotationRateLimiter;
   private CircularSlewRateLimiter m_directionSlewRate;
-  private static final double kDirectionSlewRateLimit = 30;
+  private static final double kDirectionSlewRateLimit = 22;
 
 
   private PIDController m_controller;
@@ -87,7 +87,7 @@ public class DefaultSwerveCommand extends Command {
     m_isFieldRelative = true;
     //effectively no slew rate for slowing down
     m_translationLimiter = new SlewRateLimiter(2, -100, 0);
-    m_rotationRateLimiter = new SlewRateLimiter(2, -2, 0);
+    m_rotationRateLimiter = new SlewRateLimiter(3, -3, 0);
     m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
     m_controller = new PIDController(5, 0, 0);
 
