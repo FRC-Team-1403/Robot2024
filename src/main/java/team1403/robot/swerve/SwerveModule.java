@@ -255,7 +255,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return the SwerveModulePosition, which represents the distance 
      *         travelled and the angle of the module.
      */
-    public SwerveModulePosition getModulePosition() {
+    public synchronized SwerveModulePosition getModulePosition() {
       m_modulePosition.distanceMeters = getDrivePosition();
       m_modulePosition.angle = Rotation2d.fromRadians(getAbsoluteAngle());
 

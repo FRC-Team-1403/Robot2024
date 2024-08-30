@@ -1,6 +1,7 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +33,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveDriveWheelPositions;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -91,7 +93,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private OdometeryData[] m_odoSamples = new OdometeryData[20];
   private int m_odoSampleIndex = -1;
-  private final Lock m_odometeryLock = new ReentrantLock();
+  private final ReentrantLock m_odometeryLock = new ReentrantLock();
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -234,7 +236,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private void zeroGyroscope() {
     // tracef("zeroGyroscope %f", getGyroscopeRotation());
     m_odometeryLock.lock();
-    m_odoSampleIndex= -1;
+    m_odoSampleIndex = -1;
     m_navx2.reset();
     m_odometeryLock.unlock();
   }
@@ -425,28 +427,36 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private void highFreqUpdate() {
     m_odometeryLock.lock();
-    if(++m_odoSampleIndex >= m_odoSamples.length)
-    {
-      System.err.println("No more array indicies left!");
-      return;
+    try {
+      if(m_odoSampleIndex+1 >= m_odoSamples.length)
+      {
+        //System.err.println("No more array indicies left!");
+        return;
+      }
+      OdometeryData data = m_odoSamples[++m_odoSampleIndex];
+      data.m_gyroRotation = getGyroscopeRotation();
+      data.m_positions = Arrays.copyOf(getModulePositions(), m_modules.length);
+      data.m_timeStamp = Timer.getFPGATimestamp();
     }
-    OdometeryData data = m_odoSamples[m_odoSampleIndex];
-    data.m_gyroRotation = getGyroscopeRotation();
-    data.m_positions = getModulePositions();
-    data.m_timeStamp = Timer.getFPGATimestamp();
-    m_odometeryLock.unlock();
+    finally {
+      m_odometeryLock.unlock();
+    }
   }
 
   @Override
   public void periodic() {
     m_odometeryLock.lock();
-    for(int i = 0; i <= m_odoSampleIndex; i++)
-    {
-      OdometeryData sample = m_odoSamples[i];
-      m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
+    try {
+      for(int i = 0; i <= m_odoSampleIndex; i++)
+      {
+        OdometeryData sample = m_odoSamples[i];
+        //does a copy of the module positions, so we are ok
+        m_odometer.updateWithTime(sample.m_timeStamp, sample.m_gyroRotation, sample.m_positions);
+      }
+      m_odoSampleIndex = -1;
+    } finally {
+      m_odometeryLock.unlock();
     }
-    m_odoSampleIndex = -1;
-    m_odometeryLock.unlock();
 
     if(!m_disableVision)
     {
