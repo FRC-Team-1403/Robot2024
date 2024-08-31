@@ -6,15 +6,8 @@ package team1403.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -26,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import team1403.robot.Constants.Vision;
+import team1403.lib.util.AutoUtil;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -36,7 +29,6 @@ import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
-import team1403.robot.swerve.AprilTagCamera;
 import team1403.robot.swerve.SwerveSubsystem;
 
 /**
@@ -89,6 +81,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
