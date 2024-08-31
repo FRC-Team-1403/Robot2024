@@ -7,9 +7,11 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +45,7 @@ public class DefaultSwerveCommand extends Command {
   private static final double kDirectionSlewRateLimit = 22;
 
 
-  private PIDController m_controller;
+  private ProfiledPIDController m_controller;
 
   private double m_speedLimiter = 0.2;
 
@@ -94,11 +96,16 @@ public class DefaultSwerveCommand extends Command {
     m_translationLimiter = new SlewRateLimiter(2, -100, 0);
     m_rotationRateLimiter = new SlewRateLimiter(3, -3, 0);
     m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
-    m_controller = new PIDController(5, 0, 0);
+    m_controller = new ProfiledPIDController(6, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed, 80));
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
     addRequirements(m_drivetrainSubsystem);
+  }
+
+  @Override
+  public void initialize() {
+    m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), 0);
   }
 
   @Override
