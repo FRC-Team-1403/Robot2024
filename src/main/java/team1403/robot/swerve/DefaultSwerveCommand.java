@@ -10,6 +10,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.lib.util.CircularSlewRateLimiter;
@@ -32,6 +34,7 @@ public class DefaultSwerveCommand extends Command {
   private final DoubleSupplier m_xsupplier;
   private final DoubleSupplier m_ysupplier;
   private final DoubleSupplier m_snipingMode;
+  private final BooleanSupplier m_ampSupplier;
   private boolean m_isFieldRelative;
 
   private SlewRateLimiter m_translationLimiter;
@@ -69,6 +72,7 @@ public class DefaultSwerveCommand extends Command {
       BooleanSupplier fieldRelativeSupplier,
       BooleanSupplier xModeSupplier,
       BooleanSupplier aimbotSupplier,
+      BooleanSupplier ampSupplier,
       DoubleSupplier xtarget,
       DoubleSupplier ytarget,
       DoubleSupplier speedSupplier,
@@ -83,6 +87,7 @@ public class DefaultSwerveCommand extends Command {
     this.m_aimbotSupplier = aimbotSupplier;
     this.m_xsupplier = xtarget;
     this.m_ysupplier = ytarget;
+    m_ampSupplier = ampSupplier;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
     //effectively no slew rate for slowing down
@@ -142,10 +147,17 @@ public class DefaultSwerveCommand extends Command {
     given_target_angle = MathUtil.angleModulus(given_target_angle + Math.PI);
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     
+    if(m_ampSupplier.getAsBoolean()) {
+      if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue)
+        given_target_angle = -Math.PI/2;
+      else
+        given_target_angle = Math.PI/2;
+    }
+
     Logger.recordOutput("Target Angle", given_target_angle);
     SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());
     
-    if(m_aimbotSupplier.getAsBoolean())
+    if(m_aimbotSupplier.getAsBoolean() || m_ampSupplier.getAsBoolean())
     {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
       Logger.recordOutput("Aimbot Angular", angular);

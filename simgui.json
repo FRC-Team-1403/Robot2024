@@ -1,7 +1,65 @@
 {
+  "HALProvider": {
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "5V Rail": {
+        "open": true
+      },
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      },
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm Mechanism": "Mechanism2d",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/SmartDashboard/navX-Sensor[1]": "Gyro"
+    },
+    "windows": {
+      "/SmartDashboard/Arm Mechanism": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Info": {

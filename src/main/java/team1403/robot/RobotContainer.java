@@ -6,6 +6,7 @@ package team1403.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.robot.Constants.Vision;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -121,6 +123,7 @@ public class RobotContainer {
         () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
+        () -> m_driverController.getHID().getLeftBumper(),
         () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getX() : pos_red.getX(), // speaker Location 
         () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getY() : pos_red.getY(),
         // blue 
