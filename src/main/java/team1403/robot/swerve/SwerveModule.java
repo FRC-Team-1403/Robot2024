@@ -135,6 +135,8 @@ public class SwerveModule extends SubsystemBase implements Device {
       m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
       m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor / 60.0);
       m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
+      //update at same rate as cancoder
+      m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.kSwerveModuleUpdateRateMs);
     }
 
     private void initSteerMotor() {
