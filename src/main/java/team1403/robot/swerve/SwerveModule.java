@@ -113,6 +113,7 @@ public class SwerveModule extends SubsystemBase implements Device {
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
       m_absoluteEncoder.setUpdateFrequency(Constants.kSwerveModuleUpdateRateHz);
+      m_absoluteEncoder.optimizeBusUtilization();
 
       //avoid overrun, and get more up to date values for PID
       //m_absoluteEncoder.getPosition().setUpdateFrequency(500, 0.002);
