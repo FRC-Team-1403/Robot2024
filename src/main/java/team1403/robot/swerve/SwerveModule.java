@@ -2,8 +2,10 @@ package team1403.robot.swerve;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -22,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.Device;
-import team1403.lib.device.wpi.CanCoder;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
@@ -36,7 +37,8 @@ public class SwerveModule extends SubsystemBase implements Device {
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
 
-    private final CanCoder m_absoluteEncoder;
+    private final CANcoder m_absoluteEncoder;
+    private StatusSignal<Double> m_positionSignal;
     private final double m_absoluteEncoderOffset;
     private final RelativeEncoder m_driveRelativeEncoder;
     private final RelativeEncoder m_steerRelativeEncoder;
@@ -78,7 +80,7 @@ public class SwerveModule extends SubsystemBase implements Device {
           SparkRelativeEncoder.Type.kHallSensor);
       m_steerMotor = CougarSparkMax.makeBrushless(name + " SteerMotor", steerMotorPort,
           SparkRelativeEncoder.Type.kHallSensor);
-      m_absoluteEncoder = new CanCoder(name + " CanCoder", canCoderPort);
+      m_absoluteEncoder = new CANcoder(canCoderPort);
       m_driveRelativeEncoder = m_driveMotor.getEncoder();
       m_steerRelativeEncoder = m_steerMotor.getEncoder();
       m_absoluteEncoderOffset = offset;
@@ -112,7 +114,8 @@ public class SwerveModule extends SubsystemBase implements Device {
       CANcoderConfiguration config = new CANcoderConfiguration().withMagnetSensor(magnetSensor);
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
-      m_absoluteEncoder.setUpdateFrequency(Constants.kSwerveModuleUpdateRateHz);
+      m_positionSignal = m_absoluteEncoder.getAbsolutePosition();
+      m_positionSignal.setUpdateFrequency(Constants.kSwerveModuleUpdateRateHz);
       m_absoluteEncoder.optimizeBusUtilization();
 
       //avoid overrun, and get more up to date values for PID
@@ -129,9 +132,6 @@ public class SwerveModule extends SubsystemBase implements Device {
       m_driveRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kDrivePositionConversionFactor);
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
-
-      m_absoluteEncoder.setPositionConversionFactor(2 * Math.PI);
-      m_absoluteEncoder.setVelocityConversionFactor(2 * Math.PI);
 
       m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
       m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor / 60.0);
@@ -230,7 +230,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return The current angle in radians. Range: [-pi, pi)
      */
     public synchronized double getAbsoluteAngle() {
-      return MathUtil.angleModulus(m_absoluteEncoder.getPositionValue());
+      return MathUtil.angleModulus(Units.rotationsToRadians(m_positionSignal.getValue()));
     }
 
     /**
