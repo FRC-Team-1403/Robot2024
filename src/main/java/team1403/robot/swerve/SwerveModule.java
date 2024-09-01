@@ -1,7 +1,5 @@
 package team1403.robot.swerve;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -18,7 +16,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -213,7 +210,7 @@ public class SwerveModule extends SubsystemBase implements Device {
       double absAngle = getAbsoluteAngle();
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
 
-      if(relativeErr >= Units.degreesToRadians(5))
+      if(relativeErr >= Units.degreesToRadians(5) && m_steerRelativeEncoder.getVelocity() < 0.25)
       {
         m_steerRelativeEncoder.setPosition(absAngle);
       }
