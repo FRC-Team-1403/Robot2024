@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.util.AutoUtil;
+import team1403.robot.Constants.Vision;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -58,6 +59,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
 
+    Vision.kVisionSystem.addAprilTags(Vision.kFieldLayout);
     m_swerve = new SwerveSubsystem();
     m_arm = new ArmSubsystem();
     m_wrist = new Wrist(m_arm);

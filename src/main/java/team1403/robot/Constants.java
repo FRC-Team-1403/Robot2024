@@ -1,5 +1,7 @@
 package team1403.robot;
 
+import org.photonvision.simulation.VisionSystemSim;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -104,6 +106,7 @@ public class Constants {
     public static final Rotation3d kCameraRotation = new Rotation3d(Math.PI, Units.degreesToRadians(-25), Math.PI);
     public static final Translation3d kCameraOffset = new Translation3d(Units.inchesToMeters(-8.568),0,Units.inchesToMeters(17.82426));
     public static final Transform3d kCameraTransfrom = new Transform3d(kCameraOffset, kCameraRotation);
+    public static final Transform3d kCameraTransfrom2 = new Transform3d(kCameraOffset, new Rotation3d(Math.PI, Units.degreesToRadians(-25), 0));
   }
 
   /**
@@ -209,6 +212,7 @@ public class Constants {
 
   public static class Vision {
     public static final AprilTagFieldLayout kFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+    public static final VisionSystemSim kVisionSystem = new VisionSystemSim("main");
   }
 
   public static class Arm {

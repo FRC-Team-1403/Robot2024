@@ -36,6 +36,7 @@ import team1403.lib.device.wpi.NavxAhrs;
 import team1403.robot.Constants;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
+import team1403.robot.Constants.Vision;
 
 /**
  * The drivetrain of the robot. Consists of for swerve modules and the
@@ -57,7 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private double m_rollOffset;
 
   private boolean m_isXModeEnabled = false;
-  private ArrayList<AprilTagCamera> m_cameras;
+  private ArrayList<IAprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
   private boolean m_rotDriftCorrect = false;
   private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
@@ -156,6 +157,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_cameras = new ArrayList<>();
     m_cameras.add(new AprilTagCamera("Unknown_Camera", () -> Swerve.kCameraTransfrom, this::getPose));
+    m_cameras.add(new AprilTagCamera("PhotonCamera", () -> Swerve.kCameraTransfrom2, this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
@@ -400,6 +402,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private void highFreqUpdate() {
     m_odometeryLock.lock();
     try {
+      m_navx2.setAngleOffset(MathUtil.inputModulus(m_navx2.getAngleOffset() + Units.radiansToDegrees(-getCurrentChassisSpeed().omegaRadiansPerSecond) * 0.005, -360, 360));
       m_odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
     }
     finally {
@@ -413,11 +416,11 @@ public class SwerveSubsystem extends SubsystemBase {
     {
       m_odometeryLock.lock();
       try {
-        for(AprilTagCamera cam : m_cameras)
+        for(IAprilTagCamera cam : m_cameras)
         {
           if (cam.hasTarget() && cam.hasPose()) {
             Pose2d pose = cam.getPose2D();
-            if (pose != null) {
+            if (pose != null && cam.checkVisionResult()) {
               m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
             }
           }
@@ -440,6 +443,10 @@ public class SwerveSubsystem extends SubsystemBase {
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
     Logger.recordOutput("Chassis Speeds", getCurrentChassisSpeed().toString());
+
+    Constants.Vision.kVisionSystem.update(getPose());
+
+    SmartDashboard.putData(Vision.kVisionSystem.getDebugField());
 
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
