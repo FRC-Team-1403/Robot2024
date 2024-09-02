@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SerialPort;
 import team1403.lib.device.GyroscopeDevice;
+import team1403.lib.util.ClampedRotation2d;
 
 /**
  * The NavX implementation of the gyroscope device. Assumes the NavX is
@@ -56,12 +57,11 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
   }
 
   private Rotation2d get180to180Rotation2d(){
-    double a = Units.degreesToRadians(-getAngle());
-    return Rotation2d.fromRadians(MathUtil.angleModulus(a));
+    return ClampedRotation2d.fromDegrees(-getAngle());
   }
 
   @Override
   public Rotation2d getRotation2d() {
-      return get180to180Rotation2d();
+    return get180to180Rotation2d();
   }
 }
