@@ -231,7 +231,7 @@ public class IntakeShooterLoop extends Command {
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kFeedShotRPM);
                 }
 
-                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isIntakePhotogateTriggered()) {
+                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isIntakePhotogateTriggered() && m_intakeAndShooter.teleopIsReady()) {
                     if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Blue) m_led.setLedMode(LEDState.DARK_BLUE);
                     else m_led.setLedMode(LEDState.DARK_RED);
                 }
