@@ -139,10 +139,6 @@ public class IntakeShooterLoop extends Command {
                     m_state = State.RAISE;
                 }
                 m_arm.moveArm(m_arm.getPivotAngleSetpoint() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
-                if(m_intakeAndShooter.isIntakePhotogateTriggered())
-                    if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Blue) m_led.setLedMode(LEDState.DARK_BLUE);
-                    else m_led.setLedMode(LEDState.DARK_RED);
-
                 break;
             }
             case LOADING_STATION:
@@ -233,6 +229,14 @@ public class IntakeShooterLoop extends Command {
                     m_wrist.setWristAngle(Constants.Wrist.kShootingAngle + 5);
                     m_arm.moveArm(Constants.Arm.kDriveSetpoint);
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kFeedShotRPM);
+                }
+
+                if(m_arm.isAtSetpoint() && m_wrist.isAtSetpoint() && m_intakeAndShooter.isIntakePhotogateTriggered()) {
+                    if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Blue) m_led.setLedMode(LEDState.DARK_BLUE);
+                    else m_led.setLedMode(LEDState.DARK_RED);
+                }
+                else {
+                    m_led.setLedMode(LEDState.YELLOW_FLASH);
                 }
 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
