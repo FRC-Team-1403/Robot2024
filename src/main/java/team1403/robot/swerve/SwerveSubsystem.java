@@ -46,9 +46,8 @@ public class SwerveSubsystem extends SubsystemBase {
   private final SwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
   private SwerveModuleState[] m_currentStates = new SwerveModuleState[4];
-  private SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4]; 
-  //DO NOT ACCESS DIRECTLY!
-  private final SwerveDrivePoseEstimator m_odometer;
+  private SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4];
+  private final SyncSwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
   // private double m_speedLimiter = 0.6;
 
@@ -74,7 +73,6 @@ public class SwerveSubsystem extends SubsystemBase {
   };
 
   private final Notifier m_odometeryNotifier;
-  private final ReentrantLock m_odometeryLock = new ReentrantLock();
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -144,9 +142,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     zeroGyroscope();
 
-    m_odometer = new SwerveDrivePoseEstimator(Swerve.kDriveKinematics, new Rotation2d(),
-        getModulePositions(), new Pose2d(0, 0, new Rotation2d(0)));
-    m_odometer.update(getGyroscopeRotation(), getModulePositions());
+    m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
 
     setRobotRampRate(0.0);
     setRobotIdleMode(IdleMode.kBrake);
@@ -223,10 +219,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    m_odometeryLock.lock();
-    Pose2d pose = m_odometer.getEstimatedPosition();
-    m_odometeryLock.unlock();
-    return pose;
+    return m_odometer.getPose();
   }
 
   /**
@@ -240,13 +233,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * Reset the position of the drivetrain odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometeryLock.lock();
-    try {
-      m_odometer.resetPosition(getGyroscopeRotation(), getModulePositions(), pose);
-    }
-    finally {
-      m_odometeryLock.unlock();
-    }
+    m_odometer.resetPosition(pose);
   }
 
   /**
@@ -398,32 +385,21 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private void highFreqUpdate() {
-    m_odometeryLock.lock();
-    try {
-      m_odometer.updateWithTime(Timer.getFPGATimestamp(), getGyroscopeRotation(), getModulePositions());
-    }
-    finally {
-      m_odometeryLock.unlock();
-    }
+    m_odometer.update();
   }
 
   @Override
   public void periodic() {
     if(!m_disableVision)
     {
-      m_odometeryLock.lock();
-      try {
-        for(AprilTagCamera cam : m_cameras)
-        {
-          if (cam.hasTarget() && cam.hasPose()) {
-            Pose2d pose = cam.getPose2D();
-            if (pose != null) {
-              m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
-            }
+      for(AprilTagCamera cam : m_cameras)
+      {
+        if (cam.hasTarget() && cam.hasPose()) {
+          Pose2d pose = cam.getPose2D();
+          if (pose != null) {
+            m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
           }
         }
-      } finally {
-        m_odometeryLock.unlock();
       }
     }
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
