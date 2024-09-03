@@ -210,13 +210,10 @@ public class SwerveModule extends SubsystemBase implements Device {
       // System.out.println("drive input speed: " + driveMetersPerSecond);
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      double absAngle = getAbsoluteAngle();
-      double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
-
-      if(relativeErr >= Units.degreesToRadians(5) && m_steerRelativeEncoder.getVelocity() < 0.25)
-      {
-        m_steerRelativeEncoder.setPosition(absAngle);
-      }
+      //get the angle error between steer rel enc and abs enc
+      double relativeErr = MathUtil.angleModulus(getSteerRotation() - getAbsoluteAngle());
+      //correct the error
+      steerAngle = MathUtil.angleModulus(steerAngle + relativeErr);
 
       // Set steerMotor according to position of encoder
       m_steerPIDController.setReference(steerAngle, ControlType.kPosition);
