@@ -76,7 +76,8 @@ public class Constants {
     
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.98); //3.85 monty (actual 3.8), 4 lehigh (actual 3.83), 3.98 worlds (actual 3.87)
     
-    public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI / 6.21; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
+    public static final double kDriveReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0); // ~ 1/6.21
+    public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI * kDriveReduction; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
 
