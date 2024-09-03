@@ -230,7 +230,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return The current angle in radians. Range: [-pi, pi)
      */
     public synchronized double getAbsoluteAngle() {
-      return MathUtil.angleModulus(Units.rotationsToRadians(m_positionSignal.getValue()));
+      return MathUtil.angleModulus(Units.rotationsToRadians(m_positionSignal.refresh().getValue()));
     }
 
     /**
