@@ -396,7 +396,7 @@ public class SwerveSubsystem extends SubsystemBase {
       {
         if (cam.hasTarget() && cam.hasPose()) {
           Pose2d pose = cam.getPose2D();
-          if (pose != null) {
+          if (pose != null && cam.checkVisionResult()) {
             m_odometer.addVisionMeasurement(pose, cam.getTimestamp(), cam.getEstStdv());
           }
         }

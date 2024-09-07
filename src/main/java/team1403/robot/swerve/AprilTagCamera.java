@@ -108,6 +108,11 @@ public class AprilTagCamera extends SubsystemBase {
     return kDefaultStdv;
   }
 
+  //TODO: returrn false for bad estimates
+  public boolean checkVisionResult() {
+    return true;
+  }
+
   private ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
   private static final Transform3d kZeroTransform = new Transform3d();
 
