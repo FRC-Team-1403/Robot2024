@@ -30,7 +30,7 @@ public class AprilTagCamera extends SubsystemBase {
   private PhotonPipelineResult m_result;
   private PhotonPoseEstimator m_poseEstimator;
   private Supplier<Transform3d> m_cameraTransform;
-  private Optional<EstimatedRobotPose> m_estPos;
+  private EstimatedRobotPose m_estPos;
   private Supplier<Pose2d> m_referencePose;
   private Pose2d m_Pose2d = null;
   private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 0.9);
@@ -53,7 +53,7 @@ public class AprilTagCamera extends SubsystemBase {
     m_poseEstimator = new PhotonPoseEstimator(Constants.Vision.kFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, m_camera, cameraTransform.get());
     m_poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.AVERAGE_BEST_TARGETS);
 
-    m_estPos = Optional.empty();
+    m_estPos = null;
     m_referencePose = referenceSupplier;
     m_cameraTransform = cameraTransform;
     //Cone detection
@@ -69,13 +69,13 @@ public class AprilTagCamera extends SubsystemBase {
   }
 
   public boolean hasPose() {
-    return m_estPos.isPresent();
+    return m_estPos != null;
   }
 
   public Pose3d getPose() {
-    if(m_estPos.isPresent())
+    if(hasPose())
     {
-      return m_estPos.get().estimatedPose;
+      return m_estPos.estimatedPose;
     }
     return null;
   }
@@ -88,23 +88,23 @@ public class AprilTagCamera extends SubsystemBase {
       m_Pose2d = pose.toPose2d();
   }
 
-  public Pose2d getPose2d() {
+  public Pose2d getPose2D() {
     return m_Pose2d;
   }
 
   //gets the timestamp of the latest pose
   public double getTimestamp() {
-    if(m_estPos.isPresent())
+    if(hasPose())
     {
-      return m_estPos.get().timestampSeconds;
+      return m_estPos.timestampSeconds;
     }
     return -1;
   }
 
   public List<PhotonTrackedTarget> getTargets() {
-    if(m_estPos.isPresent())
+    if(hasPose())
     {
-      return m_estPos.get().targetsUsed;
+      return m_estPos.targetsUsed;
     }
     return new ArrayList<>();
   }
@@ -128,7 +128,7 @@ public class AprilTagCamera extends SubsystemBase {
 
     m_poseEstimator.setReferencePose(m_referencePose.get());
     m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
-    m_estPos = m_poseEstimator.update(m_result);
+    m_estPos = m_poseEstimator.update(m_result).orElse(null);
 
     updatePose2d();
 
