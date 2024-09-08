@@ -32,6 +32,8 @@ public class DefaultStateMachine extends Command {
         m_arm = arm;
         m_wrist = wrist;
         m_triggerShot = triggerShot;
+        m_loadingStation = loadingStation;
+        m_resetToIntake = resetToIntake;
         m_state = State.LOWER;
     }
 
