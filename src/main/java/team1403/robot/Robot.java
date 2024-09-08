@@ -61,6 +61,7 @@ public class Robot extends LoggedRobot {
 
     m_ArmWristCommand = new DefaultArmWristCommand(m_robotContainer.getArmSubsystem(), m_robotContainer.getWristSubsystem());
     m_stateMachine = new DefaultStateMachine(m_robotContainer.getArmSubsystem(), m_robotContainer.getWristSubsystem(), 
+                                                m_robotContainer.getLEDSubsystem(),
                                                 () -> m_robotContainer.getOps().getRightTriggerAxis() > 0.5, 
                                                 () -> m_robotContainer.getOps().getXButton(), 
                                                 () -> m_robotContainer.getOps().getAButton());
