@@ -110,7 +110,7 @@ public class DefaultSwerveCommand extends Command {
 
   @Override
   public void execute() {
-    m_speedLimiter = 0.3 * (1.0 - m_snipingMode.getAsDouble() * 0.9) + (m_speedSupplier.getAsDouble() * 0.7);
+    m_speedLimiter = 0.3 * (1.0 - m_snipingMode.getAsDouble() * 0.7) + (m_speedSupplier.getAsDouble() * 0.7);
   
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
