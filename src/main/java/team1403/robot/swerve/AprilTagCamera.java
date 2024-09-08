@@ -32,6 +32,7 @@ public class AprilTagCamera extends SubsystemBase {
   private Supplier<Transform3d> m_cameraTransform;
   private Optional<EstimatedRobotPose> m_estPos;
   private Supplier<Pose2d> m_referencePose;
+  private Pose2d m_Pose2d = null;
   private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 0.9);
   private static final boolean kExtraVisionDebugInfo = true;
 
@@ -79,11 +80,16 @@ public class AprilTagCamera extends SubsystemBase {
     return null;
   }
 
-  public Pose2d getPose2D() {
+  private void updatePose2d() {
     Pose3d pose = getPose();
     if(pose == null)
-      return null;
-    return pose.toPose2d();
+      m_Pose2d = null;
+    else
+      m_Pose2d = pose.toPose2d();
+  }
+
+  public Pose2d getPose2d() {
+    return m_Pose2d;
   }
 
   //gets the timestamp of the latest pose
@@ -123,6 +129,8 @@ public class AprilTagCamera extends SubsystemBase {
     m_poseEstimator.setReferencePose(m_referencePose.get());
     m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
     m_estPos = m_poseEstimator.update(m_result);
+
+    updatePose2d();
 
     Logger.recordOutput(m_camera.getName() + "/Target Visible", hasTarget());
 
