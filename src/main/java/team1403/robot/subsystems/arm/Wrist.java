@@ -127,7 +127,7 @@ public class Wrist extends SubsystemBase {
     // tune PID with shuffleboard
     // m_wristPid.setP(SmartDashboard.getNumber("Wrist P", m_wristPid.getP()));
 
-   if(isInBounds(m_wristAngleSetpoint) && m_arm.getPivotAngle() > Constants.Arm.kMinPivotAngle)
+   if(isInBounds(m_wristAngleSetpoint))
     setWristSpeed(m_wristPid.calculate(m_wristAngle, m_wristAngleSetpoint));
 
     m_wristMotor.set(m_wristMotorSpeed);

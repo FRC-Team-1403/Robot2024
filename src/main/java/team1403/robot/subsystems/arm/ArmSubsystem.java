@@ -37,8 +37,6 @@ public class ArmSubsystem extends SubsystemBase {
   // Setpoints
   private double m_angleSetpoint;
 
-  private boolean m_currentLimitTripped = false;
-
   /**
    * Initializing the arn subsystem.
    */
@@ -137,15 +135,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the setpoints for the pivot, extension, wrist, and intake to go to.
-   *
-   * @param state the setpoints for the arm to move to.
-   */
-  public void moveArm(ArmState state) {
-    this.m_angleSetpoint = limitPivotAngle(state.armPivot);
-  }
-
-  /**
    * Returns whether the arm is at the current setpoint.
    *
    * @return true if the arm is at the current setpoint.
@@ -166,9 +155,6 @@ public class ArmSubsystem extends SubsystemBase {
   public void periodic() {
     if (isInPivotBounds(this.m_angleSetpoint)) {
       setAbsolutePivotAngle(this.m_angleSetpoint);
-    } else if (m_leftMotor.getOutputCurrent() > Constants.Arm.kPivotMotorMaxAmperage) {
-      m_currentLimitTripped = true;
-      m_leftMotor.stopMotor();
     }
     
 
@@ -178,7 +164,6 @@ public class ArmSubsystem extends SubsystemBase {
     Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());
     Logger.recordOutput("Pivot Voltage", m_leftMotor.getBusVoltage());
     Logger.recordOutput("Pivot Speed", m_leftMotor.get());
-    Logger.recordOutput("Arm Current Trip", m_currentLimitTripped);
   }
 
   /**

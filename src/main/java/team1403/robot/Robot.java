@@ -12,7 +12,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import team1403.robot.commands.IntakeShooterLoop;
+import team1403.robot.commands.DefaultArmWristCommand;
+import team1403.robot.commands.DefaultStateMachine;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,7 +27,8 @@ import team1403.robot.commands.IntakeShooterLoop;
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private IntakeShooterLoop m_combinedCommand;
+  private DefaultArmWristCommand m_ArmWristCommand;
+  private DefaultStateMachine m_stateMachine;
 
   public Robot() {
     super(Constants.kLoopTime);
@@ -56,20 +58,13 @@ public class Robot extends LoggedRobot {
     Logger.start();
 
     m_robotContainer = new RobotContainer();
-    m_combinedCommand =  new IntakeShooterLoop(
-      m_robotContainer.getIntakeShooterSubsystem(), m_robotContainer.getArmSubsystem(), 
-      m_robotContainer.getWristSubsystem(), m_robotContainer.getLEDSubsystem(), m_robotContainer.getOps(),
-      () -> m_robotContainer.getOps().getRightTriggerAxis() >= 0.5, // shoot
-      () -> m_robotContainer.getOps().getBButton(), // amp
-      () -> m_robotContainer.getOps().getXButton(), // loading station
-      () -> m_robotContainer.getOps().getAButton(), // reset to intake
-      () -> m_robotContainer.getOps().getLeftTriggerAxis() >= 0.5, // stage line shot
-      () -> m_robotContainer.getOps().getPOV() == 0, // center line shot
-      () -> m_robotContainer.getOps().getYButton(), // reset to netural
-      () -> m_robotContainer.getOps().getLeftBumper(), // launchpad
-      () -> m_robotContainer.getOps().getLeftY(), // expel
-      () -> m_robotContainer.getOps().getRightBumper(), // amp shooting
-      () -> m_robotContainer.getOps().getPOV() == 90); // feeding
+
+    m_ArmWristCommand = new DefaultArmWristCommand(m_robotContainer.getArmSubsystem(), m_robotContainer.getWristSubsystem());
+    m_stateMachine = new DefaultStateMachine(m_robotContainer.getArmSubsystem(), m_robotContainer.getWristSubsystem(), 
+                                                () -> m_robotContainer.getOps().getRightTriggerAxis() > 0.5, 
+                                                () -> m_robotContainer.getOps().getXButton(), 
+                                                () -> m_robotContainer.getOps().getAButton());
+
     // intake out joystick left up  v 
     // AutoSelector.initAutoChooser();
 
@@ -126,7 +121,8 @@ public class Robot extends LoggedRobot {
     System.out.println("auto name: " + m_autonomousCommand.getName());
     m_robotContainer.getSwerveSubsystem().setEnableRotDriftCorrect(false);
     // schedule the autonomous command (example)
-    m_combinedCommand.cancel();
+    m_ArmWristCommand.schedule();
+    m_stateMachine.schedule();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
@@ -146,12 +142,13 @@ public class Robot extends LoggedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    m_ArmWristCommand.schedule();
+    m_stateMachine.schedule();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
     m_robotContainer.getSwerveSubsystem().setEnableRotDriftCorrect(true);
-    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */

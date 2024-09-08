@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.IntakeAndShooter;
 
 public class DefaultIntakeCommand extends Command {
@@ -39,15 +40,38 @@ public class DefaultIntakeCommand extends Command {
             else
                 m_state = IntakeState.LOADED;
         }
+
+        Blackbox.setIsLoaded(m_state != IntakeState.UNLOADED);
+    }
+
+    private void checkLoaded() {
+        if(!m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
+            m_counter++;
+            //check for persistence
+            if(m_counter >= 3) {
+                m_state = IntakeState.UNLOADED;
+                m_counter = 0;
+            }
+        }
+        else {
+            m_counter = 0;
+        }
     }
 
     @Override
     public void execute() {
+
+        if(m_state != IntakeState.UNLOADED) checkLoaded();
+
+        //still unloaded
+        Blackbox.setIsLoaded(m_state != IntakeState.UNLOADED);
+
         switch(m_state) {
             case UNLOADED:
             {
                 m_intakeSpeed = 1;
                 m_shooterRPM = 0;
+                Blackbox.setTrigger(false);
                 if (m_intakeSubsystem.isIntakePhotogateTriggered() && m_intakeSubsystem.isShooterPhotogateTriggered()) {
                     m_intakeSpeed = 0;
                     m_state = IntakeState.BACKDRIVE;
@@ -62,35 +86,12 @@ public class DefaultIntakeCommand extends Command {
                     m_counter = 0;
                     m_state = IntakeState.LOADED;
                 }
-
-                if(!m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
-                    m_counter++;
-                    //check for persistence
-                    if(m_counter >= 3) {
-                        m_state = IntakeState.UNLOADED;
-                        m_counter = 0;
-                    }
-                }
-                else {
-                    m_counter = 0;
-                }
                 break;
             }
             case LOADED:
             {
-                m_intakeSpeed = 0;
-
-                if(!m_intakeSubsystem.isIntakePhotogateTriggered() && !m_intakeSubsystem.isShooterPhotogateTriggered()) {
-                    m_counter++;
-                    //check for persistence
-                    if(m_counter >= 3) {
-                        m_state = IntakeState.UNLOADED;
-                        m_counter = 0;
-                    }
-                }
-                else {
-                    m_counter = 0;
-                }
+                m_intakeSpeed = Blackbox.getTrigger() ? .5 : 0;
+                m_shooterRPM = Blackbox.getShooterRPM();
                 break;
             }
         }

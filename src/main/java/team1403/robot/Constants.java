@@ -9,8 +9,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import team1403.robot.subsystems.arm.ArmState;
-
+import team1403.robot.subsystems.arm.RobotSetpoint;
 /**
  * This class holds attributes for the robot configuration.
  *
@@ -227,13 +226,19 @@ public class Constants {
 
     public static final int kPivotMotorCurrentLimit = 30;
     public static final double kPivotMotorVoltageLimit = 12;
-    public static final ArmState KStageLineSetPoint = null;
 
     public static double kIntakeSetpoint = 92; // 92
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;
     public static  double kDefaultClose = 114;
+  }
+
+  public static class Setpoints {
+    public static final RobotSetpoint kLowerSetpoint = new RobotSetpoint(Arm.kIntakeSetpoint, 140, 0);
+    public static final RobotSetpoint kIntakeSetpoint = new RobotSetpoint(Arm.kIntakeSetpoint, Wrist.kIntakeSetpoint, 0);
+    public static final RobotSetpoint kLoadingStationSetpoint = new RobotSetpoint(Arm.kLoadingSetpoint, Wrist.kLoadingSetpoint, 0);
+    public static final RobotSetpoint kDefaultShoot = new RobotSetpoint(Arm.kDriveSetpoint, kSwerveModuleUpdateRateHz, IntakeAndShooter.kCloseRPM);
   }
 
   public static class Hanger {
