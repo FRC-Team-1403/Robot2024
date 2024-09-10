@@ -124,7 +124,6 @@ public class Robot extends LoggedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     System.out.println("auto name: " + m_autonomousCommand.getName());
-    m_robotContainer.getSwerveSubsystem().setEnableRotDriftCorrect(false);
     // schedule the autonomous command (example)
     m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
@@ -150,7 +149,6 @@ public class Robot extends LoggedRobot {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
-    m_robotContainer.getSwerveSubsystem().setEnableRotDriftCorrect(true);
     m_combinedCommand.schedule();
   }
 
