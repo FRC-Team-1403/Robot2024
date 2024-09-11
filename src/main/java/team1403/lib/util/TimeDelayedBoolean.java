@@ -13,10 +13,13 @@ public class TimeDelayedBoolean {
 
     public boolean update(boolean value, double timeout) {
         if (!m_old && value) {
-            t.reset();
-            t.start();
+            t.restart();
         }
         m_old = value;
         return value && t.get() >= timeout;
+    }
+
+    public void reset() {
+        t.restart();
     }
 }
