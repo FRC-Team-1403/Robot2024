@@ -46,6 +46,7 @@ public class DefaultSwerveCommand extends Command {
 
 
   private ProfiledPIDController m_controller;
+  private TrapezoidProfile.State m_state = new TrapezoidProfile.State();
 
   private double m_speedLimiter = 0.2;
 
@@ -124,6 +125,7 @@ public class DefaultSwerveCommand extends Command {
       return;
 
     ChassisSpeeds chassisSpeeds;
+    ChassisSpeeds currentSpeeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
     double horizontal = m_horizontalTranslationSupplier.getAsDouble();
     double vertical = m_verticalTranslationSupplier.getAsDouble();
     {
@@ -172,6 +174,10 @@ public class DefaultSwerveCommand extends Command {
     {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
       Logger.recordOutput("Aimbot Angular", angular);
+    } else {
+      m_state.position = given_current_angle;
+      m_state.velocity = currentSpeeds.omegaRadiansPerSecond;
+      m_controller.reset(m_state);
     }
     
     if (m_isFieldRelative) {

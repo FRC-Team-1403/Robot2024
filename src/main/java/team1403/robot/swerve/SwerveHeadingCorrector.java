@@ -6,10 +6,12 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import team1403.lib.util.TimeDelayedBoolean;
 import team1403.robot.Constants;
 
@@ -17,13 +19,16 @@ import team1403.robot.Constants;
 public class SwerveHeadingCorrector {
     //initial rotation is unknown
     private Optional<Double> yaw_setpoint = Optional.empty();
-    private PIDController m_controller = new PIDController(5, 0, 0);
+    private ProfiledPIDController m_controller = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(Constants.Swerve.kMaxAngularSpeed, 80));
     private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
     private LinearFilter m_gyroVelFilter = LinearFilter.singlePoleIIR(Constants.kLoopTime * 3, Constants.kLoopTime);
+    //save on allocs
+    private ChassisSpeeds m_ret = new ChassisSpeeds();
 
 
     public SwerveHeadingCorrector()
     {
+        m_controller.reset(0);
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
     }
 
@@ -57,12 +62,14 @@ public class SwerveHeadingCorrector {
         if(is_near_zero && yaw_setpoint.isEmpty())
         {
             yaw_setpoint = Optional.of(current_rotation);
+            m_controller.reset(current_rotation, cur_vel.omegaRadiansPerSecond);
         }
         else if(is_translating && yaw_setpoint.isPresent())
         {
-            double new_yaw = m_controller.calculate(current_rotation, yaw_setpoint.get());
-
-            return new ChassisSpeeds(target.vxMetersPerSecond, target.vyMetersPerSecond, new_yaw);
+            m_ret.vxMetersPerSecond = target.vxMetersPerSecond;
+            m_ret.vyMetersPerSecond = target.vyMetersPerSecond;
+            m_ret.omegaRadiansPerSecond = m_controller.calculate(current_rotation, yaw_setpoint.get());
+            return m_ret;
         }
 
         return target;
