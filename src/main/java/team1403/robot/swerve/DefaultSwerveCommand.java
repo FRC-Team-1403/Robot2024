@@ -93,7 +93,7 @@ public class DefaultSwerveCommand extends Command {
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
     //effectively no slew rate for slowing down
-    m_translationLimiter = new SlewRateLimiter(2, -100, 0);
+    m_translationLimiter = new SlewRateLimiter(2, -3, 0);
     m_rotationRateLimiter = new SlewRateLimiter(3, -3, 0);
     m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
     m_controller = new ProfiledPIDController(6, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed, 80));
@@ -128,20 +128,24 @@ public class DefaultSwerveCommand extends Command {
     double vertical = m_verticalTranslationSupplier.getAsDouble();
     {
       //normalize using polar coordinates
-      double velocity = MathUtil.clamp(Math.hypot(horizontal, vertical), 0, 1);
+      double vel_hypot = Math.hypot(horizontal, vertical);
+      double velocity = MathUtil.clamp(vel_hypot, 0, 1);
       double angle = Math.atan2(vertical, horizontal);
 
       velocity *= m_speedLimiter;
       velocity = m_translationLimiter.calculate(velocity) * Swerve.kMaxSpeed;
 
-      if(velocity < 0.01) {
+      if(vel_hypot < 0.01) {
+        angle = m_directionSlewRate.lastValue();
+      }
+      else if(velocity < 0.01) {
         m_directionSlewRate.setLimits(500);
+        angle = m_directionSlewRate.calculate(angle);
       }
       else {
         m_directionSlewRate.setLimits(kDirectionSlewRateLimit / velocity);
+        angle = m_directionSlewRate.calculate(angle);
       }
-
-      angle = m_directionSlewRate.calculate(angle);
 
       horizontal = velocity * Math.cos(angle);
       vertical = velocity * Math.sin(angle);
