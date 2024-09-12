@@ -142,7 +142,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return autoChooser.getSelected().andThen(new InstantCommand(() -> m_swerve.stop(), m_swerve));
+    return autoChooser.getSelected().andThen(() -> m_swerve.stop(), m_swerve);
   }
 
   public SwerveSubsystem getSwerveSubsystem() {
