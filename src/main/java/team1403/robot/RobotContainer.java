@@ -129,10 +129,10 @@ public class RobotContainer {
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
 
     m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW_FOREST), m_led));
+      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
       
     m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger).andThen(() -> m_led.setLedMode(LEDState.RAINBOW), m_led));
+      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger));
   }
   
   /**
