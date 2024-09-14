@@ -94,13 +94,6 @@ public class Constants {
     public static final int kDriveCurrentLimit = 45;
     public static final int kSteerCurrentLimit = 25;
 
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 2;
-
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-        kMaxAngularSpeed,
-        kMaxAngularAccelerationRadiansPerSecondSquared);
-
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
     //top-to-bottom disp = 17.82426 inches

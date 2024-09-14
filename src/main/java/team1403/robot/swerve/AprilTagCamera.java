@@ -33,7 +33,7 @@ public class AprilTagCamera extends SubsystemBase {
   private EstimatedRobotPose m_estPos;
   private Supplier<Pose2d> m_referencePose;
   private Pose2d m_Pose2d = null;
-  private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 0.9);
+  private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 999999);
   private static final boolean kExtraVisionDebugInfo = true;
 
   public AprilTagCamera(String cameraName, Supplier<Transform3d> cameraTransform, Supplier<Pose2d> referenceSupplier) {
@@ -109,13 +109,25 @@ public class AprilTagCamera extends SubsystemBase {
     return new ArrayList<>();
   }
 
+  private double getTagAreas() {
+    double ret = 0;
+    if(!hasPose()) return 0;
+    for(PhotonTrackedTarget t : getTargets()) {
+      ret += t.getArea();
+    }
+    return ret;
+  }
+
   //default values, TODO: update later to compute the actual estimated standard deviation
   public Matrix<N3, N1> getEstStdv() {
     return kDefaultStdv;
   }
 
-  //TODO: returrn false for bad estimates
+  //TODO: return false for bad estimates
   public boolean checkVisionResult() {
+
+    if(getTagAreas() < 0.2) return false;
+
     return true;
   }
 
@@ -142,8 +154,7 @@ public class AprilTagCamera extends SubsystemBase {
 
       m_visionTargets.clear();
 
-      List<PhotonTrackedTarget> targets = getTargets();
-      for(PhotonTrackedTarget t : targets) {
+      for(PhotonTrackedTarget t : getTargets()) {
         var trf = t.getBestCameraToTarget();
         if(trf.equals(kZeroTransform)) continue;
         m_visionTargets.add(robot_pose_transformed.transformBy(trf));
@@ -155,6 +166,7 @@ public class AprilTagCamera extends SubsystemBase {
     if(hasPose()) {
       Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
       Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
+      Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
     }
 
     // if(hasTarget())
