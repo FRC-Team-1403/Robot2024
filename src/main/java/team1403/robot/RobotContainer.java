@@ -138,7 +138,6 @@ public class RobotContainer {
       Pose2d tar = pos_red_shoot;
       if(Constants.kAllianceSupplier.get() == Alliance.Blue) tar = pos_blue_shoot;
       m_pathFinder = AutoUtil.pathFindToPose(tar);
-      System.out.println("path generated!");
     }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
 
     m_driverController.leftStick()
