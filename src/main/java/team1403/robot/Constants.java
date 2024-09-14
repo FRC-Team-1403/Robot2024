@@ -1,5 +1,9 @@
 package team1403.robot;
 
+import java.util.function.Supplier;
+
+import com.pathplanner.lib.util.PIDConstants;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -9,6 +13,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import team1403.robot.subsystems.arm.ArmState;
 
 /**
@@ -31,6 +37,7 @@ public class Constants {
   public static final int kSwerveModuleUpdateRateMs = 5;
   public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
   public static final Translation2d zeroTranslation = new Translation2d();
+  public static final Supplier<Alliance> kAllianceSupplier = () -> DriverStation.getAlliance().orElse(Alliance.Red);
 
   /**
    * Swerve Constants.
@@ -44,13 +51,8 @@ public class Constants {
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
-    public static final double kPAutoTurning = 3;
-    public static final double kIAutoTurning = 0.0;
-    public static final double kDAutoTurning = 0.0;
-
-    public static final double kPTranslation = 1.78;
-    public static final double kITranslation = 0.0;
-    public static final double kDTranslation = 0.0;
+    public static final PIDConstants kTranslationPID = new PIDConstants(1.78, 0, 0);
+    public static final PIDConstants kRotationPID = new PIDConstants(3, 0, 0);
 
     public static final double kPDrive = 0.04;
     public static final double kIDrive = 0.0;
@@ -58,6 +60,7 @@ public class Constants {
 
     public static final double kWheelWidth = Units.inchesToMeters(23);
     public static final double kWheelLength = Units.inchesToMeters(24);
+    public static final double kDriveBase = Math.hypot(Swerve.kWheelWidth / 2.0, Swerve.kWheelLength / 2.0);
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         // Front left

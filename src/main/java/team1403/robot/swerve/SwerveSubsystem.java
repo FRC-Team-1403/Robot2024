@@ -6,6 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindHolonomic;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -109,12 +111,12 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getCurrentChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(Swerve.kPTranslation, Swerve.kITranslation, Swerve.kDTranslation), // Translation PID
+            Swerve.kTranslationPID, // Translation PID
                                                                                                 // constants
-            new PIDConstants(Swerve.kPAutoTurning, Swerve.kIAutoTurning, Swerve.kDAutoTurning), // Rotation PID
+            Swerve.kRotationPID, // Rotation PID
                                                                                                 // constants
-            Constants.Swerve.kMaxSpeed, // Max module speed, in m/s
-            Math.hypot(Swerve.kWheelWidth / 2.0, Swerve.kWheelLength / 2.0), // Drive base radius in meters. Distance from
+            Swerve.kMaxSpeed, // Max module speed, in m/s
+            Swerve.kDriveBase, // Drive base radius in meters. Distance from
                                                                            // robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
@@ -124,11 +126,12 @@ public class SwerveSubsystem extends SubsystemBase {
           // alliance
           // This will flip the path being followed to the red side of the field.
           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          return DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Red;
+          return Constants.kAllianceSupplier.get() == DriverStation.Alliance.Red;
         },
         this // Reference to this subsystem to set requirements
     );
     Pathfinding.setPathfinder(new LocalADStar());
+    PathfindingCommand.warmupCommand().schedule();
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
       Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
     });
@@ -407,9 +410,9 @@ public class SwerveSubsystem extends SubsystemBase {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      m_chassisSpeeds = rotationalDriftCorrection(m_chassisSpeeds);
+      ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
       
-      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(m_chassisSpeeds, m_offset));
+      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected, m_offset));
     }
     m_field.setRobotPose(getPose());
     // Logging Output

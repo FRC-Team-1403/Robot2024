@@ -2,6 +2,7 @@ package team1403.robot.swerve;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -33,8 +34,7 @@ public class DefaultSwerveCommand extends Command {
   private final BooleanSupplier m_xModeSupplier;
   private final BooleanSupplier m_aimbotSupplier;
   private final DoubleSupplier m_speedSupplier;
-  private final DoubleSupplier m_xsupplier;
-  private final DoubleSupplier m_ysupplier;
+  private final Supplier<Translation2d> m_targetPosSupplier;
   private final DoubleSupplier m_snipingMode;
   private final BooleanSupplier m_ampSupplier;
   private boolean m_isFieldRelative;
@@ -76,8 +76,7 @@ public class DefaultSwerveCommand extends Command {
       BooleanSupplier xModeSupplier,
       BooleanSupplier aimbotSupplier,
       BooleanSupplier ampSupplier,
-      DoubleSupplier xtarget,
-      DoubleSupplier ytarget,
+      Supplier<Translation2d> targetSupplier,
       DoubleSupplier speedSupplier,
       DoubleSupplier snipingMode) {
     this.m_drivetrainSubsystem = drivetrain;
@@ -88,8 +87,7 @@ public class DefaultSwerveCommand extends Command {
     this.m_speedSupplier = speedSupplier;
     this.m_xModeSupplier = xModeSupplier;
     this.m_aimbotSupplier = aimbotSupplier;
-    this.m_xsupplier = xtarget;
-    this.m_ysupplier = ytarget;
+    this.m_targetPosSupplier = targetSupplier;
     m_ampSupplier = ampSupplier;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
@@ -156,7 +154,7 @@ public class DefaultSwerveCommand extends Command {
     Translation2d offset = Constants.zeroTranslation;
 
     double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians());
-    double given_target_angle = Math.atan2(m_ysupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getY(), m_xsupplier.getAsDouble() - m_drivetrainSubsystem.getPose().getX());
+    double given_target_angle = Math.atan2(m_targetPosSupplier.get().getY() - m_drivetrainSubsystem.getPose().getY(), m_targetPosSupplier.get().getX() - m_drivetrainSubsystem.getPose().getX());
     given_target_angle = MathUtil.angleModulus(given_target_angle + Math.PI);
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     

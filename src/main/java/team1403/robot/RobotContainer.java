@@ -4,9 +4,15 @@
 
 package team1403.robot;
 
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -16,6 +22,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -53,6 +60,7 @@ public class RobotContainer {
   private final PowerDistribution m_powerDistribution;
 
   private SendableChooser<Command> autoChooser;
+  private Command m_pathFinder = Commands.none();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -107,6 +115,8 @@ public class RobotContainer {
 
     Translation2d pos_blue = new Translation2d(-0.038099999999999995,  5.547867999999999);
     Translation2d pos_red = new Translation2d(16.579342,  5.547867999999999);
+    Pose2d pos_blue_shoot = new Pose2d(new Translation2d(1.5, 5.4), new Rotation2d());
+    Pose2d pos_red_shoot = new Pose2d(new Translation2d(15, 5.4), new Rotation2d());
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
@@ -117,16 +127,23 @@ public class RobotContainer {
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
         () -> m_driverController.getHID().getLeftBumper(),
-        () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getX() : pos_red.getX(), // speaker Location 
-        () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue ? pos_blue.getY() : pos_red.getY(),
-        // blue 
-        // () -> 0.42,
-        // () -> 5.53,
+        () -> Constants.kAllianceSupplier.get() == Alliance.Blue ? pos_blue : pos_red,
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis()));
 
 
     m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
+
+    m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
+      Pose2d tar = pos_red_shoot;
+      if(Constants.kAllianceSupplier.get() == Alliance.Blue) tar = pos_blue_shoot;
+      m_pathFinder = AutoUtil.pathFindToPose(tar);
+      System.out.println("path generated!");
+    }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
+
+    m_driverController.leftStick()
+      .or(() -> Math.hypot(m_driverController.getLeftX(), m_driverController.getLeftY()) > 0.2)
+        .onTrue(Commands.runOnce(() -> m_pathFinder.cancel()));
 
     m_operatorController.povLeft().onTrue(
       new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
