@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -207,7 +208,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroHeading() {
     zeroGyroscope();
-    resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    if(Constants.kAllianceSupplier.get() == Alliance.Blue)
+      resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    else
+      resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.PI)));
     m_headingCorrector.resetHeadingSetpoint();
   }
 
