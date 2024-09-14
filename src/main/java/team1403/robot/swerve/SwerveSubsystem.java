@@ -51,9 +51,6 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4];
   private final SyncSwerveDrivePoseEstimator m_odometer;
   private Field2d m_field = new Field2d();
-  // private double m_speedLimiter = 0.6;
-
-  private Translation2d m_offset;
 
   private double m_rollOffset;
 
@@ -109,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
         this::getPose, // Robot pose supplier
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getCurrentChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::driveNoOffset, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        this::drive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
             Swerve.kTranslationPID, // Translation PID
                                                                                                 // constants
@@ -150,7 +147,6 @@ public class SwerveSubsystem extends SubsystemBase {
     setRobotRampRate(0.0);
     setRobotIdleMode(IdleMode.kBrake);
 
-    m_offset = new Translation2d();
     m_rollOffset = -m_navx2.getRoll();
 
     m_cameras = new ArrayList<>();
@@ -275,19 +271,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_navx2.getPitch();
   }
 
-  /**
-   * Moves the drivetrain at the given chassis speeds.
-   *
-   * @param chassisSpeeds the speed to move at
-   * @param offset        the swerve module to pivot around
-   */
-  public void drive(ChassisSpeeds chassisSpeeds, Translation2d offset) {
-    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
-    m_offset = offset;
-  }
-
-  public void driveNoOffset(ChassisSpeeds chassisSpeeds) {
-    drive(chassisSpeeds, Constants.zeroTranslation);
+  public void drive(ChassisSpeeds chassisSpeeds) {
+    m_chassisSpeeds = chassisSpeeds;
   }
 
   /**
@@ -330,13 +315,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public ChassisSpeeds getCurrentChassisSpeed() {
     return Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates());
-  }
-
-  /**
-   * Resets the robot to no longer pivot around one wheel.
-   */
-  public void setMiddlePivot() {
-    m_offset = new Translation2d();
   }
 
   /**
@@ -412,7 +390,7 @@ public class SwerveSubsystem extends SubsystemBase {
     } else {
       ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
       
-      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected, m_offset));
+      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
     }
     m_field.setRobotPose(getPose());
     // Logging Output

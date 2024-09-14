@@ -151,7 +151,6 @@ public class DefaultSwerveCommand extends Command {
       vertical = velocity * Math.sin(angle);
     }
     double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
-    Translation2d offset = Constants.zeroTranslation;
 
     double given_current_angle = MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians());
     double given_target_angle = Math.atan2(m_targetPosSupplier.get().getY() - m_drivetrainSubsystem.getPose().getY(), m_targetPosSupplier.get().getX() - m_drivetrainSubsystem.getPose().getX());
@@ -185,7 +184,7 @@ public class DefaultSwerveCommand extends Command {
       chassisSpeeds = new ChassisSpeeds(vertical, horizontal, angular);
     }
 
-    m_drivetrainSubsystem.drive(chassisSpeeds, offset);
+    m_drivetrainSubsystem.drive(chassisSpeeds);
   }
 
   private static double squareNum(double num) {

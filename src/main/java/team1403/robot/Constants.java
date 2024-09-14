@@ -36,7 +36,6 @@ public class Constants {
   public static final double kLoopTime = 0.02;
   public static final int kSwerveModuleUpdateRateMs = 5;
   public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
-  public static final Translation2d zeroTranslation = new Translation2d();
   public static final Supplier<Alliance> kAllianceSupplier = () -> DriverStation.getAlliance().orElse(Alliance.Red);
 
   /**
