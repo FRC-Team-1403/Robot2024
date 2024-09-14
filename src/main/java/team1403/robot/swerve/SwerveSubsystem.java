@@ -58,7 +58,7 @@ public class SwerveSubsystem extends SubsystemBase {
   private boolean m_isXModeEnabled = false;
   private ArrayList<AprilTagCamera> m_cameras;
   private boolean m_disableVision = false;
-  private boolean m_rotDriftCorrect = false;
+  private boolean m_rotDriftCorrect = true;
   private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
 
   private static final SwerveModuleState[] m_xModeState = {

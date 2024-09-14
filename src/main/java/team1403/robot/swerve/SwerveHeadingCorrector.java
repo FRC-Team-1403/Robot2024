@@ -41,16 +41,17 @@ public class SwerveHeadingCorrector {
         boolean is_rotating = Math.abs(filtered_ang_vel) > 2;
         /* gyro angular vel used when you get hit by another robot and rotate inadvertantly, don't want to snap heading back when that happens
           usually such a hit would create a high angular velocity temporarily, so check for that (units of degrees/s) */
-        boolean auto_reset = Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || 
+        boolean auto_reset = Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH ||
                                 is_rotating;
 
-        Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
-        Logger.recordOutput("Swerve Yaw Setpoint Present", yaw_setpoint.isPresent());
-        Logger.recordOutput("Swerve Ang Vel Filtered", filtered_ang_vel);
 
         if(auto_reset && yaw_setpoint.isPresent()) {
             resetHeadingSetpoint();
         }
+
+        Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
+        Logger.recordOutput("Swerve Yaw Setpoint Present", yaw_setpoint.isPresent());
+        Logger.recordOutput("Swerve Ang Vel Filtered", filtered_ang_vel);
 
         if(is_near_zero && yaw_setpoint.isEmpty())
         {
