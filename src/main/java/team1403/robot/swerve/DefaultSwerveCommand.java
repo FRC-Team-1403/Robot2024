@@ -129,7 +129,7 @@ public class DefaultSwerveCommand extends Command {
     double horizontal = m_horizontalTranslationSupplier.getAsDouble();
     double vertical = m_verticalTranslationSupplier.getAsDouble();
 
-    if(Constants.kAllianceSupplier.get() == Alliance.Red) {
+    if(Constants.kAllianceSupplier.get() == Alliance.Red && m_isFieldRelative) {
       horizontal *= -1;
       vertical *= -1;
     }
