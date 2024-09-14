@@ -70,6 +70,7 @@ public class SwerveHeadingCorrector {
 
     public void resetHeadingSetpoint() {
         yaw_setpoint = Optional.empty();
+        m_yawZeroDetector.reset();
     }
 }
 
