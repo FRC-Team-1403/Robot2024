@@ -116,7 +116,7 @@ public class RobotContainer {
     Translation2d pos_blue = new Translation2d(-0.038099999999999995,  5.547867999999999);
     Translation2d pos_red = new Translation2d(16.579342,  5.547867999999999);
     Pose2d pos_blue_shoot = new Pose2d(new Translation2d(1.5, 5.4), new Rotation2d());
-    Pose2d pos_red_shoot = new Pose2d(new Translation2d(15, 5.4), new Rotation2d());
+    Pose2d pos_red_shoot = new Pose2d(new Translation2d(15, 5.4), new Rotation2d(Math.PI));
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,

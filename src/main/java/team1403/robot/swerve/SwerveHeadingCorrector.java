@@ -5,11 +5,9 @@ import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import team1403.lib.util.TimeDelayedBoolean;
@@ -22,8 +20,7 @@ public class SwerveHeadingCorrector {
     private ProfiledPIDController m_controller = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(Constants.Swerve.kMaxAngularSpeed, 80));
     private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
     private LinearFilter m_gyroVelFilter = LinearFilter.singlePoleIIR(Constants.kLoopTime * 3, Constants.kLoopTime);
-    //save on allocs
-    private ChassisSpeeds m_ret = new ChassisSpeeds();
+    private ChassisSpeeds m_retSpeeds = new ChassisSpeeds();
 
 
     public SwerveHeadingCorrector()
@@ -45,17 +42,11 @@ public class SwerveHeadingCorrector {
         /* gyro angular vel used when you get hit by another robot and rotate inadvertantly, don't want to snap heading back when that happens
           usually such a hit would create a high angular velocity temporarily, so check for that (units of degrees/s) */
         boolean auto_reset = Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH || 
-                                (!is_translating && is_near_zero) || 
                                 is_rotating;
 
         Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
         Logger.recordOutput("Swerve Yaw Setpoint Present", yaw_setpoint.isPresent());
         Logger.recordOutput("Swerve Ang Vel Filtered", filtered_ang_vel);
-
-        if(is_near_zero && is_rotating) {
-            is_near_zero = false;
-            m_yawZeroDetector.reset();
-        }
 
         if(auto_reset && yaw_setpoint.isPresent()) {
             resetHeadingSetpoint();
@@ -68,10 +59,10 @@ public class SwerveHeadingCorrector {
         }
         else if(is_translating && yaw_setpoint.isPresent())
         {
-            m_ret.vxMetersPerSecond = target.vxMetersPerSecond;
-            m_ret.vyMetersPerSecond = target.vyMetersPerSecond;
-            m_ret.omegaRadiansPerSecond = m_controller.calculate(current_rotation, yaw_setpoint.get());
-            return m_ret;
+            m_retSpeeds.vxMetersPerSecond = target.vxMetersPerSecond;
+            m_retSpeeds.vyMetersPerSecond = target.vyMetersPerSecond;
+            m_retSpeeds.omegaRadiansPerSecond = m_controller.calculate(current_rotation, yaw_setpoint.get());
+            return m_retSpeeds;
         }
 
         return target;

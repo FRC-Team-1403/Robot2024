@@ -4,6 +4,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import javax.swing.GroupLayout.Alignment;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -126,6 +128,12 @@ public class DefaultSwerveCommand extends Command {
     ChassisSpeeds currentSpeeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
     double horizontal = m_horizontalTranslationSupplier.getAsDouble();
     double vertical = m_verticalTranslationSupplier.getAsDouble();
+
+    if(Constants.kAllianceSupplier.get() == Alliance.Red) {
+      horizontal *= -1;
+      vertical *= -1;
+    }
+
     {
       //normalize using polar coordinates
       double vel_hypot = Math.hypot(horizontal, vertical);
@@ -158,10 +166,7 @@ public class DefaultSwerveCommand extends Command {
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
     
     if(m_ampSupplier.getAsBoolean()) {
-      if(DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue)
-        given_target_angle = -Math.PI/2;
-      else
-        given_target_angle = Math.PI/2;
+      given_target_angle = -Math.PI / 2;
     }
 
     Logger.recordOutput("Target Angle", given_target_angle);
