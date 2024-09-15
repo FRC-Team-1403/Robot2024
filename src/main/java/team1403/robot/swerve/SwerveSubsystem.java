@@ -293,11 +293,12 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   
   public void setModuleStates(SwerveModuleState[] states) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        states, Swerve.kMaxSpeed);
+    SwerveModuleState[] currentStates = getModuleStates();
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
-      states[i] = SwerveModuleState.optimize(states[i], new Rotation2d(m_modules[i].getAbsoluteAngle()));
+      states[i] = SwerveModuleState.optimize(states[i], currentStates[i].angle);
       m_modules[i].set(states[i].speedMetersPerSecond,
           MathUtil.angleModulus(states[i].angle.getRadians()));
     }
