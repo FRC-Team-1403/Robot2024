@@ -25,6 +25,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CougarSparkMax;
+import team1403.lib.util.Rotation2dM;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 
@@ -49,6 +50,8 @@ public class SwerveModule extends SubsystemBase implements Device {
 
     private final SwerveModuleState m_moduleState = new SwerveModuleState();
     private final SwerveModulePosition m_modulePosition = new SwerveModulePosition();
+    //I would advise against using this class anywhere else
+    private final Rotation2dM m_moduleRotation = new Rotation2dM();
 
 
     /**
@@ -261,7 +264,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      */
     public synchronized SwerveModulePosition getModulePosition() {
       m_modulePosition.distanceMeters = getDrivePosition();
-      m_modulePosition.angle = Rotation2d.fromRadians(getAbsoluteAngle());
+      m_modulePosition.angle = m_moduleRotation.set(getAbsoluteAngle());
 
       return m_modulePosition;
     }
@@ -282,8 +285,8 @@ public class SwerveModule extends SubsystemBase implements Device {
      * @return the current state of the swerve module
      */
     public SwerveModuleState getState() {
-      m_moduleState.angle = Rotation2d.fromRadians(getAbsoluteAngle());
       m_moduleState.speedMetersPerSecond = getDriveVelocity();
+      m_moduleState.angle = m_moduleRotation.set(getAbsoluteAngle());
 
       return m_moduleState;
     }
