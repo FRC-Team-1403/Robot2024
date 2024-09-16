@@ -121,8 +121,10 @@ public class DefaultSwerveCommand extends Command {
 
     boolean x_mode = m_xModeSupplier.getAsBoolean();
     m_drivetrainSubsystem.setXModeEnabled(x_mode);
-    if(x_mode)
+    if(x_mode) {
+      m_translationLimiter.reset(0);
       return;
+    }
 
     ChassisSpeeds chassisSpeeds;
     ChassisSpeeds currentSpeeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
