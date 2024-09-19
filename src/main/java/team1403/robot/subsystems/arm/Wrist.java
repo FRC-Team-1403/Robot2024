@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 
 
 public class Wrist extends SubsystemBase {
@@ -57,7 +59,8 @@ public class Wrist extends SubsystemBase {
     m_armMech = m_mechanismRoot.append(new MechanismLigament2d("Arm", 1, m_arm.getPivotAngle() - 106.4));
     m_wristMech = m_armMech.append(new MechanismLigament2d("Wrist", 0.3, getWristAngle()));
 
-    SmartDashboard.putData("Arm Mechanism", m_mechanism);
+    Constants.kDebugTab.add("Arm Mechanism", m_mechanism);
+    Constants.kDebugTab.addBoolean("Wrist is at setpoint", () -> isAtSetpoint());
 
     // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }
@@ -136,17 +139,15 @@ public class Wrist extends SubsystemBase {
     m_armMech.setAngle(m_arm.getPivotAngle() - 106.4);
     m_wristMech.setAngle(-getWristAngle() + 90);
 
-   SmartDashboard.putBoolean("Wrist is at setpoint", isAtSetpoint());
-   Logger.recordOutput("Wrist Voltage", m_wristMotor.getBusVoltage());
-   Logger.recordOutput("Wrist Current", m_wristMotor.getOutputCurrent());
-   Logger.recordOutput("wrist rpm", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
-  
+    Logger.recordOutput("Wrist Voltage", m_wristMotor.getBusVoltage());
+    Logger.recordOutput("Wrist Current", m_wristMotor.getOutputCurrent());
+    Logger.recordOutput("wrist rpm", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
+    
 
-   Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
-   Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
-   Logger.recordOutput("Wrist Speed", m_wristMotor.get());
-   Logger.recordOutput("Wrist Angle", getWristAngle());
-   Logger.recordOutput("Wrist Setpoint", m_wristAngleSetpoint);
-  
+    Logger.recordOutput("Wrist Temp", m_wristMotor.getMotorTemperature());
+    Logger.recordOutput("Wrist Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
+    Logger.recordOutput("Wrist Speed", m_wristMotor.get());
+    Logger.recordOutput("Wrist Angle", getWristAngle());
+    Logger.recordOutput("Wrist Setpoint", m_wristAngleSetpoint);
   }
 }

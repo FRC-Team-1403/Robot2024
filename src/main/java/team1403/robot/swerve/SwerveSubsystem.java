@@ -85,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
    *                   used to construct this subsystem
    */
   public SwerveSubsystem() {
-    SmartDashboard.putData("Field", m_field);
+    Constants.kDriverTab.add("Field", m_field);
     // super("Swerve Subsystem", parameters);
     m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
     m_modules = new SwerveModule[] {

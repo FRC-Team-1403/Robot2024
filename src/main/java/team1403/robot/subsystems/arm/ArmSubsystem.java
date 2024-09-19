@@ -13,9 +13,11 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 
 /**
  * Class creating the arm subsystem. The subsystem takes care of moving the arm
@@ -52,6 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(370, 570));
     m_armPid.reset(getPivotAngle(), 0);
+
+    Constants.kDebugTab.addBoolean("Arm IsAtSetpoint", () -> isAtSetpoint());
 
     this.m_angleSetpoint = getPivotAngle();
   }
@@ -173,7 +177,6 @@ public class ArmSubsystem extends SubsystemBase {
     
 
     // Track Values
-    SmartDashboard.putBoolean("Arm IsAtSetpoint", isAtSetpoint());
     Logger.recordOutput("Pivot Angle", getPivotAngle());
     Logger.recordOutput("Pivot Setpoint", getPivotAngleSetpoint());
     Logger.recordOutput("Pivot Voltage", m_leftMotor.getBusVoltage());
