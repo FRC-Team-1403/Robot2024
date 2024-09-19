@@ -15,6 +15,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import team1403.robot.subsystems.arm.ArmState;
 
 /**
@@ -37,6 +39,8 @@ public class Constants {
   public static final int kSwerveModuleUpdateRateMs = 5;
   public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
   public static final Supplier<Alliance> kAllianceSupplier = () -> DriverStation.getAlliance().orElse(Alliance.Blue);
+  public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
+  public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
 
   /**
    * Swerve Constants.

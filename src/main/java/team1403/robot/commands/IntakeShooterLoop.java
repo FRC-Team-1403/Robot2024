@@ -55,7 +55,7 @@ public class IntakeShooterLoop extends Command {
         LOADING_STATION
     }
 
-    private State m_state;
+    private State m_state = State.RESET;
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmSubsystem arm, Wrist wrist, LED led, XboxController ops,
             BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier loading, BooleanSupplier resetToIntake,
@@ -78,6 +78,8 @@ public class IntakeShooterLoop extends Command {
         m_ops = ops;
         m_feedShot = feedShot;
 
+        Constants.kDriverTab.addString("State", () -> m_state.toString());
+
         addRequirements(m_arm, m_wrist, m_led, m_intakeAndShooter);
     }
 
@@ -96,7 +98,6 @@ public class IntakeShooterLoop extends Command {
     @Override
     public void execute()
     {
-        SmartDashboard.putString("State", m_state.toString());
         switch(m_state)
         {
             case RESET:

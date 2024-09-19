@@ -9,6 +9,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.AdvancedMotorController.CougarIdleMode;
@@ -68,6 +70,11 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
 
     m_intakeMotor.setSmartCurrentLimit(Constants.IntakeAndShooter.kIntakeCurrentLimit);
+
+
+    Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
+    Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
+    Constants.kDebugTab.addBoolean("Shooter Ready", () -> isReady());
   }
 
   /**
@@ -152,9 +159,6 @@ public class IntakeAndShooter extends SubsystemBase {
 
   public void periodic() {
     Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
-    SmartDashboard.putBoolean("Intake Sensor", isIntakePhotogateTriggered());
-    SmartDashboard.putBoolean("Shooter Sensor", isShooterPhotogateTriggered());
-    SmartDashboard.putBoolean("Shooter Ready", isReady());
     Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
     Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.geTalonFxApi().getMotorVoltage().getValueAsDouble());
     Logger.recordOutput("Shooter gate", isShooterPhotogateTriggered());

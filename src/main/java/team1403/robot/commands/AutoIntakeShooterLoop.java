@@ -100,7 +100,6 @@ public class AutoIntakeShooterLoop extends Command {
     @Override
     public void execute()
     {
-        SmartDashboard.putString("State", m_state.toString());
         switch(m_state)
         {
             case RESET:

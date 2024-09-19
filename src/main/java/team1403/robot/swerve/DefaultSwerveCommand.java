@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.lib.util.CircularSlewRateLimiter;
@@ -101,6 +102,9 @@ public class DefaultSwerveCommand extends Command {
 
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
+    Constants.kDriverTab.addBoolean("isFieldRelative", () -> m_isFieldRelative);
+    Constants.kDebugTab.addBoolean("Aimbot", m_aimbotSupplier);
+
     addRequirements(m_drivetrainSubsystem);
   }
 
@@ -115,9 +119,7 @@ public class DefaultSwerveCommand extends Command {
   
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
-    } 
-
-    SmartDashboard.putBoolean("isFieldRelative", m_isFieldRelative);
+    }
 
     boolean x_mode = m_xModeSupplier.getAsBoolean();
     m_drivetrainSubsystem.setXModeEnabled(x_mode);
@@ -172,7 +174,6 @@ public class DefaultSwerveCommand extends Command {
     }
 
     Logger.recordOutput("Target Angle", given_target_angle);
-    SmartDashboard.putBoolean("Aimbot", m_aimbotSupplier.getAsBoolean());
     
     if(m_aimbotSupplier.getAsBoolean() || m_ampSupplier.getAsBoolean())
     {
