@@ -2,6 +2,7 @@ package team1403.robot;
 
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -97,6 +98,8 @@ public class Constants {
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 45;
     public static final int kSteerCurrentLimit = 25;
+
+    public static final PathConstraints kPathConstraints = new PathConstraints(Swerve.kMaxSpeed, 4, Swerve.kMaxAngularSpeed, 10);
 
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches

@@ -27,6 +27,8 @@ public class SwerveHeadingCorrector {
     {
         m_controller.reset(0);
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
+
+        Constants.kDebugTab.add("Swerve Heading Corrector PID", m_controller);
     }
 
     private final static double OMEGA_THRESH = 0.03;

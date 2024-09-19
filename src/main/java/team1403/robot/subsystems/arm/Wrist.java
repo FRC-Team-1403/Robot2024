@@ -61,6 +61,7 @@ public class Wrist extends SubsystemBase {
 
     Constants.kDebugTab.add("Arm Mechanism", m_mechanism);
     Constants.kDebugTab.addBoolean("Wrist is at setpoint", () -> isAtSetpoint());
+    Constants.kDebugTab.add("Wrist PIDController", m_wristPid);
 
     // SmartDashboard.putNumber("Wrist P", m_wristPid.getP());
   }

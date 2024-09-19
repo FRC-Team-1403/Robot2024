@@ -56,6 +56,7 @@ public class ArmSubsystem extends SubsystemBase {
     m_armPid.reset(getPivotAngle(), 0);
 
     Constants.kDebugTab.addBoolean("Arm IsAtSetpoint", () -> isAtSetpoint());
+    Constants.kDebugTab.add("Arm PIDController", m_armPid);
 
     this.m_angleSetpoint = getPivotAngle();
   }

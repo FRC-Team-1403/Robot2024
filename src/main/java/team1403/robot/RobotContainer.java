@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.util.AutoUtil;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
+import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
@@ -128,6 +129,7 @@ public class RobotContainer {
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
         () -> m_driverController.getHID().getLeftBumper(),
+        () -> m_driverController.getHID().getRightBumper(),
         () -> Constants.kAllianceSupplier.get() == Alliance.Blue ? pos_blue : pos_red,
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis()));
@@ -138,6 +140,7 @@ public class RobotContainer {
     m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
       if(Constants.kAllianceSupplier.get() == Alliance.Blue) tar = pos_blue_shoot;
+      Blackbox.targetPosition = tar;
       m_pathFinder = AutoUtil.pathFindToPose(tar);
     }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
 
