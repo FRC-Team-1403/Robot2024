@@ -69,10 +69,10 @@ public class IntakeAndShooter extends SubsystemBase {
 
     // FIXME: Tune these values!
     var slot0Configs = config.Slot0;
-    slot0Configs.kS = 0.1 / 60.;
-    slot0Configs.kV = 0.12 / 60.;
-    slot0Configs.kA = 0.01 / 60.;
-    slot0Configs.kP = 0.11 / 60.;
+    slot0Configs.kS = 0;
+    slot0Configs.kV = 1.0 / 6300;
+    slot0Configs.kA = 0;
+    slot0Configs.kP = 0.00005;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 
