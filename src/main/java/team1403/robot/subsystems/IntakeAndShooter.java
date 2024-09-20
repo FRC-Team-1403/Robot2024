@@ -3,19 +3,19 @@ package team1403.robot.subsystems;
 import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.SparkRelativeEncoder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.lib.device.AdvancedMotorController.CougarIdleMode;
 import team1403.lib.device.wpi.CougarSparkMax;
-import team1403.lib.device.wpi.CougarTalonFx;
 import team1403.robot.Constants;
 
 /**
@@ -26,17 +26,19 @@ public class IntakeAndShooter extends SubsystemBase {
   private static CougarSparkMax m_intakeMotor;
   
   // shooter motors
-  private CougarTalonFx m_shooterMotorTop;
-  private CougarTalonFx m_shooterMotorBottom;
+  private TalonFX m_shooterMotorTop;
+  private TalonFX m_shooterMotorBottom;
+  private StatusSignal<Double> m_topVel;
+  private StatusSignal<Double> m_bottomVel;
 
   // photogates
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
-  private PIDController m_bottomShooter;
-  private PIDController m_topShooter;
 
   private Debouncer m_shooterDebouncer;
   private Debouncer m_intakeDebouncer;
+
+  private final MotionMagicVelocityDutyCycle m_request = new MotionMagicVelocityDutyCycle(0);
 
 
   /**
@@ -53,24 +55,38 @@ public class IntakeAndShooter extends SubsystemBase {
     // intake motors and sensors
     m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorID,
         SparkRelativeEncoder.Type.kHallSensor);
-    m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
+    m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
     // shooter motors and sensors
-    m_shooterMotorTop = new CougarTalonFx("Top Shooter Motor", Constants.CanBus.shooterMotorTopID);
-    m_shooterMotorBottom = new CougarTalonFx("Bottom Shooter Motor", Constants.CanBus.shooterMotorBottomID);
+    m_shooterMotorTop = new TalonFX(Constants.CanBus.shooterMotorTopID);
+    m_shooterMotorBottom = new TalonFX(Constants.CanBus.shooterMotorBottomID);
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    // Rotations per second to Rotations per minute
+    config.Feedback.SensorToMechanismRatio = 60.;
+    config.MotionMagic.MotionMagicAcceleration = 12000; // RPM/s -> ~0.5 s to max
+
+    // FIXME: Tune these values!
+    var slot0Configs = config.Slot0;
+    slot0Configs.kS = 0.1 / 60.;
+    slot0Configs.kV = 0.12 / 60.;
+    slot0Configs.kA = 0.01 / 60.;
+    slot0Configs.kP = 0.11 / 60.;
+    slot0Configs.kI = 0;
+    slot0Configs.kD = 0;
+
+    m_shooterMotorTop.getConfigurator().apply(config);
+    m_shooterMotorBottom.getConfigurator().apply(config);
+
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
-    m_shooterMotorTop.setIdleMode(CougarIdleMode.BRAKE);
-    m_shooterMotorBottom.setIdleMode(CougarIdleMode.BRAKE);
-    m_bottomShooter = new PIDController(0.000011, 0.0 , 0.0);
-    m_topShooter = new PIDController(0.000011, 0.0, 0.0);
     m_shooterDebouncer = new Debouncer(0.02, DebounceType.kBoth);
     m_intakeDebouncer = new Debouncer(0.02, DebounceType.kBoth);
 
-    m_shooterMotorTop.getEmbeddedEncoder().setVelocityConversionFactor(60.);
-    m_shooterMotorBottom.getEmbeddedEncoder().setVelocityConversionFactor(60.);
-
     m_intakeMotor.setSmartCurrentLimit(Constants.IntakeAndShooter.kIntakeCurrentLimit);
 
+    m_topVel = m_shooterMotorTop.getVelocity();
+    m_bottomVel = m_shooterMotorBottom.getVelocity();
 
     Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
     Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
@@ -119,66 +135,42 @@ public class IntakeAndShooter extends SubsystemBase {
   }
 
   public void setShooterRPM(double rpm) {
-    m_bottomShooter.setSetpoint(rpm);
-    m_topShooter.setSetpoint(rpm);
-  }
-
-  public double getShooterRPM(){
-    return m_bottomShooter.getSetpoint();
+    m_request.Velocity = rpm;
   }
 
   /**
    * Stopping the shooter motors.
    */
   public void shooterStop() {
-    m_bottomShooter.setSetpoint(0);
-    m_topShooter.setSetpoint(0);
-  }
-
-  /**
-   * setting the shooter speed.
-   * 
-   * @param speed
-   */
-  public void setShooterSpeed(double speed) {
-    m_shooterMotorTop.setSpeed(-speed);
-    m_shooterMotorBottom.setSpeed(-speed);
-    // if there is an error when testing (note doesn't get shot out) try changing
-    // the direction of the motor
-
+    m_request.Velocity = 0;
   }
 
   public boolean isReady(){
-    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 300 && 
-           Math.abs(m_topShooter.getSetpoint() + m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()) < 300;
+    return Math.abs(m_request.Velocity - m_bottomVel.getValue()) < 300 && 
+           Math.abs(m_request.Velocity - m_topVel.getValue()) < 300;
   }
 
   public boolean teleopIsReady() {
-    return Math.abs(m_bottomShooter.getSetpoint() + m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()) < 1000;
+    return Math.abs(m_request.Velocity - m_bottomVel.getValue()) < 1000;
   }
 
   public void periodic() {
+    m_topVel.refresh();
+    m_bottomVel.refresh();
+    m_shooterMotorTop.setControl(m_request);
+    m_shooterMotorBottom.setControl(m_request);
+
     Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
     Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
-    Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.geTalonFxApi().getMotorVoltage().getValueAsDouble());
+    Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.getMotorVoltage().getValueAsDouble());
     Logger.recordOutput("Shooter gate", isShooterPhotogateTriggered());
     Logger.recordOutput("Intake gate", isIntakePhotogateTriggered());
-    Logger.recordOutput("Shooter top Motor RPM", -m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue());
+    Logger.recordOutput("Shooter top Motor RPM", m_topVel.getValue());
     Logger.recordOutput("Intake RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
     Logger.recordOutput("Intake Speed Setpoint", m_intakeMotor.get());
-    Logger.recordOutput("Shooter RPM setpoint",  m_topShooter.getSetpoint());
+    Logger.recordOutput("Shooter RPM setpoint",  m_request.Velocity);
     Logger.recordOutput("Intake current", m_intakeMotor.getOutputCurrent());
-    Logger.recordOutput("Shooter top current", m_shooterMotorTop.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
-    Logger.recordOutput("Shooter bottom current", m_shooterMotorBottom.geTalonFxApi().getSupplyCurrent().getValueAsDouble());
-
-    if(m_bottomShooter.getSetpoint() != 0)
-      m_shooterMotorBottom.setSpeed(m_shooterMotorBottom.get() - m_bottomShooter.calculate(-m_shooterMotorBottom.getEmbeddedEncoder().getVelocityValue()));
-    else
-      m_shooterMotorBottom.setSpeed(0);
-
-    if(m_topShooter.getSetpoint() != 0)
-      m_shooterMotorTop.setSpeed(m_shooterMotorTop.get() - m_topShooter.calculate(-m_shooterMotorTop.getEmbeddedEncoder().getVelocityValue()));
-    else
-      m_shooterMotorTop.setSpeed(0);
+    Logger.recordOutput("Shooter top current", m_shooterMotorTop.getStatorCurrent().getValueAsDouble());
+    Logger.recordOutput("Shooter bottom current", m_shooterMotorBottom.getStatorCurrent().getValueAsDouble());
   }
 }
