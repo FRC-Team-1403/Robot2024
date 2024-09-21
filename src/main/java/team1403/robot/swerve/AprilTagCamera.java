@@ -135,37 +135,39 @@ public class AprilTagCamera extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_result = m_camera.getLatestResult();
+    if(m_camera.isConnected()) {
+      m_result = m_camera.getLatestResult();
 
-    m_poseEstimator.setReferencePose(m_referencePose.get());
-    m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
-    m_estPos = m_poseEstimator.update(m_result).orElse(null);
+      m_poseEstimator.setReferencePose(m_referencePose.get());
+      m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
+      m_estPos = m_poseEstimator.update(m_result).orElse(null);
 
-    updatePose2d();
+      updatePose2d();
 
-    Logger.recordOutput(m_camera.getName() + "/Target Visible", hasTarget());
+      Logger.recordOutput(m_camera.getName() + "/Target Visible", hasTarget());
 
-    if(kExtraVisionDebugInfo) {
-      Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
-      Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
+      if(kExtraVisionDebugInfo) {
+        Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
+        Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
 
-      Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
+        Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
 
-      m_visionTargets.clear();
+        m_visionTargets.clear();
 
-      for(PhotonTrackedTarget t : getTargets()) {
-        var trf = t.getBestCameraToTarget();
-        if(trf.equals(kZeroTransform)) continue;
-        m_visionTargets.add(robot_pose_transformed.transformBy(trf));
+        for(PhotonTrackedTarget t : getTargets()) {
+          var trf = t.getBestCameraToTarget();
+          if(trf.equals(kZeroTransform)) continue;
+          m_visionTargets.add(robot_pose_transformed.transformBy(trf));
+        }
+
+        Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
       }
-
-      Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
-    }
-    
-    if(hasPose()) {
-      Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
-      Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
-      Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
+      
+      if(hasPose()) {
+        Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
+        Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
+        Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
+      }
     }
 
     // if(hasTarget())

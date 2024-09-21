@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -93,6 +94,9 @@ public class SwerveModule extends SubsystemBase implements Device {
 
       m_driveMotor.burnFlash();
       m_steerMotor.burnFlash();
+
+      m_driveMotor.setCANTimeout(0);
+      m_steerMotor.setCANTimeout(0);
     }
 
     @Override

@@ -72,9 +72,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private final Notifier m_odometeryNotifier;
 
-  private SimDouble m_gyroAngleSim = null;
-  private SimDouble m_gyroRateSim = null;
-
   /**
    * Creates a new {@link SwerveSubsystem}.
    * Instantiates the 4 {@link SwerveModule}s,
@@ -136,12 +133,6 @@ public class SwerveSubsystem extends SubsystemBase {
       while (m_navx2.isCalibrating());
 
     zeroGyroscope();
-
-    if(Robot.isSimulation()) {
-      int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-      m_gyroAngleSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-      m_gyroRateSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
-    }
 
     m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
 
@@ -391,11 +382,6 @@ public class SwerveSubsystem extends SubsystemBase {
       }
     }
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
-
-    if (m_gyroAngleSim != null) {
-      m_gyroAngleSim.set(m_navx2.getAngle() - Units.radiansToDegrees(getCurrentChassisSpeed().omegaRadiansPerSecond * Constants.kLoopTime));
-      m_gyroRateSim.set(-Units.radiansToDegrees(getCurrentChassisSpeed().omegaRadiansPerSecond));
-    }
 
     if (this.m_isXModeEnabled) {
       xMode();
