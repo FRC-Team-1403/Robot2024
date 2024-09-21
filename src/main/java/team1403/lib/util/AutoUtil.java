@@ -16,12 +16,10 @@ public class AutoUtil {
     PathPlannerPath path = PathPlannerPath.fromChoreoTrajectory(name);
     Command cmd = AutoBuilder.followPath(path);
     return Commands.sequence(Commands.runOnce(() -> {
-        if(Constants.kAllianceSupplier.get() == Alliance.Blue) {
-            swerve.resetOdometry(path.getStartingDifferentialPose());
-        }
-        else {
-            swerve.resetOdometry(path.flipPath().getStartingDifferentialPose());
-        }
+        Pose2d startPose = CougarUtil.shouldMirrorPath() ? 
+          path.flipPath().getStartingDifferentialPose() : 
+          path.getStartingDifferentialPose();
+        swerve.resetOdometry(startPose);
     }, swerve), cmd);
   }
 

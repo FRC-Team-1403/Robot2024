@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.lib.util.CircularSlewRateLimiter;
+import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 import team1403.robot.subsystems.Blackbox;
@@ -157,7 +158,7 @@ public class DefaultSwerveCommand extends Command {
     double horizontal = m_horizontalTranslationSupplier.getAsDouble();
     double vertical = m_verticalTranslationSupplier.getAsDouble();
 
-    if(Constants.kAllianceSupplier.get() == Alliance.Red && m_isFieldRelative) {
+    if(CougarUtil.getAlliance() == Alliance.Red && m_isFieldRelative) {
       horizontal *= -1;
       vertical *= -1;
     }

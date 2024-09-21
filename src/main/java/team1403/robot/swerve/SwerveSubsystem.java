@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.NavxAhrs;
+import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
@@ -111,14 +112,7 @@ public class SwerveSubsystem extends SubsystemBase {
                                                                            // robot center to furthest module.
             new ReplanningConfig() // Default path replanning config. See the API for the options here
         ),
-
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red
-          // alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          return Constants.kAllianceSupplier.get() == Alliance.Red;
-        },
+        CougarUtil::shouldMirrorPath,
         this // Reference to this subsystem to set requirements
     );
     Pathfinding.setPathfinder(new LocalADStar());
@@ -201,7 +195,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroHeading() {
     zeroGyroscope();
-    if(Constants.kAllianceSupplier.get() == Alliance.Blue)
+    if(CougarUtil.getAlliance() == Alliance.Blue)
       resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
     else
       resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.PI)));

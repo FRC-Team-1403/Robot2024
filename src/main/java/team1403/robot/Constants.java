@@ -36,7 +36,6 @@ public class Constants {
 
   // Variables to used by all subsystems.
   public static final double kLoopTime = 0.02;
-  public static final Supplier<Alliance> kAllianceSupplier = () -> DriverStation.getAlliance().orElse(Alliance.Blue);
   public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
   public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
 

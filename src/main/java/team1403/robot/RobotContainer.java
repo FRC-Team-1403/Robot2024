@@ -4,37 +4,30 @@
 
 package team1403.robot;
 
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.util.AutoUtil;
+import team1403.lib.util.CougarUtil;
 import team1403.robot.commands.AutoIntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
-import team1403.robot.subsystems.LED.LEDState;
 import team1403.robot.subsystems.arm.ArmSubsystem;
 import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
@@ -130,7 +123,7 @@ public class RobotContainer {
         () -> m_driverController.getHID().getAButton(),
         () -> m_driverController.getHID().getLeftBumper(),
         () -> m_driverController.getHID().getRightBumper(),
-        () -> Constants.kAllianceSupplier.get() == Alliance.Blue ? pos_blue : pos_red,
+        () -> CougarUtil.getAlliance() == Alliance.Blue ? pos_blue : pos_red,
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis()));
 
@@ -139,7 +132,7 @@ public class RobotContainer {
 
     m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
-      if(Constants.kAllianceSupplier.get() == Alliance.Blue) tar = pos_blue_shoot;
+      if(CougarUtil.getAlliance() == Alliance.Blue) tar = pos_blue_shoot;
       Blackbox.targetPosition = tar;
       m_pathFinder = AutoUtil.pathFindToPose(tar);
     }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
