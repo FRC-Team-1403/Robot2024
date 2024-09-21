@@ -5,7 +5,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkRelativeEncoder;
 
 import team1403.lib.device.AdvancedMotorController;
-import team1403.lib.device.CurrentSensor;
 import team1403.lib.device.Encoder;
 import team1403.lib.device.NoSuchDeviceError;
 
@@ -58,16 +57,6 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
     } else {
       m_encoder = new EmbeddedEncoder(name + ".Encoder", getEncoder(encoderType, 4096));
     }
-    m_currentSensor = new EmbeddedCurrentSensor(name + ".CurrentSensor");
-  }
-
-  /**
-   * Return the CANSparkMax API so we can do something specific.
-   *
-   * @return The underlying {@code CANSparkMax} instance.
-   */
-  public final CANSparkMax getCanSparkMaxApi() {
-    return this;
   }
 
   @Override
@@ -99,6 +88,9 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
 
   @Override
   public void setPosition(double position) {
+    if (hasEmbeddedEncoder()) {
+      m_encoder.setPosition(position);
+    }
   }
 
   @Override
@@ -132,6 +124,14 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
     super.setSmartCurrentLimit((int)amps);
   }
 
+  /**
+   * 
+   * @return Estimate of the voltage applied to the motor
+   */
+  public double getAppliedVoltage() {
+    return getBusVoltage() * getAppliedOutput();
+  }
+
   @Override
   public boolean hasEmbeddedEncoder() {
     return m_encoder != null;
@@ -148,11 +148,6 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
   @Override
   public boolean hasEmbeddedCurrentSensor() {
     return true;
-  }
-
-  @Override
-  public CurrentSensor getEmbeddedCurrentSensor() {
-    return m_currentSensor;
   }
 
   /**
@@ -202,7 +197,7 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
     }
 
     @Override
-    public void setPositionOffset(double position) {
+    public void setPosition(double position) {
       m_encoder.setPosition(position);
     }
     
@@ -210,34 +205,6 @@ public final class CougarSparkMax extends CANSparkMax implements AdvancedMotorCo
     private final RelativeEncoder m_encoder;
   }
 
-  /**
-   * Implements the interface to the embedded current sensor.
-   *
-   * <p>This is not a static class so instances share the
-   * CougarSparkMax instance state.
-   */
-  private class EmbeddedCurrentSensor implements CurrentSensor {
-    /**
-     * Constructor.
-     */
-    public EmbeddedCurrentSensor(String name) {
-      m_sensorName = name;
-    }
-
-    @Override
-    public final String getName() {
-      return m_sensorName;
-    }
-
-    @Override
-    public final double getAmps() {
-      return getOutputCurrent();
-    }
-
-    private final String m_sensorName;
-  }
-
   private final EmbeddedEncoder m_encoder;
-  private final EmbeddedCurrentSensor m_currentSensor;
   private final String m_name;
 }

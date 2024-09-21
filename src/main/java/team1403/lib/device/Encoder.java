@@ -40,7 +40,7 @@ public interface Encoder extends Sensor {
   double getVelocityValue();
 
   /**
-   * Sets the position offset of the encoder.
+   * Resets the position of the encoder to the given value.
    */
-  void setPositionOffset(double position);
+  void setPosition(double position);
 }
