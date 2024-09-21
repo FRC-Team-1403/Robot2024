@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.commands.AutoIntakeShooterLoop;
+import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -56,6 +56,7 @@ public class RobotContainer {
 
   private SendableChooser<Command> autoChooser;
   private Command m_pathFinder = Commands.none();
+  private Command m_teleopCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -71,6 +72,21 @@ public class RobotContainer {
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
+    Constants.kDebugTab.add("Power Distribution", m_powerDistribution);
+
+    m_teleopCommand = new IntakeShooterLoop(
+      m_endeff, m_arm, m_wrist, m_led, m_operatorController.getHID(),
+      () -> m_operatorController.getHID().getRightTriggerAxis() >= 0.5, // shoot
+      () -> m_operatorController.getHID().getBButton(), // amp
+      () -> m_operatorController.getHID().getXButton(), // loading station
+      () -> m_operatorController.getHID().getAButton(), // reset to intake
+      () -> m_operatorController.getHID().getLeftTriggerAxis() >= 0.5, // stage line shot
+      () -> m_operatorController.getHID().getPOV() == 0, // center line shot
+      () -> m_operatorController.getHID().getYButton(), // reset to netural
+      () -> m_operatorController.getHID().getLeftBumper(), // launchpad
+      () -> m_operatorController.getHID().getLeftY(), // expel
+      () -> m_operatorController.getHID().getRightBumper(), // amp shooting
+      () -> m_operatorController.getHID().getPOV() == 90); // feeding
 
     NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
@@ -158,35 +174,7 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-  public SwerveSubsystem getSwerveSubsystem() {
-    return m_swerve;
-  }
-
-  public XboxController getOps() {
-    return m_operatorController.getHID();
-  }
-
-  public CommandXboxController getDriverController() {
-    return m_driverController;
-  }
-
-  public ArmSubsystem getArmSubsystem() {
-    return m_arm;
-  }
-
-  public Wrist getWristSubsystem() {
-    return m_wrist;
-  }
-
-  public IntakeAndShooter getIntakeShooterSubsystem() {
-    return m_endeff;
-  }
-
-  public HangerSubsystem getHangerSubsystem(){
-    return m_hanger;
-  }
-
-  public LED getLEDSubsystem() {
-    return m_led;
+  public Command getTeleopCommand() {
+    return m_teleopCommand;
   }
 }
