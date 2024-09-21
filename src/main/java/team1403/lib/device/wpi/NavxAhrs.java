@@ -50,8 +50,12 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
     return getAngleAdjustment();
   }
 
-  public Rotation2d getRawRotation2d()
-  {
+  public Rotation2d getRawRotation2d() {
     return super.getRotation2d();
+  }
+
+  @Override
+  public Rotation2d getRotation2d() {
+    return Rotation2d.fromDegrees(getHeading());
   }
 }
