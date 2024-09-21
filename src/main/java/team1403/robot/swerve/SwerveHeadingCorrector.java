@@ -19,7 +19,7 @@ public class SwerveHeadingCorrector {
     private Optional<Double> yaw_setpoint = Optional.empty();
     private ProfiledPIDController m_controller = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(Constants.Swerve.kMaxAngularSpeed, 80));
     private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
-    private LinearFilter m_gyroVelFilter = LinearFilter.singlePoleIIR(Constants.kLoopTime * 3, Constants.kLoopTime);
+    private LinearFilter m_gyroVelFilter = LinearFilter.singlePoleIIR(Constants.kLoopTime * 5, Constants.kLoopTime);
     private ChassisSpeeds m_retSpeeds = new ChassisSpeeds();
 
 
@@ -40,7 +40,8 @@ public class SwerveHeadingCorrector {
         //timeout can be lowered with a well tuned slew rate
         boolean is_near_zero = m_yawZeroDetector.update(Math.abs(target.omegaRadiansPerSecond) < OMEGA_THRESH, 0.2);
         double filtered_ang_vel = m_gyroVelFilter.calculate(gyro_vel);
-        boolean is_rotating = Math.abs(filtered_ang_vel) > 2;
+        // degrees per second
+        boolean is_rotating = Math.abs(filtered_ang_vel) > 8;
         /* gyro angular vel used when you get hit by another robot and rotate inadvertantly, don't want to snap heading back when that happens
           usually such a hit would create a high angular velocity temporarily, so check for that (units of degrees/s) */
         boolean auto_reset = Math.abs(target.omegaRadiansPerSecond) > OMEGA_THRESH ||

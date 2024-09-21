@@ -13,6 +13,9 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.hal.SimDeviceJNI;
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
 
@@ -67,6 +71,9 @@ public class SwerveSubsystem extends SubsystemBase {
   };
 
   private final Notifier m_odometeryNotifier;
+
+  private SimDouble m_gyroAngleSim = null;
+  private SimDouble m_gyroRateSim = null;
 
   /**
    * Creates a new {@link SwerveSubsystem}.
@@ -130,6 +137,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
     zeroGyroscope();
 
+    if(Robot.isSimulation()) {
+      int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+      m_gyroAngleSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+      m_gyroRateSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
+    }
+
     m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
 
     setRobotRampRate(0.0);
@@ -143,6 +156,8 @@ public class SwerveSubsystem extends SubsystemBase {
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
     m_odometeryNotifier.startPeriodic(Units.millisecondsToSeconds(Constants.Swerve.kModuleUpdateRateMs));
+
+    Constants.kDebugTab.add("Gyro", m_navx2);
   }
 
   public void setDisableVision(boolean disable) {
@@ -377,6 +392,11 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     // SmartDashboard.putNumber("Speed", m_speedLimiter);
 
+    if (m_gyroAngleSim != null) {
+      m_gyroAngleSim.set(m_navx2.getAngle() - Units.radiansToDegrees(getCurrentChassisSpeed().omegaRadiansPerSecond * Constants.kLoopTime));
+      m_gyroRateSim.set(-Units.radiansToDegrees(getCurrentChassisSpeed().omegaRadiansPerSecond));
+    }
+
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
@@ -394,7 +414,5 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
     // Logger.recordOutput("Back Left Absolute Encoder Angle", m_modules[2].getAbsoluteAngle());
     // Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
-
-    Logger.recordOutput("Gyro Reading", getGyroscopeRotation().getDegrees());
   }
 }
