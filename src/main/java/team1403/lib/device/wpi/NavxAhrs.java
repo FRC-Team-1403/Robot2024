@@ -54,13 +54,4 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
   {
     return super.getRotation2d();
   }
-
-  private Rotation2d get180to180Rotation2d() {
-    return Rotation2d.fromDegrees(MathUtil.inputModulus(-getAngle(), -180, 180));
-  }
-
-  @Override
-  public Rotation2d getRotation2d() {
-    return get180to180Rotation2d();
-  }
 }

@@ -1,5 +1,6 @@
 package team1403.lib.device;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
@@ -47,7 +48,7 @@ public interface GyroscopeDevice extends Sensor {
   public double getAngleOffset();
 
   /**
-   * Returns the angle of the gyroscope clamped between 0 and 360 degrees.
+   * Returns the angle of the gyroscope clamped between -180 and 180 degrees.
    * Note: the math in the getHeading method is used to invert the direction of
    * the gyro for use by wpilib which treats gyros backwards.
    * Gyros are normally clockwise positive. Wpilib wants
@@ -56,7 +57,7 @@ public interface GyroscopeDevice extends Sensor {
    * @return the clamped angle in degrees
    */
   public default double getHeading() {
-    return Math.IEEEremainder(-getAngle(), 360);
+    return MathUtil.inputModulus(-getAngle(), -180, 180);
   }
 
   /**

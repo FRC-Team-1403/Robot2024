@@ -136,13 +136,18 @@ public class DefaultSwerveCommand extends Command {
   public void execute() {
     m_speedLimiter = 0.3 * (1.0 - m_snipingMode.getAsDouble() * 0.7) + (m_speedSupplier.getAsDouble() * 0.7);
   
+    if (DriverStation.isAutonomousEnabled()) {
+      m_drivetrainSubsystem.drive(new ChassisSpeeds());
+      return;
+    }
+
     if (m_fieldRelativeSupplier.getAsBoolean()) {
       m_isFieldRelative = !m_isFieldRelative;
     }
 
     boolean x_mode = m_xModeSupplier.getAsBoolean();
     m_drivetrainSubsystem.setXModeEnabled(x_mode);
-    if(x_mode) {
+    if (x_mode) {
       m_translationLimiter.reset(0);
       return;
     }
