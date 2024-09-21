@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -37,8 +36,6 @@ public class Constants {
 
   // Variables to used by all subsystems.
   public static final double kLoopTime = 0.02;
-  public static final int kSwerveModuleUpdateRateMs = 5;
-  public static final double kSwerveModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kSwerveModuleUpdateRateMs);
   public static final Supplier<Alliance> kAllianceSupplier = () -> DriverStation.getAlliance().orElse(Alliance.Blue);
   public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
   public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
@@ -50,6 +47,9 @@ public class Constants {
   public static class Swerve {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
+
+    public static final int kModuleUpdateRateMs = 5;
+    public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
     public static final double kPTurning = 0.4;
     public static final double kITurning = 0.0;

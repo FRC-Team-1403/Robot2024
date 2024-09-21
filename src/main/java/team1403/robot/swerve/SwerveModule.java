@@ -115,7 +115,7 @@ public class SwerveModule extends SubsystemBase implements Device {
 
       m_absoluteEncoder.getConfigurator().apply(config, 0.250);
       m_positionSignal = m_absoluteEncoder.getAbsolutePosition();
-      m_positionSignal.setUpdateFrequency(Constants.kSwerveModuleUpdateRateHz);
+      m_positionSignal.setUpdateFrequency(Constants.Swerve.kModuleUpdateRateHz);
       m_absoluteEncoder.optimizeBusUtilization();
 
       //avoid overrun, and get more up to date values for PID
@@ -137,7 +137,7 @@ public class SwerveModule extends SubsystemBase implements Device {
       m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor / 60.0);
       m_steerRelativeEncoder.setPosition(getAbsoluteAngle());
       //update at same rate as cancoder
-      m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.kSwerveModuleUpdateRateMs);
+      m_steerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.Swerve.kModuleUpdateRateMs);
     }
 
     private void initSteerMotor() {
@@ -161,7 +161,7 @@ public class SwerveModule extends SubsystemBase implements Device {
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
       //update drive motor position every 5 ms
-      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.kSwerveModuleUpdateRateMs);
+      m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, Constants.Swerve.kModuleUpdateRateMs);
       //update velocities a little bit more frequently
       m_driveMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 10);
 
@@ -260,8 +260,8 @@ public class SwerveModule extends SubsystemBase implements Device {
      *         travelled and the angle of the module.
      */
     public synchronized SwerveModulePosition getModulePosition() {
-      m_modulePosition.distanceMeters = getDrivePosition();
       m_modulePosition.angle = Rotation2d.fromRadians(getAbsoluteAngle());
+      m_modulePosition.distanceMeters = getDrivePosition();
 
       return m_modulePosition;
     }
