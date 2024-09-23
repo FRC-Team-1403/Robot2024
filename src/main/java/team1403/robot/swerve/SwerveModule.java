@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
-import team1403.robot.Robot;
 import team1403.robot.Constants.Swerve;
 
 /**
@@ -219,6 +218,7 @@ public class SwerveModule extends SubsystemBase implements Device {
       
       //if we dynamically correct while rotating the PID will get angry, error is also higher when in motion, since values aren't time synced
       if(relativeErr > Units.degreesToRadians(5) && Math.abs(m_steerRelativeEncoder.getVelocity()) < 0.1) {
+        System.out.println(getName() + " Encoder Reset!");
         m_steerRelativeEncoder.setPosition(absAngle);
       }
 
