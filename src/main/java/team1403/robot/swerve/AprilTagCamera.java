@@ -163,6 +163,8 @@ public class AprilTagCamera extends SubsystemBase {
 
         Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
       }
+
+      Logger.recordOutput(m_camera.getName() + "/hasPose", hasPose());
       
       if(hasPose()) {
         Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
