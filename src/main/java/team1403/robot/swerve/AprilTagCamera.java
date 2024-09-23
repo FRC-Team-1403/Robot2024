@@ -168,7 +168,11 @@ public class AprilTagCamera extends SubsystemBase {
         Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
         Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
       }
+    } else {
+      System.err.println(m_camera.getName() + " is not connected!");
     }
+
+    Logger.recordOutput(m_camera.getName() + "/connected", m_camera.isConnected());
 
     // if(hasTarget())
     // {
