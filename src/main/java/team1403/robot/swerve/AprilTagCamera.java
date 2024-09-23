@@ -55,7 +55,8 @@ public class AprilTagCamera extends SubsystemBase {
     m_estPos = null;
     m_referencePose = referenceSupplier;
     m_cameraTransform = cameraTransform;
-    //Cone detection
+    
+    Constants.kDebugTab.addBoolean(m_camera.getName() + " connected", () -> m_camera.isConnected());
   }
 
   @Override
@@ -168,11 +169,7 @@ public class AprilTagCamera extends SubsystemBase {
         Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
         Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
       }
-    } else {
-      System.err.println(m_camera.getName() + " is not connected!");
     }
-
-    Logger.recordOutput(m_camera.getName() + "/connected", m_camera.isConnected());
 
     // if(hasTarget())
     // {
