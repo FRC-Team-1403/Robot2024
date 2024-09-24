@@ -131,6 +131,7 @@ public class DefaultSwerveCommand extends Command {
   @Override
   public void initialize() {
     m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), 0);
+    m_driveController.reset(m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getCurrentChassisSpeed());
   }
 
   @Override
