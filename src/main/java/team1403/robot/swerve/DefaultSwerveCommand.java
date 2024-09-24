@@ -218,6 +218,7 @@ public class DefaultSwerveCommand extends Command {
       m_driveState.targetHolonomicRotation = Blackbox.targetPosition.getRotation();
       m_driveState.positionMeters = Blackbox.targetPosition.getTranslation();
       chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(curPose, m_driveState);
+      m_translationLimiter.reset(Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond) / Swerve.kMaxSpeed);
     } else {
       if (m_isFieldRelative) {
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,

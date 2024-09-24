@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,7 +18,7 @@ import team1403.robot.Constants;
 public class SwerveHeadingCorrector {
     //initial rotation is unknown
     private Optional<Double> yaw_setpoint = Optional.empty();
-    private ProfiledPIDController m_controller = new ProfiledPIDController(5, 0, 0, new TrapezoidProfile.Constraints(Constants.Swerve.kMaxAngularSpeed, 80));
+    private PIDController m_controller = new PIDController(5, 0, 0);
     private TimeDelayedBoolean m_yawZeroDetector = new TimeDelayedBoolean();
     private LinearFilter m_gyroVelFilter = LinearFilter.singlePoleIIR(Constants.kLoopTime * 5, Constants.kLoopTime);
     private ChassisSpeeds m_retSpeeds = new ChassisSpeeds();
@@ -25,7 +26,6 @@ public class SwerveHeadingCorrector {
 
     public SwerveHeadingCorrector()
     {
-        m_controller.reset(0);
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
         Constants.kDebugTab.add("Swerve Heading Corrector PID", m_controller);
@@ -59,7 +59,6 @@ public class SwerveHeadingCorrector {
         if(is_near_zero && yaw_setpoint.isEmpty())
         {
             yaw_setpoint = Optional.of(current_rotation);
-            m_controller.reset(current_rotation, cur_vel.omegaRadiansPerSecond);
         }
         else if(is_translating && yaw_setpoint.isPresent())
         {

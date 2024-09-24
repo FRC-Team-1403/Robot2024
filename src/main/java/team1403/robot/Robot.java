@@ -42,7 +42,7 @@ public class Robot extends LoggedRobot {
     // and put our
     // autonomous chooser on the dashboard.
 
-    Logger.recordMetadata("Team 1403", "2024 Robot"); // Set a metadata value
+    Logger.recordMetadata("Team 1403", "2024 Robot (Sonic Blaster)"); // Set a metadata value
 
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")

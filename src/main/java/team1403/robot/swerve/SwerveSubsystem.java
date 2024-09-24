@@ -13,9 +13,6 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.hal.SimDeviceJNI;
-import edu.wpi.first.hal.SimDouble;
-import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -34,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
-import team1403.robot.Robot;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
 
@@ -125,7 +121,7 @@ public class SwerveSubsystem extends SubsystemBase {
       Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
     });
     PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
-        Logger.recordOutput("Odometery/TrajectorySetpoint", targetPose);
+        Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
     });
 
     // addDevice(m_navx2.getName(), m_navx2);
@@ -140,6 +136,8 @@ public class SwerveSubsystem extends SubsystemBase {
     setRobotIdleMode(IdleMode.kBrake);
 
     m_rollOffset = -m_navx2.getRoll();
+
+    VisionSimUtil.initVisionSim();
 
     m_cameras = new ArrayList<>();
     m_cameras.add(new AprilTagCamera("Unknown_Camera", () -> Swerve.kCameraTransfrom, this::getPose));
@@ -311,6 +309,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return m_chassisSpeeds;
   }
 
+  @AutoLogOutput(key = "SwerveStates/Current Chassis Speeds")
   public ChassisSpeeds getCurrentChassisSpeed() {
     return Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates());
   }
@@ -348,11 +347,6 @@ public class SwerveSubsystem extends SubsystemBase {
     return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
   }
 
-  public void setEnableRotDriftCorrect(boolean state) {
-    m_rotDriftCorrect = state;
-    m_headingCorrector.resetHeadingSetpoint();
-  }
-
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
     ChassisSpeeds corrected = m_headingCorrector.update(speeds, getCurrentChassisSpeed(), getRotation(), m_navx2.getAngularVelocity());
     if (m_rotDriftCorrect && !DriverStation.isAutonomousEnabled())
@@ -369,6 +363,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    VisionSimUtil.update(getPose());
+
     if(!m_disableVision)
     {
       for(AprilTagCamera cam : m_cameras)
@@ -387,6 +384,8 @@ public class SwerveSubsystem extends SubsystemBase {
       xMode();
     } else {
       ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
+
+      Logger.recordOutput("SwerveStates/Corrected Target Chassis Speeds", corrected);
       
       setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
     }
@@ -394,7 +393,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // Logging Output
     Logger.recordOutput("Gyro Roll", getGyroRoll());
 
-    Logger.recordOutput("Chassis Speeds", getCurrentChassisSpeed().toString());
+    Logger.recordOutput("SwerveStates/Target Chassis Speeds", m_chassisSpeeds);
 
     // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
     // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
