@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.SparkRelativeEncoder;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.MotorFeedbackSensor;
@@ -23,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import team1403.lib.device.Device;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
@@ -33,7 +33,7 @@ import team1403.robot.Constants.Swerve;
  * and their respective relative encoders.
  * Also consists of a absolute encoder to track steer angle.
  */
-public class SwerveModule extends SubsystemBase implements Device {
+public class SwerveModule extends SubsystemBase implements ISwerveModule {
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
 
@@ -160,6 +160,8 @@ public class SwerveModule extends SubsystemBase implements Device {
     }
 
     private void initDriveMotor() {
+      m_driveMotor.setIdleMode(IdleMode.kBrake);
+      m_driveMotor.setRampRate(0);
       m_driveMotor.setInverted(m_inverted);
       m_driveMotor.setVoltageCompensation(Constants.Swerve.kVoltageSaturation);
       m_driveMotor.setSmartCurrentLimit(Constants.Swerve.kDriveCurrentLimit);
@@ -180,25 +182,6 @@ public class SwerveModule extends SubsystemBase implements Device {
       // m_drivePIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
 
       // m_driveMotor.setIdleMode(IdleMode.kCoast);
-    }
-
-    /**
-     * Sets the contoller mode.
-     *
-     * @param mode its the mode for the controller.
-     */
-    public void setControllerMode(CANSparkMax.IdleMode mode) {
-      m_driveMotor.setIdleMode(mode);
-    }
-  
-    /**
-     * Sets the ramp rate.
-     *
-     * @param rate speed in seconds motor will take to ramp to speed
-     */
-    public void setRampRate(double rate) {
-      m_driveMotor.setOpenLoopRampRate(rate);
-      m_driveMotor.setClosedLoopRampRate(rate);
     }
 
     /**
@@ -237,7 +220,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      *
      * @return The current angle in radians. Range: [-pi, pi)
      */
-    public synchronized double getAbsoluteAngle() {
+    private synchronized double getAbsoluteAngle() {
       return MathUtil.angleModulus(Units.rotationsToRadians(m_positionSignal.refresh().getValue()));
     }
 
@@ -275,7 +258,7 @@ public class SwerveModule extends SubsystemBase implements Device {
      *
      * @return the current velocity of the drive motor
      */
-    public double getDriveVelocity() {
+    private double getDriveVelocity() {
       return m_driveRelativeEncoder.getVelocity();
     }
   

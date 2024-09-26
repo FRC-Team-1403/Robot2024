@@ -64,7 +64,7 @@ public class IntakeAndShooter extends SubsystemBase {
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     // Rotations per second to Rotations per minute
-    config.Feedback.SensorToMechanismRatio = 60.;
+    config.Feedback.SensorToMechanismRatio =  1 / 60.;
     config.MotionMagic.MotionMagicAcceleration = 12000; // RPM/s -> ~0.5 s to max
 
     // FIXME: Tune these values!
@@ -132,6 +132,11 @@ public class IntakeAndShooter extends SubsystemBase {
    */
   public boolean isShooterPhotogateTriggered() {
     return m_shooterDebouncer.calculate(!m_shooterPhotogate.get());
+  }
+
+  public void applySetpoint(SonicBlasterSetpoint setpoint) {
+    setIntakeSpeed(setpoint.getIntakeSpeed());
+    setShooterRPM(setpoint.getShooterRPM());
   }
 
   public void setShooterRPM(double rpm) {

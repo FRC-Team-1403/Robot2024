@@ -202,7 +202,7 @@ public class AprilTagCamera extends SubsystemBase {
 
       Logger.recordOutput(m_camera.getName() + "/hasPose", hasPose());
       
-      if(hasPose()) {
+      if(hasPose() && checkVisionResult()) {
         Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
         Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
         Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());

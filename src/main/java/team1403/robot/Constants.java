@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import team1403.robot.subsystems.arm.ArmState;
+import team1403.robot.subsystems.SonicBlasterSetpoint;
 
 /**
  * This class holds attributes for the robot configuration.
@@ -228,7 +228,6 @@ public class Constants {
 
     public static final int kPivotMotorCurrentLimit = 30;
     public static final double kPivotMotorVoltageLimit = 12;
-    public static final ArmState KStageLineSetPoint = null;
 
     public static double kIntakeSetpoint = 92; // 92
     public static  double kAmpSetpoint = 210;
@@ -267,7 +266,7 @@ public class Constants {
     public static final double kWristConversionFactor = 0;
     public static final double kAbsoluteWristOffset = 0;
 
-    public static double KPWrist = 0.0096; //original value 0.0092 changed - 0.0097
+    public static final double KPWrist = 0.0096; //original value 0.0092 changed - 0.0097
     public static final double KIWrist = 0.0;
     public static final double KDWrist = 0;
 
@@ -292,5 +291,19 @@ public class Constants {
     public static final double kWristLowerLimit = 130;
     public static final double kWristConstraint = 140;
     public static final double kArmConstraint = 120;
+  }
+
+  public static class Setpoints {
+    public static final SonicBlasterSetpoint kDriveSetpoint = 
+        new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, 
+                                    0, Constants.IntakeAndShooter.kCloseRPM);
+    public static final SonicBlasterSetpoint kStageSetpoint = 
+        new SonicBlasterSetpoint(124, Constants.Wrist.kStageLineSetpoint, 
+                                               0, Constants.IntakeAndShooter.kStageLineRPM);
+    public static final SonicBlasterSetpoint kCenterlineSetpoint = 
+        new SonicBlasterSetpoint(130, Constants.Wrist.kCenterLineSetpoint, 0, 
+                                    Constants.IntakeAndShooter.kCenterLineRPM);
+    public static final SonicBlasterSetpoint kAmpSetpoint = 
+        new SonicBlasterSetpoint(Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint, 0, 2400);                     
   }
 }

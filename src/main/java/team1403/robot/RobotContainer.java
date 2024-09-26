@@ -21,15 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
-import team1403.robot.commands.AutoIntakeShooterLoop;
+import team1403.robot.Constants.Setpoints;
 import team1403.robot.commands.IntakeShooterLoop;
-import team1403.robot.commands.TriggerShotCommand;
+import team1403.robot.subsystems.ArmWristSubsystem;
 import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
 import team1403.robot.subsystems.IntakeAndShooter;
 import team1403.robot.subsystems.LED;
-import team1403.robot.subsystems.arm.ArmSubsystem;
-import team1403.robot.subsystems.arm.Wrist;
 import team1403.robot.swerve.DefaultSwerveCommand;
 import team1403.robot.swerve.SwerveSubsystem;
 
@@ -43,8 +41,7 @@ public class RobotContainer {
 
   private SwerveSubsystem m_swerve;
   //private AimbotCommand m_aimbot;
-  private ArmSubsystem m_arm;
-  private Wrist m_wrist;
+  private ArmWristSubsystem m_armwrist;
   private IntakeAndShooter m_endeff;
   private HangerSubsystem m_hanger;
   private LED m_led;
@@ -63,8 +60,7 @@ public class RobotContainer {
     // Configure the trigger bindings
 
     m_swerve = new SwerveSubsystem();
-    m_arm = new ArmSubsystem();
-    m_wrist = new Wrist(m_arm);
+    m_armwrist = new ArmWristSubsystem();
     m_endeff = new IntakeAndShooter();
     m_led = new LED();
     m_hanger = new HangerSubsystem();
@@ -74,30 +70,16 @@ public class RobotContainer {
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
     Constants.kDebugTab.add("Power Distribution", m_powerDistribution);
 
-    m_teleopCommand = new IntakeShooterLoop(
-      m_endeff, m_arm, m_wrist, m_led, m_operatorController.getHID(),
-      () -> m_operatorController.getHID().getRightTriggerAxis() >= 0.5, // shoot
-      () -> m_operatorController.getHID().getBButton(), // amp
-      () -> m_operatorController.getHID().getXButton(), // loading station
-      () -> m_operatorController.getHID().getAButton(), // reset to intake
-      () -> m_operatorController.getHID().getLeftTriggerAxis() >= 0.5, // stage line shot
-      () -> m_operatorController.getHID().getPOV() == 0, // center line shot
-      () -> m_operatorController.getHID().getYButton(), // reset to netural
-      () -> m_operatorController.getHID().getLeftBumper(), // launchpad
-      () -> m_operatorController.getHID().getLeftY(), // expel
-      () -> m_operatorController.getHID().getRightBumper(), // amp shooting
-      () -> m_operatorController.getHID().getPOV() == 90); // feeding
-
-    NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
-    NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, true, () -> false, false));
-    NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
-    NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, true, () -> true, false));
-    NamedCommands.registerCommand("Second Source Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, true));
+    // NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
+    // NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("Shoot Side", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, true, () -> false, false));
+    // NamedCommands.registerCommand("Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("Reset Shooter", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
+    // NamedCommands.registerCommand("First Piece Side",  new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, true, () -> true, false));
+    // NamedCommands.registerCommand("Second Source Shoot", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> true, () -> false, false, () -> false, true));
     // NamedCommands.registerCommand("IntakeClose", new IntakeCommand(m_endeff, m_arm, m_wrist,  Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, Constants.IntakeAndShooter.kCloseRPM));    
     // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
-    NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
+    // NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
@@ -131,9 +113,9 @@ public class RobotContainer {
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.05),
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.05),
-        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.05),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.15),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.15),
+        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.15),
         () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
@@ -143,8 +125,27 @@ public class RobotContainer {
         () -> m_driverController.getRightTriggerAxis(),
         () -> m_driverController.getLeftTriggerAxis()));
 
+    m_teleopCommand = new IntakeShooterLoop(
+      m_endeff, m_armwrist, m_led, m_operatorController.getHID(),
+      () -> m_operatorController.getHID().getRightTriggerAxis() >= 0.5, // shoot
+      // () -> m_operatorController.getHID().getBButton(), // amp
+      () -> m_operatorController.getHID().getXButton(), // loading station
+      () -> m_operatorController.getHID().getAButton(), // reset to intake
+      // () -> m_operatorController.getHID().getLeftTriggerAxis() >= 0.5, // stage line shot
+      //  () -> m_operatorController.getHID().getPOV() == 0, // center line shot
+      // () -> m_operatorController.getHID().getYButton(), // reset to netural
+      // () -> m_operatorController.getHID().getLeftBumper(), // launchpad
+      () -> m_operatorController.getHID().getLeftY() // expel
+      // () -> m_operatorController.getHID().getRightBumper(), // amp shooting
+      //() -> m_operatorController.getHID().getPOV() == 90); // feeding
+    );
 
-    m_driverController.b().onTrue(new InstantCommand(() -> m_swerve.zeroHeading(), m_swerve));
+    m_operatorController.y().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint));
+    m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kStageSetpoint));
+    m_operatorController.povUp().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kCenterlineSetpoint));
+    m_operatorController.b().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kAmpSetpoint));
+
+    m_driverController.b().onTrue(m_swerve.runOnce(() -> m_swerve.zeroHeading()));
 
     m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
@@ -157,11 +158,9 @@ public class RobotContainer {
       .or(() -> Math.hypot(m_driverController.getLeftX(), m_driverController.getLeftY()) > 0.2)
         .onTrue(Commands.runOnce(() -> m_pathFinder.cancel()));
 
-    m_operatorController.povLeft().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(1), m_hanger));
+    m_operatorController.povLeft().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(1)));
       
-    m_operatorController.povDown().onTrue(
-      new InstantCommand(() -> m_hanger.runHanger(-1), m_hanger));
+    m_operatorController.povDown().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(-1)));
   }
   
   /**

@@ -13,6 +13,8 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.hal.SimDouble;
+import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.NavxAhrs;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
+import team1403.robot.Robot;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
 
@@ -40,20 +43,20 @@ import team1403.robot.Constants.Swerve;
  */
 public class SwerveSubsystem extends SubsystemBase {
   private final NavxAhrs m_navx2;
-  private final SwerveModule[] m_modules;
+  private final ISwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
-  private SwerveModuleState[] m_currentStates = new SwerveModuleState[4];
-  private SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4];
+  private final SwerveModuleState[] m_currentStates = new SwerveModuleState[4];
+  private final SwerveModulePosition[] m_currentPositions = new SwerveModulePosition[4];
   private final SyncSwerveDrivePoseEstimator m_odometer;
-  private Field2d m_field = new Field2d();
-
-  private double m_rollOffset;
+  private final Field2d m_field = new Field2d();
 
   private boolean m_isXModeEnabled = false;
-  private ArrayList<AprilTagCamera> m_cameras;
+  private final ArrayList<AprilTagCamera> m_cameras = new ArrayList<>();
   private boolean m_disableVision = false;
   private boolean m_rotDriftCorrect = true;
-  private SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
+  private final SwerveHeadingCorrector m_headingCorrector = new SwerveHeadingCorrector();
+  private SimDouble m_gryoHeadingSim;
+  private SimDouble m_gyroRateSim;
 
   private static final SwerveModuleState[] m_xModeState = {
     // Front Left
@@ -79,23 +82,35 @@ public class SwerveSubsystem extends SubsystemBase {
    *                   used to construct this subsystem
    */
   public SwerveSubsystem() {
-    Constants.kDriverTab.add("Field", m_field);
-    // super("Swerve Subsystem", parameters);
-    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
-    m_modules = new SwerveModule[] {
-        new SwerveModule("Front Left Module",
-            CanBus.frontLeftDriveID, CanBus.frontLeftSteerID,
-            CanBus.frontLeftEncoderID, Swerve.frontLeftEncoderOffset),
-        new SwerveModule("Front Right Module",
-            CanBus.frontRightDriveID, CanBus.frontRightSteerID,
-            CanBus.frontRightEncoderID, Swerve.frontRightEncoderOffset),
-        new SwerveModule("Back Left Module",
-            CanBus.backLeftDriveID, CanBus.backLeftSteerID,
-            CanBus.backLeftEncoderID, Swerve.backLeftEncoderOffset),
-        new SwerveModule("Back Right Module",
-            CanBus.backRightDriveID, CanBus.backRightSteerID,
-            CanBus.backRightEncoderID, Swerve.backRightEncoderOffset),
-    };
+    // increase update rate because of async odometery (60 hz to 100 hz)
+    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP, (byte)100);
+    if(Robot.isReal()) {
+      m_modules = new ISwerveModule[] {
+          new SwerveModule("Front Left Module",
+              CanBus.frontLeftDriveID, CanBus.frontLeftSteerID,
+              CanBus.frontLeftEncoderID, Swerve.frontLeftEncoderOffset),
+          new SwerveModule("Front Right Module",
+              CanBus.frontRightDriveID, CanBus.frontRightSteerID,
+              CanBus.frontRightEncoderID, Swerve.frontRightEncoderOffset),
+          new SwerveModule("Back Left Module",
+              CanBus.backLeftDriveID, CanBus.backLeftSteerID,
+              CanBus.backLeftEncoderID, Swerve.backLeftEncoderOffset),
+          new SwerveModule("Back Right Module",
+              CanBus.backRightDriveID, CanBus.backRightSteerID,
+              CanBus.backRightEncoderID, Swerve.backRightEncoderOffset),
+      };
+    } else {
+      m_modules = new ISwerveModule[] {
+        new SimSwerveModule("Front Left Module"),
+        new SimSwerveModule("Front Right Module"),
+        new SimSwerveModule("Back Left Module"),
+        new SimSwerveModule("Back Right Module")
+      };
+
+      int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+      m_gryoHeadingSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+      m_gyroRateSim = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Rate"));
+    }
 
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
@@ -132,14 +147,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
 
-    setRobotRampRate(0.0);
-    setRobotIdleMode(IdleMode.kBrake);
-
-    m_rollOffset = -m_navx2.getRoll();
-
     VisionSimUtil.initVisionSim();
 
-    m_cameras = new ArrayList<>();
     m_cameras.add(new AprilTagCamera("Unknown_Camera", () -> Swerve.kCameraTransfrom, this::getPose));
 
     m_odometeryNotifier = new Notifier(this::highFreqUpdate);
@@ -147,6 +156,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_odometeryNotifier.startPeriodic(Units.millisecondsToSeconds(Constants.Swerve.kModuleUpdateRateMs));
 
     Constants.kDebugTab.add("Gyro", m_navx2);
+    Constants.kDriverTab.add("Field", m_field);
   }
 
   public void setDisableVision(boolean disable) {
@@ -163,28 +173,6 @@ public class SwerveSubsystem extends SubsystemBase {
       m_currentPositions[i] = m_modules[i].getModulePosition();
     }
     return m_currentPositions;
-  }
-
-  /**
-   * Sets the ramp rate of the drive motors.
-   *
-   * @param rate the ramp rate
-   */
-  public void setRobotRampRate(double rate) {
-    for (SwerveModule module : m_modules) {
-      module.setRampRate(rate);
-    }
-  }
-
-  /**
-   * Sets the idle mode for the drivetrain.
-   *
-   * @param mode the IdleMode of the robot
-   */
-  public void setRobotIdleMode(IdleMode mode) {
-    for (SwerveModule module : m_modules) {
-      module.setControllerMode(mode);
-    }
   }
 
   /**
@@ -249,23 +237,9 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Gets the roll of the gyro (Y axis of gyro rotation).
-   * 
-   * @return a double representing the roll of robot in degrees
+   * Sets the target chassis speeds
+   * @param chassisSpeeds
    */
-  public double getGyroRoll() {
-    return m_navx2.getRoll() + m_rollOffset;
-  }
-
-  /**
-   * Gets the pitch of the gyro (X axis of gyro rotation).
-   * 
-   * @return a double representing the pitch of robot in degrees
-   */
-  public double getGyroPitch() {
-    return m_navx2.getPitch();
-  }
-
   public void drive(ChassisSpeeds chassisSpeeds) {
     m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
   }
@@ -362,10 +336,15 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-
+  public void simulationPeriodic() {
     VisionSimUtil.update(getPose());
+    double vel = getCurrentChassisSpeed().omegaRadiansPerSecond;
+    m_gyroRateSim.set(Units.radiansToDegrees(-vel));
+    m_gryoHeadingSim.set(m_gryoHeadingSim.get() - Units.radiansToDegrees(vel) * Constants.kLoopTime);
+  }
 
+  @Override
+  public void periodic() {
     if(!m_disableVision)
     {
       for(AprilTagCamera cam : m_cameras)
@@ -391,13 +370,8 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     m_field.setRobotPose(getPose());
     // Logging Output
-    Logger.recordOutput("Gyro Roll", getGyroRoll());
+    Logger.recordOutput("Odometry/Rotation3d", m_navx2.getRotation3d());
 
     Logger.recordOutput("SwerveStates/Target Chassis Speeds", m_chassisSpeeds);
-
-    // Logger.recordOutput("Front Left Absolute Encoder Angle", m_modules[0].getAbsoluteAngle());
-    // Logger.recordOutput("Front Right Absolute Encoder Angle", m_modules[1].getAbsoluteAngle());
-    // Logger.recordOutput("Back Left Absolute Encoder Angle", m_modules[2].getAbsoluteAngle());
-    // Logger.recordOutput("Back Right Absolute Encoder Angle", m_modules[3].getAbsoluteAngle());
   }
 }

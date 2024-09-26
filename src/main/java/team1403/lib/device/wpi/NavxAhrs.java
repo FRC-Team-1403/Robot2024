@@ -15,6 +15,11 @@ import team1403.lib.device.GyroscopeDevice;
 public class NavxAhrs extends AHRS implements GyroscopeDevice {
   private final String m_name;
 
+  public NavxAhrs(String name, SerialPort.Port port, byte updateRateHz) {
+    super(port, SerialDataType.kProcessedData, updateRateHz);
+    this.m_name = name;
+  }
+
   public NavxAhrs(String name, SerialPort.Port port)
   {
     super(port);
@@ -23,7 +28,7 @@ public class NavxAhrs extends AHRS implements GyroscopeDevice {
 
   public NavxAhrs(String name) {
     this(name, SerialPort.Port.kMXP);
-  } 
+  }
 
   @Override
   public String getName() { 

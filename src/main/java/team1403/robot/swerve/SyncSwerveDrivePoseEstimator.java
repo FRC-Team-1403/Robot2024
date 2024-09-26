@@ -54,7 +54,7 @@ public class SyncSwerveDrivePoseEstimator {
     public void resetPosition(Pose2d pose) {
         synchronized(this) {
             m_odometer.resetPosition(m_gyroRotation.get(), m_modPosSup.get(), pose);
-            updateCachedPose();
+            m_cachedPose.set(pose);
         }
     }
 
