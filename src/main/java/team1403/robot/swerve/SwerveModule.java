@@ -277,7 +277,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule {
 
     @Override
     public void periodic() {
-      Logger.recordOutput(m_name + " Drive Current", m_driveMotor.getOutputCurrent());
-      Logger.recordOutput(m_name + " steer current", m_steerMotor.getOutputCurrent());
+      Logger.recordOutput(m_name + "/Drive Current", m_driveMotor.getOutputCurrent());
+      Logger.recordOutput(m_name + "/Steer Current", m_steerMotor.getOutputCurrent());
     }
   }
