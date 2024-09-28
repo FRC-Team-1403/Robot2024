@@ -111,10 +111,10 @@ public class Robot extends LoggedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     System.out.println("auto name: " + m_autonomousCommand.getName());
     // schedule the autonomous command (example)
-    m_combinedCommand.cancel();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */

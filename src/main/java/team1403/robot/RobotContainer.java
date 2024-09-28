@@ -110,6 +110,8 @@ public class RobotContainer {
     Translation2d pos_red = new Translation2d(16.579342,  5.547867999999999);
     Pose2d pos_blue_shoot = new Pose2d(new Translation2d(1.5, 5.4), new Rotation2d());
     Pose2d pos_red_shoot = new Pose2d(new Translation2d(15, 5.4), new Rotation2d(Math.PI));
+    Pose2d pose_blue_amp = new Pose2d(new Translation2d(1.813, 7.715), new Rotation2d(-Math.PI/2));
+    Pose2d pose_red_amp = new Pose2d(new Translation2d(14.687, 7.715), new Rotation2d(-Math.PI/2));
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
@@ -150,6 +152,13 @@ public class RobotContainer {
     m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
       if(CougarUtil.getAlliance() == Alliance.Blue) tar = pos_blue_shoot;
+      Blackbox.targetPosition = tar;
+      m_pathFinder = AutoUtil.pathFindToPose(tar);
+    }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
+
+    m_driverController.leftBumper().onTrue(Commands.runOnce(() -> {
+      Pose2d tar = pose_red_amp;
+      if(CougarUtil.getAlliance() == Alliance.Blue) tar = pose_blue_amp;
       Blackbox.targetPosition = tar;
       m_pathFinder = AutoUtil.pathFindToPose(tar);
     }).andThen(Commands.deferredProxy(() -> m_pathFinder)));

@@ -99,6 +99,7 @@ public class Constants {
     public static final int kSteerCurrentLimit = 25;
 
     public static final PathConstraints kPathConstraints = new PathConstraints(Swerve.kMaxSpeed, 4, Swerve.kMaxAngularSpeed, 10);
+    public static final PathConstraints kAutoAlignConstraints = new PathConstraints(Swerve.kMaxSpeed, 6, Swerve.kMaxAngularSpeed, 10);
 
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches

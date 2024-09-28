@@ -112,14 +112,13 @@ public class DefaultSwerveCommand extends Command {
     m_ampSupplier = ampSupplier;
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
-    //effectively no slew rate for slowing down
     m_translationLimiter = new SlewRateLimiter(2, -3, 0);
     m_rotationRateLimiter = new SlewRateLimiter(3, -3, 0);
     m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
     m_controller = new ProfiledPIDController(6, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed, 80));
     m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
-    m_driveState.constraints = Constants.Swerve.kPathConstraints;
+    m_driveState.constraints = Constants.Swerve.kAutoAlignConstraints;
 
     Constants.kDriverTab.addBoolean("isFieldRelative", () -> m_isFieldRelative);
     Constants.kDebugTab.addBoolean("Aimbot", m_aimbotSupplier);
@@ -196,14 +195,10 @@ public class DefaultSwerveCommand extends Command {
     double given_target_angle = Math.atan2(m_targetPosSupplier.get().getY() - curPose.getY(), m_targetPosSupplier.get().getX() - curPose.getX());
     given_target_angle = MathUtil.angleModulus(given_target_angle + Math.PI);
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
-    
-    if(m_ampSupplier.getAsBoolean()) {
-      given_target_angle = -Math.PI / 2;
-    }
 
     Logger.recordOutput("Target Angle", given_target_angle);
     
-    if(m_aimbotSupplier.getAsBoolean() || m_ampSupplier.getAsBoolean())
+    if(m_aimbotSupplier.getAsBoolean())
     {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
       Logger.recordOutput("Aimbot Angular", angular);
@@ -213,7 +208,7 @@ public class DefaultSwerveCommand extends Command {
       m_controller.reset(m_state);
     }
     
-    if(m_alignSupplier.getAsBoolean() && Blackbox.isValidTargetPosition()) {
+    if((m_ampSupplier.getAsBoolean() || m_alignSupplier.getAsBoolean()) && Blackbox.isValidTargetPosition()) {
       m_driveState.heading = Blackbox.targetPosition.getRotation();
       m_driveState.targetHolonomicRotation = Blackbox.targetPosition.getRotation();
       m_driveState.positionMeters = Blackbox.targetPosition.getTranslation();
