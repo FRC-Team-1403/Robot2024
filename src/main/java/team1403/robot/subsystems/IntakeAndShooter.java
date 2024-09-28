@@ -165,17 +165,17 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
-    Logger.recordOutput("Intake Motor Temp", m_intakeMotor.getMotorTemperature());
-    Logger.recordOutput("Shooter Speed", m_shooterMotorTop.get());
-    Logger.recordOutput("Shooter Voltage", m_shooterMotorTop.getMotorVoltage().getValueAsDouble());
-    Logger.recordOutput("Shooter gate", isShooterPhotogateTriggered());
-    Logger.recordOutput("Intake gate", isIntakePhotogateTriggered());
-    Logger.recordOutput("Shooter top Motor RPM", m_topVel.getValue());
-    Logger.recordOutput("Intake RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
-    Logger.recordOutput("Intake Speed Setpoint", m_intakeMotor.get());
-    Logger.recordOutput("Shooter RPM setpoint",  m_request.Velocity);
-    Logger.recordOutput("Intake current", m_intakeMotor.getOutputCurrent());
-    Logger.recordOutput("Shooter top current", m_shooterMotorTop.getStatorCurrent().getValueAsDouble());
-    Logger.recordOutput("Shooter bottom current", m_shooterMotorBottom.getStatorCurrent().getValueAsDouble());
+    Logger.recordOutput("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
+    Logger.recordOutput("Shooter/Speed", m_shooterMotorTop.get());
+    Logger.recordOutput("Shooter/Voltage", m_shooterMotorTop.getMotorVoltage().getValueAsDouble());
+    Logger.recordOutput("Shooter/gate", isShooterPhotogateTriggered());
+    Logger.recordOutput("Intake/gate", isIntakePhotogateTriggered());
+    Logger.recordOutput("Shooter/top Motor RPM", m_topVel.getValue());
+    Logger.recordOutput("Intake/RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
+    Logger.recordOutput("Intake/Speed Setpoint", m_intakeMotor.get());
+    Logger.recordOutput("Shooter/RPM setpoint",  m_request.Velocity);
+    Logger.recordOutput("Intake/Current", m_intakeMotor.getOutputCurrent());
+    Logger.recordOutput("Shooter/top current", m_shooterMotorTop.getStatorCurrent().getValueAsDouble());
+    Logger.recordOutput("Shooter/bottom current", m_shooterMotorBottom.getStatorCurrent().getValueAsDouble());
   }
 }
