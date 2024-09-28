@@ -52,9 +52,9 @@ public class SwerveHeadingCorrector {
             resetHeadingSetpoint();
         }
 
-        Logger.recordOutput("Swerve Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
-        Logger.recordOutput("Swerve Yaw Setpoint Present", yaw_setpoint.isPresent());
-        Logger.recordOutput("Swerve Ang Vel Filtered", filtered_ang_vel);
+        Logger.recordOutput("SwerveHC/Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
+        Logger.recordOutput("SwerveHC/Yaw Setpoint Present", yaw_setpoint.isPresent());
+        Logger.recordOutput("SwerveHC/Ang Vel Filtered", filtered_ang_vel);
 
         if(is_near_zero && yaw_setpoint.isEmpty())
         {
