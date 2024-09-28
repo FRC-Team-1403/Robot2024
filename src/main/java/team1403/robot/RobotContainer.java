@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -85,6 +86,8 @@ public class RobotContainer {
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
 
     Constants.kDriverTab.add("Auto Chooser", autoChooser);
+    Constants.kDebugTab.add("Command Scheduler", CommandScheduler.getInstance());
+    Constants.kDebugTab.add("Swerve Drive", m_swerve);
 
     configureBindings();
   }

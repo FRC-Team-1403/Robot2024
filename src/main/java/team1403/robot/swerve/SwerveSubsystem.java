@@ -24,6 +24,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -41,7 +43,7 @@ import team1403.robot.Constants.Swerve;
  * The drivetrain of the robot. Consists of for swerve modules and the
  * gyroscope.
  */
-public class SwerveSubsystem extends SubsystemBase {
+public class SwerveSubsystem extends SubsystemBase implements Sendable {
   private final NavxAhrs m_navx2;
   private final ISwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
@@ -134,6 +136,7 @@ public class SwerveSubsystem extends SubsystemBase {
     PathfindingCommand.warmupCommand().schedule();
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
       Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+      m_field.getObject("traj").setPoses(activePath);
     });
     PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
         Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
@@ -341,6 +344,25 @@ public class SwerveSubsystem extends SubsystemBase {
     double vel = getCurrentChassisSpeed().omegaRadiansPerSecond;
     m_gyroRateSim.set(Units.radiansToDegrees(-vel));
     m_gryoHeadingSim.set(m_gryoHeadingSim.get() - Units.radiansToDegrees(vel) * Constants.kLoopTime);
+  }
+
+  @Override 
+  public void initSendable(SendableBuilder builder) {
+    builder.setSmartDashboardType("SwerveDrive");
+
+    builder.addDoubleProperty("Front Left Angle", () -> m_currentStates[0].angle.getRadians(), null);
+    builder.addDoubleProperty("Front Left Velocity", () -> m_currentStates[0].speedMetersPerSecond, null);
+
+    builder.addDoubleProperty("Front Right Angle", () -> m_currentStates[1].angle.getRadians(), null);
+    builder.addDoubleProperty("Front Right Velocity", () -> m_currentStates[1].speedMetersPerSecond, null);
+
+    builder.addDoubleProperty("Back Left Angle", () -> m_currentStates[2].angle.getRadians(), null);
+    builder.addDoubleProperty("Back Left Velocity", () -> m_currentStates[2].speedMetersPerSecond, null);
+
+    builder.addDoubleProperty("Back Right Angle", () -> m_currentStates[3].angle.getRadians(), null);
+    builder.addDoubleProperty("Back Right Velocity", () -> m_currentStates[3].speedMetersPerSecond, null);
+
+    builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
   }
 
   @Override
