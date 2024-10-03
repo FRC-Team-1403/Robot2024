@@ -1,7 +1,5 @@
 package team1403.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -15,13 +13,15 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
 import team1403.lib.device.wpi.CougarSparkMax;
+import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 
 /**
  * creating the intake and shooter class.
  */
-public class IntakeAndShooter extends SubsystemBase {  
+public class IntakeAndShooter extends SubsystemBase implements CougarLogged {  
   // Intake motor
   private static CougarSparkMax m_intakeMotor;
   
@@ -165,17 +165,17 @@ public class IntakeAndShooter extends SubsystemBase {
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
-    Logger.recordOutput("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
-    Logger.recordOutput("Shooter/Speed", m_shooterMotorTop.get());
-    Logger.recordOutput("Shooter/Voltage", m_shooterMotorTop.getMotorVoltage().getValueAsDouble());
-    Logger.recordOutput("Shooter/gate", isShooterPhotogateTriggered());
-    Logger.recordOutput("Intake/gate", isIntakePhotogateTriggered());
-    Logger.recordOutput("Shooter/top Motor RPM", m_topVel.getValue());
-    Logger.recordOutput("Intake/RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
-    Logger.recordOutput("Intake/Speed Setpoint", m_intakeMotor.get());
-    Logger.recordOutput("Shooter/RPM setpoint",  m_request.Velocity);
-    Logger.recordOutput("Intake/Current", m_intakeMotor.getOutputCurrent());
-    Logger.recordOutput("Shooter/top current", m_shooterMotorTop.getStatorCurrent().getValueAsDouble());
-    Logger.recordOutput("Shooter/bottom current", m_shooterMotorBottom.getStatorCurrent().getValueAsDouble());
+    log("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
+    log("Shooter/Speed", m_shooterMotorTop.get());
+    log("Shooter/Voltage", m_shooterMotorTop.getMotorVoltage().getValueAsDouble());
+    log("Shooter/gate", isShooterPhotogateTriggered());
+    log("Intake/gate", isIntakePhotogateTriggered());
+    log("Shooter/top Motor RPM", m_topVel.getValue());
+    log("Intake/RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
+    log("Intake/Speed Setpoint", m_intakeMotor.get());
+    log("Shooter/RPM setpoint",  m_request.Velocity);
+    log("Intake/Current", m_intakeMotor.getOutputCurrent());
+    log("Shooter/top current", m_shooterMotorTop.getStatorCurrent().getValueAsDouble());
+    log("Shooter/bottom current", m_shooterMotorBottom.getStatorCurrent().getValueAsDouble());
   }
 }

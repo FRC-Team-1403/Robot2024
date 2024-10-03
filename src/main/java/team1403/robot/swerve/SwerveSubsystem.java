@@ -1,8 +1,6 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -24,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,7 +31,10 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
+import monologue.Annotations.Log;
 import team1403.lib.device.wpi.NavxAhrs;
+import team1403.lib.util.CougarLogged;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
 import team1403.robot.Robot;
@@ -43,7 +45,7 @@ import team1403.robot.Constants.Swerve;
  * The drivetrain of the robot. Consists of for swerve modules and the
  * gyroscope.
  */
-public class SwerveSubsystem extends SubsystemBase implements Sendable {
+public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
   private final NavxAhrs m_navx2;
   private final ISwerveModule[] m_modules;
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
@@ -135,11 +137,11 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
     Pathfinding.setPathfinder(new LocalADStar());
     PathfindingCommand.warmupCommand().schedule();
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+      log("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
       m_field.getObject("traj").setPoses(activePath);
     });
     PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
-        Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+      log("Odometry/TrajectorySetpoint", targetPose);
     });
 
     // addDevice(m_navx2.getName(), m_navx2);
@@ -202,7 +204,6 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
    *
    * @return the position of the drivetrain in Pose2d
    */
-  @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     return m_odometer.getPose();
   }
@@ -271,14 +272,15 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
           MathUtil.angleModulus(states[i].angle.getRadians()));
     }
 
-    Logger.recordOutput("SwerveStates/Target", states);
+    log("SwerveStates/Target", states);
   }
 
-  @AutoLogOutput(key = "SwerveStates/Measured")
+
   public SwerveModuleState[] getModuleStates() {
     for(int i = 0; i < m_modules.length; i++) {
       m_currentStates[i] = m_modules[i].getState();
     }
+    log("SwerveStates/Measured", m_currentStates);
     return m_currentStates;
   }
 
@@ -286,9 +288,10 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
     return m_chassisSpeeds;
   }
 
-  @AutoLogOutput(key = "SwerveStates/Current Chassis Speeds")
   public ChassisSpeeds getCurrentChassisSpeed() {
-    return Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates());
+    ChassisSpeeds ret =  Swerve.kDriveKinematics.toChassisSpeeds(getModuleStates());
+    log("SwerveStates/Current Chassis Speeds", ret);
+    return ret;
   }
 
   /**
@@ -346,7 +349,7 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
     m_gryoHeadingSim.set(m_gryoHeadingSim.get() - Units.radiansToDegrees(vel) * Constants.kLoopTime);
   }
 
-  @Override 
+  @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("SwerveDrive");
 
@@ -386,14 +389,16 @@ public class SwerveSubsystem extends SubsystemBase implements Sendable {
     } else {
       ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
 
-      Logger.recordOutput("SwerveStates/Corrected Target Chassis Speeds", corrected);
-      
+      log("SwerveStates/Corrected Target Chassis Speeds", corrected);
+
       setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
     }
     m_field.setRobotPose(getPose());
     // Logging Output
-    Logger.recordOutput("Odometry/Rotation3d", m_navx2.getRotation3d());
+    log("Odometry/Rotation3d", m_navx2.getRotation3d());
 
-    Logger.recordOutput("SwerveStates/Target Chassis Speeds", m_chassisSpeeds);
+    log("SwerveStates/Target Chassis Speeds", m_chassisSpeeds);
+
+    log("Odometry/Robot", getPose());
   }
 }

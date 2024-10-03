@@ -2,8 +2,6 @@ package team1403.robot.swerve;
 
 import java.util.Optional;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -11,11 +9,13 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import monologue.Logged;
+import team1403.lib.util.CougarLogged;
 import team1403.lib.util.TimeDelayedBoolean;
 import team1403.robot.Constants;
 
 //adapted from team 254
-public class SwerveHeadingCorrector {
+public class SwerveHeadingCorrector implements CougarLogged {
     //initial rotation is unknown
     private Optional<Double> yaw_setpoint = Optional.empty();
     private PIDController m_controller = new PIDController(5, 0, 0);
@@ -28,7 +28,7 @@ public class SwerveHeadingCorrector {
     {
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
-        Constants.kDebugTab.add("Swerve Heading Corrector PID", m_controller);
+        Constants.kDebugTab.add("SwerveHC PID", m_controller);
     }
 
     private final static double OMEGA_THRESH = 0.03;
@@ -52,9 +52,9 @@ public class SwerveHeadingCorrector {
             resetHeadingSetpoint();
         }
 
-        Logger.recordOutput("SwerveHC/Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
-        Logger.recordOutput("SwerveHC/Yaw Setpoint Present", yaw_setpoint.isPresent());
-        Logger.recordOutput("SwerveHC/Ang Vel Filtered", filtered_ang_vel);
+        log("SwerveHC/Yaw Setpoint", yaw_setpoint.orElse(current_rotation));
+        log("SwerveHC/Yaw Setpoint Present", yaw_setpoint.isPresent());
+        log("SwerveHC/Ang Vel Filtered", filtered_ang_vel);
 
         if(is_near_zero && yaw_setpoint.isEmpty())
         {

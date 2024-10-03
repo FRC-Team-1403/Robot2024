@@ -1,7 +1,5 @@
 package team1403.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
@@ -18,10 +16,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
 import team1403.lib.device.wpi.CougarSparkMax;
+import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 
-public class ArmWristSubsystem extends SubsystemBase {
+public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   // lead motor
   private final CANSparkMax m_leftMotor;
   // following motor
@@ -166,17 +166,17 @@ public class ArmWristSubsystem extends SubsystemBase {
     m_wristMotor.set(calcWristSpeed());
 
 
-    Logger.recordOutput("Pivot/Angle", getPivotAngle());
-    Logger.recordOutput("Pivot/Setpoint", m_pivotAngleSetpoint);
-    Logger.recordOutput("Pivot/Voltage", m_leftMotor.getBusVoltage());
-    Logger.recordOutput("Pivot/Speed", m_leftMotor.get());
-    Logger.recordOutput("Wrist/Voltage", m_wristMotor.getBusVoltage());
-    Logger.recordOutput("Wrist/Current", m_wristMotor.getOutputCurrent());
-    Logger.recordOutput("Wrist/Temp", m_wristMotor.getMotorTemperature());
-    Logger.recordOutput("Wrist/Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
-    Logger.recordOutput("Wrist/Speed", m_wristMotor.get());
-    Logger.recordOutput("Wrist/Angle", getWristAngle());
-    Logger.recordOutput("Wrist/Setpoint", m_wristAngleSetpoint);
+    log("Pivot/Angle", getPivotAngle());
+    log("Pivot/Setpoint", m_pivotAngleSetpoint);
+    log("Pivot/Voltage", m_leftMotor.getBusVoltage());
+    log("Pivot/Speed", m_leftMotor.get());
+    log("Wrist/Voltage", m_wristMotor.getBusVoltage());
+    log("Wrist/Current", m_wristMotor.getOutputCurrent());
+    log("Wrist/Temp", m_wristMotor.getMotorTemperature());
+    log("Wrist/Motor RPM", m_wristMotor.getEmbeddedEncoder().getVelocityValue());
+    log("Wrist/Speed", m_wristMotor.get());
+    log("Wrist/Angle", getWristAngle());
+    log("Wrist/Setpoint", m_wristAngleSetpoint);
   }
     
 }

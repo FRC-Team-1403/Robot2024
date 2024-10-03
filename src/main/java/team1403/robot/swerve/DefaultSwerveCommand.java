@@ -6,8 +6,6 @@ import java.util.function.Supplier;
 
 import javax.swing.GroupLayout.Alignment;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
@@ -26,7 +24,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import monologue.Logged;
 import team1403.lib.util.CircularSlewRateLimiter;
+import team1403.lib.util.CougarLogged;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
@@ -35,7 +35,7 @@ import team1403.robot.subsystems.Blackbox;
 /**
  * The default command for the swerve drivetrain subsystem.
  */
-public class DefaultSwerveCommand extends Command {
+public class DefaultSwerveCommand extends Command implements CougarLogged {
   private final SwerveSubsystem m_drivetrainSubsystem;
 
   private final DoubleSupplier m_verticalTranslationSupplier;
@@ -196,12 +196,12 @@ public class DefaultSwerveCommand extends Command {
     given_target_angle = MathUtil.angleModulus(given_target_angle + Math.PI);
     // double given_target_angle = Units.radiansToDegrees(Math.atan2(m_drivetrainSubsystem.getPose().getY() - m_ysupplier.getAsDouble(), m_drivetrainSubsystem.getPose().getX() - m_xsupplier.getAsDouble()));
 
-    Logger.recordOutput("Target Angle", given_target_angle);
+    log("SwerveDC/Target Angle", given_target_angle);
     
     if(m_aimbotSupplier.getAsBoolean())
     {
       angular = m_controller.calculate(given_current_angle, given_target_angle);
-      Logger.recordOutput("Aimbot Angular", angular);
+      log("SwerveDC/Aimbot Angular", angular);
     } else {
       m_state.position = given_current_angle;
       m_state.velocity = currentSpeeds.omegaRadiansPerSecond;
@@ -213,7 +213,13 @@ public class DefaultSwerveCommand extends Command {
       m_driveState.targetHolonomicRotation = Blackbox.targetPosition.getRotation();
       m_driveState.positionMeters = Blackbox.targetPosition.getTranslation();
       chassisSpeeds = m_driveController.calculateRobotRelativeSpeeds(curPose, m_driveState);
-      m_translationLimiter.reset(Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond) / Swerve.kMaxSpeed);
+      double current_output = Math.hypot(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+      double output_speed = Math.hypot(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+      if(output_speed < 0.02) {
+        chassisSpeeds.vxMetersPerSecond = 0;
+        chassisSpeeds.vyMetersPerSecond = 0;
+      }
+      m_translationLimiter.reset(current_output / Swerve.kMaxSpeed);
     } else {
       if (m_isFieldRelative) {
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(vertical, horizontal,

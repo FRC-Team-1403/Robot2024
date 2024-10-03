@@ -1,13 +1,13 @@
 package team1403.robot.subsystems;
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
+import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 
-public class LED extends SubsystemBase {
+public class LED extends SubsystemBase implements CougarLogged {
 
   private Spark blinkin;
   private LEDState gamePieceState;
@@ -48,6 +48,6 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Logger.recordOutput("LED State", gamePieceState.toString());
+    log("LED State", gamePieceState.toString());
   }
 }

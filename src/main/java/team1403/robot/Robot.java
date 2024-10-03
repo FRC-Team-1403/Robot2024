@@ -4,14 +4,13 @@
 
 package team1403.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import monologue.Logged;
+import monologue.Monologue;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * build.gradle file in the
  * project.
  */
-public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private Command m_combinedCommand;
@@ -41,23 +40,11 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
-
-    Logger.recordMetadata("Team 1403", "2024 Robot (Sonic Blaster)"); // Set a metadata value
-
-    if (isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-      Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-    }
-    else {
-      Logger.addDataReceiver(new NT4Publisher());
-    }
-
-    Logger.start();
+    
+    Monologue.setupMonologue(this, "Robot2024", false, false);
 
     m_robotContainer = new RobotContainer();
     m_combinedCommand = m_robotContainer.getTeleopCommand();
-    // intake out joystick left up  v 
-    // AutoSelector.initAutoChooser();
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
@@ -91,6 +78,9 @@ public class Robot extends LoggedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    Monologue.setFileOnly(DriverStation.isFMSAttached());
+    Monologue.updateAll();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

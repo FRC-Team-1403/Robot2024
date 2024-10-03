@@ -1,7 +1,5 @@
 package team1403.robot.swerve;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -24,7 +22,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
 import team1403.lib.device.wpi.CougarSparkMax;
+import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 import team1403.robot.Constants.Swerve;
 
@@ -33,7 +33,7 @@ import team1403.robot.Constants.Swerve;
  * and their respective relative encoders.
  * Also consists of a absolute encoder to track steer angle.
  */
-public class SwerveModule extends SubsystemBase implements ISwerveModule {
+public class SwerveModule extends SubsystemBase implements ISwerveModule, CougarLogged {
     private final CougarSparkMax m_driveMotor;
     private final CougarSparkMax m_steerMotor;
 
@@ -212,7 +212,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule {
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      Logger.recordOutput(getName() + " EncError", relativeErr);
+      log(getName() + " EncError", relativeErr);
     }
 
     /**
@@ -252,7 +252,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule {
 
       return m_modulePosition;
     }
-    
+
     /**
      * Returns the current velocity of the drive motor.
      *
@@ -261,7 +261,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule {
     private double getDriveVelocity() {
       return m_driveRelativeEncoder.getVelocity();
     }
-  
+
     /**
      * Returns the current state of the swerve module as defined by 
      * the relative encoders of the drive and steer motors.
@@ -277,7 +277,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule {
 
     @Override
     public void periodic() {
-      Logger.recordOutput(m_name + "/Drive Current", m_driveMotor.getOutputCurrent());
-      Logger.recordOutput(m_name + "/Steer Current", m_steerMotor.getOutputCurrent());
+      log(m_name + "/Drive Current", m_driveMotor.getOutputCurrent());
+      log(m_name + "/Steer Current", m_steerMotor.getOutputCurrent());
     }
   }

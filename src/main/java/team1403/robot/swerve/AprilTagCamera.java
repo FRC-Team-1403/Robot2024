@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -30,10 +29,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
+import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 import team1403.robot.Robot;
 
-public class AprilTagCamera extends SubsystemBase {
+public class AprilTagCamera extends SubsystemBase implements CougarLogged {
   private final PhotonCamera m_camera;
   private PhotonCameraSim m_cameraSim;
   private PhotonPipelineResult m_result;
@@ -160,7 +161,6 @@ public class AprilTagCamera extends SubsystemBase {
   }
 
   private ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
-  private ArrayList<Integer> m_visionIDs = new ArrayList<>();
   private ArrayList<Translation2d> m_corners = new ArrayList<>();
   private static final Transform3d kZeroTransform = new Transform3d();
 
@@ -180,42 +180,36 @@ public class AprilTagCamera extends SubsystemBase {
 
       updatePose2d();
 
-      Logger.recordOutput(m_camera.getName() + "/Target Visible", hasTarget());
+      log(m_camera.getName() + "/Target Visible", hasTarget());
 
       if(kExtraVisionDebugInfo) {
         Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
         Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
 
-        Logger.recordOutput(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
+        log(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
 
         m_visionTargets.clear();
         m_corners.clear();
-        m_visionIDs.clear();
 
         for(PhotonTrackedTarget t : getTargets()) {
           var trf = t.getBestCameraToTarget();
           if(trf.equals(kZeroTransform)) continue;
           m_visionTargets.add(robot_pose_transformed.transformBy(trf));
-          m_visionIDs.add(t.getFiducialId());
           for(TargetCorner c : t.getDetectedCorners())
             m_corners.add(new Translation2d(c.x, c.y));
         }
 
-        int[] visionIDs = new int[m_visionIDs.size()];
-        Arrays.setAll(visionIDs, m_visionIDs::get);
-
-        Logger.recordOutput(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
-        Logger.recordOutput(m_camera.getName() + "/Vision IDs", visionIDs);
-        Logger.recordOutput(m_camera.getName() + "/Corners", m_corners.toArray(new Translation2d[m_corners.size()]));
+        log(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
+        log(m_camera.getName() + "/Corners", m_corners.toArray(new Translation2d[m_corners.size()]));
       }
 
-      Logger.recordOutput(m_camera.getName() + "/hasPose", hasPose());
+      log(m_camera.getName() + "/hasPose", hasPose());
       
       if(hasPose()) {
-        Logger.recordOutput(m_camera.getName() + "/Combined Area", getTagAreas());
+        log(m_camera.getName() + "/Combined Area", getTagAreas());
         if(checkVisionResult()) {
-          Logger.recordOutput(m_camera.getName() + "/Pose3d", getPose());
-          Logger.recordOutput(m_camera.getName() + "/Pose2d", getPose2D());
+          log(m_camera.getName() + "/Pose3d", getPose());
+          log(m_camera.getName() + "/Pose2d", getPose2D());
         }
       }
     }
@@ -223,9 +217,9 @@ public class AprilTagCamera extends SubsystemBase {
     // if(hasTarget())
     // {
     //   SmartDashboard.putString("pos", getDistance().toString());
-    //   Logger.recordOutput("Position", getDistance().toString());
-    //   Logger.recordOutput("X Distance", getXDistance());
-    //   Logger.recordOutput("Y Distance", getYDistance());
-    //   Logger.recordOutput("Z Distance", getZDistance());
+    //   log("Position", getDistance().toString());
+    //   log("X Distance", getXDistance());
+    //   log("Y Distance", getYDistance());
+    //   log("Z Distance", getZDistance());
     }
   }
