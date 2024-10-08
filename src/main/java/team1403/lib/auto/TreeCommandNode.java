@@ -1,33 +1,10 @@
 package team1403.lib.auto;
 
-public class TreeCommandNode {
-    private TreeCommand command;
-    public TreeCommandNode left;
-    public TreeCommandNode right;
+import edu.wpi.first.wpilibj2.command.Command;
 
-    public TreeCommandNode(TreeCommand cmd) {
-        this.command = cmd;
-        left = right = null;
-    }
+public class TreeCommandNode extends Command {
+    public TreeCommandNode left = null;
+    public TreeCommandNode right = null;
 
-    public TreeCommand getCommand() {
-        return command;
-    }
-
-    public void initialize() {
-        command.initialize();
-    }
-
-    public boolean isFinished() {
-        return command.isFinished();
-    }
-
-    public boolean isSuccess() {
-        return command.isSuccess();
-    }
-
-    public void execute() {
-        command.execute();
-    }
-
+    public boolean isSuccess() { return true; }
 }

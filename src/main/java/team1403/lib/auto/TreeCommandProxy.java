@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class TreeCommandProxy extends TreeCommand {
+public class TreeCommandProxy extends TreeCommandNode {
 
     public Command cmd;
     public BooleanSupplier success;

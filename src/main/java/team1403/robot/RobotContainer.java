@@ -89,9 +89,9 @@ public class RobotContainer {
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
 
     //create the commands
-    TreeCommandNode n = new TreeCommandNode(new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve)));
-    TreeCommandNode c1 = new TreeCommandNode(new TreeCommandProxy(Commands.print("hello world!"), () -> false));
-    TreeCommandNode c2 = new TreeCommandNode(new TreeCommandProxy(Commands.print("hello world!!!")));
+    TreeCommandNode n = new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve));
+    TreeCommandNode c1 = new TreeCommandProxy(Commands.print("hello world!"), () -> false);
+    TreeCommandNode c2 = new TreeCommandProxy(Commands.print("hello world!!!"));
 
     //configure the tree
     n.left = c1;

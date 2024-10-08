@@ -15,7 +15,7 @@ public class TreeAuto extends Command {
 
     @Override
     public void initialize() {
-        cur.initialize();
+        cur.schedule();
     }
 
 
@@ -24,14 +24,12 @@ public class TreeAuto extends Command {
 
         if (cur == null) return;
 
-        cur.execute();
-
-        if (cur.isFinished()) {
+        if (!cur.isScheduled()) {
 
             if (cur.isSuccess()) cur = cur.left;
             else cur = cur.right;
 
-            if (cur != null) cur.initialize();
+            if (cur != null) cur.schedule();
         }
     }
 
