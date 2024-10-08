@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import team1403.lib.auto.TreeAuto;
+import team1403.lib.auto.TreeCommandNode;
+import team1403.lib.auto.TreeCommandProxy;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants.Setpoints;
@@ -84,6 +87,18 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
+
+    //create the commands
+    TreeCommandNode n = new TreeCommandNode(new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve)));
+    TreeCommandNode c1 = new TreeCommandNode(new TreeCommandProxy(Commands.print("hello world!"), () -> false));
+    TreeCommandNode c2 = new TreeCommandNode(new TreeCommandProxy(Commands.print("hello world!!!")));
+
+    //configure the tree
+    n.left = c1;
+    c1.right = c2;
+
+    //build the auto
+    autoChooser.addOption("Tree Auto", new TreeAuto(n));
 
     Constants.kDriverTab.add("Auto Chooser", autoChooser);
     Constants.kDebugTab.add("Command Scheduler", CommandScheduler.getInstance());
