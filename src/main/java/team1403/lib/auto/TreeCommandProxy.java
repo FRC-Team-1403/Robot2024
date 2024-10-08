@@ -45,4 +45,14 @@ public class TreeCommandProxy extends TreeCommandNode {
         return success.getAsBoolean();
     }
 
+    @Override
+    public TreeCommandProxy clone() {
+        TreeCommandProxy ret = new TreeCommandProxy(cmd, success);
+        if(left != null)
+            ret.left = left.clone();
+        if(right != null)
+            ret.right = right.clone();
+        return ret;
+    }
+
 }

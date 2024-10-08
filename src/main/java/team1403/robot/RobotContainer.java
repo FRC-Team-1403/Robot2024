@@ -4,6 +4,8 @@
 
 package team1403.robot;
 
+import java.util.Set;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
@@ -90,12 +92,15 @@ public class RobotContainer {
 
     //create the commands
     TreeCommandNode n = new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve));
-    TreeCommandNode c1 = new TreeCommandProxy(Commands.print("hello world!"), () -> false);
+    TreeCommandNode c1 = new TreeCommandProxy(Commands.print("hello world!"));
     TreeCommandNode c2 = new TreeCommandProxy(Commands.print("hello world!!!"));
 
     //configure the tree
     n.left = c1;
-    c1.right = c2;
+    c1.left = c2;
+    //cycles in the graph are not possible since the command does not get re-executed!
+    //TODO: figure out why the commands do not get re-executed! Sometimes we might want a cycle or two
+    c2.left = c1.clone();
 
     //build the auto
     autoChooser.addOption("Tree Auto", new TreeAuto(n));
