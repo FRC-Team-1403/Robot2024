@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.auto.TreeAuto;
 import team1403.lib.auto.TreeCommandNode;
 import team1403.lib.auto.TreeCommandProxy;
+import team1403.lib.auto.TreeJunction;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants.Setpoints;
@@ -92,14 +93,17 @@ public class RobotContainer {
 
     //create the commands
     TreeCommandNode n = new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve));
+    TreeCommandNode cond = new TreeJunction(() -> false);
     TreeCommandNode c1 = new TreeCommandProxy(Commands.print("hello world!"));
     TreeCommandNode c2 = new TreeCommandProxy(Commands.print("hello world!!!"));
 
     //configure the tree
-    n.left = c1;
     c1.left = c2;
+    cond.right = c2.clone();
     //infinite loop without .clone()!
     c2.left = c1.clone();
+    cond.left = c1;
+    n.left = cond;
 
     //build the auto
     autoChooser.addOption("Tree Auto", new TreeAuto(n));
