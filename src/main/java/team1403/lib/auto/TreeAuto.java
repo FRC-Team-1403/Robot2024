@@ -24,7 +24,7 @@ public class TreeAuto extends Command {
 
         if (cur == null) return;
 
-        if (!cur.isScheduled()) {
+        if (cur.isFinished()) {
 
             if (cur.isSuccess()) cur = cur.left;
             else cur = cur.right;

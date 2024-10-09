@@ -98,8 +98,7 @@ public class RobotContainer {
     //configure the tree
     n.left = c1;
     c1.left = c2;
-    //cycles in the graph are not possible since the command does not get re-executed!
-    //TODO: figure out why the commands do not get re-executed! Sometimes we might want a cycle or two
+    //infinite loop without .clone()!
     c2.left = c1.clone();
 
     //build the auto
