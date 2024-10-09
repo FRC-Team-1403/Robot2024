@@ -53,18 +53,17 @@ public class Constants {
     public static final double kDDrive = 0.0;
 
     public static final double kTrackWidth = Units.inchesToMeters(23);
-    public static final double kWheelBase = Units.inchesToMeters(24);
+    public static final double kWheelLength = Units.inchesToMeters(24);
 
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         // Front left
-        new Translation2d(kTrackWidth / 2.0, kWheelBase / 2.0),
+        new Translation2d(kWheelLength / 2.0, kTrackWidth / 2.0),
         // Front right
-     
-        new Translation2d(kTrackWidth / 2.0, -kWheelBase / 2.0),
+        new Translation2d(kWheelLength / 2.0, -kTrackWidth / 2.0),
         // Back left  
-        new Translation2d(-kTrackWidth / 2.0, kWheelBase / 2.0),
+        new Translation2d(-kWheelLength / 2.0, kTrackWidth / 2.0),
         // Back right
-        new Translation2d(-kTrackWidth / 2.0, -kWheelBase / 2.0));
+        new Translation2d(-kWheelLength / 2.0, -kTrackWidth / 2.0));
 
     public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;//-Math.PI + 0.082834967179
     public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;//-0.55 - 3.219825673771961 - Math.PI
