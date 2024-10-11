@@ -212,7 +212,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
-      log(getName() + " EncError", relativeErr);
+      log(getName() + "/EncError", relativeErr);
     }
 
     /**
