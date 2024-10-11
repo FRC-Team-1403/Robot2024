@@ -129,8 +129,11 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
 
   @Override
   public void initialize() {
-    m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), 0);
-    m_driveController.reset(m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getCurrentChassisSpeed());
+    ChassisSpeeds speeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
+    m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), speeds.omegaRadiansPerSecond);
+    m_driveController.reset(m_drivetrainSubsystem.getPose(), speeds);
+    m_translationLimiter.reset(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond) / Constants.Swerve.kMaxSpeed);
+    m_directionSlewRate.reset(Math.atan2(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond));
   }
 
   @Override
