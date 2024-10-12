@@ -305,6 +305,8 @@ public class Constants {
         new SonicBlasterSetpoint(130, Constants.Wrist.kCenterLineSetpoint, 0, 
                                     Constants.IntakeAndShooter.kCenterLineRPM);
     public static final SonicBlasterSetpoint kAmpSetpoint = 
-        new SonicBlasterSetpoint(Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint, 0, 2400);                     
+        new SonicBlasterSetpoint(Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint, 0, 2400);
+    public static final SonicBlasterSetpoint kFeedSetpoint = 
+        new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, 0, 3800);                     
   }
 }
