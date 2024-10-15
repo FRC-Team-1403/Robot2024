@@ -77,7 +77,7 @@ public class RobotContainer {
     m_operatorController = new CommandXboxController(Constants.Operator.pilotPort);
     // Enables power distribution logging
     m_powerDistribution = new PowerDistribution(Constants.CanBus.powerDistributionID, ModuleType.kRev);
-    Constants.kDebugTab.add("Power Distribution", m_powerDistribution);
+    if(Constants.DEBUG_MODE) Constants.kDebugTab.add("Power Distribution", m_powerDistribution);
 
     // NamedCommands.registerCommand("stop", new InstantCommand(() -> m_swerve.stop()));
     // NamedCommands.registerCommand("First Piece", new AutoIntakeShooterLoop(m_endeff, m_arm, m_wrist, m_led, () -> false, () -> false, false, () -> false, false));
@@ -111,8 +111,10 @@ public class RobotContainer {
     autoChooser.addOption("Tree Auto", new TreeAuto(n));
 
     Constants.kDriverTab.add("Auto Chooser", autoChooser);
-    Constants.kDebugTab.add("Command Scheduler", CommandScheduler.getInstance());
-    Constants.kDebugTab.add("Swerve Drive", m_swerve);
+    if(Constants.DEBUG_MODE) {
+      Constants.kDebugTab.add("Command Scheduler", CommandScheduler.getInstance());
+      Constants.kDebugTab.add("Swerve Drive", m_swerve);
+    }
 
     configureBindings();
   }

@@ -121,8 +121,10 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
     m_driveState.constraints = Constants.Swerve.kAutoAlignConstraints;
 
     Constants.kDriverTab.addBoolean("isFieldRelative", () -> m_isFieldRelative);
-    Constants.kDebugTab.addBoolean("Aimbot", m_aimbotSupplier);
-    Constants.kDebugTab.add("Swerve Rotation PID", m_controller);
+    if(Constants.DEBUG_MODE) {
+      Constants.kDebugTab.addBoolean("Aimbot", m_aimbotSupplier);
+      Constants.kDebugTab.add("Swerve Rotation PID", m_controller);
+    }
 
     addRequirements(m_drivetrainSubsystem);
   }

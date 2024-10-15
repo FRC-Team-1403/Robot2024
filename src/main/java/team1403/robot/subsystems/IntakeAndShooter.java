@@ -86,9 +86,11 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     m_topVel = m_shooterMotorTop.getVelocity();
     m_bottomVel = m_shooterMotorBottom.getVelocity();
 
-    Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
-    Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
-    Constants.kDebugTab.addBoolean("Shooter (teleop) Ready", () -> teleopIsReady());
+    if(Constants.DEBUG_MODE) {
+      Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
+      Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
+      Constants.kDebugTab.addBoolean("Shooter (teleop) Ready", () -> teleopIsReady());
+    }
   }
 
   /**

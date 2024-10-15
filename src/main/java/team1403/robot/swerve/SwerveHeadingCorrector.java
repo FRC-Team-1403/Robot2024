@@ -28,7 +28,9 @@ public class SwerveHeadingCorrector implements CougarLogged {
     {
         m_controller.enableContinuousInput(-Math.PI, Math.PI);
 
-        Constants.kDebugTab.add("SwerveHC PID", m_controller);
+        if (Constants.DEBUG_MODE) {
+            Constants.kDebugTab.add("SwerveHC PID", m_controller);
+        }
     }
 
     private final static double OMEGA_THRESH = 0.03;

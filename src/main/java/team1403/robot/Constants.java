@@ -38,6 +38,8 @@ public class Constants {
   public static final double kLoopTime = 0.02;
   public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
   public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
+  //controls if the debug tab is used on shuffleboard
+  public static final boolean DEBUG_MODE = true;
 
   /**
    * Swerve Constants.

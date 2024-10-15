@@ -160,7 +160,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     m_odometeryNotifier.setName("SwerveOdoNotifer");
     m_odometeryNotifier.startPeriodic(Units.millisecondsToSeconds(Constants.Swerve.kModuleUpdateRateMs));
 
-    Constants.kDebugTab.add("Gyro", m_navx2);
+    Constants.kDriverTab.add("Gyro", m_navx2);
     Constants.kDriverTab.add("Field", m_field);
   }
 

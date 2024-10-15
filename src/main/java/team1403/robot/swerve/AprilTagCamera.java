@@ -85,6 +85,7 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
     m_referencePose = referenceSupplier;
     m_cameraTransform = cameraTransform;
     
+    //keep this enabled even without debug mode for logging purposes
     Constants.kDebugTab.addBoolean(m_camera.getName() + " connected", () -> m_camera.isConnected());
   }
 

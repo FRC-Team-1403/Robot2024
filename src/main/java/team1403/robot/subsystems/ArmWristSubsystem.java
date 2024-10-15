@@ -59,17 +59,18 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
     m_armPid.reset(getPivotAngle(), 0);
     m_wristPid.reset(getWristAngle(), 0);
 
-    Constants.kDebugTab.addBoolean("Arm IsAtSetpoint", () -> isArmAtSetpoint());
-    Constants.kDebugTab.add("Arm PIDController", m_armPid);
-    Constants.kDebugTab.add("Wrist PIDController", m_wristPid);
-
     m_mechanism = new Mechanism2d(3, 3);
     m_mechanismRoot = m_mechanism.getRoot("A-Frame", 1, 1);
     m_armMech = m_mechanismRoot.append(new MechanismLigament2d("Arm", 1, getPivotAngle() - 106.4));
     m_wristMech = m_armMech.append(new MechanismLigament2d("Wrist", 0.3, getWristAngle()));
 
-    Constants.kDebugTab.add("Arm Mechanism", m_mechanism);
-    Constants.kDebugTab.addBoolean("Wrist is at Setpoint", () -> isWristAtSetpoint());
+    if(Constants.DEBUG_MODE) {
+      Constants.kDebugTab.add("Arm Mechanism", m_mechanism);
+      Constants.kDebugTab.addBoolean("Wrist is at Setpoint", () -> isWristAtSetpoint());
+      Constants.kDebugTab.addBoolean("Arm IsAtSetpoint", () -> isArmAtSetpoint());
+      Constants.kDebugTab.add("Arm PIDController", m_armPid);
+      Constants.kDebugTab.add("Wrist PIDController", m_wristPid);
+    }
 
     m_pivotAngleSetpoint = getPivotAngle();
     m_wristAngleSetpoint = Constants.Wrist.kIntakeSetpoint;
