@@ -177,7 +177,6 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             }
             case LOADED:
             {
-                applySetpoint(Blackbox.requestedSetpoint);
                 /*
                 if(m_amp.getAsBoolean())
                 {
@@ -227,6 +226,8 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                         m_fpga = Timer.getFPGATimestamp();
                         m_state = State.SHOOT;
                     }
+                } else {
+                    applySetpoint(Blackbox.requestedSetpoint);
                 }
 
                 if(!m_intakeAndShooter.isIntakePhotogateTriggered())
@@ -261,6 +262,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         }
         if(m_resetToIntake.getAsBoolean()) {
             m_state = State.RESET;
+            Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
         }
         log("State", m_state.toString());
     }

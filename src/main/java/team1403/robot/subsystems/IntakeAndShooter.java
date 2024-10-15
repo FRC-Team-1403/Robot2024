@@ -63,16 +63,14 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    // Rotations per second to Rotations per minute
-    config.Feedback.SensorToMechanismRatio =  1 / 60.;
-    config.MotionMagic.MotionMagicAcceleration = 12000; // RPM/s -> ~0.5 s to max
+    config.MotionMagic.MotionMagicAcceleration = 2000; // RPM/s -> ~0.5 s to max
 
     // FIXME: Tune these values!
     var slot0Configs = config.Slot0;
     slot0Configs.kS = 0;
-    slot0Configs.kV = 1.0 / 6300;
+    slot0Configs.kV = 0.009;
     slot0Configs.kA = 0;
-    slot0Configs.kP = 0.00005;
+    slot0Configs.kP = 0.003;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 
@@ -90,7 +88,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
 
     Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
     Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
-    Constants.kDebugTab.addBoolean("Shooter Ready", () -> isReady());
+    Constants.kDebugTab.addBoolean("Shooter (teleop) Ready", () -> teleopIsReady());
   }
 
   /**
@@ -140,7 +138,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   }
 
   public void setShooterRPM(double rpm) {
-    m_request.Velocity = rpm;
+    m_request.Velocity = rpm / 60.0;
   }
 
   /**
@@ -151,12 +149,12 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   }
 
   public boolean isReady(){
-    return Math.abs(m_request.Velocity - m_bottomVel.getValue()) < 300 && 
-           Math.abs(m_request.Velocity - m_topVel.getValue()) < 300;
+    return Math.abs(m_request.Velocity * 60 - m_bottomVel.getValue() * 60) < 300 && 
+           Math.abs(m_request.Velocity * 60 - m_topVel.getValue() * 60) < 300;
   }
 
   public boolean teleopIsReady() {
-    return Math.abs(m_request.Velocity - m_bottomVel.getValue()) < 1000;
+    return Math.abs(m_request.Velocity * 60 - m_bottomVel.getValue() * 60) < 1000;
   }
 
   public void periodic() {
@@ -171,6 +169,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     log("Shooter/gate", isShooterPhotogateTriggered());
     log("Intake/gate", isIntakePhotogateTriggered());
     log("Shooter/top Motor RPM", m_topVel.getValue());
+    log("Shooter/bottom Motor RPM", m_bottomVel.getValue());
     log("Intake/RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
     log("Intake/Speed Setpoint", m_intakeMotor.get());
     log("Shooter/RPM setpoint",  m_request.Velocity);
