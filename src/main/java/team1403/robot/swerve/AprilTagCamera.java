@@ -166,51 +166,49 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
 
   @Override
   public void periodic() {
-    if(m_camera.isConnected()) {
-      m_result = m_camera.getLatestResult();
+    m_result = m_camera.getLatestResult();
 
-      m_poseEstimator.setReferencePose(m_referencePose.get());
-      m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
+    m_poseEstimator.setReferencePose(m_referencePose.get());
+    m_poseEstimator.setRobotToCameraTransform(m_cameraTransform.get());
 
-      if(m_cameraSim != null) {
-        VisionSimUtil.adjustCamera(m_cameraSim, m_cameraTransform.get());
+    if(m_cameraSim != null) {
+      VisionSimUtil.adjustCamera(m_cameraSim, m_cameraTransform.get());
+    }
+
+    m_estPos = m_poseEstimator.update(m_result).orElse(null);
+
+    updatePose2d();
+
+    log(m_camera.getName() + "/Target Visible", hasTarget());
+
+    if(kExtraVisionDebugInfo) {
+      Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
+      Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
+
+      log(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
+
+      m_visionTargets.clear();
+      m_corners.clear();
+
+      for(PhotonTrackedTarget t : getTargets()) {
+        var trf = t.getBestCameraToTarget();
+        if(trf.equals(kZeroTransform)) continue;
+        m_visionTargets.add(robot_pose_transformed.transformBy(trf));
+        for(TargetCorner c : t.getDetectedCorners())
+          m_corners.add(new Translation2d(c.x, c.y));
       }
 
-      m_estPos = m_poseEstimator.update(m_result).orElse(null);
+      log(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
+      log(m_camera.getName() + "/Corners", m_corners.toArray(new Translation2d[m_corners.size()]));
+    }
 
-      updatePose2d();
-
-      log(m_camera.getName() + "/Target Visible", hasTarget());
-
-      if(kExtraVisionDebugInfo) {
-        Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
-        Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
-
-        log(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
-
-        m_visionTargets.clear();
-        m_corners.clear();
-
-        for(PhotonTrackedTarget t : getTargets()) {
-          var trf = t.getBestCameraToTarget();
-          if(trf.equals(kZeroTransform)) continue;
-          m_visionTargets.add(robot_pose_transformed.transformBy(trf));
-          for(TargetCorner c : t.getDetectedCorners())
-            m_corners.add(new Translation2d(c.x, c.y));
-        }
-
-        log(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
-        log(m_camera.getName() + "/Corners", m_corners.toArray(new Translation2d[m_corners.size()]));
-      }
-
-      log(m_camera.getName() + "/hasPose", hasPose());
-      
-      if(hasPose()) {
-        log(m_camera.getName() + "/Combined Area", getTagAreas());
-        if(checkVisionResult()) {
-          log(m_camera.getName() + "/Pose3d", getPose());
-          log(m_camera.getName() + "/Pose2d", getPose2D());
-        }
+    log(m_camera.getName() + "/hasPose", hasPose());
+    
+    if(hasPose()) {
+      log(m_camera.getName() + "/Combined Area", getTagAreas());
+      if(checkVisionResult()) {
+        log(m_camera.getName() + "/Pose3d", getPose());
+        log(m_camera.getName() + "/Pose2d", getPose2D());
       }
     }
 
