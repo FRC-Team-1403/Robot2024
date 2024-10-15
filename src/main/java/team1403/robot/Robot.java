@@ -5,6 +5,7 @@
 package team1403.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +47,8 @@ public class Robot extends TimedRobot implements Logged {
     
     Monologue.setupMonologue(this, "Robot2024", false, false);
     Monologue.setFileOnly(DriverStation.isFMSAttached());
+    DriverStation.startDataLog(DataLogManager.getLog());
+
     Constants.kDriverTab.addDouble("Match Time", () -> DriverStation.getMatchTime());
 
     m_robotContainer = new RobotContainer();
