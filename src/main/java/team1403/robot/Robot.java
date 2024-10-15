@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import monologue.Logged;
 import monologue.Monologue;
+import team1403.robot.Constants.Driver;
 import team1403.robot.Constants.Setpoints;
 import team1403.robot.subsystems.Blackbox;
 
@@ -45,6 +46,7 @@ public class Robot extends TimedRobot implements Logged {
     
     Monologue.setupMonologue(this, "Robot2024", false, false);
     Monologue.setFileOnly(DriverStation.isFMSAttached());
+    Constants.kDriverTab.addDouble("Match Time", () -> DriverStation.getMatchTime());
 
     m_robotContainer = new RobotContainer();
     m_combinedCommand = m_robotContainer.getTeleopCommand();
