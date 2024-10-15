@@ -68,7 +68,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     // FIXME: Tune these values!
     var slot0Configs = config.Slot0;
     slot0Configs.kS = 0;
-    slot0Configs.kV = 0.009;
+    slot0Configs.kV = 0.0092;
     slot0Configs.kA = 0;
     slot0Configs.kP = 0.003;
     slot0Configs.kI = 0;
