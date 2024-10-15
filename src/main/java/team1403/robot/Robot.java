@@ -44,6 +44,7 @@ public class Robot extends TimedRobot implements Logged {
     // autonomous chooser on the dashboard.
     
     Monologue.setupMonologue(this, "Robot2024", false, false);
+    Monologue.setFileOnly(DriverStation.isFMSAttached());
 
     m_robotContainer = new RobotContainer();
     m_combinedCommand = m_robotContainer.getTeleopCommand();
@@ -81,7 +82,6 @@ public class Robot extends TimedRobot implements Logged {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    Monologue.setFileOnly(DriverStation.isFMSAttached());
     Monologue.updateAll();
   }
 

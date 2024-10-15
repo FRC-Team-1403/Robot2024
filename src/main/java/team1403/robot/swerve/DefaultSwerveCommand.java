@@ -129,8 +129,11 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
 
   @Override
   public void initialize() {
-    m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), 0);
-    m_driveController.reset(m_drivetrainSubsystem.getPose(), m_drivetrainSubsystem.getCurrentChassisSpeed());
+    ChassisSpeeds speeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
+    m_controller.reset(MathUtil.angleModulus(m_drivetrainSubsystem.getRotation().getRadians()), speeds.omegaRadiansPerSecond);
+    m_driveController.reset(m_drivetrainSubsystem.getPose(), speeds);
+    m_translationLimiter.reset(Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond) / Constants.Swerve.kMaxSpeed);
+    m_directionSlewRate.reset(Math.atan2(speeds.vyMetersPerSecond, speeds.vxMetersPerSecond));
   }
 
   @Override
@@ -157,6 +160,7 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
     ChassisSpeeds currentSpeeds = m_drivetrainSubsystem.getCurrentChassisSpeed();
     double horizontal = m_horizontalTranslationSupplier.getAsDouble();
     double vertical = m_verticalTranslationSupplier.getAsDouble();
+    double vel_hypot = Math.hypot(horizontal, vertical);
 
     if(CougarUtil.getAlliance() == Alliance.Red && m_isFieldRelative) {
       horizontal *= -1;
@@ -165,7 +169,6 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
 
     {
       //normalize using polar coordinates
-      double vel_hypot = Math.hypot(horizontal, vertical);
       double velocity = MathUtil.clamp(vel_hypot, 0, 1);
       double angle = Math.atan2(vertical, horizontal);
 
@@ -208,7 +211,7 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
       m_controller.reset(m_state);
     }
     
-    if((m_ampSupplier.getAsBoolean() || m_alignSupplier.getAsBoolean()) && Blackbox.isValidTargetPosition()) {
+    if((m_ampSupplier.getAsBoolean() || m_alignSupplier.getAsBoolean()) && Blackbox.isValidTargetPosition() && vel_hypot < 0.2) {
       m_driveState.heading = Blackbox.targetPosition.getRotation();
       m_driveState.targetHolonomicRotation = Blackbox.targetPosition.getRotation();
       m_driveState.positionMeters = Blackbox.targetPosition.getTranslation();

@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,6 +117,10 @@ public class RobotContainer {
     configureBindings();
   }
 
+  private boolean cancelAutoMovement() {
+    return Math.hypot(m_driverController.getLeftX(), m_driverController.getLeftY()) > 0.2;
+  }
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -133,17 +139,17 @@ public class RobotContainer {
     // red
 
     Translation2d pos_blue = new Translation2d(-0.038099999999999995,  5.547867999999999);
-    Translation2d pos_red = new Translation2d(16.579342,  5.547867999999999);
+    Translation2d pos_red = GeometryUtil.flipFieldPosition(pos_blue);
     Pose2d pos_blue_shoot = new Pose2d(new Translation2d(1.5, 5.4), new Rotation2d());
-    Pose2d pos_red_shoot = new Pose2d(new Translation2d(15, 5.4), new Rotation2d(Math.PI));
+    Pose2d pos_red_shoot = GeometryUtil.flipFieldPose(pos_blue_shoot);
     Pose2d pose_blue_amp = new Pose2d(new Translation2d(1.813, 7.715), new Rotation2d(-Math.PI/2));
-    Pose2d pose_red_amp = new Pose2d(new Translation2d(14.687, 7.715), new Rotation2d(-Math.PI/2));
+    Pose2d pose_red_amp = new Pose2d(GeometryUtil.flipFieldPosition(pose_blue_amp.getTranslation()), new Rotation2d(-Math.PI/2));
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.15),
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.15),
-        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.15),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.05),
+        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.05),
+        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.05),
         () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),
@@ -168,30 +174,31 @@ public class RobotContainer {
       //() -> m_operatorController.getHID().getPOV() == 90); // feeding
     );
 
-    m_operatorController.y().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint));
-    m_operatorController.leftTrigger().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kStageSetpoint));
-    m_operatorController.povUp().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kCenterlineSetpoint));
-    m_operatorController.b().onTrue(new InstantCommand(() -> Blackbox.requestedSetpoint = Setpoints.kAmpSetpoint));
+    m_operatorController.y().onTrue(Blackbox.commandSetpoint(Setpoints.kDriveSetpoint));
+    m_operatorController.leftTrigger().onTrue(Blackbox.commandSetpoint(Setpoints.kStageSetpoint));
+    m_operatorController.povUp().onTrue(Blackbox.commandSetpoint(Setpoints.kCenterlineSetpoint));
+    m_operatorController.povRight().onTrue(Blackbox.commandSetpoint(Setpoints.kFeedSetpoint));
+    m_operatorController.b().onTrue(Blackbox.commandSetpoint(Setpoints.kAmpSetpoint));
 
     m_driverController.b().onTrue(m_swerve.runOnce(() -> m_swerve.zeroHeading()));
 
-    m_driverController.rightBumper().onTrue(Commands.runOnce(() -> {
+    m_driverController.rightBumper()
+    .and(() -> !cancelAutoMovement())
+    .onTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
       if(CougarUtil.getAlliance() == Alliance.Blue) tar = pos_blue_shoot;
       Blackbox.targetPosition = tar;
-      m_pathFinder = AutoUtil.pathFindToPose(tar);
-    }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
+      m_pathFinder = AutoUtil.pathFindToPose(tar).onlyWhile(() -> !cancelAutoMovement());
+    }).andThen(m_swerve.defer(() -> m_pathFinder)));
 
-    m_driverController.leftBumper().onTrue(Commands.runOnce(() -> {
+    m_driverController.leftBumper()
+    .and(() -> !cancelAutoMovement())
+    .onTrue(Commands.runOnce(() -> {
       Pose2d tar = pose_red_amp;
       if(CougarUtil.getAlliance() == Alliance.Blue) tar = pose_blue_amp;
       Blackbox.targetPosition = tar;
-      m_pathFinder = AutoUtil.pathFindToPose(tar);
-    }).andThen(Commands.deferredProxy(() -> m_pathFinder)));
-
-    m_driverController.leftStick()
-      .or(() -> Math.hypot(m_driverController.getLeftX(), m_driverController.getLeftY()) > 0.2)
-        .onTrue(Commands.runOnce(() -> m_pathFinder.cancel()));
+      m_pathFinder = AutoUtil.pathFindToPose(tar).onlyWhile(() -> !cancelAutoMovement());
+    }).andThen(m_swerve.defer(() -> m_pathFinder)));
 
     m_operatorController.povLeft().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(1)));
       

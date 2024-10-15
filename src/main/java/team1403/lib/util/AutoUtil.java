@@ -27,5 +27,7 @@ public class AutoUtil {
     return AutoBuilder.pathfindToPose(target, Constants.Swerve.kPathConstraints);
   }
 
-    
+  public static Command pathFindtoPath(PathPlannerPath path) {
+    return AutoBuilder.pathfindThenFollowPath(path, Constants.Swerve.kPathConstraints);
+  }
 }
