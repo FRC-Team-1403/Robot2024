@@ -324,6 +324,13 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
    * @return the corrected chassisspeeds
    */
   private ChassisSpeeds translationalDriftCorrection(ChassisSpeeds chassisSpeeds) {
+    double dtheta = Units.degreesToRadians(m_navx2.getAngularVelocity()) * Constants.Swerve.kAngVelCoeff;
+    if(Math.abs(dtheta) > 0.001 && Robot.isReal()) {
+      Rotation2d rot = getRotation();
+      chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, rot);
+      chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, rot.plus(new Rotation2d(dtheta)));
+    }
+
     return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
   }
 

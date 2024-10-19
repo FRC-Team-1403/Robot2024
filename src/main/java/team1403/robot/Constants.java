@@ -96,6 +96,9 @@ public class Constants {
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kWheelWidth / 2.0, kWheelLength / 2.0)); // 11.96207492071159 rad/s
 
+    // IMU has an angular velocity, so to get the heading at the right point time add the velocity * a coeff to get the "real" heading
+    public static final double kAngVelCoeff = 0.1; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
+
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 45;
     public static final int kSteerCurrentLimit = 25;
