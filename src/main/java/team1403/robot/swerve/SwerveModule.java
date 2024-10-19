@@ -212,6 +212,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
       driveMetersPerSecond *= Math.cos(steerAngle - absAngle);
       driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
+      driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, 0, Constants.Swerve.kMaxSpeed);
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
