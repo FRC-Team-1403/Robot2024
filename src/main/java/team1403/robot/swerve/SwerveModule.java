@@ -230,10 +230,10 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
     /**
      * Gets current drive encoder position
-     * @return The current positon of the drive encoder
+     * @return The current (coupling compensated) position of the drive encoder
      */
     private synchronized double getDrivePosition() {
-      return m_driveRelativeEncoder.getPosition();
+      return m_driveRelativeEncoder.getPosition() - getSteerPosition() * Constants.Swerve.kCouplingRatio;
     }
 
     /**
@@ -241,7 +241,15 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
      * @return the current angle of the steer relative encoder. Range: [-pi, pi)
      */
     private double getSteerRotation() {
-      return MathUtil.angleModulus(m_steerRelativeEncoder.getPosition());
+      return MathUtil.angleModulus(getSteerPosition());
+    }
+
+    /**
+     * Gets the current steer encoder angle
+     * @return the current angle of the steer relative encoder. Range: [-inf, inf)
+     */
+    private double getSteerPosition() {
+      return m_steerRelativeEncoder.getPosition();
     }
   
     /**
