@@ -198,9 +198,11 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       double absAngle = getAbsoluteAngle();
       //get the angle error between steer rel enc and abs enc
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
+      //rad/s
+      double steerVel = m_steerRelativeEncoder.getVelocity();
       
       //if we dynamically correct while rotating the PID will get angry, error is also higher when in motion, since values aren't time synced
-      if(relativeErr > Units.degreesToRadians(5) && Math.abs(m_steerRelativeEncoder.getVelocity()) < 0.1) {
+      if(relativeErr > Units.degreesToRadians(5) && Math.abs(steerVel) < 0.1) {
         System.out.println(getName() + " Encoder Reset!");
         m_steerRelativeEncoder.setPosition(absAngle);
       }
@@ -209,6 +211,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       m_steerPIDController.setReference(steerAngle, ControlType.kPosition);
 
       driveMetersPerSecond *= Math.cos(steerAngle - absAngle);
+      driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 

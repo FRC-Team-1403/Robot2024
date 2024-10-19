@@ -98,6 +98,7 @@ public class Constants {
 
     // IMU has an angular velocity, so to get the heading at the right point time add the velocity * a coeff to get the "real" heading
     public static final double kAngVelCoeff = 0.1; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
+    public static final double kCouplingRatio = 0; //TODO: needs tuning! (probably pretty small)
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 45;
