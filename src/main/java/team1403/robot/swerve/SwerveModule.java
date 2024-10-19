@@ -1,5 +1,6 @@
 package team1403.robot.swerve;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -212,7 +213,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
       driveMetersPerSecond *= Math.cos(steerAngle - absAngle);
       driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
-      driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, 0, Constants.Swerve.kMaxSpeed);
+      driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, -Constants.Swerve.kMaxSpeed, Constants.Swerve.kMaxSpeed);
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
