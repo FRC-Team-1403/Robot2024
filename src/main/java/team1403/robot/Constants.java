@@ -67,15 +67,19 @@ public class Constants {
     public static final double kWheelLength = Units.inchesToMeters(24);
     public static final double kDriveBase = Math.hypot(Swerve.kWheelWidth / 2.0, Swerve.kWheelLength / 2.0);
 
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        // Front left
-        new Translation2d(kWheelLength / 2.0, kWheelWidth / 2.0),
-        // Front right
-        new Translation2d(kWheelLength / 2.0, -kWheelWidth / 2.0),
-        // Back left  
-        new Translation2d(-kWheelLength / 2.0, kWheelWidth / 2.0),
-        // Back right
-        new Translation2d(-kWheelLength / 2.0, -kWheelWidth / 2.0));
+    public static final Translation2d[] kModulePositions = new Translation2d[]
+    {
+      // Front left
+      new Translation2d(kWheelLength / 2.0, kWheelWidth / 2.0),
+      // Front right
+      new Translation2d(kWheelLength / 2.0, -kWheelWidth / 2.0),
+      // Back left  
+      new Translation2d(-kWheelLength / 2.0, kWheelWidth / 2.0),
+      // Back right
+      new Translation2d(-kWheelLength / 2.0, -kWheelWidth / 2.0)
+    };
+
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(kModulePositions);
 
     public static final double frontLeftEncoderOffset = -Math.PI + 0.082834967179;//-Math.PI + 0.082834967179
     public static final double frontRightEncoderOffset = -0.55 - 3.219825673771961 - Math.PI;//-0.55 - 3.219825673771961 - Math.PI
