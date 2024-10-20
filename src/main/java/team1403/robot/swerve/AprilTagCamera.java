@@ -43,7 +43,7 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
   private EstimatedRobotPose m_estPos;
   private Supplier<Pose2d> m_referencePose;
   private Pose2d m_Pose2d = null;
-  private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(0.9, 0.9, 999999);
+  private static final Matrix<N3, N1> kDefaultStdv = VecBuilder.fill(2, 2, 999999);
   private static final boolean kExtraVisionDebugInfo = true;
 
   public AprilTagCamera(String cameraName, Supplier<Transform3d> cameraTransform, Supplier<Pose2d> referenceSupplier) {
@@ -55,8 +55,8 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
     if (Robot.isSimulation()) {
       SimCameraProperties cameraProp = new SimCameraProperties();
 
-      // A 640 x 480 camera with a 100 degree diagonal FOV.
-      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
+      // A 640 x 480 camera with a 57 degree diagonal FOV.
+      cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(57));
       // Approximate detection noise with average and standard deviation error in pixels.
       cameraProp.setCalibError(0.25, 0.08);
       // Set the camera image capture framerate (Note: this is limited by robot loop rate).
@@ -148,15 +148,14 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
     return ret;
   }
 
-  //default values, TODO: update later to compute the actual estimated standard deviation
   public Matrix<N3, N1> getEstStdv() {
-    return kDefaultStdv;
+    return kDefaultStdv.div(getTagAreas());
   }
 
   //TODO: return false for bad estimates
   public boolean checkVisionResult() {
 
-    if(getTagAreas() < 0.2) return false;
+    if(getTagAreas() < 0.5) return false;
 
     return true;
   }
