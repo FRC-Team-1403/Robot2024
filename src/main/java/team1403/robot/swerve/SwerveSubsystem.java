@@ -16,6 +16,7 @@ import edu.wpi.first.hal.simulation.SimDeviceDataJNI;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -193,9 +194,9 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
   public void zeroHeading() {
     zeroGyroscope();
     if(CougarUtil.getAlliance() == Alliance.Blue)
-      resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+      resetOdometry(CougarUtil.createPose2d(getPose(), new Rotation2d()));
     else
-      resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.PI)));
+      resetOdometry(CougarUtil.createPose2d(getPose(), new Rotation2d(Math.PI)));
     m_headingCorrector.resetHeadingSetpoint();
   }
 
@@ -375,6 +376,19 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     builder.addDoubleProperty("Robot Angle", () -> getRotation().getRadians(), null);
   }
 
+  private Pose2d[] getModulePoses() {
+    Pose2d[] ret = new Pose2d[m_modules.length];
+    Pose2d cur = getPose();
+    
+    for(int i = 0; i < ret.length; i++) {
+      ret[i] = cur.transformBy(
+        new Transform2d(Constants.Swerve.kModulePositions[i], 
+        m_currentStates[i].angle));
+    }
+
+    return ret;
+  }
+
   @Override
   public void periodic() {
     if(!m_disableVision)
@@ -401,6 +415,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
       setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
     }
     m_field.setRobotPose(getPose());
+    if (Constants.DEBUG_MODE) m_field.getObject("xModules").setPoses(getModulePoses());
     // Logging Output
     log("Odometry/Rotation3d", m_navx2.getRotation3d());
 
