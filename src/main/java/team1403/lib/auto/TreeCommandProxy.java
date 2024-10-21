@@ -15,6 +15,10 @@ public class TreeCommandProxy extends TreeCommandNode {
         this(() -> c, () -> true);
     }
 
+    public TreeCommandProxy(Command c, BooleanSupplier override) {
+        this(() -> c, override);
+    }
+
     public TreeCommandProxy(Supplier<Command> c_s) {
         this(c_s, () -> true);
     }

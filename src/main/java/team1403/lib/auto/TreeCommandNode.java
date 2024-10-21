@@ -8,6 +8,17 @@ public class TreeCommandNode extends Command implements Cloneable {
 
     public boolean isSuccess() { return true; }
 
+    public TreeCommandNode setNext(TreeCommandNode l, TreeCommandNode r) {
+        left = l;
+        right = r;
+
+        return this;
+    }
+
+    public TreeCommandNode setNext(TreeCommandNode l) {
+        return setNext(l, null);
+    }
+
     //clone the entire tree recursively
     @Override
     public TreeCommandNode clone() { 
