@@ -235,6 +235,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                     if(m_counter >= 5) {
                         m_state = State.RESET;
                         m_counter = 0;
+                        Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
                     }
                     else m_counter++;
                 }

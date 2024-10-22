@@ -200,7 +200,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
       
       //if we dynamically correct while rotating the PID will get angry, error is also higher when in motion, since values aren't time synced
-      if(relativeErr > Units.degreesToRadians(5) && Math.abs(m_steerRelativeEncoder.getVelocity()) < 0.1) {
+      if(relativeErr > Units.degreesToRadians(10) && Math.abs(m_steerRelativeEncoder.getVelocity()) < 0.1) {
         System.out.println(getName() + " Encoder Reset!");
         m_steerRelativeEncoder.setPosition(absAngle);
       }

@@ -39,7 +39,7 @@ public class Constants {
   public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
   public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
   //controls if the debug tab is used on shuffleboard
-  public static final boolean DEBUG_MODE = true;
+  public static final boolean DEBUG_MODE = false;
 
   /**
    * Swerve Constants.
@@ -232,7 +232,7 @@ public class Constants {
     public static final int kPivotMotorCurrentLimit = 30;
     public static final double kPivotMotorVoltageLimit = 12;
 
-    public static double kIntakeSetpoint = 92; // 92
+    public static double kIntakeSetpoint = 90.5; // 92
     public static  double kAmpSetpoint = 210;
     public static  double kLoadingSetpoint = 150;
     public static  double kDriveSetpoint = 114;
