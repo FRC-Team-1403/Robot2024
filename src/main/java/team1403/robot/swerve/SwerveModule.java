@@ -1,5 +1,6 @@
 package team1403.robot.swerve;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -198,9 +199,11 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       double absAngle = getAbsoluteAngle();
       //get the angle error between steer rel enc and abs enc
       double relativeErr = Math.abs(MathUtil.angleModulus(getSteerRotation() - absAngle));
+      //rad/s
+      double steerVel = m_steerRelativeEncoder.getVelocity();
       
       //if we dynamically correct while rotating the PID will get angry, error is also higher when in motion, since values aren't time synced
-      if(relativeErr > Units.degreesToRadians(10) && Math.abs(m_steerRelativeEncoder.getVelocity()) < 0.1) {
+      if(relativeErr > Units.degreesToRadians(10) && Math.abs(steerVel) < 0.1) {
         System.out.println(getName() + " Encoder Reset!");
         m_steerRelativeEncoder.setPosition(absAngle);
       }
@@ -209,6 +212,8 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       m_steerPIDController.setReference(steerAngle, ControlType.kPosition);
 
       driveMetersPerSecond *= Math.cos(steerAngle - absAngle);
+      driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
+      driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, -Constants.Swerve.kMaxSpeed, Constants.Swerve.kMaxSpeed);
 
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
 
@@ -226,10 +231,10 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
     /**
      * Gets current drive encoder position
-     * @return The current positon of the drive encoder
+     * @return The current (coupling compensated) position of the drive encoder
      */
     private synchronized double getDrivePosition() {
-      return m_driveRelativeEncoder.getPosition();
+      return m_driveRelativeEncoder.getPosition() - getSteerPosition() * Constants.Swerve.kCouplingRatio;
     }
 
     /**
@@ -237,7 +242,15 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
      * @return the current angle of the steer relative encoder. Range: [-pi, pi)
      */
     private double getSteerRotation() {
-      return MathUtil.angleModulus(m_steerRelativeEncoder.getPosition());
+      return MathUtil.angleModulus(getSteerPosition());
+    }
+
+    /**
+     * Gets the current steer encoder angle
+     * @return the current angle of the steer relative encoder. Range: [-inf, inf)
+     */
+    private double getSteerPosition() {
+      return m_steerRelativeEncoder.getPosition();
     }
   
     /**
