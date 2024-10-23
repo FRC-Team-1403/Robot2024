@@ -101,7 +101,7 @@ public class Constants {
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kWheelWidth / 2.0, kWheelLength / 2.0)); // 11.96207492071159 rad/s
 
     // IMU has an angular velocity, so to get the heading at the right point time add the velocity * a coeff to get the "real" heading
-    public static final double kAngVelCoeff = 0.1; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
+    public static final double kAngVelCoeff = 0.12; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
     public static final double kCouplingRatio = 0; //TODO: needs tuning! (probably pretty small)
 
     public static final double kVoltageSaturation = 12.0;
@@ -277,7 +277,7 @@ public class Constants {
     public static final double kWristConversionFactor = 0;
     public static final double kAbsoluteWristOffset = 0;
 
-    public static final double KPWrist = 0.0096; //original value 0.0092 changed - 0.0097
+    public static final double KPWrist = 0.0099; //original value 0.0092 changed - 0.0097
     public static final double KIWrist = 0.0;
     public static final double KDWrist = 0;
 

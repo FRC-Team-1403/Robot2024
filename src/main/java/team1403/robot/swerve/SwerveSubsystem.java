@@ -87,8 +87,8 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
    *                   used to construct this subsystem
    */
   public SwerveSubsystem() {
-    // increase update rate because of async odometery (60 hz to 100 hz)
-    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP, (byte)100);
+    // increase update rate because of async odometery
+    m_navx2 = new NavxAhrs("Gyroscope", SerialPort.Port.kMXP);
     if(Robot.isReal()) {
       m_modules = new ISwerveModule[] {
           new SwerveModule("Front Left Module",
