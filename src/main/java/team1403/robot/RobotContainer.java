@@ -31,7 +31,9 @@ import team1403.lib.auto.TreeJunction;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants.Setpoints;
+import team1403.robot.autos.AutoHelper;
 import team1403.robot.commands.IntakeShooterLoop;
+import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.ArmWristSubsystem;
 import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.HangerSubsystem;
@@ -90,25 +92,11 @@ public class RobotContainer {
     // NamedCommands.registerCommand("ShootLoaded", new ShootCommand(m_endeff, m_arm, m_wrist));
     // NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand(m_endeff, m_wrist));
 
+    NamedCommands.registerCommand("Trigger Shot", new TriggerShotCommand());
+
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
-
-    //create the commands
-    TreeCommandNode n = new TreeCommandProxy(AutoUtil.loadChoreoAuto("test", m_swerve));
-    TreeCommandNode cond = new TreeJunction(() -> false);
-    TreeCommandNode c1 = new TreeCommandProxy(Commands.print("hello world!"));
-    TreeCommandNode c2 = new TreeCommandProxy(Commands.print("hello world!!!"));
-
-    //configure the tree
-    c1.left = c2;
-    cond.right = c2.clone();
-    //infinite loop without .clone()!
-    c2.left = c1.clone();
-    cond.left = c1;
-    n.left = cond;
-
-    //build the auto
-    autoChooser.addOption("Tree Auto", new TreeAuto(n));
+    //autoChooser.addOption("FivePieceCenter", AutoHelper.getFivePieceAuto(m_swerve));
 
     Constants.kDriverTab.add("Auto Chooser", autoChooser);
     if(Constants.DEBUG_MODE) {
@@ -149,9 +137,9 @@ public class RobotContainer {
     
     m_swerve.setDefaultCommand(new DefaultSwerveCommand(
         m_swerve,
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftX(), 0.05),
-        () -> -MathUtil.applyDeadband(m_driverController.getLeftY(), 0.05),
-        () -> -MathUtil.applyDeadband(m_driverController.getRightX(), 0.05),
+        () -> -m_driverController.getLeftX(),
+        () -> -m_driverController.getLeftY(),
+        () -> -m_driverController.getRightX(),
         () -> m_driverController.getHID().getYButtonPressed(),
         () -> m_driverController.getHID().getXButton(),
         () -> m_driverController.getHID().getAButton(),

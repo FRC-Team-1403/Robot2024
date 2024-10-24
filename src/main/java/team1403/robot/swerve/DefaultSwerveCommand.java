@@ -172,6 +172,7 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
     {
       //normalize using polar coordinates
       double velocity = MathUtil.clamp(vel_hypot, 0, 1);
+      velocity = MathUtil.applyDeadband(velocity, 0.05);
       double angle = Math.atan2(vertical, horizontal);
 
       velocity *= m_speedLimiter;
@@ -192,7 +193,8 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
       horizontal = velocity * Math.cos(angle);
       vertical = velocity * Math.sin(angle);
     }
-    double angular = m_rotationRateLimiter.calculate(squareNum(m_rotationSupplier.getAsDouble()) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
+    double ang_deadband = MathUtil.applyDeadband(m_rotationSupplier.getAsDouble(), 0.05);
+    double angular = m_rotationRateLimiter.calculate(squareNum(ang_deadband) * m_speedLimiter) * Swerve.kMaxAngularSpeed;
 
     Pose2d curPose = m_drivetrainSubsystem.getPose();
     Rotation2d curRotation = curPose.getRotation();
