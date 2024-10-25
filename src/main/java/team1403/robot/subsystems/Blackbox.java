@@ -31,7 +31,7 @@ public class Blackbox {
     }
 
     public static boolean isLoaded() {
-        return true;
+        return loaded;
     }
 
     public static boolean isValidTargetPosition() {
