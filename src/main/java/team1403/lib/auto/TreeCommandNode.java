@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TreeCommandNode extends Command implements Cloneable {
-    public ArrayList<TreeCommandNode> child = new ArrayList<>();
+    public final ArrayList<TreeCommandNode> child = new ArrayList<>();
 
     public int getBranch() { return 0; }
 
