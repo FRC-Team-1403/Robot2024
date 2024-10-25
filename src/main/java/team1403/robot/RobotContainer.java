@@ -105,11 +105,6 @@ public class RobotContainer {
 
     configureBindings();
   }
-
-  private boolean cancelAutoMovement() {
-    return Math.hypot(m_driverController.getLeftX(), m_driverController.getLeftY()) > 0.2;
-  }
-
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
@@ -172,22 +167,18 @@ public class RobotContainer {
 
     m_driverController.b().onTrue(m_swerve.runOnce(() -> m_swerve.zeroHeading()));
 
-    m_driverController.rightBumper()
-    .and(() -> !cancelAutoMovement())
-    .onTrue(Commands.runOnce(() -> {
+    m_driverController.rightBumper().whileTrue(Commands.runOnce(() -> {
       Pose2d tar = pos_red_shoot;
       if(CougarUtil.getAlliance() == Alliance.Blue) tar = pos_blue_shoot;
       Blackbox.targetPosition = tar;
-      m_pathFinder = AutoUtil.pathFindToPose(tar).onlyWhile(() -> !cancelAutoMovement());
+      m_pathFinder = AutoUtil.pathFindToPose(tar);
     }).andThen(m_swerve.defer(() -> m_pathFinder)));
 
-    m_driverController.leftBumper()
-    .and(() -> !cancelAutoMovement())
-    .onTrue(Commands.runOnce(() -> {
+    m_driverController.leftBumper().whileTrue(Commands.runOnce(() -> {
       Pose2d tar = pose_red_amp;
       if(CougarUtil.getAlliance() == Alliance.Blue) tar = pose_blue_amp;
       Blackbox.targetPosition = tar;
-      m_pathFinder = AutoUtil.pathFindToPose(tar).onlyWhile(() -> !cancelAutoMovement());
+      m_pathFinder = AutoUtil.pathFindToPose(tar);
     }).andThen(m_swerve.defer(() -> m_pathFinder)));
 
     m_operatorController.povLeft().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(1)));
