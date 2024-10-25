@@ -1,32 +1,31 @@
 package team1403.lib.auto;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TreeCommandNode extends Command implements Cloneable {
-    public TreeCommandNode left = null;
-    public TreeCommandNode right = null;
+    public ArrayList<TreeCommandNode> child = new ArrayList<>();
 
-    public boolean isSuccess() { return true; }
+    public int getBranch() { return 0; }
 
-    public TreeCommandNode setNext(TreeCommandNode l, TreeCommandNode r) {
-        left = l;
-        right = r;
+    public TreeCommandNode setNext(TreeCommandNode... nodes) {
+
+        child.clear();
+        for(TreeCommandNode n : nodes) {
+            child.add(n);
+        }
 
         return this;
-    }
-
-    public TreeCommandNode setNext(TreeCommandNode l) {
-        return setNext(l, null);
     }
 
     //clone the entire tree recursively
     @Override
     public TreeCommandNode clone() { 
         TreeCommandNode ret = new TreeCommandNode();
-        if(left != null)
-            ret.left = left.clone();
-        if(right != null)
-            ret.right = right.clone();
+        for(TreeCommandNode n : child) {
+            ret.child.add(n.clone());
+        }
         return ret;
     }
 }

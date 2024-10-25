@@ -29,8 +29,10 @@ public class TreeAuto extends Command {
 
         if (cur.isFinished()) {
 
-            if (cur.isSuccess()) cur = cur.left;
-            else cur = cur.right;
+            if(cur.getBranch() < cur.child.size()) 
+                cur = cur.child.get(cur.getBranch());
+            else
+                cur = null;
 
             if (cur != null) cur.schedule();
         }

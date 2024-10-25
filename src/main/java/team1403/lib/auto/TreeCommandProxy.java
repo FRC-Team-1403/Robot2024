@@ -9,24 +9,33 @@ public class TreeCommandProxy extends TreeCommandNode {
 
     private Supplier<Command> cmd_s;
     private Command cmd = null;
-    private BooleanSupplier success;
+    private Supplier<Integer> branch_select;
 
     public TreeCommandProxy(Command c) {
-        this(() -> c, () -> true);
+        this(() -> c, () -> 0);
     }
 
-    public TreeCommandProxy(Command c, BooleanSupplier override) {
+    public TreeCommandProxy(Command c, Supplier<Integer> override) {
         this(() -> c, override);
     }
 
     public TreeCommandProxy(Supplier<Command> c_s) {
-        this(c_s, () -> true);
+        this(c_s, () -> 0);
     }
 
-    //overrides success to false if you pass in false
+    public TreeCommandProxy(Supplier<Command> c, Supplier<Integer> override) {
+        cmd_s = c;
+        branch_select = override;
+    }
+
+    //binary variant for compatibility with older code
     public TreeCommandProxy(Supplier<Command> c, BooleanSupplier override) {
         cmd_s = c;
-        success = override;
+        branch_select = () -> override.getAsBoolean() ? 0 : 1;
+    }
+
+    public TreeCommandProxy(Command c, BooleanSupplier override) {
+        this(() -> c, override);
     }
     
     @Override
@@ -52,17 +61,16 @@ public class TreeCommandProxy extends TreeCommandNode {
     }
 
     @Override
-    public boolean isSuccess() {
-        return success.getAsBoolean();
+    public int getBranch() {
+        return branch_select.get();
     }
 
     @Override
     public TreeCommandProxy clone() {
-        TreeCommandProxy ret = new TreeCommandProxy(cmd_s, success);
-        if(left != null)
-            ret.left = left.clone();
-        if(right != null)
-            ret.right = right.clone();
+        TreeCommandProxy ret = new TreeCommandProxy(cmd_s, branch_select);
+        for(TreeCommandNode n : child) {
+            ret.child.add(n.clone());
+        }
         return ret;
     }
 

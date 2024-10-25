@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.auto.TreeAuto;
 import team1403.lib.auto.TreeCommandNode;
 import team1403.lib.auto.TreeCommandProxy;
-import team1403.lib.auto.TreeJunction;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants.Setpoints;
