@@ -14,10 +14,10 @@ import team1403.robot.Constants;
 
 public class SyncSwerveDrivePoseEstimator {
 
-    private SwerveDrivePoseEstimator m_odometer;
-    private Supplier<SwerveModulePosition[]> m_modPosSup;
-    private Supplier<Rotation2d> m_gyroRotation;
-    private AtomicReference<Pose2d> m_cachedPose;
+    private final SwerveDrivePoseEstimator m_odometer;
+    private final Supplier<SwerveModulePosition[]> m_modPosSup;
+    private final Supplier<Rotation2d> m_gyroRotation;
+    private final AtomicReference<Pose2d> m_cachedPose;
 
 
     public SyncSwerveDrivePoseEstimator(Pose2d initialPose, Supplier<Rotation2d> gyroRotation, Supplier<SwerveModulePosition[]> modulePoses) {
