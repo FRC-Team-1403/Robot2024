@@ -30,7 +30,7 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   private final DutyCycleEncoder m_armEncoder;
   private final DutyCycleEncoder m_wristEncoder;
   private final ProfiledPIDController m_armPid;
-  private final ProfiledPIDController m_wristPid;
+  private final PIDController m_wristPid;
   private final ArmFeedforward m_feedforward;
 
   // Setpoints
@@ -54,10 +54,10 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
     configPivotMotors();
     configWristMotor();
 
-    m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(370, 570));
-    m_wristPid = new ProfiledPIDController(Constants.Wrist.KPWrist, Constants.Wrist.KIWrist, Constants.Wrist.KDWrist, new TrapezoidProfile.Constraints(200, 600));
+    m_armPid = new ProfiledPIDController(Constants.Arm.KPArmPivot, Constants.Arm.KIArmPivot, Constants.Arm.KDArmPivot, new TrapezoidProfile.Constraints(370, 500));
+    m_wristPid = new PIDController(Constants.Wrist.KPWrist, Constants.Wrist.KIWrist, Constants.Wrist.KDWrist);
     m_armPid.reset(getPivotAngle(), 0);
-    m_wristPid.reset(getWristAngle(), 0);
+    //m_wristPid.reset(getWristAngle(), 0);
 
     m_mechanism = new Mechanism2d(3, 3);
     m_mechanismRoot = m_mechanism.getRoot("A-Frame", 1, 1);

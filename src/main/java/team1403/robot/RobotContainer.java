@@ -30,7 +30,7 @@ import team1403.lib.auto.TreeCommandProxy;
 import team1403.lib.util.AutoUtil;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants.Setpoints;
-import team1403.robot.autos.AutoHelper;
+// import team1403.robot.autos.AutoHelper;
 import team1403.robot.commands.IntakeShooterLoop;
 import team1403.robot.commands.TriggerShotCommand;
 import team1403.robot.subsystems.ArmWristSubsystem;

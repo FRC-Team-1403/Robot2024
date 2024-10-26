@@ -17,6 +17,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -151,7 +152,13 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
 
     zeroGyroscope();
 
-    m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
+    Pose2d initialPose = new Pose2d();
+    if(CougarUtil.getAlliance() == Alliance.Red)
+    {
+      initialPose = new Pose2d(new Translation2d(), new Rotation2d(Math.PI));
+    }
+
+    m_odometer = new SyncSwerveDrivePoseEstimator(initialPose, () -> getGyroscopeRotation(), () -> getModulePositions());
 
     VisionSimUtil.initVisionSim();
 
