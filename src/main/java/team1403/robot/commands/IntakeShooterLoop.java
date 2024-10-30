@@ -271,6 +271,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         if(m_resetToIntake.getAsBoolean()) {
             m_state = State.RESET;
             Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
+            Blackbox.setTrigger(false);
         }
         log("State", m_state.toString());
     }
