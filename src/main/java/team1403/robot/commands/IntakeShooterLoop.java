@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -75,6 +76,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         //     m_state = State.RAISE;
         // else
         m_state = State.RESET;
+        Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
         // time.reset();
         // time.start();   
         
@@ -92,10 +94,12 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         {
             case RESET:
             {
+                Blackbox.setTrigger(false);
                 m_led.setLedColor(0.41);
                 m_armwrist.setWristSetpoint(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
                 m_intakeAndShooter.setShooterRPM(0.0);
+                //if (DriverStation.isTeleopEnabled()) m_ops.setRumble(RumbleType.kBothRumble, 0.5);
                 if(m_armwrist.isWristAtSetpoint())
                 {
                     m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
@@ -109,6 +113,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                 {
                     m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
                     m_intakeAndShooter.setIntakeSpeed(0.8);
+                    //m_ops.setRumble(RumbleType.kBothRumble, 0);
                     m_state = State.INTAKE;
                 }
                 break;
@@ -220,7 +225,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                 }
 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
-                if(m_trigger.getAsBoolean() && m_armwrist.isArmAtSetpoint() && m_armwrist.isWristAtSetpoint()) {
+                if((m_trigger.getAsBoolean() || Blackbox.getTrigger()) && m_armwrist.isArmAtSetpoint() && m_armwrist.isWristAtSetpoint()) {
                     if(m_intakeAndShooter.teleopIsReady()){
                         m_intakeAndShooter.setIntakeSpeed(0.5);
                         m_fpga = Timer.getFPGATimestamp();
