@@ -42,9 +42,9 @@ public class AutoHelper {
         Constants.Swerve.kPathConstraints), success);
     }
 
-    private static TreeCommandNode loadPath(String name) {
-        return loadPath(name, () -> true);
-    }
+    // private static TreeCommandNode loadPath(String name) {
+    //     return loadPath(name, () -> true);
+    // }
 
     public static Command getOnePiece() {
         return Blackbox.shoot();
@@ -60,17 +60,17 @@ public class AutoHelper {
         TreeCommandNode shoot = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoShootSetpoint), Blackbox.shoot()));
 
         //end of auto (TODO: make the 4th piece go further out)
-        TreeCommandNode fourthPieceShoot = loadPath("fourthPieceShoot").setNext(shoot.clone());
+        TreeCommandNode fourthPieceShoot = loadPath("fourthPieceShoot", () -> true).setNext(shoot.clone());
         TreeCommandNode fourthPieceFromThird = loadPath("fourthPieceFromThird", () -> Blackbox.isLoaded()).setNext(fourthPieceShoot);
         TreeCommandNode fourthPiece = loadPath("fourthPiece", () -> Blackbox.isLoaded()).setNext(fourthPieceShoot);
 
-        TreeCommandNode thirdPieceShoot = loadPath("thirdPieceShoot").setNext(shoot.clone().setNext(fourthPiece));
+        TreeCommandNode thirdPieceShoot = loadPath("thirdPieceShoot", () -> true).setNext(shoot.clone().setNext(fourthPiece));
         TreeCommandNode thirdPiece = loadPath("thirdPiece", () -> Blackbox.isLoaded()).setNext(thirdPieceShoot, fourthPieceFromThird);
         TreeCommandNode thirdPieceFromSecond = loadPath("thirdPieceFromSecond", () -> Blackbox.isLoaded()).setNext(thirdPieceShoot, fourthPieceFromThird);
-        TreeCommandNode secondPieceShoot = loadPath("secondPieceShoot").setNext(shoot.clone().setNext(thirdPiece));
+        TreeCommandNode secondPieceShoot = loadPath("secondPieceShoot", () -> true).setNext(shoot.clone().setNext(thirdPiece));
         TreeCommandNode secondPiece = loadPath("secondPiece", () -> Blackbox.isLoaded()).setNext(secondPieceShoot, thirdPieceFromSecond);
         TreeCommandNode secondPieceFromFirst = loadPath("secondPieceFromFirst", () -> Blackbox.isLoaded()).setNext(secondPieceShoot, thirdPieceFromSecond);
-        TreeCommandNode firePieceShoot = loadPath("firstPieceShoot").setNext(shoot.clone().setNext(secondPiece));
+        TreeCommandNode firePieceShoot = loadPath("firstPieceShoot", () -> true).setNext(shoot.clone().setNext(secondPiece));
         TreeCommandNode firstPiece = loadPathResetPose("firstPiece", () -> Blackbox.isLoaded(), swerve).setNext(firePieceShoot, secondPieceFromFirst);
         TreeCommandNode root = shoot.clone().setNext(firstPiece);
 
