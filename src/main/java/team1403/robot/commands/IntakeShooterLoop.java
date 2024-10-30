@@ -94,7 +94,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         {
             case RESET:
             {
-                Blackbox.setTrigger(false);
+                //Blackbox.setTrigger(false);
                 m_led.setLedColor(0.41);
                 m_armwrist.setWristSetpoint(140);
                 m_intakeAndShooter.setIntakeSpeed(0.0);
@@ -241,6 +241,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                         m_state = State.RESET;
                         m_counter = 0;
                         Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
+                        Blackbox.setTrigger(false);
                     }
                     else m_counter++;
                 }
@@ -255,6 +256,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                     if(Timer.getFPGATimestamp() - m_fpga > 0.1) {
                         m_state = State.RESET;
                         Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
+                        Blackbox.setTrigger(false);
                     }
                 }
                 break;
