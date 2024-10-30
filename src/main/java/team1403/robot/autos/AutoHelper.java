@@ -13,6 +13,7 @@ import team1403.lib.auto.TreeCommandProxy;
 import team1403.lib.util.CougarUtil;
 import team1403.robot.Constants;
 import team1403.robot.subsystems.Blackbox;
+import team1403.robot.subsystems.SonicBlasterSetpoint;
 import team1403.robot.swerve.SwerveSubsystem;
 
 public class AutoHelper {
@@ -49,10 +50,14 @@ public class AutoHelper {
         return Blackbox.shoot();
     }
 
+    //yo devastate fix this setpoint
+    private static final SonicBlasterSetpoint kAutoShootSetpoint = new SonicBlasterSetpoint(
+        Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, 0, 4800);
+
     //potentially rewrite to use Commands.either :)
     public static Command getFivePieceAuto(SwerveSubsystem swerve) {
         //shoot is always success
-        TreeCommandNode shoot = new TreeCommandProxy(Blackbox.shoot());
+        TreeCommandNode shoot = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoShootSetpoint), Blackbox.shoot()));
 
         //end of auto (TODO: make the 4th piece go further out)
         TreeCommandNode fourthPieceShoot = loadPath("fourthPieceShoot").setNext(shoot.clone());
