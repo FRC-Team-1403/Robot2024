@@ -58,6 +58,7 @@ public class AutoHelper {
     public static Command getFivePieceAuto(SwerveSubsystem swerve) {
         //shoot is always success
         TreeCommandNode shoot = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoShootSetpoint), Blackbox.shoot()));
+        TreeCommandNode first_piece = new TreeCommandProxy(Blackbox.shoot());
 
         //end of auto (TODO: make the 4th piece go further out)
         TreeCommandNode fourthPieceShoot = loadPath("fourthPieceShoot", () -> true).setNext(shoot.clone());
@@ -72,7 +73,7 @@ public class AutoHelper {
         TreeCommandNode secondPieceFromFirst = loadPath("secondPieceFromFirst", () -> Blackbox.isLoaded()).setNext(secondPieceShoot, thirdPieceFromSecond);
         TreeCommandNode firePieceShoot = loadPath("firstPieceShoot", () -> true).setNext(shoot.clone().setNext(secondPiece));
         TreeCommandNode firstPiece = loadPathResetPose("firstPiece", () -> Blackbox.isLoaded(), swerve).setNext(firePieceShoot, secondPieceFromFirst);
-        TreeCommandNode root = shoot.clone().setNext(firstPiece);
+        TreeCommandNode root = first_piece.clone().setNext(firstPiece);
 
         return new TreeAuto(root);
     }
