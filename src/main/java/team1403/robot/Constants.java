@@ -96,7 +96,10 @@ public class Constants {
     public static final double kSteerRelativeEncoderPositionConversionFactor = 2.0 * Math.PI
         * Swerve.kSteerReduction;
 
-    public static final double kMaxSpeed = 5.05; // source: https://www.swervedrivespecialties.com/products/mk4-swerve-module?variant=39376675078257
+    // NEO max RPM
+    public static final double kDriveMotorMaxRPM = 5800;
+
+    public static final double kMaxSpeed = kDriveMotorMaxRPM * kDrivePositionConversionFactor / 60.0; 
 
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kWheelWidth / 2.0, kWheelLength / 2.0)); // 11.96207492071159 rad/s
 
