@@ -88,7 +88,8 @@ public class Constants {
     
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.9); //3.85 monty (actual 3.8), 4 lehigh (actual 3.83), 3.98 worlds (actual 3.87)
     
-    public static final double kDriveReduction = (14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0); // ~ 1/6.21
+    public static final double kFirstDriveStage = (15.0 / 45.0);
+    public static final double kDriveReduction = (14.0 / 50.0) * (28.0 / 16.0) * kFirstDriveStage; // ~ 1/6.21
     public static final double kDrivePositionConversionFactor = kWheelDiameterMeters * Math.PI * kDriveReduction; //(14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0) * kWheelDiameterMeters * Math.PI; //0.05215454470665408
 
     public static final double kSteerReduction = (15.0 / 32.0) * (10.0 / 60.0);
@@ -105,7 +106,7 @@ public class Constants {
 
     // IMU has an angular velocity, so to get the heading at the right point time add the velocity * a coeff to get the "real" heading
     public static final double kAngVelCoeff = 0.12; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
-    public static final double kCouplingRatio = 0 * kWheelDiameterMeters; //TODO: needs tuning! (probably pretty small)
+    public static final double kCouplingRatio = kFirstDriveStage * kDrivePositionConversionFactor / (2 * Math.PI); //TODO: check this!
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 45;
