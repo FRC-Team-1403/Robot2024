@@ -152,9 +152,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
 
     zeroGyroscope();
 
-    m_odometer = new SyncSwerveDrivePoseEstimator(new Pose2d(), () -> getGyroscopeRotation(), () -> getModulePositions());
-
-    zeroHeading();
+    m_odometer = new SyncSwerveDrivePoseEstimator(CougarUtil.getInitialRobotPose(), () -> getGyroscopeRotation(), () -> getModulePositions());
 
     VisionSimUtil.initVisionSim();
 
