@@ -266,6 +266,11 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
   public void setModuleStates(SwerveModuleState[] states) {
     SwerveModuleState[] currentStates = getModuleStates();
 
+    //desaturate sandwich :)
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.kMaxSpeed);
+    ChassisSpeeds temp = Constants.Swerve.kDriveKinematics.toChassisSpeeds(states);
+    temp = ChassisSpeeds.discretize(temp, Constants.kLoopTime);
+    states = Constants.Swerve.kDriveKinematics.toSwerveModuleStates(temp);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.kMaxSpeed);
 
     for (int i = 0; i < m_modules.length; i++) {
@@ -333,7 +338,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
       chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, rot.plus(new Rotation2d(dtheta)));
     }
 
-    return ChassisSpeeds.discretize(chassisSpeeds, Constants.kLoopTime);
+    return chassisSpeeds;
   }
 
   private ChassisSpeeds rotationalDriftCorrection(ChassisSpeeds speeds) {
