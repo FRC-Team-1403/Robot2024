@@ -28,7 +28,6 @@ import team1403.robot.subsystems.Blackbox;
 public class Robot extends TimedRobot implements Logged {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private Command m_combinedCommand;
 
   public Robot() {
     super(Constants.kLoopTime);
@@ -52,7 +51,6 @@ public class Robot extends TimedRobot implements Logged {
     Constants.kDriverTab.addDouble("Match Time", () -> DriverStation.getMatchTime());
 
     m_robotContainer = new RobotContainer();
-    m_combinedCommand = m_robotContainer.getTeleopCommand();
 
     // SmartDashboard.putNumber("Servo Angle", 180);
     CameraServer.startAutomaticCapture();
@@ -111,7 +109,6 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
-    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during autonomous. */
@@ -132,7 +129,6 @@ public class Robot extends TimedRobot implements Logged {
       m_autonomousCommand.cancel();
     }
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
-    m_combinedCommand.schedule();
   }
 
   /** This function is called periodically during operator control. */

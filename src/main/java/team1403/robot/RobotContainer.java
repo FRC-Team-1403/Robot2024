@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import team1403.lib.auto.TreeAuto;
 import team1403.lib.auto.TreeCommandNode;
@@ -184,6 +185,9 @@ public class RobotContainer {
     m_operatorController.povLeft().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(1)));
       
     m_operatorController.povDown().onTrue(m_hanger.runOnce(() -> m_hanger.runHanger(-1)));
+
+    //run intake shooter state machine
+    RobotModeTriggers.disabled().whileFalse(m_teleopCommand);
   }
   
   /**
@@ -194,9 +198,5 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
-  }
-
-  public Command getTeleopCommand() {
-    return m_teleopCommand;
   }
 }
