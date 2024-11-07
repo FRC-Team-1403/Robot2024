@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -100,10 +101,12 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   }
 
   public boolean isArmAtSetpoint() {
+    if(DriverStation.isAutonomous()) return Math.abs(getPivotAngle() - m_pivotAngleSetpoint) <= 3.0;
     return Math.abs(getPivotAngle() - m_pivotAngleSetpoint) <= 5.0;
   }
 
   public boolean isWristAtSetpoint() {
+    if(DriverStation.isAutonomous()) return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
     return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
   }
 

@@ -134,7 +134,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                     // m_armwrist.setWristSetpoint(115);
                     m_state = State.RAISE;
                 }
-                m_armwrist.setArmSetpoint(m_armwrist.getPivotAngle() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
+                if(Math.abs(m_ops.getRightY()) >= 0.05) m_armwrist.setArmSetpoint(m_armwrist.getPivotSetpoint() - MathUtil.applyDeadband(m_ops.getRightY(), 0.05));
                 break;
             }
             case LOADING_STATION:
