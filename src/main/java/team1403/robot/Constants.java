@@ -282,7 +282,7 @@ public class Constants {
     public static final double kAbsoluteWristOffset = 0;
 
     public static final double KPWrist = 0.0097; //original value 0.0092 changed - 0.0097
-    public static final double KIWrist = 0.0;
+    public static final double KIWrist = 0.001;
     public static final double KDWrist = 0;
 
     public static final double kTopLimit = 180;
