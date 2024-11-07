@@ -52,7 +52,7 @@ public class Constants {
     public static final int kModuleUpdateRateMs = 5;
     public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
-    public static final double kPTurning = 0.4;
+    public static final double kPTurning = 0.8;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
