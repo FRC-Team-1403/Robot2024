@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -38,7 +39,8 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   private Debouncer m_shooterDebouncer;
   private Debouncer m_intakeDebouncer;
 
-  private final MotionMagicVelocityDutyCycle m_request = new MotionMagicVelocityDutyCycle(0);
+  //this one has voltage compensation (don't use duty cycle for that reason)
+  private final MotionMagicVelocityVoltage m_request = new MotionMagicVelocityVoltage(0);
 
 
   /**
@@ -68,9 +70,9 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     // FIXME: Tune these values!
     var slot0Configs = config.Slot0;
     slot0Configs.kS = 0;
-    slot0Configs.kV = 0.0093;
+    slot0Configs.kV = 0.0092 * 12;
     slot0Configs.kA = 0;
-    slot0Configs.kP = 0.003;
+    slot0Configs.kP = 0.003 * 12;
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 
