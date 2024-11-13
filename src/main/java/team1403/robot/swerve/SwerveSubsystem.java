@@ -158,7 +158,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
 
     m_cameras.add(new AprilTagCamera("Unknown_Camera", () -> Swerve.kCameraTransfrom, this::getPose));
 
-    m_odometeryNotifier = new Notifier(this::highFreqUpdate);
+    m_odometeryNotifier = new Notifier(m_odometer::update);
     m_odometeryNotifier.setName("SwerveOdoNotifer");
     m_odometeryNotifier.startPeriodic(Units.millisecondsToSeconds(Constants.Swerve.kModuleUpdateRateMs));
 
@@ -349,10 +349,6 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     }
 
     return speeds;
-  }
-
-  private void highFreqUpdate() {
-    m_odometer.update();
   }
 
   @Override
