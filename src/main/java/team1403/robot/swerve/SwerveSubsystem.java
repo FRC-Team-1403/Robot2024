@@ -397,6 +397,9 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
 
   @Override
   public void periodic() {
+
+    log("Odometry/Cycles", m_odometer.resetUpdateCount());
+
     if(!m_disableVision)
     {
       for(AprilTagCamera cam : m_cameras)
