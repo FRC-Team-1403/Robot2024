@@ -155,7 +155,11 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
   //TODO: return false for bad estimates
   public boolean checkVisionResult() {
 
-    if(getTagAreas() < 0.5) return false;
+    if(getTagAreas() < 0.4) return false;
+
+    if(getPose().getZ() > 1){
+      return false;
+    }
 
     return true;
   }
@@ -206,10 +210,10 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
     
     if(hasPose()) {
       log(m_camera.getName() + "/Combined Area", getTagAreas());
-      if(checkVisionResult()) {
-        log(m_camera.getName() + "/Pose3d", getPose());
-        log(m_camera.getName() + "/Pose2d", getPose2D());
-      }
+      //if(checkVisionResult()) {
+      log(m_camera.getName() + "/Pose3d", getPose());
+      log(m_camera.getName() + "/Pose2d", getPose2D());
+      //}
     }
 
     // if(hasTarget())

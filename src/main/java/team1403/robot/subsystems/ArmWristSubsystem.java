@@ -116,6 +116,7 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
 
   public void setWristSetpoint(double angle) {
     m_wristAngleSetpoint = MathUtil.clamp(angle, Constants.Wrist.kWristLowerLimit, Constants.Wrist.kWristUpperLimit);
+    //m_wristPid.reset(getWristAngle(), 0);
   }
 
   public void applySetpoint(SonicBlasterSetpoint setpoint) {

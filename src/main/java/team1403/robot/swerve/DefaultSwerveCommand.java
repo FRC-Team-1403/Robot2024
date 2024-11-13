@@ -113,7 +113,7 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
     m_snipingMode = snipingMode;
     m_isFieldRelative = true;
     m_translationLimiter = new SlewRateLimiter(2, -3, 0);
-    m_rotationRateLimiter = new SlewRateLimiter(3, -3, 0);
+    m_rotationRateLimiter = new SlewRateLimiter(4, -4, 0);
     m_directionSlewRate = new CircularSlewRateLimiter(kDirectionSlewRateLimit);
     m_controller = new ProfiledPIDController(6, 0, 0, new TrapezoidProfile.Constraints(Swerve.kMaxAngularSpeed, 80));
     m_controller.enableContinuousInput(-Math.PI, Math.PI);

@@ -52,7 +52,7 @@ public class Constants {
     public static final int kModuleUpdateRateMs = 5;
     public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
-    public static final double kPTurning = 0.8;
+    public static final double kPTurning = 0.6;
     public static final double kITurning = 0.0;
     public static final double kDTurning = 0.0;
 
@@ -246,7 +246,7 @@ public class Constants {
 
     public static double kIntakeSetpoint = 90.5; // 92
     public static  double kAmpSetpoint = 210;
-    public static  double kLoadingSetpoint = 150;
+    public static  double kLoadingSetpoint = 150; //150
     public static  double kDriveSetpoint = 114;
     public static  double kDefaultClose = 114;
   }
@@ -282,7 +282,7 @@ public class Constants {
     public static final double kAbsoluteWristOffset = 0;
 
     public static final double KPWrist = 0.0097; //original value 0.0092 changed - 0.0097
-    public static final double KIWrist = 0.001;
+    public static final double KIWrist = 0.0005;
     public static final double KDWrist = 0;
 
     public static final double kTopLimit = 180;
@@ -320,7 +320,11 @@ public class Constants {
                                     Constants.IntakeAndShooter.kCenterLineRPM);
     public static final SonicBlasterSetpoint kAmpSetpoint = 
         new SonicBlasterSetpoint(Constants.Arm.kAmpSetpoint, Constants.Wrist.kAmpSetpoint, 0, 2400);
-    public static final SonicBlasterSetpoint kFeedSetpoint = 
-        new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, 0, 3800);                     
+    public static final SonicBlasterSetpoint kRightFeedSetpoint = 
+        new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint + 20, 0, 3800);
+    public static final SonicBlasterSetpoint kLeftFeedSetpoint = 
+        new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint + 20, 0, 3500);
+    // public static final SonicBlasterSetpoint kDownFeedSetpoint =
+    //     new SonicBlasterSetpoint(Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint + 20, 0, 3500);
   }
 }

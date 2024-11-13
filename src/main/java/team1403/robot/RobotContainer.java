@@ -165,7 +165,7 @@ public class RobotContainer {
     m_operatorController.y().onTrue(Blackbox.commandSetpoint(Setpoints.kDriveSetpoint));
     m_operatorController.leftTrigger().onTrue(Blackbox.commandSetpoint(Setpoints.kStageSetpoint));
     m_operatorController.povUp().onTrue(Blackbox.commandSetpoint(Setpoints.kCenterlineSetpoint));
-    m_operatorController.povRight().onTrue(Blackbox.commandSetpoint(Setpoints.kFeedSetpoint));
+    m_operatorController.povRight().onTrue(Blackbox.commandSetpoint(Setpoints.kRightFeedSetpoint));
     m_operatorController.b().onTrue(Blackbox.commandSetpoint(Setpoints.kAmpSetpoint));
 
     m_driverController.b().onTrue(m_swerve.runOnce(() -> m_swerve.zeroHeading()));
