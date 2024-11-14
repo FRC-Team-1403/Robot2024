@@ -216,7 +216,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
                     m_intakeAndShooter.setShooterRPM(Constants.IntakeAndShooter.kFeedShotRPM);
                 }*/
 
-                if(m_armwrist.isArmAtSetpoint() && m_armwrist.isWristAtSetpoint() && m_intakeAndShooter.isIntakePhotogateTriggered() && m_intakeAndShooter.teleopIsReady()) {
+                if(m_armwrist.isArmAtSetpoint() && m_armwrist.isWristAtSetpoint() && m_intakeAndShooter.isIntakePhotogateTriggered() && m_intakeAndShooter.isReady()) {
                     if(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red) == DriverStation.Alliance.Blue) m_led.setLedMode(LEDState.DARK_BLUE);
                     else m_led.setLedMode(LEDState.DARK_RED);
                 }
@@ -226,7 +226,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
 
                 // TODO: add indicator for the driver/operator in case the robot is not ready to shoot
                 if((m_trigger.getAsBoolean() || Blackbox.getTrigger()) && m_armwrist.isArmAtSetpoint() && m_armwrist.isWristAtSetpoint()) {
-                    if(m_intakeAndShooter.teleopIsReady()){
+                    if(m_intakeAndShooter.isReady()){
                         m_intakeAndShooter.setIntakeSpeed(0.5);
                         m_fpga = Timer.getFPGATimestamp();
                         m_state = State.SHOOT;

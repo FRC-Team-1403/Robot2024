@@ -13,6 +13,7 @@ import com.revrobotics.SparkRelativeEncoder;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
 import team1403.lib.device.wpi.CougarSparkMax;
@@ -91,7 +92,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     if(Constants.DEBUG_MODE) {
       Constants.kDebugTab.addBoolean("Intake Sensor", () -> isIntakePhotogateTriggered());
       Constants.kDebugTab.addBoolean("Shooter Sensor", () -> isShooterPhotogateTriggered());
-      Constants.kDebugTab.addBoolean("Shooter (teleop) Ready", () -> teleopIsReady());
+      Constants.kDebugTab.addBoolean("Shooter Ready", () -> isReady());
     }
   }
 
@@ -153,11 +154,14 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   }
 
   public boolean isReady(){
+
+    if(DriverStation.isTeleop()) return teleopIsReady();
+
     return Math.abs(m_request.Velocity * 60 - m_bottomVel.getValue() * 60) < 300 && 
            Math.abs(m_request.Velocity * 60 - m_topVel.getValue() * 60) < 300;
   }
 
-  public boolean teleopIsReady() {
+  private boolean teleopIsReady() {
     return Math.abs(m_request.Velocity * 60 - m_bottomVel.getValue() * 60) < 1000;
   }
 
