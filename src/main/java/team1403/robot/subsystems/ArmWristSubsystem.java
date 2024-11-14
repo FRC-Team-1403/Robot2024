@@ -101,12 +101,12 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   }
 
   public boolean isArmAtSetpoint() {
-    if(DriverStation.isAutonomous()) return Math.abs(getPivotAngle() - m_pivotAngleSetpoint) <= 3.0;
+    //if(DriverStation.isAutonomous()) return Math.abs(getPivotAngle() - m_pivotAngleSetpoint) <= 3.0;
     return Math.abs(getPivotAngle() - m_pivotAngleSetpoint) <= 5.0;
   }
 
   public boolean isWristAtSetpoint() {
-    if(DriverStation.isAutonomous()) return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
+    //if(DriverStation.isAutonomous()) return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 3.0;
     return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
   }
 
