@@ -49,14 +49,14 @@ public class Constants {
     public static final int kStatusFrameGeneralPeriodMs = 250;
     public static final int kCanTimeoutMs = 250;
 
-    public static final int kModuleUpdateRateMs = 5;
+    public static final int kModuleUpdateRateMs = 10;
     public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
-    public static final double kPTurning = 0.6;
+    public static final double kPTurning = 0.8;
     public static final double kITurning = 0.0;
-    public static final double kDTurning = 0.0;
+    public static final double kDTurning = 0.03;
 
-    public static final PIDConstants kTranslationPID = new PIDConstants(1.78, 0, 0);
+    public static final PIDConstants kTranslationPID = new PIDConstants(1.9, 0, 0);
     public static final PIDConstants kRotationPID = new PIDConstants(3, 0, 0);
 
     public static final double kPDrive = 0.04;
@@ -86,7 +86,7 @@ public class Constants {
     public static final double backLeftEncoderOffset = -0.026077673394056; //4.743068596142402, -0.026077673394056
     public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966 , 1.25 - 6.17273869045182 - 2 * Math.PI
     
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.9); //3.85 monty (actual 3.8), 4 lehigh (actual 3.83), 3.98 worlds (actual 3.87)
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.8); //3.85 monty (actual 3.8), 4 lehigh (actual 3.83), 3.98 worlds (actual 3.87)
     
     public static final double kFirstDriveStage = (15.0 / 45.0);
     public static final double kDriveReduction = (14.0 / 50.0) * (28.0 / 16.0) * kFirstDriveStage; // ~ 1/6.21
@@ -282,7 +282,7 @@ public class Constants {
     public static final double kAbsoluteWristOffset = 0;
 
     public static final double KPWrist = 0.0097; //original value 0.0092 changed - 0.0097
-    public static final double KIWrist = 0.0005;
+    public static final double KIWrist = 0.0000;
     public static final double KDWrist = 0;
 
     public static final double kTopLimit = 180;
@@ -299,7 +299,7 @@ public class Constants {
     public static double kSideLineSourceSetpoint = 130; 
     public static double kLaunchpadSetpoint = 140;
     public static double kCenterLineSetpoint = 133;//115
-    public static  double kShootingAngle = 145;//147 for teleop working
+    public static  double kShootingAngle = 147;//147 for teleop working
 
 
     public static final double kWristUpperLimit = 150;

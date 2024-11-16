@@ -171,7 +171,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
-    Blackbox.setLoaded(isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
+    Blackbox.setLoaded(isIntakePhotogateTriggered());
 
     log("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
     log("Shooter/Speed", m_shooterMotorTop.get());

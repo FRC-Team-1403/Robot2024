@@ -16,7 +16,7 @@ public class TriggerShotCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if(timer.hasElapsed(2)) Blackbox.setTrigger(false);
+        if(timer.hasElapsed(4)) Blackbox.setTrigger(false);
         
         return !Blackbox.getTrigger();
     }

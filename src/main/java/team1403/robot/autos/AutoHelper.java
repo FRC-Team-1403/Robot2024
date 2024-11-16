@@ -7,6 +7,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import team1403.lib.auto.TreeAuto;
 import team1403.lib.auto.TreeCommandNode;
 import team1403.lib.auto.TreeCommandProxy;
@@ -52,13 +53,16 @@ public class AutoHelper {
 
     //yo devastate fix this setpoint
     private static final SonicBlasterSetpoint kAutoShootSetpoint = new SonicBlasterSetpoint(
-        Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint, 0, 4800);
+        Constants.Arm.kDriveSetpoint, Constants.Wrist.kDriveSetpoint-3, 0, 4500);
+    private static final SonicBlasterSetpoint kAutoFirstShotSetpoint = new SonicBlasterSetpoint(
+        Constants.Arm.kDriveSetpoint, Constants.Wrist.kShootingAngle+4, 0, 3000);
 
     //potentially rewrite to use Commands.either :)
     public static Command getFivePieceAuto(SwerveSubsystem swerve) {
         //shoot is always success
         TreeCommandNode shoot = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoShootSetpoint), Blackbox.shoot()));
-        TreeCommandNode first_piece = new TreeCommandProxy(Blackbox.shoot());
+        TreeCommandNode delay_shoot = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoShootSetpoint), Blackbox.shoot(), new WaitCommand(1)));
+        TreeCommandNode first_piece = new TreeCommandProxy(Commands.sequence(Blackbox.commandSetpoint(kAutoFirstShotSetpoint), Blackbox.shoot()));
 
         //end of auto (TODO: make the 4th piece go further out)
         TreeCommandNode fourthPieceShoot = loadPath("fourthPieceShoot", () -> true).setNext(shoot.clone());
@@ -71,7 +75,7 @@ public class AutoHelper {
         TreeCommandNode secondPieceShoot = loadPath("secondPieceShoot", () -> true).setNext(shoot.clone().setNext(thirdPiece));
         TreeCommandNode secondPiece = loadPath("secondPiece", () -> Blackbox.isLoaded()).setNext(secondPieceShoot, thirdPieceFromSecond);
         TreeCommandNode secondPieceFromFirst = loadPath("secondPieceFromFirst", () -> Blackbox.isLoaded()).setNext(secondPieceShoot, thirdPieceFromSecond);
-        TreeCommandNode firePieceShoot = loadPath("firstPieceShoot", () -> true).setNext(shoot.clone().setNext(secondPiece));
+        TreeCommandNode firePieceShoot = loadPath("firstPieceShoot", () -> true).setNext(delay_shoot.clone().setNext(secondPiece));
         TreeCommandNode firstPiece = loadPathResetPose("firstPiece", () -> Blackbox.isLoaded(), swerve).setNext(firePieceShoot, secondPieceFromFirst);
         TreeCommandNode root = first_piece.clone().setNext(firstPiece);
 

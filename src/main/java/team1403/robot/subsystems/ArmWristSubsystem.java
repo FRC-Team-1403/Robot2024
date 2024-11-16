@@ -131,7 +131,7 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   private double calcPivotSpeed() {
     double setpoint = m_pivotAngleSetpoint;
 
-    if(setpoint < 110 && !isWristInSafeBounds()) setpoint = MathUtil.clamp(setpoint, 110, Constants.Arm.kMaxPivotAngle);
+    //if(setpoint < 110 && !isWristInSafeBounds()) setpoint = MathUtil.clamp(setpoint, 110, Constants.Arm.kMaxPivotAngle);
 
     double speed = m_armPid.calculate(getPivotAngle(), setpoint);
 
@@ -146,7 +146,7 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   private double calcWristSpeed() {
     double setpoint = m_wristAngleSetpoint;
 
-    if (getPivotAngle() < 110) setpoint = MathUtil.clamp(setpoint, Constants.Wrist.kIntakeSetpoint, 140);
+    //if (getPivotAngle() < 110) setpoint = MathUtil.clamp(setpoint, Constants.Wrist.kIntakeSetpoint, 140);
 
     double speed = m_wristPid.calculate(getWristAngle(), setpoint);
 

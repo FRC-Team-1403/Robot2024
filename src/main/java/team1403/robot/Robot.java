@@ -128,6 +128,7 @@ public class Robot extends TimedRobot implements Logged {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    Blackbox.setTrigger(false);
     // m_robotContainer.getLimelight().setDefaultCommand(m_VisionCommand);
   }
 
