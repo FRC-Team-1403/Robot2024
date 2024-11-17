@@ -259,6 +259,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
    */
   public void stop() {
     m_chassisSpeeds = new ChassisSpeeds();
+    updateTargetModuleStates();
   }
 
   /**
