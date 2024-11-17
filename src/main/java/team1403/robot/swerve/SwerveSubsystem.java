@@ -247,7 +247,11 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
    * @param chassisSpeeds
    */
   public void drive(ChassisSpeeds chassisSpeeds) {
-    m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
+    if(!m_isXModeEnabled) {
+      m_chassisSpeeds = translationalDriftCorrection(chassisSpeeds);
+      //update here to reduce latency
+      updateTargetModuleStates();
+    }
   }
 
   /**
@@ -391,6 +395,14 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     return ret;
   }
 
+  private void updateTargetModuleStates() {
+    ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
+
+    log("SwerveStates/Corrected Target Chassis Speeds", corrected);
+
+    setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
+  }
+
   @Override
   public void periodic() {
 
@@ -413,11 +425,7 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     if (this.m_isXModeEnabled) {
       xMode();
     } else {
-      ChassisSpeeds corrected = rotationalDriftCorrection(m_chassisSpeeds);
-
-      log("SwerveStates/Corrected Target Chassis Speeds", corrected);
-
-      setModuleStates(Swerve.kDriveKinematics.toSwerveModuleStates(corrected));
+      updateTargetModuleStates();
     }
     m_field.setRobotPose(getPose());
     if (Constants.DEBUG_MODE) m_field.getObject("xModules").setPoses(getModulePoses());
