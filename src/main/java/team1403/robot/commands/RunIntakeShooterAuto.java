@@ -5,7 +5,7 @@ import com.google.flatbuffers.Constants;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.robot.Constants.*;
-import team1403.robot.subsystems.arm.ArmSubsystem;
+import team1403.robot.subsystems.ArmSubsystem;
 
 
 public class RunIntakeShooterAuto extends Command {

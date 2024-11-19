@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.robot.Constants;
+import team1403.robot.subsystems.ArmSubsystem;
 
 
 public class Wrist extends SubsystemBase {
