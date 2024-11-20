@@ -160,8 +160,14 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   @Override
   public void periodic() {
 
-    m_wristMech.setAngle(-getWristAngle() + 90);
-    m_armMech.setAngle(getPivotAngle() - 106.4);
+    if (Constants.IntakeAndShooter.isLoaded) {
+      setWristSetpoint(Constants.Wrist.kDriveSetpoint);
+      setArmSetpoint(Constants.Arm.kDriveSetpoint);
+    }
+    else {
+      setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
+      setArmSetpoint(Constants.Arm.kIntakeSetpoint);
+    }
 
     m_leftMotor.set(calcPivotSpeed());
     m_wristMotor.set(calcWristSpeed());

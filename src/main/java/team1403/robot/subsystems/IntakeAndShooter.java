@@ -1,20 +1,19 @@
 package team1403.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkRelativeEncoder;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Logged;
-import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 
@@ -23,7 +22,7 @@ import team1403.robot.Constants;
  */
 public class IntakeAndShooter extends SubsystemBase implements CougarLogged {  
   // Intake motor
-  private static CougarSparkMax m_intakeMotor;
+  private static CANSparkMax m_intakeMotor;
   
   // shooter motors
   private TalonFX m_shooterMotorTop;
@@ -35,8 +34,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
 
-  private Debouncer m_shooterDebouncer;
-  private Debouncer m_intakeDebouncer;
+  public boolean isLoaded;
 
   private final MotionMagicVelocityDutyCycle m_request = new MotionMagicVelocityDutyCycle(0);
 
@@ -53,8 +51,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
    */
   public IntakeAndShooter() {
     // intake motors and sensors
-    m_intakeMotor = CougarSparkMax.makeBrushless("Top Intake Motor", Constants.CanBus.intakeMotorID,
-        SparkRelativeEncoder.Type.kHallSensor);
+    m_intakeMotor = new CANSparkMax(Constants.CanBus.intakeMotorID, MotorType.kBrushless);
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
     m_intakePhotogate = new DigitalInput(Constants.RioPorts.intakePhotogate1);
     // shooter motors and sensors
@@ -78,10 +75,6 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     m_shooterMotorBottom.getConfigurator().apply(config);
 
     m_shooterPhotogate = new DigitalInput(Constants.RioPorts.shooterPhotogate);
-    m_shooterDebouncer = new Debouncer(0.02, DebounceType.kBoth);
-    m_intakeDebouncer = new Debouncer(0.02, DebounceType.kBoth);
-
-    m_intakeMotor.setSmartCurrentLimit(Constants.IntakeAndShooter.kIntakeCurrentLimit);
 
     m_topVel = m_shooterMotorTop.getVelocity();
     m_bottomVel = m_shooterMotorBottom.getVelocity();
@@ -99,14 +92,14 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
    * @return true or false depending on if it is trigered.
    */
   public boolean isIntakePhotogateTriggered() {
-    return m_intakeDebouncer.calculate(!m_intakePhotogate.get());
+    return !m_intakePhotogate.get();
   }
 
   /**
    * stopping intake.
    */
   public void intakeStop() {
-    m_intakeMotor.setSpeed(0);
+    m_intakeMotor.set(0);
   }
 
   /**
@@ -131,7 +124,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
    * @return state of the shooter photogate.
    */
   public boolean isShooterPhotogateTriggered() {
-    return m_shooterDebouncer.calculate(!m_shooterPhotogate.get());
+    return !m_shooterPhotogate.get();
   }
 
   public void applySetpoint(SonicBlasterSetpoint setpoint) {
@@ -165,7 +158,24 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
+    Constants.IntakeAndShooter.isLoaded = (isIntakePhotogateTriggered() && isShooterPhotogateTriggered());
     Blackbox.setLoaded(isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
+
+    if (!isLoaded) {
+      setIntakeSpeed(0.3);
+      shooterStop();
+    }
+    if (isIntakePhotogateTriggered() && isShooterPhotogateTriggered() 
+        && (m_topVel.getValue() > 10) && (m_bottomVel.getValue() > 10)) {
+      setIntakeSpeed(-0.1);
+    }
+    if (isIntakePhotogateTriggered() && !isShooterPhotogateTriggered() 
+        && (m_topVel.getValue() < 10) && (m_bottomVel.getValue() < 10)) {
+      intakeStop();
+    }
+    if ((m_topVel.getValue() > 900) && (m_bottomVel.getValue() > 900)) {
+      setIntakeSpeed(0.5);
+    }
 
     log("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
     log("Shooter/Speed", m_shooterMotorTop.get());
@@ -174,7 +184,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     log("Intake/gate", isIntakePhotogateTriggered());
     log("Shooter/top Motor RPM", m_topVel.getValue());
     log("Shooter/bottom Motor RPM", m_bottomVel.getValue());
-    log("Intake/RPM", m_intakeMotor.getEmbeddedEncoder().getVelocityValue());
+    // log("Intake/RPM", m_intakeMotor.get());
     log("Intake/Speed Setpoint", m_intakeMotor.get());
     log("Shooter/RPM setpoint",  m_request.Velocity);
     log("Intake/Current", m_intakeMotor.getOutputCurrent());

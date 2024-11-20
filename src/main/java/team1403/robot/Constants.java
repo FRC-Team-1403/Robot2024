@@ -274,6 +274,8 @@ public class Constants {
     public static final double kCloseRPM = 4800;
     public static final double kExpelDeadzone = 0.15;
     public static final int kIntakeCurrentLimit = 40;
+
+    public static boolean isLoaded;
   }
   
   public static class Wrist {
