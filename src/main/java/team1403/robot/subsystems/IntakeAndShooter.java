@@ -158,24 +158,8 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
-    Constants.IntakeAndShooter.isLoaded = (isIntakePhotogateTriggered() && isShooterPhotogateTriggered());
+    Constants.IntakeAndShooter.isLoaded = (isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
     Blackbox.setLoaded(isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
-
-    if (!isLoaded) {
-      setIntakeSpeed(0.3);
-      shooterStop();
-    }
-    if (isIntakePhotogateTriggered() && isShooterPhotogateTriggered() 
-        && (m_topVel.getValue() > 10) && (m_bottomVel.getValue() > 10)) {
-      setIntakeSpeed(-0.1);
-    }
-    if (isIntakePhotogateTriggered() && !isShooterPhotogateTriggered() 
-        && (m_topVel.getValue() < 10) && (m_bottomVel.getValue() < 10)) {
-      intakeStop();
-    }
-    if ((m_topVel.getValue() > 900) && (m_bottomVel.getValue() > 900)) {
-      setIntakeSpeed(0.5);
-    }
 
     log("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
     log("Shooter/Speed", m_shooterMotorTop.get());

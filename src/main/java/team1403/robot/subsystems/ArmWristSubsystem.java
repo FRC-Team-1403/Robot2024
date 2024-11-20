@@ -160,15 +160,6 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
   @Override
   public void periodic() {
 
-    if (Constants.IntakeAndShooter.isLoaded) {
-      setWristSetpoint(Constants.Wrist.kDriveSetpoint);
-      setArmSetpoint(Constants.Arm.kDriveSetpoint);
-    }
-    else {
-      setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
-      setArmSetpoint(Constants.Arm.kIntakeSetpoint);
-    }
-
     m_leftMotor.set(calcPivotSpeed());
     m_wristMotor.set(calcWristSpeed());
 
