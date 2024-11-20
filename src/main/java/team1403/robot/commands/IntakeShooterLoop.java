@@ -64,6 +64,8 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         }
         if (Constants.IntakeAndShooter.isLoaded && !isShooting) {
             m_intakeAndShooter.intakeStop();
+            m_armwrist.setArmSetpoint(Constants.Arm.kDriveSetpoint);
+            m_armwrist.setWristSetpoint(Constants.Wrist.kDriveSetpoint);
         }
         if (m_intakeAndShooter.isReady()) {
             m_intakeAndShooter.setIntakeSpeed(0.5);
