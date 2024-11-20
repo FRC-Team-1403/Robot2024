@@ -161,6 +161,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     Constants.IntakeAndShooter.isLoaded = (isIntakePhotogateTriggered() && isShooterPhotogateTriggered());
     Blackbox.setLoaded(isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
 
+    // set to intake
     if (!isLoaded) {
       setIntakeSpeed(0.3);
       shooterStop();
