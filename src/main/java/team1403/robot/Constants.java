@@ -52,12 +52,12 @@ public class Constants {
     public static final int kModuleUpdateRateMs = 10;
     public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
-    public static final double kPTurning = 0.8;
+    public static final double kPTurning = 0.75;
     public static final double kITurning = 0.0;
-    public static final double kDTurning = 0.03;
+    public static final double kDTurning = 0.06;
 
-    public static final PIDConstants kTranslationPID = new PIDConstants(1.9, 0, 0);
-    public static final PIDConstants kRotationPID = new PIDConstants(3, 0, 0);
+    public static final PIDConstants kTranslationPID = new PIDConstants(5.6, 0, 0);
+    public static final PIDConstants kRotationPID = new PIDConstants(2.8, 0, 0);
 
     public static final double kPDrive = 0.04;
     public static final double kIDrive = 0.0;
@@ -105,15 +105,15 @@ public class Constants {
     public static final double kMaxAngularSpeed = (kMaxSpeed / Math.hypot(kWheelWidth / 2.0, kWheelLength / 2.0)); // 11.96207492071159 rad/s
 
     // IMU has an angular velocity, so to get the heading at the right point time add the velocity * a coeff to get the "real" heading
-    public static final double kAngVelCoeff = 0.12; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
+    public static final double kAngVelCoeff = 0.1; //TODO: needs tuning! (generally ranges from -0.15 to 0.15)
     public static final double kCouplingRatio = kFirstDriveStage * kDrivePositionConversionFactor / (2 * Math.PI); //TODO: check this!
 
     public static final double kVoltageSaturation = 12.0;
     public static final int kDriveCurrentLimit = 45;
     public static final int kSteerCurrentLimit = 25;
 
-    public static final PathConstraints kPathConstraints = new PathConstraints(Swerve.kMaxSpeed, 4, Swerve.kMaxAngularSpeed, 10);
-    public static final PathConstraints kAutoAlignConstraints = new PathConstraints(Swerve.kMaxSpeed, 6, Swerve.kMaxAngularSpeed, 10);
+    public static final PathConstraints kPathConstraints = new PathConstraints(Swerve.kMaxSpeed, 3, Swerve.kMaxAngularSpeed, 5);
+    public static final PathConstraints kAutoAlignConstraints = new PathConstraints(Swerve.kMaxSpeed, 6, Swerve.kMaxAngularSpeed, 5);
 
     //front-to-back-disp = ~8.568 inches 
     //left-to-right-disp = 0 inches
