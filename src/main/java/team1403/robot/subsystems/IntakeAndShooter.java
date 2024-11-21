@@ -152,6 +152,10 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     return isIntakePhotogateTriggered() && !isShooterPhotogateTriggered();
   }
 
+  public double intakeSpeed() {
+    return m_intakeMotor.get();
+  }
+
   public void periodic() {
     m_topVel.refresh();
     m_bottomVel.refresh();
@@ -167,6 +171,7 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     log("Intake/gate", isIntakePhotogateTriggered());
     log("Shooter/top Motor RPM", m_topVel.getValue());
     log("Shooter/bottom Motor RPM", m_bottomVel.getValue());
+    log("Is Loaded", isLoaded());
     // log("Intake/RPM", m_intakeMotor.get());
     log("Intake/Speed Setpoint", m_intakeMotor.get());
     log("Shooter/RPM setpoint",  m_request.Velocity);

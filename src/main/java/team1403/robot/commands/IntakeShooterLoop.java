@@ -41,11 +41,12 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
 
     @Override
     public void initialize() {
-        Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
+        
     }
 
     @Override
     public void execute() {
+        log("Is Shooter Ready", isShooting);
         // set isShooting to false when the note is not in the robot
         if (!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered()) {
             isShooting = false;
@@ -54,29 +55,37 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         if (!m_intakeAndShooter.isLoaded() && !isShooting){
             amp = false; 
             speaker = false;
-            m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
             m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
-            m_intakeAndShooter.setIntakeSpeed(0.2);
+            if (m_armwrist.isWristAtSetpoint()) {
+                m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint); 
+            }
+            if (m_armwrist.isWristAtSetpoint() && m_armwrist.isArmAtSetpoint()) {
+                m_intakeAndShooter.setIntakeSpeed(0.2);
+            }
+            if (!m_armwrist.isWristAtSetpoint() || !m_armwrist.isArmAtSetpoint()) {
+                m_intakeAndShooter.intakeStop();
+            }
             m_intakeAndShooter.shooterStop();
         }
         // roll back the note
-        if (m_intakeAndShooter.isShooterPhotogateTriggered() && !isShooting) {
+        if ((m_intakeAndShooter.intakeSpeed() > 0) && m_intakeAndShooter.isShooterPhotogateTriggered() && !isShooting) {
             m_intakeAndShooter.setIntakeSpeed(-0.1);
         }
         // once the note is rolled back stop intake and set arm and wrist and start spinning shooter motors
-        if (m_intakeAndShooter.isLoaded() && !isShooting) {
+        if ((m_intakeAndShooter.intakeSpeed() < 0) && m_intakeAndShooter.isLoaded() && !isShooting) {
             m_intakeAndShooter.intakeStop();
             m_armwrist.setArmSetpoint(Constants.Arm.kDriveSetpoint);
             m_armwrist.setWristSetpoint(Constants.Wrist.kDriveSetpoint);
             isShooting = true;
+            speaker = true;
         }
         // if shooting for speaker have rpm at 1000
         if (isShooting && speaker) {
-            m_intakeAndShooter.setShooterRPM(1000);
+            m_intakeAndShooter.setShooterRPM(2000);
         }
         // if shooting for amp have rpm at 300
         if (isShooting && amp) {
-            m_intakeAndShooter.setShooterRPM(500);
+            m_intakeAndShooter.setShooterRPM(1000);
         }
         // shoot if trigger is hit and the top and bottom shooter motors are close to the target rpm
         if (m_trigger.getAsBoolean() && m_intakeAndShooter.isReady()) {

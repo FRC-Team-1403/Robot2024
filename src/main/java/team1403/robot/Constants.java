@@ -287,7 +287,7 @@ public class Constants {
     public static final double kTopLimit = 180;
     public static final double kBottomLimit = 0;
 
-    public static  double kIntakeSetpoint = 134;
+    public static  double kIntakeSetpoint = 140;
     public static  double kAmpSetpoint = 160.5;
     public static double kAmpShoootingSetpoint = 142;
     public static  double kLoadingSetpoint = 90;
