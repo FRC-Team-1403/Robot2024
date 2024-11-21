@@ -1,19 +1,17 @@
 package team1403.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkRelativeEncoder;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import monologue.Logged;
 import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 
@@ -33,8 +31,6 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   // photogates
   private DigitalInput m_intakePhotogate;
   private DigitalInput m_shooterPhotogate;
-
-  public boolean isLoaded;
 
   private final MotionMagicVelocityDutyCycle m_request = new MotionMagicVelocityDutyCycle(0);
 
@@ -152,31 +148,17 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
     return Math.abs(m_request.Velocity * 60 - m_bottomVel.getValue() * 60) < 1000;
   }
 
+  public boolean isLoaded() {
+    return isIntakePhotogateTriggered() && !isShooterPhotogateTriggered();
+  }
+
   public void periodic() {
     m_topVel.refresh();
     m_bottomVel.refresh();
     m_shooterMotorTop.setControl(m_request);
     m_shooterMotorBottom.setControl(m_request);
 
-    Constants.IntakeAndShooter.isLoaded = (isIntakePhotogateTriggered() && isShooterPhotogateTriggered());
     Blackbox.setLoaded(isIntakePhotogateTriggered() && !isShooterPhotogateTriggered());
-
-    // set to intake
-    if (!isLoaded) {
-      setIntakeSpeed(0.3);
-      shooterStop();
-    }
-    if (isIntakePhotogateTriggered() && isShooterPhotogateTriggered() 
-        && (m_topVel.getValue() > 10) && (m_bottomVel.getValue() > 10)) {
-      setIntakeSpeed(-0.1);
-    }
-    if (isIntakePhotogateTriggered() && !isShooterPhotogateTriggered() 
-        && (m_topVel.getValue() < 10) && (m_bottomVel.getValue() < 10)) {
-      intakeStop();
-    }
-    if ((m_topVel.getValue() > 900) && (m_bottomVel.getValue() > 900)) {
-      setIntakeSpeed(0.5);
-    }
 
     log("Intake/Motor Temp", m_intakeMotor.getMotorTemperature());
     log("Shooter/Speed", m_shooterMotorTop.get());
