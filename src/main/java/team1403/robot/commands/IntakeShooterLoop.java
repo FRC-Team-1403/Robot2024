@@ -20,16 +20,21 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
     private XboxController m_ops;
     private BooleanSupplier m_trigger;
     private BooleanSupplier m_amp;
+    private BooleanSupplier m_reset;
+
+    private boolean amp;
+    private boolean speaker;
     private boolean isShooting;
 
     public IntakeShooterLoop(IntakeAndShooter intakeAndShooter, ArmWristSubsystem armwrist, LED led, 
-        XboxController ops, BooleanSupplier trigger, BooleanSupplier amp) {
+        XboxController ops, BooleanSupplier trigger, BooleanSupplier amp, BooleanSupplier reset) {
         m_intakeAndShooter = intakeAndShooter;
         m_armwrist = armwrist;
         m_led = led;
         m_ops = ops;
         m_trigger = trigger;
         m_amp = amp;
+        m_reset = reset;
 
         addRequirements(m_armwrist, m_led, m_intakeAndShooter);
     }
@@ -39,40 +44,58 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
         Blackbox.requestedSetpoint = Setpoints.kDriveSetpoint;
     }
 
-    // private void applySetpoint(SonicBlasterSetpoint setpoint) {
-    //     m_intakeAndShooter.applySetpoint(setpoint);
-    //     m_armwrist.applySetpoint(setpoint);
-    // }
-    
     @Override
     public void execute() {
+        // set isShooting to false when the note is not in the robot
         if (!m_intakeAndShooter.isIntakePhotogateTriggered() && !m_intakeAndShooter.isShooterPhotogateTriggered()) {
             isShooting = false;
         }
-        if (!Constants.IntakeAndShooter.isLoaded && !isShooting){
+        // when the note is not in the robot: set arm and wrist to intake setpoint, start intake, stop shooter
+        if (!m_intakeAndShooter.isLoaded() && !isShooting){
+            amp = false; 
+            speaker = false;
             m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
             m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
             m_intakeAndShooter.setIntakeSpeed(0.2);
             m_intakeAndShooter.shooterStop();
         }
+        // roll back the note
         if (m_intakeAndShooter.isShooterPhotogateTriggered() && !isShooting) {
             m_intakeAndShooter.setIntakeSpeed(-0.1);
         }
-        if (m_trigger.getAsBoolean() && Constants.IntakeAndShooter.isLoaded) {
-            isShooting = true;
-            m_intakeAndShooter.setShooterRPM(1000);
-        }
-        if (Constants.IntakeAndShooter.isLoaded && !isShooting) {
+        // once the note is rolled back stop intake and set arm and wrist and start spinning shooter motors
+        if (m_intakeAndShooter.isLoaded() && !isShooting) {
             m_intakeAndShooter.intakeStop();
             m_armwrist.setArmSetpoint(Constants.Arm.kDriveSetpoint);
             m_armwrist.setWristSetpoint(Constants.Wrist.kDriveSetpoint);
+            isShooting = true;
         }
-        if (m_intakeAndShooter.isReady()) {
+        // if shooting for speaker have rpm at 1000
+        if (isShooting && speaker) {
+            m_intakeAndShooter.setShooterRPM(1000);
+        }
+        // if shooting for amp have rpm at 300
+        if (isShooting && amp) {
+            m_intakeAndShooter.setShooterRPM(500);
+        }
+        // shoot if trigger is hit and the top and bottom shooter motors are close to the target rpm
+        if (m_trigger.getAsBoolean() && m_intakeAndShooter.isReady()) {
             m_intakeAndShooter.setIntakeSpeed(0.5);
         }
+        // if amp button is hit set arm and wrist to amp mode
         if (m_amp.getAsBoolean()) {
+            m_intakeAndShooter.intakeStop();
+            //m_intakeAndShooter.shooterStop();
             m_armwrist.setArmSetpoint(Constants.Arm.kAmpSetpoint);
             m_armwrist.setWristSetpoint(Constants.Wrist.kAmpSetpoint);
+            amp = true;
+        }
+        // if reset button is hit set arm and wrist to intake mode
+        if (m_reset.getAsBoolean()) {
+            m_intakeAndShooter.intakeStop();
+            //m_intakeAndShooter.shooterStop();
+            m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
+            m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
         }
     }
 

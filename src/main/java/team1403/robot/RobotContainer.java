@@ -147,9 +147,9 @@ public class RobotContainer {
       m_endeff, m_armwrist
       , m_led, m_operatorController.getHID(),
       () -> m_operatorController.getHID().getRightTriggerAxis() >= 0.5, // shoot
-      () -> m_operatorController.getHID().getBButton() // amp
+      () -> m_operatorController.getHID().getBButton(), // amp
       //() -> m_operatorController.getHID().getXButton(), // loading station
-      //() -> m_operatorController.getHID().getAButton(), // reset to intake
+      () -> m_operatorController.getHID().getAButton() // reset to intake
       // () -> m_operatorController.getHID().getLeftTriggerAxis() >= 0.5, // stage line shot
       //  () -> m_operatorController.getHID().getPOV() == 0, // center line shot
       // () -> m_operatorController.getHID().getYButton(), // reset to netural
