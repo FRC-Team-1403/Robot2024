@@ -106,6 +106,10 @@ public class ArmWristSubsystem extends SubsystemBase implements CougarLogged {
     return Math.abs(getWristAngle() - m_wristAngleSetpoint) <= 5.0;
   }
 
+  public boolean isArmAndWristAtSetpoint() {
+    return isArmAtSetpoint() && isWristAtSetpoint();
+  }
+
   public void setArmSetpoint(double angle) {
     m_pivotAngleSetpoint = MathUtil.clamp(angle, Constants.Arm.kMinPivotAngle, Constants.Arm.kMaxPivotAngle);
   }

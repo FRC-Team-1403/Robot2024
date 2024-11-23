@@ -59,10 +59,10 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             if (m_armwrist.isWristAtSetpoint()) {
                 m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint); 
             }
-            if (m_armwrist.isWristAtSetpoint() && m_armwrist.isArmAtSetpoint()) {
+            if (m_armwrist.isArmAndWristAtSetpoint()) {
                 m_intakeAndShooter.setIntakeSpeed(0.2);
             }
-            if (!m_armwrist.isWristAtSetpoint() || !m_armwrist.isArmAtSetpoint()) {
+            if (!m_armwrist.isArmAndWristAtSetpoint()) {
                 m_intakeAndShooter.intakeStop();
             }
             m_intakeAndShooter.shooterStop();
@@ -88,7 +88,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             m_intakeAndShooter.setShooterRPM(1000);
         }
         // shoot if trigger is hit and the top and bottom shooter motors are close to the target rpm
-        if (m_trigger.getAsBoolean() && m_intakeAndShooter.isReady()) {
+        if (m_trigger.getAsBoolean() && m_armwrist.isArmAndWristAtSetpoint() && m_intakeAndShooter.isReady()) {
             m_intakeAndShooter.setIntakeSpeed(0.5);
         }
         // if amp button is hit set arm and wrist to amp mode
