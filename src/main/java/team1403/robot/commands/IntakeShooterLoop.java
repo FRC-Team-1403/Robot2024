@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
-import team1403.robot.Constants.Setpoints;
 import team1403.robot.subsystems.ArmWristSubsystem;
 import team1403.robot.subsystems.Blackbox;
 import team1403.robot.subsystems.IntakeAndShooter;
@@ -79,11 +78,11 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             isShooting = true;
             speaker = true;
         }
-        // if shooting for speaker have rpm at 1000
+        // if shooting for speaker have rpm at 2000
         if (isShooting && speaker) {
             m_intakeAndShooter.setShooterRPM(2000);
         }
-        // if shooting for amp have rpm at 300
+        // if shooting for amp have rpm at 1000
         if (isShooting && amp) {
             m_intakeAndShooter.setShooterRPM(1000);
         }
