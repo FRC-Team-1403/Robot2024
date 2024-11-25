@@ -17,6 +17,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -48,6 +49,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
     private final SwerveModuleState m_moduleState = new SwerveModuleState();
     private final SwerveModulePosition m_modulePosition = new SwerveModulePosition();
+    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.Swerve.kSDrive, Constants.Swerve.kVDrive); 
 
 
     /**
@@ -174,7 +176,6 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       m_drivePIDController.setP(Constants.Swerve.kPDrive);
       m_drivePIDController.setI(Constants.Swerve.kIDrive);
       m_drivePIDController.setD(Constants.Swerve.kDDrive);
-      m_drivePIDController.setFF(1.0/Swerve.kMaxSpeed);
       m_drivePIDController.setFeedbackDevice((MotorFeedbackSensor)m_driveRelativeEncoder);
       m_drivePIDController.setOutputRange(-1,1);
       // //slot 0 is used by default
@@ -215,7 +216,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
       driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, -Constants.Swerve.kMaxSpeed, Constants.Swerve.kMaxSpeed);
 
-      m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity);
+      m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity, 0, m_driveFeedforward.calculate(driveMetersPerSecond));
 
       log(getName() + "/EncError", relativeErr);
     }

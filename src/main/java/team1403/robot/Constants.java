@@ -52,17 +52,6 @@ public class Constants {
     public static final int kModuleUpdateRateMs = 10;
     public static final double kModuleUpdateRateHz = 1.0 / Units.millisecondsToSeconds(kModuleUpdateRateMs);
 
-    public static final double kPTurning = 0.75;
-    public static final double kITurning = 0.0;
-    public static final double kDTurning = 0.06;
-
-    public static final PIDConstants kTranslationPID = new PIDConstants(5.6, 0, 0);
-    public static final PIDConstants kRotationPID = new PIDConstants(2.8, 0, 0);
-
-    public static final double kPDrive = 0.04;
-    public static final double kIDrive = 0.0;
-    public static final double kDDrive = 0.0;
-
     public static final double kWheelWidth = Units.inchesToMeters(23);
     public static final double kWheelLength = Units.inchesToMeters(24);
     public static final double kDriveBase = Math.hypot(Swerve.kWheelWidth / 2.0, Swerve.kWheelLength / 2.0);
@@ -112,6 +101,21 @@ public class Constants {
     public static final int kDriveCurrentLimit = 45;
     public static final int kSteerCurrentLimit = 25;
 
+    //swerve drive motor
+    public static final double kPDrive = 0.04;
+    public static final double kIDrive = 0.0;
+    public static final double kDDrive = 0.0;
+    public static final double kSDrive = 0; //tune using sysid
+    public static final double kVDrive = 12/kMaxSpeed; //volts instead of % duty cycle (tune with sysid)
+
+    //swerve module azimuth
+    public static final double kPTurning = 0.75;
+    public static final double kITurning = 0.0;
+    public static final double kDTurning = 0.06;
+
+    //path planner
+    public static final PIDConstants kTranslationPID = new PIDConstants(5.6, 0, 0);
+    public static final PIDConstants kRotationPID = new PIDConstants(2.8, 0, 0);
     public static final PathConstraints kPathConstraints = new PathConstraints(Swerve.kMaxSpeed, 3, Swerve.kMaxAngularSpeed, 5);
     public static final PathConstraints kAutoAlignConstraints = new PathConstraints(Swerve.kMaxSpeed, 6, Swerve.kMaxAngularSpeed, 5);
 
