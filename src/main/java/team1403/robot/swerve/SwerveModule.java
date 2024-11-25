@@ -1,6 +1,5 @@
 package team1403.robot.swerve;
 
-import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -23,7 +22,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import monologue.Logged;
 import team1403.lib.device.wpi.CougarSparkMax;
 import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
@@ -136,6 +134,8 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       m_driveRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kDrivePositionConversionFactor);
       // Set velocity in terms of seconds
       m_driveRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kDrivePositionConversionFactor / 60.0);
+      m_driveRelativeEncoder.setMeasurementPeriod(10);
+      m_driveRelativeEncoder.setAverageDepth(2);
 
       m_steerRelativeEncoder.setPositionConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor);
       m_steerRelativeEncoder.setVelocityConversionFactor(Constants.Swerve.kSteerRelativeEncoderPositionConversionFactor / 60.0);
