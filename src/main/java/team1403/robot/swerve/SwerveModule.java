@@ -49,7 +49,11 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
 
     private final SwerveModuleState m_moduleState = new SwerveModuleState();
     private final SwerveModulePosition m_modulePosition = new SwerveModulePosition();
-    private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(Constants.Swerve.kSDrive, Constants.Swerve.kVDrive); 
+    private final SimpleMotorFeedforward m_driveFeedforward 
+                              = new SimpleMotorFeedforward(
+                                Constants.Swerve.kSDrive, 
+                                Constants.Swerve.kVDrive,
+                                Constants.Swerve.kADrive); 
 
 
     /**
@@ -216,9 +220,12 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
       driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, -Constants.Swerve.kMaxSpeed, Constants.Swerve.kMaxSpeed);
 
-      m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity, 0, m_driveFeedforward.calculate(driveMetersPerSecond));
+      double estAccel = (driveMetersPerSecond - getDriveVelocity())/Constants.kLoopTime;
+      m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity, 0,
+                    m_driveFeedforward.calculate(driveMetersPerSecond, estAccel));
 
       log(getName() + "/EncError", relativeErr);
+      log(getName() + "/EstAccel", estAccel);
     }
 
     /**

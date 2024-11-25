@@ -105,8 +105,9 @@ public class Constants {
     public static final double kPDrive = 0.04;
     public static final double kIDrive = 0.0;
     public static final double kDDrive = 0.0;
-    public static final double kSDrive = 0; //tune using sysid
+    public static final double kSDrive = 0; //tune using sysid (volts)
     public static final double kVDrive = 12/kMaxSpeed; //volts instead of % duty cycle (tune with sysid)
+    public static final double kADrive = 0; //tune with sysid (volts)
 
     //swerve module azimuth
     public static final double kPTurning = 0.75;
