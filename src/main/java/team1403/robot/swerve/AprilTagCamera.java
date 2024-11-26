@@ -2,9 +2,7 @@
 package team1403.robot.swerve;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
@@ -17,19 +15,16 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.targeting.TargetCorner;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import monologue.Logged;
 import team1403.lib.util.CougarLogged;
 import team1403.robot.Constants;
 import team1403.robot.Robot;
@@ -155,17 +150,22 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
   //TODO: return false for bad estimates
   public boolean checkVisionResult() {
 
-    if(getTagAreas() < 0.4) return false;
+    if(getTagAreas() < 0.35) return false;
 
     if(getPose().getZ() > 1){
       return false;
     }
 
+    if(getTargets().size() == 1) {
+      if(getTargets().get(0).getPoseAmbiguity() > 0.6)
+        return false;
+    }
+
     return true;
   }
 
-  private ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
-  private ArrayList<Translation2d> m_corners = new ArrayList<>();
+  private final ArrayList<Pose3d> m_visionTargets = new ArrayList<>();
+  private final ArrayList<Translation2d> m_corners = new ArrayList<>();
   private static final Transform3d kZeroTransform = new Transform3d();
 
   @Override
@@ -188,40 +188,35 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
     if(kExtraVisionDebugInfo) {
       Pose3d robot_pose3d = new Pose3d(m_referencePose.get());
       Pose3d robot_pose_transformed = robot_pose3d.transformBy(m_cameraTransform.get());
+      double[] ambiguities = new double[getTargets().size()];
 
       log(m_camera.getName() + "/Camera Transform", robot_pose_transformed);
 
       m_visionTargets.clear();
       m_corners.clear();
 
-      for(PhotonTrackedTarget t : getTargets()) {
-        var trf = t.getBestCameraToTarget();
+      for(int i = 0; i < getTargets().size(); i++) {
+        PhotonTrackedTarget t = getTargets().get(i);
+        Transform3d trf = t.getBestCameraToTarget();
         if(trf.equals(kZeroTransform)) continue;
+
         m_visionTargets.add(robot_pose_transformed.transformBy(trf));
+        ambiguities[i] = t.getPoseAmbiguity();
         for(TargetCorner c : t.getDetectedCorners())
           m_corners.add(new Translation2d(c.x, c.y));
       }
 
       log(m_camera.getName() + "/Vision Targets", m_visionTargets.toArray(new Pose3d[m_visionTargets.size()]));
       log(m_camera.getName() + "/Corners", m_corners.toArray(new Translation2d[m_corners.size()]));
+      log(m_camera.getName() + "/PoseAmbiguity", ambiguities);
     }
 
     log(m_camera.getName() + "/hasPose", hasPose());
     
     if(hasPose()) {
       log(m_camera.getName() + "/Combined Area", getTagAreas());
-      //if(checkVisionResult()) {
       log(m_camera.getName() + "/Pose3d", getPose());
       log(m_camera.getName() + "/Pose2d", getPose2D());
-      //}
     }
-
-    // if(hasTarget())
-    // {
-    //   SmartDashboard.putString("pos", getDistance().toString());
-    //   log("Position", getDistance().toString());
-    //   log("X Distance", getXDistance());
-    //   log("Y Distance", getYDistance());
-    //   log("Z Distance", getZDistance());
     }
   }
