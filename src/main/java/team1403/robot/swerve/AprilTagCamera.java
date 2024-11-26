@@ -150,7 +150,7 @@ public class AprilTagCamera extends SubsystemBase implements CougarLogged {
   //TODO: return false for bad estimates
   public boolean checkVisionResult() {
 
-    if(getTagAreas() < 0.35) return false;
+    if(getTagAreas() < 0.3) return false;
 
     if(getPose().getZ() > 1){
       return false;
