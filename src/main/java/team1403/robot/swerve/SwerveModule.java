@@ -46,6 +46,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
     private final SparkPIDController m_steerPIDController;
     private final String m_name;
     private final boolean m_inverted;
+    private double m_prevDriveVelocity;
 
     private final SwerveModuleState m_moduleState = new SwerveModuleState();
     private final SwerveModulePosition m_modulePosition = new SwerveModulePosition();
@@ -80,6 +81,7 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
     {
       m_inverted = inverted;
       m_name = name;
+      m_prevDriveVelocity = 0;
 
       m_driveMotor = CougarSparkMax.makeBrushless(name + " DriveMotor", driveMotorPort,
           SparkRelativeEncoder.Type.kHallSensor);
@@ -220,9 +222,10 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       driveMetersPerSecond += steerVel * Constants.Swerve.kCouplingRatio;
       driveMetersPerSecond = MathUtil.clamp(driveMetersPerSecond, -Constants.Swerve.kMaxSpeed, Constants.Swerve.kMaxSpeed);
 
-      double estAccel = (driveMetersPerSecond - getDriveVelocity())/Constants.kLoopTime;
+      double estAccel = (driveMetersPerSecond - m_prevDriveVelocity)/Constants.kLoopTime;
       m_drivePIDController.setReference(driveMetersPerSecond, ControlType.kVelocity, 0,
                     m_driveFeedforward.calculate(driveMetersPerSecond, estAccel));
+      m_prevDriveVelocity = driveMetersPerSecond;
 
       log(getName() + "/EncError", relativeErr);
       log(getName() + "/EstAccel", estAccel);
