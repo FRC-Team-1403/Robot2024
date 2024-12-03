@@ -226,6 +226,10 @@ public class DefaultSwerveCommand extends Command implements CougarLogged {
         chassisSpeeds.vxMetersPerSecond = 0;
         chassisSpeeds.vyMetersPerSecond = 0;
       }
+      if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) < 0.02)
+      {
+        chassisSpeeds.omegaRadiansPerSecond = 0;
+      }
       m_translationLimiter.reset(current_output / Swerve.kMaxSpeed);
       m_directionSlewRate.reset(Math.atan2(currentSpeeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond));
     } else {
