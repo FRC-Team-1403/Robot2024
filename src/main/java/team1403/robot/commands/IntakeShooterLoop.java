@@ -21,6 +21,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
     private BooleanSupplier m_amp;
     private BooleanSupplier m_reset;
 
+
     private boolean amp;
     private boolean speaker;
     private boolean isShooting;
@@ -79,7 +80,7 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             speaker = true;
         }
         // if shooting for speaker have rpm at 2000
-        if (isShooting && speaker) {
+        if (isShooting && speaker && m_armwrist.isArmAndWristAtSetpoint()) {
             m_intakeAndShooter.setShooterRPM(2000);
         }
         // if shooting for amp have rpm at 1000
@@ -98,12 +99,23 @@ public class IntakeShooterLoop extends Command implements CougarLogged {
             m_armwrist.setWristSetpoint(Constants.Wrist.kAmpSetpoint);
             amp = true;
         }
-        // if reset button is hit set arm and wrist to intake mode
+
+        // if reset button is hit set arm and wrist to intake mode (not loaded)
         if (m_reset.getAsBoolean()) {
+            speaker = false;
+            amp = false;
             m_intakeAndShooter.intakeStop();
-            //m_intakeAndShooter.shooterStop();
-            m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
-            m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
+            m_intakeAndShooter.shooterStop();
+
+            if(m_intakeAndShooter.isLoaded()) {
+                m_armwrist.setWristSetpoint(Constants.Wrist.kDriveSetpoint);
+                m_armwrist.setArmSetpoint(Constants.Arm.kDriveSetpoint);
+                speaker = true;
+            }
+            else {
+                m_armwrist.setWristSetpoint(Constants.Wrist.kIntakeSetpoint);
+                m_armwrist.setArmSetpoint(Constants.Arm.kIntakeSetpoint);
+            }
         }
     }
 
