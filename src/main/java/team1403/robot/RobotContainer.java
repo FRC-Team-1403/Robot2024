@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import team1403.lib.auto.TreeAuto;
 import team1403.lib.auto.TreeCommandNode;
 import team1403.lib.auto.TreeCommandProxy;
@@ -99,6 +100,10 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.addOption("Choreo Auto", AutoUtil.loadChoreoAuto("test", m_swerve));
     autoChooser.addOption("FivePieceCenter", AutoHelper.getFivePieceAuto(m_swerve));
+    autoChooser.addOption("SysId Swerve DriveForward QF", m_swerve.SysIDDriveForwardQ(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption("SysId Swerve DriveForward DF", m_swerve.SysIDDriveForwardD(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption("SysId Swerve DriveForward QR", m_swerve.SysIDDriveForwardQ(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption("SysId Swerve DriveForward DR", m_swerve.SysIDDriveForwardD(SysIdRoutine.Direction.kReverse));
 
     Constants.kDriverTab.add("Auto Chooser", autoChooser);
     if(Constants.DEBUG_MODE) {

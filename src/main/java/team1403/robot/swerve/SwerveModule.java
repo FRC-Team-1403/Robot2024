@@ -299,6 +299,28 @@ public class SwerveModule extends SubsystemBase implements ISwerveModule, Cougar
       return m_moduleState;
     }
 
+    public void disableClosedLoop(boolean disable) {
+      // todo
+    }
+
+    public void setDriveVoltage(double volts) {
+      m_driveMotor.setVoltage(volts);
+    }
+
+    public SwerveModuleTelemetery getData(SwerveModuleTelemetery t)
+    {
+      t.driveCurrent = m_driveMotor.getOutputCurrent();
+      t.driveVolt = m_driveMotor.getAppliedVoltage() * m_driveMotor.getAppliedOutput();
+      t.driveVel = getDriveVelocity();
+      t.drivePos = getDrivePosition();
+      t.turnCurrent = m_steerMotor.getOutputCurrent();
+      t.turnVolt = m_steerMotor.getAppliedVoltage() * m_steerMotor.getAppliedOutput();
+      t.turnVel = m_steerRelativeEncoder.getVelocity();
+      t.turnPos = getSteerPosition();
+
+      return t;
+    }
+
     @Override
     public void periodic() {
       log(m_name + "/Drive Current", m_driveMotor.getOutputCurrent());

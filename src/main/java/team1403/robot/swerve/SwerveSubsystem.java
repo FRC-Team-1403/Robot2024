@@ -24,6 +24,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -32,7 +34,9 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import monologue.Logged;
 import monologue.Annotations.Log;
 import team1403.lib.device.wpi.NavxAhrs;
@@ -42,6 +46,14 @@ import team1403.robot.Constants;
 import team1403.robot.Robot;
 import team1403.robot.Constants.CanBus;
 import team1403.robot.Constants.Swerve;
+import team1403.robot.swerve.ISwerveModule.SwerveModuleTelemetery;
+
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 /**
  * The drivetrain of the robot. Consists of for swerve modules and the
@@ -354,6 +366,50 @@ public class SwerveSubsystem extends SubsystemBase implements CougarLogged {
     }
 
     return speeds;
+  }
+
+  
+
+  private SysIdRoutine getDriveSysIDRoutine() {
+    return new SysIdRoutine(new SysIdRoutine.Config(), new SysIdRoutine.Mechanism((volts) -> 
+    {
+      for(int i = 0; i < m_modules.length; i++)
+      {
+        m_modules[i].disableClosedLoop(true);
+        m_modules[i].setDriveVoltage(volts.in(Volts));
+      }
+    }, (log) -> 
+    {
+      //pre allocate this array in the future to avoid allocations
+      SwerveModuleTelemetery[] t = new SwerveModuleTelemetery[m_modules.length];
+      for(int i = 0; i < m_modules.length; i++)
+      {
+        t[i] = new SwerveModuleTelemetery();
+        t[i] = m_modules[i].getData(t[i]);
+        log.motor(m_modules[i].getName() + " drive")
+          .linearVelocity(MetersPerSecond.of(t[i].driveVel))
+          .linearPosition(Meters.of(t[i].drivePos))
+          .current(Amps.of(t[i].driveCurrent))
+          .voltage(Volts.of(t[i].driveVolt));
+      }
+    }, 
+    this));
+  }
+
+  public Command SysIDDriveForwardQ(SysIdRoutine.Direction dir) {
+    return getDriveSysIDRoutine().quasistatic(dir).andThen(runOnce(() -> 
+    {
+      for(int i = 0; i < m_modules.length; i++)
+        m_modules[i].disableClosedLoop(false);
+    }));
+  }
+
+  public Command SysIDDriveForwardD(SysIdRoutine.Direction dir) {
+    return getDriveSysIDRoutine().dynamic(dir).andThen(runOnce(() -> 
+    {
+      for(int i = 0; i < m_modules.length; i++)
+        m_modules[i].disableClosedLoop(false);
+    }));
   }
 
   @Override

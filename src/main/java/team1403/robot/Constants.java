@@ -39,7 +39,7 @@ public class Constants {
   public static final ShuffleboardTab kDriverTab = Shuffleboard.getTab("Driver");
   public static final ShuffleboardTab kDebugTab = Shuffleboard.getTab("Debug");
   //controls if the debug tab is used on shuffleboard
-  public static final boolean DEBUG_MODE = false;
+  public static final boolean DEBUG_MODE = true;
 
   /**
    * Swerve Constants.
@@ -76,6 +76,7 @@ public class Constants {
     public static final double backRightEncoderOffset = 1.25 - 6.17273869045182 - 2 * Math.PI;//-0.2966 , 1.25 - 6.17273869045182 - 2 * Math.PI
     
     public static final double kWheelDiameterMeters = Units.inchesToMeters(3.8); //3.85 monty (actual 3.8), 4 lehigh (actual 3.83), 3.98 worlds (actual 3.87)
+    public static final double kWheelRadiusMeters = kWheelDiameterMeters / 2.;
     
     public static final double kFirstDriveStage = (15.0 / 45.0);
     public static final double kDriveReduction = (14.0 / 50.0) * (28.0 / 16.0) * kFirstDriveStage; // ~ 1/6.21
@@ -87,7 +88,7 @@ public class Constants {
         * Swerve.kSteerReduction;
 
     // NEO max RPM
-    public static final double kDriveMotorMaxRPM = 5800;
+    public static final double kDriveMotorMaxRPM = 5676;
 
     public static final double kMaxSpeed = kDriveMotorMaxRPM * kDrivePositionConversionFactor / 60.0; 
 
