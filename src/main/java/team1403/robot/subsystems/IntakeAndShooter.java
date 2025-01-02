@@ -4,6 +4,7 @@ package team1403.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1403.lib.device.wpi.CougarSparkMax;
+<<<<<<< Updated upstream
 import team1403.lib.util.CougarLogged;
 
 
@@ -18,6 +19,27 @@ public class IntakeAndShooter extends SubsystemBase implements CougarLogged {
   private CougarSparkMax m_shooterMotorBottom;
   private DigitalInput m_intakePhotoswitch;
   private DigitalInput m_shooterPhotoswitch;
+=======
+import team1403.lib.device.wpi.CougarTalonFx;
+import team1403.robot.Constants; 
+
+/**
+ * creating the intake and shooter class.
+ */
+public class IntakeAndShooter extends SubsystemBase {  
+  // Intake motor
+  private static CougarSparkMax m_intakeMotor;
+  
+  // shooter motors
+  private CougarTalonFx m_shooterMotorTop;
+  private CougarTalonFx m_shooterMotorBottom;
+
+  // photogates
+  private DigitalInput m_intakePhotogate;
+  private DigitalInput m_shooterPhotogate;
+  private PIDController m_bottomShooter;
+  private PIDController m_topShooter;
+>>>>>>> Stashed changes
 
 
   public IntakeAndShooter() {
