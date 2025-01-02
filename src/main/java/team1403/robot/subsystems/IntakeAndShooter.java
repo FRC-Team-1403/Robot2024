@@ -1,11 +1,18 @@
 package team1403.robot.subsystems;
 
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+<<<<<<< Updated upstream
 import team1403.lib.device.wpi.CougarSparkMax;
 <<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
 import team1403.lib.util.CougarLogged;
+
 
 
 /** creating the intake and shooter class */
@@ -13,10 +20,9 @@ import team1403.lib.util.CougarLogged;
 public class IntakeAndShooter extends SubsystemBase implements CougarLogged {  
 
   //Motors & Photoswitches
-  private CougarSparkMax m_topIntakeMotor;
-  private CougarSparkMax m_bottomIntakeMotor;
-  private CougarSparkMax m_shooterMotorTop;
-  private CougarSparkMax m_shooterMotorBottom;
+  private CANSparkMax m_IntakeMotor;
+  private TalonFX m_shooterMotorTop;
+  private TalonFX m_shooterMotorBottom;
   private DigitalInput m_intakePhotoswitch;
   private DigitalInput m_shooterPhotoswitch;
 =======
@@ -51,46 +57,80 @@ public class IntakeAndShooter extends SubsystemBase {
   /** methods needed for subsystem */
   //start intake motor
   public void startIntakeMotor(double speed){
-    m_topIntakeMotor.setSpeed(speed);
-    m_bottomIntakeMotor.setSpeed(speed);
+    m_IntakeMotor.set(speed);
   }
 
   //stop intake motor
   public void stopIntakeMotor(){
-    m_topIntakeMotor.setSpeed(0);
-    m_bottomIntakeMotor.setSpeed(0);
+    m_IntakeMotor.set(0);
   }
 
   //start shooter motor
   public void startShooterMotor(double speed){
-    m_shooterMotorTop.setSpeed(-speed);
-    m_shooterMotorBottom.setSpeed(-speed);
+    m_shooterMotorTop.set(-speed);
+    m_shooterMotorBottom.set(-speed);
   }
 
   //stop shooter motor
   public void stopShooterMotor(){
-    m_shooterMotorTop.setSpeed(0);
-    m_shooterMotorBottom.setSpeed(0);
+    m_shooterMotorTop.set(0);
+    m_shooterMotorBottom.set(0);
   }
 
   //set the rpm
   public void setShooterRPM(double rpm){
-    m_shooterMotorTop.setVelocity(rpm);
-    m_shooterMotorBottom.setVelocity(rpm);
+    m_shooterMotorTop.set(rpm);
+    m_shooterMotorBottom.set(rpm);
   }
   //checking to make sure it is 6000 rpm
-  public double getShooterRPM(){
+  public double getShooterRPMBottom(){
     //only using one of the shooter motors because they both should be the same in an ideal situation
-    return m_shooterMotorBottom.setVelocity();
+    return m_shooterMotorBottom.get() * 600/2048;
   }
+
+  public double getShooterRPMTop(){
+    //only using one of the shooter motors because they both should be the same in an ideal situation
+    return m_shooterMotorTop.getSetpoint();
+  }
+
+  //checking if the shooter RPM is enough
+  public boolean isReady() {
+    if (getShooterRPMTop() > 5900 && getShooterRPMBottom() > 5900) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  
+  //get the intake photoswitch
+  public boolean getIntakePhotoswitchTriggered(){
+    return getIntakePhotoswitchTriggered();
+  }
+
   //intake photoswitch boolean
-  public boolean intakePhotoswitchTriggered(){
-    return 
+  public boolean intakePhotoswitchTriggered() {
+    if (getIntakePhotoswitchTriggered() == true){
+      return true;
+    } 
+    else{
+      return false;
+    }
+  } 
+
+  //get the shooter photoswitch
+  public boolean getShooterPhotoswitchTriggered(){
+    return getShooterPhotoswitchTriggered();
   }
 
   //shooter photoswitch boolean
-  public boolean shooterPhotoswitchTriggered(){
-    return 
+  public boolean shooterPhotoswitchTriggered() {
+    if (getShooterPhotoswitchTriggered() == true){
+      return true;
+    } 
+    else{
+      return false;
+    }
   }
 
   public void periodic() {
